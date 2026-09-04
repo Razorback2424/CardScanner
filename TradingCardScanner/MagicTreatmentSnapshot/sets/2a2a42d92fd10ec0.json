@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4575bbe-a767-4861-87c3-795a287ac363",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1998-09-26",
+    "setCode" : "pusg",
+    "setName" : "Urza's Saga Promos",
+    "variation" : false
+  }
+]

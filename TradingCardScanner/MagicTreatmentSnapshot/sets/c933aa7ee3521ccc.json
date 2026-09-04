@@ -1,0 +1,1268 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51d652e8-203b-4ee6-8ddb-36080f5ded25",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cat Collector // Cat Collector",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "437d5b0d-868f-49c1-b0f6-e5d7e0e952dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zul Ashur, Lich Lord // Zul Ashur, Lich Lord",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0b9d7e5-e4ac-4ffb-8241-ec4e4b34fb82",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Goblin Boarders // Goblin Boarders",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "897da865-163d-450d-9d59-4fb9a02be59a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Loot, Exuberant Explorer // Loot, Exuberant Explorer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70d6fb79-96b9-4334-a043-b08a84538831",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spinner of Souls // Spinner of Souls",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ba5466c-6a3f-4daf-9d6e-834ede28ba07",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Alesha, Who Laughs at Fate // Alesha, Who Laughs at Fate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "915de995-cdbe-42d6-a98a-0fd27c0aec53",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Elenda, Saint of Dusk // Elenda, Saint of Dusk",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "527553f2-4b16-421e-8732-5d7e52691cdc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kykar, Zephyr Awakener // Kykar, Zephyr Awakener",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6c4c581-d703-414c-8b2a-44f19468ae47",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wardens of the Cycle // Wardens of the Cycle",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4eb84eab-ac19-4e14-9b38-4fe85939441d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fishing Pole // Fishing Pole",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc9e38e6-a8a6-498c-b56b-861652182980",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Soulstone Sanctuary // Soulstone Sanctuary",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64e45095-6e9d-495b-9068-4156edb065db",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Celestial Armor // Celestial Armor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c86cde01-7b67-40a5-9f89-a86dc5e67b4e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Giada, Font of Hope // Giada, Font of Hope",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce6f7734-a2f5-48ff-9728-a1c6b91f8a81",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ee765ab-dd70-4b5c-ade4-d9bc357a0248",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Island // Island",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f816b6f1-6b1e-416e-8ebb-6fa06f7d7046",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Swamp // Swamp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06915fb0-fbf9-4146-b6f9-126582826cfb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cde63eb6-5709-42dd-b9d0-9b94aed1f379",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Forest // Forest",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aad69296-4b74-4f33-a2a5-330dda781399",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Arahbo, the First Fang // Arahbo, the First Fang",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd75a7ed-15bc-4c58-a603-4bac721a3db8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Herald of Eternal Dawn // Herald of Eternal Dawn",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70dedcd2-cbb9-447f-9ee7-c281cc3ba86f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Youthful Valkyrie // Youthful Valkyrie",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dcbcd201-9f1d-4cdb-ac4b-2c50c4c61295",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Drake Hatcher // Drake Hatcher",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "999181d2-a35e-423f-ac65-8b4821d5fcd2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Felidar Savior // Felidar Savior",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c29ca408-56f6-4289-8880-444736ffea8a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kiora, the Rising Tide // Kiora, the Rising Tide",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8eda89d-929d-45bb-a52d-f19c2cade5e5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lunar Insight // Lunar Insight",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc593efb-b84e-445b-8fc6-43356a327e75",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Omniscience // Omniscience",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2db67df5-97c2-478b-8fc1-8590e5c713a2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sphinx of Forgotten Lore // Sphinx of Forgotten Lore",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1029ca63-de39-41b9-83ea-59604e0c8a3a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abyssal Harvester // Abyssal Harvester",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0320c0df-74c8-402c-9781-7405b42afc1e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blasphemous Edict // Blasphemous Edict",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "024857f1-c40a-43f0-9410-bb00d899011e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nine-Lives Familiar // Nine-Lives Familiar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe3b1f84-5bf6-4b19-85dd-6074f9323949",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nine-Lives Familiar // Nine-Lives Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc571ffb-e7f9-42f9-ad4b-ffc80cd516b4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rise of the Dark Realms // Rise of the Dark Realms",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6003a42-373b-44a7-9b1e-c32e21bff63a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rite of the Dragoncaller // Rite of the Dragoncaller",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4920402-19c8-4d7f-b212-506c0c7a54e7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Searslicer Goblin // Searslicer Goblin",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efbb90ce-60ab-4eef-a3b5-dedcfde276cc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Skyknight Squire // Skyknight Squire",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e919d46e-e7bd-4ba7-a162-eb4ed59bf4d9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Genesis Wave // Genesis Wave",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e485c0b9-deab-439f-9b65-d5a3cf0b88d0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ghalta, Primal Hunger // Ghalta, Primal Hunger",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29f98c3e-7204-4faa-9a30-85c71aeeeb1b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mossborn Hydra // Mossborn Hydra",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "484b2acf-9f7a-4e0c-a4e9-52b323429c36",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Preposterous Proportions // Preposterous Proportions",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c75bb76f-2cd5-4d7c-979c-64b945a7b9ea",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quilled Greatwurm // Quilled Greatwurm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "944b47ec-2207-46d5-8dd5-2685fcfc324f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Reclamation Sage // Reclamation Sage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "380da1ca-c286-4dab-bedc-b2600d128ece",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sylvan Scavenging // Sylvan Scavenging",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ee9c533-cf47-47ec-94a6-065f7d9ddfb9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Anthem of Champions // Anthem of Champions",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07efb20a-92be-4924-b07b-09b9e7723625",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lathril, Blade of the Elves // Lathril, Blade of the Elves",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cfc594fb-a008-4f95-ad50-4c46bf89db72",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Leyline Axe // Leyline Axe",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b13b053-5c49-4861-9639-d23f3b335d2a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Drake Hatcher // Drake Hatcher",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35a75e5c-d0d3-48ca-87c4-364aec800dc0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scrawling Crawler // Scrawling Crawler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b339e1c2-8271-489f-9676-ab0e76629d6a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kaito, Cunning Infiltrator // Kaito, Cunning Infiltrator",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea68d74b-2265-4ca6-b688-1303abbdc0a4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Confiscate // Confiscate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f477e57d-e391-4732-88c9-aec6598231c7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gigantosaurus // Gigantosaurus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d83ee1b4-0e8f-4207-8550-c08bee504d81",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bloom Tender // Bloom Tender",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6dab8170-8cc1-4850-8e75-bcc8ab6c347b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Faebloom Trick // Faebloom Trick",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2646bedc-268b-4b10-818c-c673abcdc38d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mischievous Mystic // Mischievous Mystic",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1a9b03e-7cbe-456e-b848-714d4aab23f3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nine-Lives Familiar // Nine-Lives Familiar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99405035-f807-4732-a30b-87d7baa00c4c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Soul-Shackled Zombie // Soul-Shackled Zombie",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "afdn",
+    "setName" : "Foundations Art Series",
+    "variation" : false
+  }
+]

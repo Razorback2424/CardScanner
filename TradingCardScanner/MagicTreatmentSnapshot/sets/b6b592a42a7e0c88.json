@@ -1,0 +1,310 @@
+[
+  {
+    "collectorNumber" : "bk11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "cf15ac9c-0e20-43bd-a957-8591020e6434",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "bk117sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "2640ff4e-c022-46ed-a4d2-a4bae6a43f05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "bk11sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "2a9c7fca-304a-43cf-80a9-cfb8c72d43fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "bk231a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "10ceae44-9739-4175-a215-df22691ec3b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call of the Herd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "cr124sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "171edc1c-47ca-4da1-81b3-736d2083bda3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coffin Purge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "cr36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "fb548f1e-3077-4ad1-8c52-ec303ede18d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "cr57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "98738c04-27d3-4eab-b0da-cac6f79c4cd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "rl117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "3af1d404-6147-4061-a76a-4d0085825b95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "rl20sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d62c9424-a2a9-42cd-938d-39d35577dc80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "rl266",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "14fb6b62-ecec-45c6-bf2e-45070370f0e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roar of the Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "rl54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "f8b9c8f6-a772-455a-a128-1352fb245a93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wonder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "shh20sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "1a78b650-a844-4423-9229-1e109bd1574e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "shh266sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0c315523-a023-42f3-9906-690d90eb99dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roar of the Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "shh36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "9288a7d7-63bd-480d-90af-76da95c7e221",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-12-01",
+    "setCode" : "wc02",
+    "setName" : "World Championship Decks 2002",
+    "variation" : false
+  }
+]

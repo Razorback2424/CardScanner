@@ -1,0 +1,266 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "061cb705-695a-4f65-adbf-869ebb4eb946",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Kithkin Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f84b406-112d-4b01-8500-60391692a17e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Giant Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e36334f1-afe3-497c-82d9-aaf149934b54",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49180301-f72f-48ca-8be1-df295e89cdd7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cba50f25-ad8c-4244-8dc1-f8656f4c8c0b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a85fe9d-ef18-46c4-88b0-cf2e222e30e4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94c14f3d-1578-426b-b64b-07c7e88ab572",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7663358-c85c-4ba4-ac9b-6be6105363a9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7df0de51-8d05-475a-832e-de8a0f60849e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spider",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c138bf9-8be6-4f1a-a82c-a84938ab84f5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a07b4786-1592-42c7-9d3e-d0d66abaed99",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Faerie Rogue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c5afb0a-a158-4995-881e-eae0f20805a6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "tshm",
+    "setName" : "Shadowmoor Tokens",
+    "variation" : false
+  }
+]

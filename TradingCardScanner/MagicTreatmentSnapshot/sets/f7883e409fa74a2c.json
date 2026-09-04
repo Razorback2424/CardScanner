@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "183★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3b51743-6c7d-4ae9-9200-a87374d6d11b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demigod of Revenge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-04-19",
+    "setCode" : "pshm",
+    "setName" : "Shadowmoor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbecaab0-e5d7-4bec-9fb5-c24b587eaa42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vexing Shusher",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-05-02",
+    "setCode" : "pshm",
+    "setName" : "Shadowmoor Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,3682 @@
+[
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "721c7122-91b6-45ea-ba28-de0246a2fc1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rush of Dread",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5724a15f-0ba0-421a-9cd4-a2b701e6141f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones Joins Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d3025a2-4a17-4137-ba0b-bd676c6f5f88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones, the Pickpocket",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "358968f9-45bd-4022-b6bc-f1f7e0adf0e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final Showdown",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "0c5a25d9-926e-4004-8830-2b2bf7bc0775",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unfortunate Accident",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "828b5855-af5a-46a6-8fd4-0a2e28f3bb01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vadmir, New Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e7a70f5a-2056-4c26-b6ea-9f751b5d0d8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity, Galloping Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "3a2fd0c4-509e-49c2-ad57-f772efcbc207",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caught in the Crossfire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "069294a8-e65a-47af-942f-7e99d18658f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortune, Loyal Steed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "f0e3df9c-0a86-4e6f-a3c7-84a883328a3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Derailment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "357dd9b2-5d2d-49f6-86f0-f5c4d63474dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Train Heist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4443d112-209b-49ec-bc40-3a11dcdb092e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magda, the Hoardmaster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "69689049-a704-4f16-84ee-4d5d915028ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Getaway Glamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "a9cc02d1-799d-42aa-9bc2-4c05452b63b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return the Favor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52eef0d6-24b7-40b7-8403-e8e863d0cd55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristly Bill, Spine Sower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "caf0e715-befb-4904-82e6-d3f8c7fbd454",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dance of the Tumbleweeds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "e7fbb489-e2b5-4278-8162-86802cf124d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Surprise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "eda59f99-1d6d-4051-ac89-b7cbfa19262e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trash the Town",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68fd8548-50db-4243-9154-377f32408d58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akul the Unrepentant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8d4af7c3-a70d-4f71-b27d-b268c4a0f81e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Annie Flash, the Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1624a5f4-f5bc-47c9-85de-c5520ee234ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Annie Joins Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9da18b4-1efc-44b7-8001-a2cfd44c69bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baron Bertram Graywater",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4383ae7c-58ea-4354-93e4-677ad185c3bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonny Pall, Clearcutter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf3bda9e-42af-4f99-a504-c96c25c2794b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, the Blastmaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "286c55c2-dcc1-4e87-a83f-9981d28ab62d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruse Tarl, Roving Rancher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fc27b30-8c8e-434c-a72c-e1d409efc1ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Aurlock, Grizzled Genius",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f46c133a-7ae4-431b-88f2-ec606a7baf69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eriette, the Beguiler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4e81be6-6447-4f1e-be00-6fcdb2ab35af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ertha Jo, Frontier Mentor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e43e3d71-4fb8-4ab1-8c8f-b65ae3ad4cc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghired, Mirror of the Wilds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "82512813-8618-483b-a7f0-e6a611d9d487",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog, Ravenous Ride",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "259ddf66-76af-4857-83c3-c812327a6e23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honest Rutstein",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e24fe6dc-662a-4abc-ad60-a1959b2be006",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jem Lightfoote, Sky Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe30b5c8-4889-4350-bb1d-3e2a67d9dfb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolene, Plundering Pugilist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d53a775d-5898-41a8-b404-9b7d4721c6ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Profiteering Mayor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e7f95d5-b279-4469-9c89-1e02630d61e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kellan Joins Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "04dfbc4c-ab21-45db-bbd9-b9d245d60015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kellan, the Kid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "958a3e6b-7e20-40ea-8b2c-7c728934b5e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraum, Violent Cacophony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af0b3a41-ba99-41e8-bcfb-5796500c17c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laughing Jasper Flint",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00293326-3eb2-492c-b565-7abafa037d8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, Familiar Stranger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e21f90ea-5934-4757-8515-38ef116afac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lilah, Undefeated Slickshot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "521dffaa-813b-41e4-b7c2-a8c407167875",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, the Eyes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "71bfbfae-e7eb-4f80-81c6-9ab6a1bbd39d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One Last Job",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee29b59c-d57c-4a03-bae7-e9dfa57d6bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa, Dealer of Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bfa7750a-7c32-4413-b762-62e24d992c6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miriam, Herd Whisperer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03415c42-086e-4a2e-9be8-5cdcde83f134",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Splitter of Seconds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7154dca-7e10-4c34-aa56-9f200c6277d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Joins Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bb34babd-1b85-4a7d-a066-a8337805056e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, the Muscle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21b63544-4c31-4f38-9907-0407719a60b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riku of Many Paths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11fbe52f-febd-49fc-8391-28d3efe9c3eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roxanne, Starfall Savant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "acc9a5cc-2b3c-4c2f-8176-4a2d86265cc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru, the Infiltrator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d2e167f-7cb2-4f15-a1db-7ee56b7ba523",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Eager Trailblazer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1643af0b-fcbf-4636-8c50-77ec77eaa34d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taii Wakeen, Perfect Shot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3afce4e6-ac59-4fba-b63a-8fed96bbdc4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vial Smasher, Gleeful Grenadier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06e546c2-737e-4b17-bf60-3069b1ccdf31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska Joins Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b042abf2-c40b-4235-a4fa-2e4901c375c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, the Silencer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc97ffcf-4f51-44cd-8daa-a7dae4592ee5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wylie Duke, Atiin Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "154e9ba9-0d0e-4b0e-acf2-f66a993cf3a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Requisition Raid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "33ed7ca3-894b-45f4-a15f-51b6bcd3f474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rustler Rampage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6ef3f55e-b8e6-4ef1-85e4-2aef5afc15ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geralf, the Fleshwright",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "37c1ad56-cf6e-4717-a56e-feeb7339b8c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa, the Hellraiser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "95e759e4-bda5-4d01-a9a8-3986df1d4428",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Punisher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1b2a3962-315d-48df-9af5-7cb4dd2040de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones, the Pickpocket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0ea8d21f-a003-4711-ad5c-0bde87e1edc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Annie Flash, the Veteran",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fcde5cd5-4ce6-4b94-8d97-534a647dbfc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, the Blastmaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f69b5791-a405-4578-acba-959cc181e9ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eriette, the Beguiler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "789659f6-af39-4357-985f-a006f192893c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kellan, the Kid",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "480de469-3fac-4a2b-8dec-7899ce00551e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, the Eyes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9c025072-0d0a-4ca7-a386-f1ed7c97638b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oko, the Ringleader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b85635e0-fb5b-42ea-8a30-d67922cbca95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, the Muscle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4b9a76f0-b697-4c1d-9b60-c66f7fc4316e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru, the Infiltrator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2a6cc9ab-a1d8-47de-8ac5-112e5fee00f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, the Silencer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1cfb4a80-3319-41ad-9d97-a9a53c9f84fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blooming Marsh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82670072-9851-48c7-a8f5-7842bff6c252",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Botanical Sanctum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d7e85ace-7e2c-46f6-adb9-07f33f8e1750",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concealed Courtyard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "551e216d-a82f-49a1-a3fd-8165715a05c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Vantage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d83bdb3-1f04-4b99-a36b-312da0cbed50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirebluff Canal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bfbb249-f2cc-4295-b6e3-4fd7e1eac183",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oko, the Ringleader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d73bdf79-6c18-46bc-a8bb-97e07dd23aff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace Reawakened",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ddec615b-537a-4fef-a2a7-9bdf74c0192a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Another Round",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d34f043c-d01e-4462-b381-39748d7fa31b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archangel of Tithes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "75143fdb-5651-4289-86df-76c9655a0599",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aven Interrupter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dfad3c84-4264-4757-8e83-25dbbed67070",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Claim Jumper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0d9d4f0-48ec-43e6-bb93-a9589790417b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Animus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "94397320-b814-487f-aca2-537517ff9eff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final Showdown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "02ffb299-a327-43c1-868e-1c5225204956",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortune, Loyal Steed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0d69fce2-3307-4518-a196-e0b8155dca73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Noon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "ad6db7ba-3150-4ae8-84e3-11661bf1d1c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One Last Job",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "25563be1-71f1-4f70-8527-02c5855a0b9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage's Newt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d6f24b8b-f9ed-4c77-8cb0-2a94848ee69b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Down",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4126ae45-00b3-419c-8f07-d1286ac6b121",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duelist of the Mind",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "51bbf861-448b-455b-8922-38515ba65c40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fblthp, Lost on the Range",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d70388ee-2f97-4282-ba74-af95462ac0aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Key to the Vault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0e532e5b-6d84-4669-8788-f471b1498c7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Step Between Worlds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e346fab1-48db-4cd2-836d-dad5e8437308",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stoic Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "be980c3b-b4ab-4ed7-9f61-d8db54c226d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Steps Ahead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "517505a0-0d05-4e81-8582-999b88040f48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caustic Bronco",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "aae03d91-8269-4124-ba50-a6c65f47718b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insatiable Avarice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bea6391-e70d-4f36-86b7-fd08440b4976",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pitiless Carnage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "e4ca7ac5-5552-487f-9ac9-1092fe6cd165",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rush of Dread",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a3afc0c2-95e7-4b9f-94c5-144cce17c7ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones Joins Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d876a888-e119-494d-857a-e780a277c817",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vadmir, New Blood",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "295e63c2-b533-4dbf-8c8a-c6493de31457",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity, Galloping Inferno",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "b570d9c5-3348-482f-a211-ed8c9777a9fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Train Heist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c522c232-0f86-49ad-969f-a2b086432a97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hell to Pay",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "259262b9-f74b-4e71-9c4e-cf18ba2dc3c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hellspur Posse Boss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "adf42a57-02f0-4a3f-8677-d68ffe3090c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magda, the Hoardmaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "304523e7-f332-4c1d-9590-ff9a70daff26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slickshot Show-Off",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e9fa00b-bc34-4be8-a21f-11ae695f166d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stingerback Terror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cd20aae9-9de0-498b-8325-f8e8290d56e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of the Peaks",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f921e711-168d-4836-bca2-f9bb43992708",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristly Bill, Spine Sower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6fbb0c7-29ac-4394-87e1-6e8227602aac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossal Rattlewurm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "81289833-ebdb-4fe7-ad17-6e39eb399e69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Freestrider Lookout",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8700b3a6-327b-4dc0-aa8d-434ca971a7b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldvein Hydra",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a1729d3-8e27-4db0-a7c6-e629a8faf946",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ornery Tumblewagg",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8cf1fe32-eac2-4d50-b403-25c3666f6d80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outcaster Trailblazer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "78db8c96-e6b8-4d4a-9935-29f12385a151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Railway Brawler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "spree"
+    ],
+    "id" : "41b76d0d-da55-44ec-add8-61696ee40d21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Surprise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6534bdb1-9436-4919-8a8b-5401bc070fc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akul the Unrepentant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9ce19341-e652-448f-8f14-0439bd8fa385",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Annie Joins Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0d8e4f7b-bdf6-44d3-9b2b-4420bab84864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assimilation Aegis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ee29f20b-27cd-433a-8874-41f500720109",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonny Pall, Clearcutter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "026257bf-f4e7-45f8-9c93-7248f201c583",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruse Tarl, Roving Rancher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "203c84a3-5f1a-440f-93e7-bb65d1e07886",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghired, Mirror of the Wilds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a634b934-710b-4c83-b769-d8a034e297b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog, Ravenous Ride",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8cfd5a0f-8859-4272-a08f-13b788422f4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Profiteering Mayor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1d927dc7-77b7-473d-b50b-e81c52d66b55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kellan Joins Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5df7fadd-33ea-4bf4-9122-362821ef96dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laughing Jasper Flint",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "95efd401-579e-448b-9655-31311c0ae41e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lilah, Undefeated Slickshot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "724309cd-fb05-4632-a7be-33a9ba024e4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa, Dealer of Death",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "183b8c06-62ab-41e8-82c1-f23066d832ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Splitter of Seconds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c05939b7-1877-4464-98fe-d3b9ae754fb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pillage the Bog",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "761a743a-6358-4e08-a6b7-6eaaf7ab9ddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Joins Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "215b4632-adce-4357-bfcf-b6014ed2a24b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riku of Many Paths",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7b8aea8d-452a-4b23-bc78-8c7db54610d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roxanne, Starfall Savant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e523de28-b2d5-4be9-be78-883cef2499e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Eager Trailblazer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1c9df2d7-6738-496c-8164-8bdf7d011df3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seraphic Steed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3c558349-87bc-4e0f-96c2-b075f7da97d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taii Wakeen, Perfect Shot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "43579701-c89a-4455-8f6a-0589af0c6bd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska Joins Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "17955d83-89ea-4151-950c-d72acf1a852a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wylie Duke, Atiin Hero",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5fd49911-9ddb-4bef-8cd0-89f558ccd5cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frontier Seeker",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "188694af-b856-4439-8ce0-8306b38caacb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scorching Shot",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d8df8b87-3ea1-44eb-9218-9e7e06dfd0db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honest Rutstein",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d9073963-5866-4132-a059-a46f96cd2a8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Make Your Own Luck",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f19e6995-4926-4513-b8c1-f35a22aafbe5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruthless Lawbringer",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e695db51-f9d5-4eef-84d9-62f7602792b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Key to the Vault",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2834e84e-e932-4052-9dad-2e1c8e76fbbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magda, the Hoardmaster",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01d3e6ea-4791-4948-af22-c1bd04c34c1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fblthp, Lost on the Range",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afe3b678-b340-4c53-bbf6-19252a809d73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geralf, the Fleshwright",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "a4be8e47-9006-4770-8d99-68a684064a43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jailbreak Scheme",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "166814af-a444-4a62-937e-7491673d9387",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Key to the Vault",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "bd38d922-cfc1-43a8-82d8-5de441c71076",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metamorphic Blast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "00bf4dd1-5468-4594-9c7b-0737610f19d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantom Interference",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "20b8313b-a680-4dca-959a-1a7fa5cb4b1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shifting Grift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "8fffd839-2337-4a14-9312-cee085a17f4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Steps Ahead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db7c07b2-02b2-4e62-bf1b-4848e06eec28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa, the Hellraiser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "a108b0e4-1b43-4659-9e91-facb0bd57ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insatiable Avarice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f3affc1-be42-48c7-89ff-b59550ff278c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Punisher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "spree"
+    ],
+    "id" : "0c35a0d3-12f7-46f3-a6b3-02a490d45ca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lively Dirge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otj",
+    "setName" : "Outlaws of Thunder Junction",
+    "variation" : false
+  }
+]

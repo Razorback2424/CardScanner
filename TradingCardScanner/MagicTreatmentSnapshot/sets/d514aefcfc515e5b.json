@@ -1,0 +1,26 @@
+[
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c34019cb-5d87-4451-a102-b751ea3a97f8",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Coffin Puppets",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-06-05",
+    "setCode" : "pcy",
+    "setName" : "Prophecy",
+    "variation" : false
+  }
+]

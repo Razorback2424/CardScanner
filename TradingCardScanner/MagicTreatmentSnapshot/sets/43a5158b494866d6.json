@@ -1,0 +1,277 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9693e59b-032d-4ddc-a7d1-88a0f52dcc6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morophon, the Boundless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8690cbcc-f8fd-41f7-9e28-e61c12b04014",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11616853-34b1-4bb1-9590-461e12970ec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pashalik Mons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c046dfb0-9ca3-4219-a6b0-d7503bc2fbd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayula, Queen Among Bears",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06d4fbe1-8a2f-4958-bb85-1a1e5f1e8d87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The First Sliver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0049e68d-0caf-474f-9523-dad343f1250a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hogaak, Arisen Necropolis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3651483f-6077-4b4e-b2c7-9d57f22c65dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kess, Dissident Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b5cbd10a-b9a6-4c00-8280-72bb4add4390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Heliod's Generosity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46a00405-13ad-4531-9bfb-fea0ca57f196",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flusterstorm",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a293c45-1e73-4527-be2f-2dcd5c47b610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sisay, Weatherlight Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4f5d2a6e-22cd-4493-9e58-e9c2aa3a31ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marit Lage's Slumber",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e7fb3c0-5159-4d1f-8490-ce4c9a60f567",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "mh1",
+    "setName" : "Modern Horizons",
+    "variation" : false
+  }
+]

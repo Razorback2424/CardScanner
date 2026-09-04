@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e136f064-459a-49b1-a501-9b935db11e35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99c7c1d0-dc6b-413f-8346-54728a4c7b14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bribery",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd9f5e37-693a-4cba-9758-b003777d5583",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Recruiter",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d7ef391-60d7-41cd-b3fe-d1ce250e807a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crucible of Worlds",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03afc329-0e61-47f6-9750-25df24ae0b4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a69cba3a-e5a1-4539-a084-adefce507db1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overwhelming Forces",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fef34ec-f728-4919-9254-576ed889a654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vindicate",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c3e3c77-e6a6-4814-a2f5-0ae2d06e4b31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Show and Tell",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1fb69a6d-b02d-46f1-af7b-cfd8a2363ed2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Golem",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "j13",
+    "setName" : "Judge Gift Cards 2013",
+    "variation" : false
+  }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c840aa15-6d54-41ee-b2e3-c049785ae10d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strangleroot Geist",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-01-28",
+    "setCode" : "pdka",
+    "setName" : "Dark Ascension Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33df275d-bdad-4e4b-9f92-ec2bf98fcba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravecrawler",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-28",
+    "setCode" : "pdka",
+    "setName" : "Dark Ascension Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "abbbb466-31ef-42dd-9993-124f7ec3d8ae",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ravenous Demon // Archdemon of Greed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-28",
+    "setCode" : "pdka",
+    "setName" : "Dark Ascension Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "756119c5-f10e-431b-9f8b-5da5850a72fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zombie Apocalypse",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-28",
+    "setCode" : "pdka",
+    "setName" : "Dark Ascension Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "98fc475a-809d-4278-be03-86eab62b46ce",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Mondronen Shaman // Tovolar's Magehunter",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-28",
+    "setCode" : "pdka",
+    "setName" : "Dark Ascension Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,1844 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fbd897e0-0f6b-4a35-9f33-a16d85ddfad8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fell the Mighty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d2bcfba6-fbd8-487c-8a89-2327c3d07870",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Capture",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4c7f0ea5-a142-4157-b85d-ec49dd79adf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4ddb33dd-a92a-4f71-bcb3-56678ef5e45d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindbreak Trap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "88941ed3-1cae-47ce-8ccb-938c5d0e767f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Repulse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d06a1a70-aa26-4178-8486-e0a25c907cdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartless Pillage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "41137be4-cfc2-40dc-873a-b9a63d0d8ea6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imp's Mischief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6c776ca4-4950-4a27-8ce2-fbe534579d62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0d16af8d-4967-4244-8622-c6fa03ac739b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overwhelming Forces",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "609c34f9-9f53-4773-a02b-517209024fc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reanimate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "11cc603a-5d60-4959-a03f-e3dfbee4606b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgical Extraction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "92270719-352d-426f-b498-fbeaf8fd087b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fierce Retribution",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5e85d5db-ced3-406d-90d2-e506a9332468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thoughtseize",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cbaaa9e0-e5d4-4ae1-8082-cc018eb1fe39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Defiance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d7cdccd8-13c0-49ab-9fc9-554e7897e782",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6d550bc9-2cb5-4947-a48d-2c92b5c72541",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrodominance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1cddae19-eb96-475c-9800-17ac57df4c0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "18cb625b-a41f-4f3b-8f56-257a3795aa8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indomitable Creativity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9f3261b6-4f5c-4cf0-a396-1d9397603602",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skewer the Critics",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "170a06cd-501e-43c8-98e0-63ebd61cc0aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skullcrack",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4f362332-3682-4638-bc8b-6984f48e3464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clear Shot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3d98d6a5-36a0-441f-ac64-9d02b2dbb773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Vigor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "442bb671-8b23-4e3b-bf39-18152a68887e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Journey to Nowhere",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8407c498-b972-49fe-b30a-a864c39ddc7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pest Infestation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4416de3b-ba68-44a9-843b-26743813c661",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d11a1ac4-b025-4bc7-a00f-5de04acefbf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Might",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8eb4b155-ddde-465d-bd2e-3b7eb32bc052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thornado",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "84f71a16-915d-4b8e-8c39-cc46bcaa9de9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abrupt Decay",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c03cc4a3-a526-4811-871e-290ae5bbe424",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anguished Unmaking",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f55e5aca-b6fe-4b2f-9943-568f4d1704ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Back for More",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2473bb43-4de4-402a-884b-42fd9fcadd7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedevil",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "507073ca-4f97-4fcb-b570-233f096bf0fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Buried in the Garden",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ce4bc5b7-233c-4076-8268-7f9bd346ec55",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Crime // Punishment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5f48b1fe-175a-40bb-be21-84b5c768403e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Binding",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "539e00a6-6cb0-4960-8a45-52d70b575f5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a6166dde-22d8-4fd1-93f9-c4e7762ae2a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decimate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "54ee0802-62c1-46ac-907e-82ace59fbddb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decisive Denial",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bb049418-44db-4f98-9d53-385c5cd0f5cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Detention Sphere",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "70afd040-59a8-491e-bd2a-92a12cda96dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Detour",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bd1db186-dd74-4e05-905c-34321fb3d641",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractured Identity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "860f4304-38f1-4c2f-a122-2590619522fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hindering Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "454bb7c2-cb7b-4601-9f50-2d24e3ffe1c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Humiliate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4448d31e-faf4-4281-af48-4f638b939a62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hypothesizzle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "98c75555-8fe0-4902-a2c7-b807d95b71ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ionize",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1995fed6-992f-4333-afa6-63d61cfdfa00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pariah",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "659e8760-c7a8-445d-bfef-7cd445ea67c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oko, Thief of Crowns",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "eb214fdf-edb1-49ab-8f98-dea62475f2fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outlaws' Merriment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f1ec2b59-fbc5-464c-916c-b1accf29867d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ride Down",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4b05cacb-1f62-46ca-90a0-202d4adcff2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Smash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "07fb25f7-1fb7-4c2a-abb8-adfb24860bce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siphon Insight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ebccedbd-558c-419d-a18f-8751afd937b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminal Agony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e61f8b36-6ad2-4295-bd1d-7f9e90b23190",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrant's Scorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fc4b1507-7daa-4728-b79e-a9423dae6c57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vanishing Verse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "66126f16-3d22-4d93-86c8-1800f1cfd22e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wealth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "598f6fd1-51a3-4bb3-9696-911cd45367f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Rend",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aa112736-7596-448a-be2f-0798acb3b2ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f21cca5c-dc1e-4e7c-9dab-218165f42b90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voidslime",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fe584bf8-cb71-42b5-b5c0-dea3fec79c9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contagion Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f5914135-d927-4d95-a4cd-85c871adaeee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grindstone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "65b007d5-d9da-4342-ba7e-4b5d8d79912b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindslaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5447a777-769d-4773-ab64-31c67e310e15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unlicensed Hearse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "18d24d9a-a49e-4ce8-9158-03fe4cea39e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Bowl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6d17cd3c-40a7-4df8-8687-c0eb94637c80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Binding",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "33ebd4c1-e7ea-4708-8b7c-c47ca6b63c22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9857225a-3525-4e42-852c-6d2f7400e931",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindbreak Trap",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b0870c73-bc83-44ac-a194-7455fcacadf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overwhelming Forces",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "defa687c-a064-4a7b-afa2-3c3ecdb5e13f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archive Trap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d1aebf2-dd21-48b4-868f-f8fb164dcaae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thoughtseize",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f4a887d8-4afa-4551-9db2-dd90b95a68c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f0e2cc8c-9e2f-479b-9c47-ad3fd04d40f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indomitable Creativity",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c342bffb-3dcf-4f5a-9432-ff8f8e4cb26f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Vigor",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "117a70ac-ae6e-43ff-b210-c264bb8f11d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anguished Unmaking",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "301f6df1-1b97-4a63-8043-8b97147b200b",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Crime // Punishment",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c127a3c8-be41-4135-8de6-c6331f4b880b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractured Identity",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "016b0750-d48d-4b6e-ac9c-a7904371a914",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oko, Thief of Crowns",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e8125bcb-b110-4705-b77d-0548aaac4c91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contagion Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "183b321b-2214-42ba-a50a-54c15e3e8b77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grindstone",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "44fe86de-c131-41b2-a06a-827b4d374a6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage's Charm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8d6ecfd9-f126-411f-a7cb-99479302aa79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindslaver",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e473db8a-ee0e-4753-aaab-76eda5808075",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commandeer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otp",
+    "setName" : "Breaking News",
+    "variation" : false
+  }
+]

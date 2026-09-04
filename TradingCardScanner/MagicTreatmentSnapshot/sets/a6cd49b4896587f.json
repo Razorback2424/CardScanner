@@ -1,0 +1,277 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8dc05018-f1c5-4c45-bb32-9a9ccd641f48",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "207b3d62-2541-4a51-8152-3c54218ab6f7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Foretell",
+    "promoTypes" : [
+      "ffvii",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66f569e1-5a37-4801-be01-9c5d44a82427",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "The Monarch",
+    "promoTypes" : [
+      "ffvi",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c459f2ec-2aa3-44f6-999f-b1467dd4e27c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "ffvii",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "004f2ea4-0477-49b2-ad06-5aac7991103d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "ffx",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "023cebe4-ebe4-4398-9fd7-d3507660040a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "660d8e43-13e1-464b-b251-c7c2d77732ca",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squid",
+    "promoTypes" : [
+      "ffx",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4cecd5c6-d6c8-4cd5-97a3-cddaf051af15",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6afbbdad-aeed-428a-b840-c33f59a18d0b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rebel",
+    "promoTypes" : [
+      "ffvii",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af39ce29-47bb-42bf-8d3d-224bdce96a83",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "The Blackjack",
+    "promoTypes" : [
+      "ffvi",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e886e0b-2ce7-4231-a47c-a39bda50e8fd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "ffx",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfic",
+    "setName" : "Final Fantasy Commander Tokens",
+    "variation" : false
+  }
+]

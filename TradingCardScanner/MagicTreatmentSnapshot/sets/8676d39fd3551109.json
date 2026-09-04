@@ -1,0 +1,1946 @@
+[
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a4daa68-7097-4a9a-b26d-cbb0251dbc53",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Oriq Loremage // Oriq Loremage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c50b4fc7-44d1-451c-b0c8-a6b3eec5925d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Specter of the Fens // Specter of the Fens",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aaf2e4c8-4f6d-4ebd-ac03-619a3c435ebf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Crackle with Power // Crackle with Power",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb1d57b9-84ea-4a68-a3b9-30f11c042a53",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Storm-Kiln Artist // Storm-Kiln Artist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ed84ef9-a4fd-4b36-9aef-5d8f1fe122bb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bookwurm // Bookwurm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afa9e475-e339-433f-a6ce-e56758ad343a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonsguard Elite // Dragonsguard Elite",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14581183-df3b-4314-be42-f19330861f99",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonsguard Elite // Dragonsguard Elite",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31c23040-f91d-41ac-8a6d-2fe4894bfdeb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Emergent Sequence // Emergent Sequence",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90e70b24-c58a-4d76-83b7-329d5df0d093",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Professor of Zoomancy // Professor of Zoomancy",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f287b5e-dba9-4770-8670-58cb0478f6dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Verdant Mastery // Verdant Mastery",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6492887-3329-4d06-887b-dc9d2c5586e6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Introduction to Prophecy // Introduction to Prophecy",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ae5d7c8-e439-4a21-8b64-b3baa3eeb202",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Awaken the Blood Avatar // Awaken the Blood Avatar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f36750e-8569-47fd-a632-051149c504e2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Biomathematician // Biomathematician",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f6838c7-f934-4237-bdb0-2066e4230ba0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blex, Vexing Pest // Blex, Vexing Pest",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38838c4c-06d3-4a11-9186-37946b0f83ce",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dina, Soul Steeper // Dina, Soul Steeper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5e13102-cdd6-48a1-b654-654a1f9b917f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Echoing Equation // Echoing Equation",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c20229d-9cc9-4648-b815-a673aa86add5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Eureka Moment // Eureka Moment",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "023a4274-8e67-422b-a2d1-691e31a497d5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Extus, Oriq Overlord // Extus, Oriq Overlord",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d799746-3970-4f24-98d3-bf20a291dfa2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Harness Infinity // Harness Infinity",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e625733-a4b6-430d-8dab-736bab313dbf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jadzi, Oracle of Arcavios // Jadzi, Oracle of Arcavios",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9279a9ea-6246-4c36-a5e8-4926dc716143",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kasmina, Enigma Sage // Kasmina, Enigma Sage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a89cc97d-30d6-4117-8687-6bac51a10173",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Clever Lumimancer // Clever Lumimancer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d7de08b-9738-4ccb-912c-d2b3a835f118",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Killian, Ink Duelist // Killian, Ink Duelist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f45e34e-15e6-4da5-9466-e827e7dc514f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lorehold Command // Lorehold Command",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "253a5fa9-b3dd-41f7-a4b2-24f0ae793591",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Magma Opus // Magma Opus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9389726-eedb-411d-b477-edeef00a8ed1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Make Your Mark // Make Your Mark",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c26583e4-9919-4029-9a1c-366c7385a001",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mila, Crafty Companion // Mila, Crafty Companion",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "949bee4d-577b-4f6a-a781-f9c45632e549",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Prismari Command // Prismari Command",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe94629c-0eaa-4408-81b2-86dcafc707b2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Revel in Silence // Revel in Silence",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d2106d3-1567-4a85-81bc-afed28b00de9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rise of Extus // Rise of Extus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b282f27a-bc81-4eff-a65c-cb4c3cd62b26",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rootha, Mercurial Artist // Rootha, Mercurial Artist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5182161b-db3b-4c61-afa0-afbf8841521b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Selfless Glyphweaver // Selfless Glyphweaver",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40558a2d-7491-4c55-8763-47111d1669cc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Leonin Lightscribe // Leonin Lightscribe",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "880090de-5f08-474a-a316-fa39cf79296d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shadewing Laureate // Shadewing Laureate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "934ece93-6ecf-46c8-a6f6-9fc8726c3466",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Silverquill Command // Silverquill Command",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c3a0ce1-17c5-469d-b103-63c2ca1f8738",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spectacle Mage // Spectacle Mage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aaf8b02f-caa9-4e4f-9ade-d02a48555550",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Teach by Example // Teach by Example",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a922a30c-834d-43ec-9b1e-dfa12122a1cf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Torrent Sculptor // Torrent Sculptor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "320e557d-5543-4284-864b-b6afca2d370b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Witherbloom Command // Witherbloom Command",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "516e22cf-82c6-4f76-9b57-5a4bcd9d4ac5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zimone, Quandrix Prodigy // Zimone, Quandrix Prodigy",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3bac6bc9-e27e-4614-bce0-0f69b3f93371",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Frostboil Snarl // Frostboil Snarl",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3dcc2736-e7d1-4bf5-9d3b-f25860b9c615",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Prismari Campus // Prismari Campus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d525e04-5333-413b-b289-391eadb011aa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Island // Island",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "032c26d2-5dc8-444d-95e6-e0721b06b02b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Professor of Symbology // Professor of Symbology",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d8764c1-1c45-4acc-9c2c-583ba736286c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Forest // Forest",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7fd833e-2073-484b-adc5-6679afaf2e9d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kianne, Dean of Substance // Kianne, Dean of Substance",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa70a01f-3fa3-49c3-bbba-7604f07c27be",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Imbraham, Dean of Theory // Imbraham, Dean of Theory",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5738771d-a801-43d6-a8d9-176c2a9ecf9f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plargg, Dean of Chaos // Plargg, Dean of Chaos",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82f2e8ec-2e40-4ab2-87ea-9290258b7550",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Augusta, Dean of Order // Augusta, Dean of Order",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8cb450b-4ddc-4cd4-96b2-9b0c64ff8f67",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shaile, Dean of Radiance // Shaile, Dean of Radiance",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8ab281a-e796-455a-a316-aaa3bc39ca6f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Valentin, Dean of the Vein // Valentin, Dean of the Vein",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e36e393-3f70-4e7f-b044-fe1715ae6e75",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Beledros Witherbloom // Beledros Witherbloom",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1967b82a-2387-4e05-94f6-1ae6bd537a1b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Galazeth Prismari // Galazeth Prismari",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f861340-fc13-4b4f-b060-7d0fe2394f57",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shadrix Silverquill // Shadrix Silverquill",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f73201dd-b26b-4ec9-930a-b2247a8f812f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Star Pupil // Star Pupil",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8629ca97-dd34-4603-977a-58c0dfe295cf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tanazir Quandrix // Tanazir Quandrix",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34dbad13-84f2-4f5c-a48b-e692e239e336",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Velomachus Lorehold // Velomachus Lorehold",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce635bd2-b730-4618-a7b8-082ebf6b713f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Defiant Strike // Defiant Strike",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e602e95a-950c-4912-9734-5b1d8e43b112",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ephemerate // Ephemerate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "298d7f4f-2673-4417-bf82-d1c9f77ae22c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Revitalize // Revitalize",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c23354a9-9843-42d8-b8b9-31ab627f4dd3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Brainstorm // Brainstorm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0131ba2a-9cea-4c4b-b15e-5f527be565e3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Memory Lapse // Memory Lapse",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63230db7-b576-4003-b7b4-77bc39445304",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Negate // Negate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92f5fe8e-fc21-4ade-b2b5-841db7d2f2b2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Strategic Planning // Strategic Planning",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a66ea4ab-aa88-47c4-9835-c2593af152de",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Time Warp // Time Warp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b69007dc-5ef5-4aa8-a497-6495b3a7f633",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Vortex Runner // Vortex Runner",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9eb730c3-9037-4598-889c-ad1d951f7063",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Agonizing Remorse // Agonizing Remorse",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c61e58f6-853e-4d1e-ab91-38ca2ca63c08",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Inquisition of Kozilek // Inquisition of Kozilek",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f8c3fa4-c6a5-4461-ad8f-2c8110e7b98b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sign in Blood // Sign in Blood",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1feb813-bbdd-4120-a239-e4fa92c5e5eb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tendrils of Agony // Tendrils of Agony",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caa35a7b-8075-46d5-a62a-4b399b34ad2b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Grapeshot // Grapeshot",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8685e6b-933c-4084-82fd-fe7e1281ed76",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Infuriate // Infuriate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a8ad7af-cc25-459f-9387-d9202d7ad3cb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lightning Bolt // Lightning Bolt",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8881c2f2-ff90-4aa5-a2bc-6991259816b4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Stone Rain // Stone Rain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fded2861-1056-45fd-bd6f-d7b3220a81e5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thrill of Possibility // Thrill of Possibility",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75b4e579-ae35-4362-a740-615dff37df52",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Urza's Rage // Urza's Rage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06461f07-a532-4931-b949-2117fd035292",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Arrogant Poet // Arrogant Poet",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ab862dc-30a3-4d33-ac39-7ed67fe433aa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cultivate // Cultivate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8061974f-67d3-40c9-99aa-a2128714e237",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Primal Command // Primal Command",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3265e92f-3069-4b4a-ba25-a4e2a1e9ff76",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Go Blank // Go Blank",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63b5afdb-d1ba-4b92-96fc-3190068cff6e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Novice Dissector // Novice Dissector",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "astx",
+    "setName" : "Strixhaven Art Series",
+    "variation" : false
+  }
+]

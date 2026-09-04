@@ -1,0 +1,577 @@
+[
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9e5ec47c-47a2-4eda-b81a-4a07f04e5989",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whip of Erebos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3f867f61-676e-40b3-8e22-e60d0606c733",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hammer of Purphoros",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7bf6baf2-d20b-467d-8929-abefcf7dfa99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros, God of the Forge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4d4ddc30-844c-4860-b394-d3c807c31162",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "22d9d241-74b8-4b40-b4b7-b8584012d482",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spearpoint Oread",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f50c12c4-5565-449a-b30e-7cd896da7735",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boon Satyr",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "89a2c408-e953-4386-abaf-4af85aba9620",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bow of Nylea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8202e426-ad91-4d2e-9373-7a829b58fff5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leafcrown Dryad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f185a734-a32a-4244-88e8-dabafbfd064f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea, God of the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2f133775-09b3-4df4-a97f-0df75809b724",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e90d01c9-e76e-42ff-b0fa-8b6786242aae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod, God of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "49663acb-582e-495a-b45e-5fc5f4949f22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4c69995b-ef31-4635-8d5a-b31f73993364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hopeful Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e1410d10-476a-4ed2-ae44-75383ed0e359",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Observant Alseid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9fa9a809-eda4-406a-8bce-d2a1c5f06388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Archon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "34ef01da-d311-4d4f-9f7b-328e7bb17db4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spear of Heliod",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "85e45d14-a501-40b9-af0a-720ecd20dad7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bident of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "19e9c9a2-4c5b-4518-a127-e4ffb23437d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nimbus Naiad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d6876c7a-8bbe-484e-b733-70229fa336cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa, God of the Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f52b325b-3ea9-4a99-ae99-9d158560e45b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "853a89c6-63f9-4b12-8a5b-2c382e22b226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baleful Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e340de29-026f-4c76-8cb5-1abfcecbb3b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern Lampad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d0787e1f-0b75-44ab-a8fd-90358906a787",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos, God of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5aa96f63-d5c3-47d3-a54d-a67883406fc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2527a490-6c56-41ba-949c-c78905a128ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nighthowler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "ths",
+    "setName" : "Theros",
+    "variation" : false
+  }
+]

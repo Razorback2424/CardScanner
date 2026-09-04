@@ -1,0 +1,2449 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2e261489-8dde-4594-8868-69f432f03d03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Betor, Ancestor's Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dc8eb325-75c9-4331-830d-3f7d62d77290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo Stormrender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a6fd7a8c-e0cd-4fb5-b492-8f3ef7579682",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ikra Shidiqi, the Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1de30c12-2011-495a-be25-f7a46b23e142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adeline, Resplendent Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc018483-69a7-4c4c-adfe-44071f53a7de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baldin, Century Herdmaster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8a800591-04a9-40d9-acfe-eebc04e8291b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Insignia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3800216f-5b35-4cfa-bcdb-d70e9b368d18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Visitation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "da3b83cb-f778-4096-9022-b1d6637354ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Prison",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a235cbda-3dc3-4aed-a911-90f26c330157",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aligned Heart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "11681eae-f5bd-4e78-a980-5ab58db0d9f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Loyalty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "452b735c-791f-4843-9390-8803154cde62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "771fcea9-1007-4ff6-8000-99017978ac1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx-Fleece Ram",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53876046-cdb8-4157-96cd-7832d3ad2549",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shalai, Voice of Plenty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cf3805a6-7892-454c-a009-1e385543729d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia's Welcome",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "78c71a23-8e73-406e-bbd0-4474c17c1d04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84d9c584-322f-49c9-9826-4838c6d2f36a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keiga, the Tide Star",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b8b70585-e0ea-4cb4-9360-a8ab47626696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lier, Disciple of the Drowned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5d5ee7cc-4854-4b52-ba9b-64d5a401fca1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempest Technique",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "578a1846-8c1a-4013-b669-1d3f4ddbbaa3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflections of Littjara",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9d0c6077-f84c-4e91-87dc-b0ac81d557f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bastion of Remembrance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "514d1c07-e559-49c7-a95c-2fa55fa65042",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Behind the Scenes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "135c5948-4c95-4f24-b648-eda55ab637c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9ff50c0-915e-4055-a595-3df6be8f1e1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Junji, the Midnight Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc9d3ada-9d0d-489a-89b7-08f53f6601e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, the Fallen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "10c09b68-1d92-42da-8d4d-0d60453a6aa7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Reclamation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "175ad810-3cdd-43c7-99a9-8a2e8ad6dbae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasigur, the Golden Fang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "eee11606-5902-41d3-aec6-d6a3da01091b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elsha, Threefold Master",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "396c5d77-f530-42f8-80b5-7cbfd562d1e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da9484bd-2cf5-4490-a52b-066de5520afd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atsushi, the Blazing Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "494a6f50-9cd3-4bfc-9382-dce4f7047a81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curse of Opulence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "249bf4b2-9239-4303-9c5d-81d06f6b7fb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aba981f9-ebc6-48ac-b768-557f632b82df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grenzo, Havoc Raiser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0cb48015-627b-49cd-8dc3-d446e82b8172",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86e576f2-8f9f-4bbf-85c4-b99ecb665412",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nogi, Draco-Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cc36705f-9b1a-42fe-bebd-f23c7af8a368",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shiny Impetus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5d951996-3379-431d-bbb0-a7d099e72e4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verix Bladewing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "95a87b4e-f0ea-457c-9517-4acf313c4ca6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "40452217-9d8c-48e7-b5b4-2740b97bea2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assault Formation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6d60bde4-5418-483f-9a75-17cf61927749",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crawling Sensation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8efbc925-54ac-4dda-82af-9091b1cf2fda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elemental Bond",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f419710e-3a73-4db0-bf2e-e76730f22c4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frontier Siege",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7377855-1944-4736-9248-2b9b40d6bf03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c495f3bf-86a4-4d2f-821f-c01515f084c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaws of Defeat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "ed8ea0da-c9d4-4158-aaa7-ebe2fe2b1e15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shigeki, Jukai Visionary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "40ed0cef-8ff6-4169-a9f3-7dd5cf56b79f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teval's Judgment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "721cd840-5f2e-40b7-8b33-ea2d6343d390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aron, Benalia's Ruin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c569fab1-6901-40ab-b958-001698819585",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atarka, World Render",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e777c383-161f-4a80-acb3-2a5c9ed5e927",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral and Kari Zev",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d411ad43-3718-4ed7-932f-fcea28705782",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Atarka",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4452d99e-23c2-408d-9eb8-ef31aefafa9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6870b355-e53d-4fa2-887b-0f0445bcd9c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jarad, Golgari Lich Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "508b1442-bf2c-4ad6-9bcf-bd894e081ab6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meren of Clan Nel Toth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "26c4c471-f79f-4ca4-acc7-852cdc14e726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ff9aa863-8773-452d-946c-ae334c632e11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eshki, Temur's Roar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "49d64e6b-563f-486c-ba04-4a254a9a971d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23111dba-89f4-4663-aca6-953a209e1bd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadrix Silverquill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "755cf134-e91e-4aa4-be44-b7a53a7f9e20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Kondo of Jamuraa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5cedb54a-a6f6-48aa-acdf-01c988c1c37d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Ascendancy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8cd8b55-2927-4e53-be1e-cc33c35f85b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalisse, Reverent Medium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "523d8fe6-1efd-4278-82fe-ea4517e6665c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Velomachus Lorehold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90197eca-271c-4047-90e0-00b2579a94f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veyran, Voice of Duality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "67d032f9-4faf-42eb-86ba-3fadfea84a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirlwind of Thought",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "51188edb-9705-4960-854b-170744f40a88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Within Range",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2c3549f6-25df-4ea7-84ad-922ccd4af6b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felothar the Steadfast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b9ea2e9c-c1c7-4870-877a-023118909f56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotis, Sibsig Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2d1102e4-447a-4b40-8131-5b36b8979fe0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ainok Strike Leader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "836c9684-06bf-45c8-8706-449def571e66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aligned Heart",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2489dd12-34e8-41d9-a986-3452a03c9413",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ironwill Forger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3d0e4790-3ebc-4e2a-96aa-7f1909864baa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Protector of the Wastes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d67a4d51-ad47-4c63-966a-c5d860d02b1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reunion of the House",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "b1de11d5-b167-466d-a2fa-52a79de6e98f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempest Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4a76e39d-d304-4bd0-96f4-1f4f368a57d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will of the Mardu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4796e5e4-515c-4d89-92da-b2d5b5b39557",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adaptive Training Post",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f641c2c0-408f-42c8-818d-4ff67c156bf7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deceptive Frostkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ac552ea3-f521-4c42-a846-21a73364e0ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neriv, Crackling Vanguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4e430ac6-ee63-4fb9-b1d2-bc584e6c434b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diviner of Mist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "73f4ea2a-bef3-4e17-ab75-1ab0c1811948",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hammerhead Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ae1a2785-315b-4b37-aa82-acff528cfb81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transcendent Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "97348a8d-e5b5-436c-a594-0cc2496ea4fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voracious Bibliophile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c50fe0ff-6826-485a-a0cf-a8f8193bc756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will of the Temur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ff02cc4f-c381-4590-897f-02e4ab34bcd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Afterlife from the Loam",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f79656b3-b284-49bc-bb55-4825e913eaa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bone Devourer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "91db532f-6781-4240-9337-315efb54d631",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaws of Defeat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "cb210e6e-fcd1-4ab7-9827-fa73fdce3825",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teval's Judgment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "addfb20e-dade-431e-8505-900b2311d45c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tip the Scales",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5a42fc7d-52ac-4e95-9e04-8f8fa7f687c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shiko and Narset, Unified",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "333b255d-6704-41e4-81ed-a9aec7010f86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Welcome the Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b322ba2f-8474-4c73-b2fb-0f2e380a4e04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will of the Abzan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "6d022c18-8ec6-4385-b36c-e6c1cc05f5af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Within Range",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ec76d618-9e92-438c-9fbc-16994b805511",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caldera Pyremaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "08f0f665-a659-460b-baf7-9f781dcbb5e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldlust Triad",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "40afa26f-443d-4eed-b32d-cb7ef2293ac8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infantry Shield",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "39df10ff-42a4-480d-a808-3ce838d9f8ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parapet Thrasher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e8284230-f6ab-475c-9552-0c705fdb793b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redoubled Stormsinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e9672b9-4534-4362-b6c0-f861cae1380e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundermane Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3973c8d4-e6e2-49dd-951f-77f6317c21d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transforming Flourish",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b5d1955a-9ff0-4f8b-9af8-341371957299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teval, the Balanced Scale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3ef5e587-8b80-4ea9-9788-367541101ecc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will of the Jeskai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7ef16977-5770-4ee5-a3b0-c9b3e9f72a59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zenith Festival",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "33e1dc92-8bb3-4841-ab7b-e9810c762c2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arbor Adherent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b5e1921a-5d75-4b9d-8293-3e78dfa664cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Become the Avalanche",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1d80ddd2-1e10-45dc-9f8f-6fe3623fd73c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Broodcaller Scourge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eff14137-cf19-4b57-a760-3ae8191b0fe4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Gargantuan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a669d0f0-91c2-4097-bc66-c02a2bb9c4ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Floral Evoker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "027dc6b6-cf74-423d-a6b4-3d7feb05a809",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampart Architect",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1676e2b1-f112-4932-8492-e5d5d9e764ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steward of the Harvest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "111c7261-e70c-4e7b-892e-42c95875feb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will of the Sultai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f54ecbf1-83df-4486-bd6a-7d1f173b6863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ureni of the Unwritten",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "83073c9a-477b-475c-a9e2-92ef04e565ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossal Grave-Reaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "39ac7ad0-e570-4209-988c-7c0f9b9d2004",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Tempest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "tdc",
+    "setName" : "Tarkir: Dragonstorm Commander",
+    "variation" : false
+  }
+]

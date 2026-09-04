@@ -1,0 +1,332 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fe9dd9f0-3071-4bbd-80d2-e35b153006d7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Xenagos Ascended",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b52d516f-d425-49f1-99cc-17f743aa41b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impulsive Return",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33307f9a-9c09-402a-9c76-a0a76b3a9a6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rip to Pieces",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1b30dc4-9d7c-4098-87a6-f7434030a427",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos's Scorn",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b5fef7d-b8bb-43e2-a36b-d4cc98c3ef13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos's Strike",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c85c8c7-e415-411d-b1b3-edc45c0e3fb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dance of Flame",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ce2817d-bb90-4cc0-beca-9f8af865c7a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dance of Panic",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8da84d4f-5526-401f-9762-4fcfbc313c81",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rollicking Throng",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f960d71-b55d-4730-9b3f-49e9afd2809c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ecstatic Piper",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "076ad38c-30ec-41a4-be18-c287f65d1d86",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Maddened Oread",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae0182f2-31c0-4927-9ca5-0b3f4d342409",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Pheres-Band Revelers",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4210dae-7248-4a7b-9646-99683c0dce17",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Serpent Dancers",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b8ec95a-e728-446b-8c4a-a3571e6aa458",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wild Maenads",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6eaba998-11dc-4a0c-a755-4332f22e6dfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impulsive Charge",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8262a9f7-010a-4fc0-bcb6-86b2b1253000",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impulsive Destruction",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-25",
+    "setCode" : "tdag",
+    "setName" : "Defeat a God",
+    "variation" : false
+  }
+]

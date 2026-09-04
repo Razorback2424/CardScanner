@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "783d5756-2fab-4757-b7e0-2d222c2d010e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx-Fleece Ram",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-03-12",
+    "setCode" : "ha2",
+    "setName" : "Historic Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e42df9e-95f2-4c79-9274-2d16e3cd91f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-03-12",
+    "setCode" : "ha2",
+    "setName" : "Historic Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "443c3c3b-3c33-4141-8d9a-aa6fa8fa12da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brain Maggot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-03-12",
+    "setCode" : "ha2",
+    "setName" : "Historic Anthology 2",
+    "variation" : false
+  }
+]

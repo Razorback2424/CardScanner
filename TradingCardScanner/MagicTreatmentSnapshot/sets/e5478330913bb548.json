@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64f1bc91-a96a-4472-ba19-e58582dfa662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anje Falkenrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "oc19",
+    "setName" : "Commander 2019 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90fffd2b-257d-4e64-9fc7-02d68c75ddf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghired, Conclave Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "oc19",
+    "setName" : "Commander 2019 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f6c7757-bcde-4d1e-9bdc-2b650905b5d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kadena, Slinking Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "oc19",
+    "setName" : "Commander 2019 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6dc24e27-90da-4e92-842a-bae8f0890207",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sevinne, the Chronoclasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "oc19",
+    "setName" : "Commander 2019 Oversized",
+    "variation" : false
+  }
+]

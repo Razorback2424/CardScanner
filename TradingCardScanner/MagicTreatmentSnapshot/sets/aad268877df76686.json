@@ -1,0 +1,3135 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02080f42-863a-471b-992b-67e35ef1b7b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "70,000 Light-Years from Home",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04a479be-8093-4775-a5d9-8b0e1683bf12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eject the Warp Core",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c46a0910-215c-4757-8bfe-7eca479157a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Chang, Cold Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2b350b2-0eda-4c2b-b9d6-b58ab4848545",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A Good Day to Die",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c309b0d-94b4-405e-be6c-18b407323e51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "He's Dead, Jim",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4734c59-ff41-47ac-bbb4-c8c3bf052fe6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hive Mind Coprocessor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "47c8262c-e0c6-4c1a-b1c1-3b5fe5252a9c",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "In the Pale Moonlight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fca1528c-84cc-42d2-99ae-9f10f0e28743",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "DOT-7 Repair Squad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cc06121-6ecd-44c3-90f9-34d492b031d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Organic Avulsion Unit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce538db8-373d-4554-821e-cd96e795e37a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relentless Drednok",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81d88257-466d-4729-862f-591885b3d875",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resistance Is Futile",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "edcce061-88c9-40bf-97f8-d0d3018e24dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rogue Artificial Intelligence",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78faba81-01a3-489f-927e-1adaa8fe4436",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salt Vampire",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef9c5790-d909-4271-90bd-5fa4816ddd6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dr. Beverly Crusher",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f2001bbd-63ee-4a6e-8e01-3a91aaf1e3b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beckett Mariner, Impetuous Ensign",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c053ec5-d1ea-4526-8a0d-e4dfafb8ecdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cantankerous Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40a0466d-20bb-4ed5-858d-947fb9144580",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain James T. Kirk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0c340eba-645d-416a-9ed4-f2303aa8c919",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain's Tutelage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dda6f965-cbdf-4dbc-b0b1-00c27e32f5f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emergency Medical Hologram",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abf44662-62ad-47fb-9cfe-6bed47133de5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horta",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22c60c17-74ec-460b-bf7a-e56e42239826",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Khaaaaaaaaaaaannn!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afe08bef-b184-4b91-8d69-0101e183c3ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "La'An Noonien-Singh, Security",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d73bb1c-39e3-429c-b6bb-96dae2254708",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Munitions Enthusiast",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3df10e9a-efb6-4945-9b1b-29200688702a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perils of the Past",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "163f5474-138d-4b47-a6f5-b1a0974e56a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planetary Patrol",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c786a2f-3de4-4b24-a3a0-15b1f2a07324",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plasma Cascade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bca43d8-7c69-47f4-8f82-48dd2b6a7cba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Impulse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b312dacd-b87f-44c1-a804-bee221e70f52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Federation Field Medic",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1701",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b1cfb3f1-f1ad-47aa-a7f0-ff3ebd2ffa5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain James T. Kirk",
+    "promoTypes" : [
+      "headliner",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1704",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e40fe4b6-81c0-4822-9668-2dac7820dcb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kathryn Janeway",
+    "promoTypes" : [
+      "headliner",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6359ab5d-4151-4a0c-af13-d59c1b381bb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silicate Surveyor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d31447b6-484f-4dda-b6af-ab068a84f896",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Amok Time",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d17ea45c-7f9c-411f-b7d3-ca7100ffe53b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kathryn Janeway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f2d1830-baea-4735-b029-cb8c0b538d83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cold-Blooded Crew",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6711e910-e5a8-4602-9559-de5374bffff2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Free Borg Revolutionaries",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fddc950-fbc5-4cf7-b694-dcd54ffccb31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Common Goal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94e9d400-f2bb-46e7-8d41-6038ebdc6c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dathon and Picard at El-Adrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5fa76320-24c0-4294-8ae4-fb39e171fbe6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dominion Supervisor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5407e8f4-0c8e-4e66-9d2f-f22277aa38f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "First Contact",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c07979d4-8a58-4cfb-bffa-74e8bd97c7ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "I'm a Doctor, Not a . . .",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfbaf597-6be2-4aa0-88ae-cc4c94878add",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moopsy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3c68b20-f202-4d55-bef1-398d96e55c57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mugato",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "197abe5e-cde2-4b29-a10f-d6b789776bfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saurian Explorer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9e8b404c-6e2a-4966-ac4b-c9981c1c6fee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Support Mission",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18bb2edd-8dee-4714-a707-6542b6ebbd53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syndicate Liquidators",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0faeffee-bb07-4b9d-8cdd-e9731bbd2396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malfunctioning Holodeck",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20a97cda-42b2-44f1-8e77-f64dd1c98f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenobotanist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "803608aa-ae69-45d2-ae48-f1688d2a6a0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xindi Surveyors",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "aac6f64d-d39a-4994-bc70-6b477b2640f8",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The City on the Edge of Forever",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6204cfdb-6fb4-4030-96b6-9306c8266bcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seven of Nine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbc4ac70-0a4c-4973-a366-dd67d8901e21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Entity",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b147f16e-a2d6-4d43-9213-9a2723b0d3ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cybernetic Specialist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "057a4413-6a17-491e-bfd7-6cd427b1a442",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "U.S.S. Enterprise-D, Galaxy-Class",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b7eb998-3ec0-4cbc-a416-5a1e3e5a7316",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Crypt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63e4dc07-c742-41bd-8301-861637908fd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fbd1ae0-3d4c-492a-a1ea-85a95fa3d7b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7285986-7e08-4969-86ef-452dc5bfdd9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallowed Fountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad7e18e2-c033-4b6c-86e8-d0e5cc824cfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overgrown Tomb",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9fa20c5-f241-4da2-9c99-c9b650095d74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Picard, Leading by Example",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7758cc6-4e18-48a5-8720-5f42b5cd9d31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a83903c7-fd51-4526-aed2-359e946fea36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steam Vents",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ee8255a-44f6-4faa-9843-15432bf751ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9b0589d-f327-46a7-8bac-06b7654c547a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Garden",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5525d6a6-e532-4047-9da4-bfae7927fecc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ab0f4c0-b331-4c57-b68f-2e24bb5ba06c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09b3c8bb-10ca-4b9f-8507-db6e8c52a918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3cc07cd-cc79-4745-b0b7-eade60175cc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a44efa5f-8fbb-43e0-adc4-d05f4be6b9a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7387103-1df1-4fd0-9e91-1544509792c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "214a9e76-b7fd-4cc9-89e7-104a71919a84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a844b96-6616-4c39-8f4f-5d14a3b2bd55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5927fd9-dfaf-462e-9128-44b806e45178",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dce15387-4114-4b3e-91aa-5b42b45c44ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fae200d-5757-4924-8cf4-ab2a5ef2ccc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3783c530-a2da-4dc1-811a-0a9a412c8e78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saavik, Stoic Student",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54dbf416-973d-46c8-b9be-e863283d328b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Set Phasers to . . .",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b16da038-5e35-4cd7-a157-624d4ed6bde3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kathryn Janeway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8cbe8fea-9c49-4d11-be37-4bc9eb03a406",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seven of Nine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b60c9af-8ea9-491d-a4a4-226a2143e7f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shields Up!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "559f838a-24ac-4f18-8c40-23cfde6f65cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shuttle Ace",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "15d800b3-f5ed-4267-b2e7-5de83a207512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dr. Beverly Crusher",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "317704a8-a3c2-400c-bbe0-2cbc6fe10710",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tactical Officer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ac990bba-7b0c-4235-9726-b944d66952ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kathryn Janeway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bbdbd348-49ab-4830-a5db-0e92b2f01b52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallowed Fountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fa84ef4e-44ee-4b34-a454-8a19548ec3cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "746e3a9e-b1b3-4d93-95bc-7ff0e4a2a2a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Crypt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e1614245-8a15-4139-acbc-e0e98c9fb9b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "94c4b369-a997-41da-87df-5cc2faa9a5bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Garden",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5c8a28db-be8b-4b6a-a28a-c5dc091030ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e8e9d4cd-f94a-416f-aaa1-0c60bdd58391",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steam Vents",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "732fe13b-eddc-4e75-88f8-e079e30a7dc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overgrown Tomb",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7fb2e855-b0ba-43e0-a4a0-15c9c44622c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e5f775cc-ab3a-4e5d-887f-ef40c45e3560",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "502673f3-2794-4b4c-8912-674cc4d2bbd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Chang, Cold Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5ad670fc-85ef-4f9b-9b5b-bac20f080bf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salt Vampire",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "367aa1e6-ce6c-41a0-ba7c-af00487a4302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain James T. Kirk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "377bc253-f9a2-45b0-bbf8-e027f2d5dc4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Chang, Cold Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b1b6249-5c4b-4ccf-a860-22532a0d958b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Chang, Cold Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "478",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "741798a7-67df-4b8b-b0e9-dd8c2797ccc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Entity",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "12a2e90a-6776-4213-b696-fd48a4bcf0a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "U.S.S. Enterprise-D, Galaxy-Class",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8868a343-2e57-45a8-9e53-971211fe5cc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallowed Fountain",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6ccd8ea5-b8c9-4012-b3a0-dbc2b95538c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "32b61634-d3be-4d78-8e52-357b6be9ad61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Crypt",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "64ab23f3-01ae-4c06-967a-f7f1a9a99dec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8d003daf-df0b-41d3-bbd1-70b73431bf77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Garden",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2a540ef6-ba54-4729-9642-fada37843292",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "493",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a3f14044-9835-4d78-8c1a-adf6e2c67d85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steam Vents",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "494",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e97cb934-fc79-4010-829f-bc9bb0ba7635",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overgrown Tomb",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "495",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1ff8510e-bec2-401b-8e6e-cc350f805574",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "496",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "638731af-512e-42bd-813a-d540a36c8ead",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a6bf1525-2212-46d0-ad4d-1dbaa2e3b3cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brad Boimler, Eager Ensign",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "959318c1-3f7e-4418-91ce-be529af27972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloistered Telepath",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "500",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "179d50b5-cab1-482c-85a6-36f59335b562",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dr. Beverly Crusher",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e8f75b8-cca7-4ed3-90db-bcac02e74611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consider the Prime Directive",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "520",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2e462516-fddb-4e76-836b-b590d37e783f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kathryn Janeway",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "443083e7-dfee-4889-b8ed-82d6876f6402",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Chang, Cold Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "207c4369-220a-4eff-81dc-65872d6fc264",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dominion Saboteur",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "541",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d633a0bf-bb3a-471f-a286-7686da81bb01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salt Vampire",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "542",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a7f991c5-0a55-4d34-8dee-d3f206167be1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain James T. Kirk",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "557",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cb823267-b230-40f3-a1eb-140657df2b1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "U.S.S. Enterprise-D, Galaxy-Class",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f988ba84-fc78-41a2-b2f2-eebf78cee591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Federation Probe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86b790e6-3c99-4a95-8327-eb90ed9380f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guidance Failure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11c94c5f-abf4-429e-8703-c5db9abd79bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Highly Illogical",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24589f4d-c530-4f6a-b2d0-450ef70fca71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hoshi Sato, Exolinguist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "605263f0-08b6-4cc7-aba7-eb49850f8832",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Humpback Whales",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0820a78e-e392-423c-9d62-ddfda5cb3f03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marooned",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8eeec269-13f0-4923-9f13-e995acd73e00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Open Communications",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f1f789b-5c08-4a4d-b3a3-4d51ad9f1a4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Decision",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b082d454-d331-4960-8120-754f107ffa42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "V'Ger, the Intruder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ca2da7a-afbf-4b32-8ff6-ae899b9f70ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assault Drone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3deae89b-b207-487b-9e82-1fa7fcd7854b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Automated Warfare System",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "888e6e0f-43c3-4516-88ff-8a8d814478d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bat'leth",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c567253e-a2ee-45de-b3c6-3aeafbf8237b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle-Scarred Survivalist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16281200-4660-4871-afd2-d4720e6a3197",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cha'DIch Investigator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65b74daa-4606-4118-9752-b0dcd7a3f486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Drone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trk",
+    "setName" : "Star Trek",
+    "variation" : false
+  }
+]

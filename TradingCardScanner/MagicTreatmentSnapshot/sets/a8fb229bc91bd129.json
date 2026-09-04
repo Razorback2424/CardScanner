@@ -1,0 +1,1908 @@
+[
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3224bf43-e627-47de-a72a-6036317304ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stromkirk Condemned",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29d59151-09e5-4e6c-8c46-586796535733",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tree of Perdition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "90193e53-aa2f-48ad-b133-18338fedb64b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Voldaren Pariah // Abolisher of Bloodlines",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "616b8429-dde5-4d66-8703-3389b03e387e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assembled Alphas",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc7f2b5d-7dff-4d83-9c08-bd32f36cab03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assembled Alphas",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81dea89e-f233-4c1e-860a-b705d136209a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedlam Reveler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a715efd-0350-489e-973f-24e7828c483a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Defiance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130bs",
+    "collectorNumberSuffix" : "bs",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "e6a5fea5-6a36-48e2-9602-e0742ad6dbc4",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir, the Writhing Township",
+    "promoTypes" : [
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "6c81b141-4c00-4779-b7d4-d0518f733682",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir Garrison",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39432d13-d5a6-420d-a814-dee0b17a34ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmless Offering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c3d6475-a9bb-4f5e-9503-745f58804194",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impetuous Devils",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8105382-07f1-40b6-9927-bbcd05fba190",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorwing Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ea4abfd-210e-45ec-acf2-bd270806b12f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Wrath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30a9a718-5bfc-4fe1-b902-d47a01c07905",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stromkirk Occultist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "215d9d11-8b15-4ec8-8bdc-48c69928a860",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldritch Evolution",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51e02aef-dd9f-4cb6-9d58-04e5855dca14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul's Evangel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15bs",
+    "collectorNumberSuffix" : "bs",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "33cc6111-01e2-41b6-af81-a89334631a72",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Brisela, Voice of Nightmares",
+    "promoTypes" : [
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "09c010da-1f05-4ab2-a8e7-f9d7762ea502",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Bruna, the Fading Light",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84b09c07-a811-4b1c-8264-f63efea93e06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishkanah, Grafwidow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73fbdec3-f1d3-4d91-8665-f4caec1aa37d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Permeating Mass",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aad5a791-c6fd-481c-a916-3d4ad161bc87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit of the Hunt",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fa41235-ea3a-469d-8cab-7bcc7022e7f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splendid Reclamation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "787b023f-0561-4e19-86c9-ec9054dfa074",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splendid Reclamation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6b1c3de-bba4-4f73-830d-fa71cecf767f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulvenwald Observer",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "085e9225-1ae4-4113-8659-7eb22ddae47b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulvenwald Observer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e97f861c-1472-4b62-a303-f50f6eb03f73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Effort",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93efa32a-9c89-424c-a132-d170c5a6297c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodhall Priest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09b76448-08db-44ea-ab65-0812e1d1e73c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa and Geralf",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdbd232c-1bdf-489d-8a92-a67aad61d5e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Flayer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d15d3511-4297-414e-870e-1334ea7fcce0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heron's Grace Champion",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4b86c55-31e6-4d21-a8a5-13e938dcfecb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heron's Grace Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77ee20cd-c3a2-4185-be79-aa03bb3d69b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spell Queller",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25a31242-5e4c-489f-9425-912d6fb7a651",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo, Field Researcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "321bbf60-14a3-49b7-9401-0f2bb0660908",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ulrich of the Krallenhorde // Ulrich, Uncontested Alpha",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b4d83c8-7881-4bfe-a346-bda75fd76b03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lupine Prototype",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01fea725-44f5-466d-8590-e5e44ed22841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Separator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1Z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f153ca0-0e55-4f3c-9780-570708844fd3",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Zombie // Zombie",
+    "promoTypes" : [
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40da09e1-e5d8-4d3e-9096-fbc43c75deaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stitcher's Graft",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce583e4c-830a-4f10-883b-e0dc1ce9cc67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geier Reach Sanitarium",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "a32261f2-164f-4433-bc4c-b5ac591e6a59",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir Battlements",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f9abdab-5c77-4d9d-83d3-c2995f303043",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deploy the Gatewatch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "e48b5d96-3c27-4d14-abfc-92db5cbb13ee",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Gisela, the Broken Blade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c39467b-50f8-45d1-a314-3267e8463231",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decimator of the Provinces",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b8981bc-3fb9-4ea4-b956-2a270e6a1e53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Providence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7515fb94-0e9b-4b0d-b3f2-6b48c023cdfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctifier of Souls",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbe2aaa5-1b87-4ede-a85d-ae85e88c61f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctifier of Souls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e866be54-75fc-4e39-806a-06756aca660c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Distended Mindbender",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32e74251-862b-43de-97a1-80edd38962ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Spirit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "952bc537-0027-46e0-9f8b-9edadd36478b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda's Aid",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26a812a4-e213-4eb3-bed1-fb947e1ceee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda's Aid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46928c55-969b-487a-a869-37052ca096c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Heretic Cathar",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "341a6db2-9648-419e-a3ca-dde7f7510b9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Heretic Cathar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da02a655-5f49-46b3-b78a-0c8dd18b56d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia's Lancers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe8cce2d-621a-4d43-9b2a-849d92053624",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia's Lancers",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-02-01",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f0271ac-e5da-466e-8b0b-f5c193293905",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coax from the Blind Eternities",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "f845e2ef-d4be-4dd9-85fa-41d0564faa4b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Docent of Perfection // Final Iteration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0acfa8ce-d992-4463-a096-74bc1e0bb1d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elder Deep-Fiend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "971f96f4-c228-4aeb-a77f-1a3553a08f35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Identity Thief",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e14cede-dc06-46a7-a801-2a6f088d70ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Identity Thief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce04f7f8-c483-4041-a905-aa517f825fdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51efa1a1-2dfd-4c66-ae8a-08bc94204635",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5016d3ee-2da3-4bcf-92c1-7b52aa6b4ed6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mausoleum Wanderer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df768328-6215-4653-9793-1e53384a9f45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Promised End",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe5b7a96-954d-44ad-8365-318ae6ddb573",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind's Dilation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ca274dd-e8fa-4221-8d56-fe9b01eda132",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niblis of Frost",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed006552-8e6c-4fc2-ba83-ec91ca466fba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niblis of Frost",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4368812a-69cb-4c26-b36e-5ff65bc89470",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Summary Dismissal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b184d7e-46ae-450e-9228-eb605ac3ad41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unsubstantiate",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12e79945-d6cf-4490-88a7-a7d5f9e0b96b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eternal Scourge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ceaa1e02-b11b-4f30-9f8b-2e735309dcb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wharf Infiltrator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe8ee6b7-5e1f-47bf-9624-328be148f38d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Brutality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6300fed0-1ede-4457-bd5f-e835ee4346d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptbreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bae5a488-e890-40c3-aa8f-0e1e90cb07a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Salvation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92a8addd-6303-46c7-9687-9e22a00e3e7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Last Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f436bf2-13d0-4544-86f5-86b653058445",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noosegraf Mob",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8afda671-86bd-4cb0-b68a-987c0a0cd7b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noosegraf Mob",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1c107c4-bd41-4138-a364-171a444524bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Liliana",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "pemn",
+    "setName" : "Eldritch Moon Promos",
+    "variation" : false
+  }
+]

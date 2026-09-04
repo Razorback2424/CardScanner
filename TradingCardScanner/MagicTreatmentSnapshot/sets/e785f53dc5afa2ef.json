@@ -1,0 +1,332 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ff875d47-b46e-481e-8fba-cc90870483e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isperia, Supreme Judge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "066b677d-5a4c-4bb4-a3e0-1e616aafb9da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulasht, the Hate Seed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3a9755c-b76f-4afd-b891-6ad85e3a5e2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zegana, Utopian Speaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16c56c8c-06b1-4559-ad2c-aa1416ac7776",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Experiment Kraj",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd62b042-779c-4a74-b64c-4f0481733398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momir Vig, Simic Visionary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3afa434f-3080-496f-a53a-4439f80e9f8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorel of the Hull Clade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ca226e3-e392-4c7c-88f0-14e6e3bd17ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isperia the Inscrutable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c31e25f7-cc27-4f72-a314-1cf7971a2fbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia of the Tenth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4716ede8-d08e-426b-aed3-8cf36c9b51c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa, Orzhov Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b201937-5f2e-48b0-bb33-da09fc0a6f25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost Council of Orzhova",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "133829fd-4ba5-418c-b64e-7b7157ef1a4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, Lord of Riots",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85b64d1f-29f4-4165-b81c-a831dd051139",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyzolda, the Blood Witch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d891044d-9e74-4c5d-95e6-83ceb5163ca8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos the Defiler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "846b7039-9449-4064-8101-1260c59872a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruric Thar, the Unbowed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "326911cc-04fb-4897-8a43-e1cacf928c06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Borborygmos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-15",
+    "setCode" : "gk2",
+    "setName" : "RNA Guild Kit",
+    "variation" : false
+  }
+]

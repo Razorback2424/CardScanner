@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "306a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38382bb9-3b8e-4819-9998-55dbf1ab0fd7",
+    "language" : "de",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-04-11",
+    "setCode" : "fbb",
+    "setName" : "Foreign Black Border",
+    "variation" : false
+  }
+]

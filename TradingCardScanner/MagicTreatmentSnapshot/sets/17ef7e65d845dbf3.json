@@ -1,0 +1,288 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68353af0-9cd0-43c0-9b39-8f904c618e3a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Sliver",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afd66b96-eccb-44ce-9125-063d34af2ff8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "309f1bd4-78af-4722-9d45-b5f40b001570",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f327de6e-c9f1-478d-9940-b500df8cef10",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Liliana of the Dark Realms Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d16429cb-9b00-4411-9ffc-252b38ad0b8c",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Garruk, Caller of Beasts Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "826320b7-4ccf-4ace-8c2c-15052b6bad73",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db41ce71-52df-4bc1-884d-b09419d8dd13",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64e90524-bad8-4d24-85be-9402401e7b42",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07d82a8d-4c57-401f-92c3-8fd9ba20174a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0efaa5b5-984d-4eff-81b6-9b4989f149eb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed37fa8e-5930-4e57-8ead-73894ac40c19",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc7315d5-26d9-4ecc-bca2-b75c6fb12597",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8fc2dc9-40df-46d8-98c0-ca4919bd5524",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-07-19",
+    "setCode" : "tm14",
+    "setName" : "Magic 2014 Tokens",
+    "variation" : false
+  }
+]

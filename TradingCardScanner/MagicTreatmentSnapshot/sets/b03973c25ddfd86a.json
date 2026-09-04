@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "092bc98e-cca1-4d8e-bcde-074621280fed",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Replicated Ring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "tmoc",
+    "setName" : "March of the Machine Commander Tokens",
+    "variation" : false
+  }
+]

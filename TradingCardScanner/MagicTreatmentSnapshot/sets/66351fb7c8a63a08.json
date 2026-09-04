@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7700d907-e212-4893-8c65-02c8906a803c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "g00",
+    "setName" : "Judge Gift Cards 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33a6402e-1042-41be-a903-3a572aa5be3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "g00",
+    "setName" : "Judge Gift Cards 2000",
+    "variation" : false
+  }
+]

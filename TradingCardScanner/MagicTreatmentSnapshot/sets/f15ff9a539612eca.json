@@ -1,0 +1,922 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f48ab69d-8a01-4dcb-af70-31e2c62278df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ephemerate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b05fa81a-a0f5-4cb1-b4c7-f4016ab65c4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tribute Mage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86d744cd-225c-4279-898a-858dc316cf7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e681338b-9938-4db0-bb95-28c460a98acf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Changeling Outcast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d25ae489-1600-4eca-afd2-6274d525046a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35c48959-caba-430a-9ac3-0e3459277ed0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plague Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b358328b-53f2-45ba-a5f2-d0a666241d53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undead Augur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cae12ba4-80d9-4c2d-af64-d88d003a0d6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61f8ba6c-1fc9-42c5-94ea-1ee495fa4090",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Sinkhole",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "7ee142dc-bb72-4aa0-9037-cfc70de19cae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shenanigans",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad7eac9d-31e3-480e-92fa-58458d6f83b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayula, Queen Among Bears",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47f44d5a-f3d6-4a9a-8bd3-b17a88565c51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generous Gift",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96c5607b-55fe-43c2-93fe-0084d84499d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Forest Hermit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebd30c7a-7a8c-4176-b1e7-91f4c4a55140",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Vigor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6311f606-eed9-46b7-80b1-1f823a1183d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Tribe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4da5a18d-b5d2-4c38-ae04-164f3e1adc6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scale Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7739490e-1389-440b-9efa-9df0e4fd30dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weather the Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e1da79b-4392-47cc-ade9-776827695276",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etchings of the Chosen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59fa538b-fa1c-4cdc-9fc0-801d6b618f01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The First Sliver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05aa5b50-0f8a-4f8a-8b48-3c52512ea615",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ice-Fang Coatl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a92b3ded-40d9-4e50-a64c-b326e3fd52ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ingenious Infiltrator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87731608-7038-453f-97dc-12cfa5b9211d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavabelly Sliver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2bdcfec-d412-442c-91c8-53022c8e316d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giver of Runes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5434026-a606-41df-8dfd-23694040b488",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulherder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2afc63e4-10be-415b-9512-f6c1a477af8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Sinew and Steel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f714386f-607a-41fd-ae72-f2d2641841aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Truth and Justice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a32f159-cc51-40d9-8c33-88ca8eb8b6f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talisman of Conviction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0373057-f5c2-4cfb-b6a4-dea05035d1c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talisman of Creativity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9383190-c4b2-4b38-8938-2c57782faf03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talisman of Curiosity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8ed2d68-fd97-411f-8a8e-7e100cdb4c0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talisman of Hierarchy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca1f4df7-6c34-406d-9cb5-84e18f6a7f3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talisman of Resilience",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1211495-12ba-4f57-90f9-8befec5fc03d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Universal Automaton",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8445249d-5482-462b-9372-31aa745f33b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Heliod's Generosity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55c67d56-62d5-417a-b1a6-51c91ba3abb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "King of the Pride",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "991a1790-a3a2-4def-8848-cc698915a242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Vista",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab9eef1c-8e8e-45e6-aaef-98ff569a1845",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ranger-Captain of Eos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "673cfb84-b76f-44c2-9ca1-5d57d1ac525f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sisay, Weatherlight Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a2ab58d-a632-4162-82b2-664e9ac4b319",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage's Charm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3989e920-05df-4b30-9ec3-e6ecaa436fce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faerie Seer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b769ba9e-2ac8-48a9-9f45-23a4ccd0cb96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Negation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "h1r",
+    "setName" : "Modern Horizons 1 Timeshifts",
+    "variation" : false
+  }
+]

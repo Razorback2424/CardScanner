@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "117★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "104fd4d9-a911-401a-95ae-50e0502ed35b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malfegor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2009-01-31",
+    "setCode" : "pcon",
+    "setName" : "Conflux Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90299569-65c5-4dd9-ac7e-320b64ec62ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obelisk of Alara",
+    "promoTypes" : [
+      "datestamped",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-02-06",
+    "setCode" : "pcon",
+    "setName" : "Conflux Promos",
+    "variation" : false
+  }
+]

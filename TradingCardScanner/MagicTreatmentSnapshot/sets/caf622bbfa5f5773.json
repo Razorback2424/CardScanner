@@ -1,0 +1,574 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cec48b8-58b2-4894-96e4-8477b83d4cf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Spirit Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1177d512-3e3b-4cea-a162-1fab169aefb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeering Instigator",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70fd6e2c-201d-436b-ad54-c9403295ec85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arashin War Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11a3b2a9-5879-4b42-8e67-9ed1b788c90e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Formless Nurturing",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52b0640c-2aaf-4744-8558-94fb7325ba3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonscale Boon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00020b05-ecb9-4603-8cc1-8cfa7a14befc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildcall",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d8d5aae-47a6-4b6f-841d-71184f4adb97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hewed Stone Retainers",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e509ec4-ed77-4010-beb0-d0df0f620d6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin's Construct",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84016da9-e32a-4fa6-a1d7-9198bd995822",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mastery of the Unseen",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "362436c0-f89b-4447-afc6-5e47be5c932b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altar of the Brood",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7241b143-82c9-4f92-b143-b71107f97c60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Briber's Purse",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d779ef8-f09b-4111-acee-d28c51b77d53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostfire Blade",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2969e9b5-64d3-401f-9878-32ec283680ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smite the Monstrous",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5305f03-df35-4949-9628-17a6371533c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Summons",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b4dc6f3-2660-4d6f-b3b7-58f4673095cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watcher of the Roost",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "145bf0e9-89a1-4f17-9afb-3107acea2e2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Infiltrator",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3147ff96-c085-42be-a044-4e7d96d76fc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reality Shift",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7aa17b98-8347-48ab-8ed3-d1f12e5e5309",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic of the Hidden Way",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4a8a726-7570-4823-848e-1132a5b7acce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Write into Being",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79a47c13-fad4-4399-ae49-cc7d190c5ec1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Debilitating Injury",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78a7b603-4c06-4dfc-bbf1-56c9dda30cd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Haruspex",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73be7ed8-0221-4e87-ac65-a7eb8cb8f48d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sultai Emissary",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca8a5c90-7581-47fa-b941-0709a9e2a756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruthless Ripper",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c90a983-16bf-46e7-924f-f653bcef8f23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ainok Tracker",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e8a2ed2-3516-4f03-bf83-939c38003e28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arc Lightning",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ae5a2ce-997e-4c09-a0c4-639c55a23401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fierce Invocation",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-17",
+    "setCode" : "ugin",
+    "setName" : "Ugin's Fate",
+    "variation" : false
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1bb8fb5-32f2-444d-85cb-de84657b21bd",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Grimlock, Dinobot Leader // Grimlock, Ferocious King",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-20",
+    "setCode" : "h17",
+    "setName" : "HasCon 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2eb08fc5-29a4-4911-ac94-dc5ff2fc2ace",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nerf War",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-20",
+    "setCode" : "h17",
+    "setName" : "HasCon 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e5180da-d757-415c-b92d-090ad5c1b658",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Dungeons & Dragons",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-20",
+    "setCode" : "h17",
+    "setName" : "HasCon 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ee8b915-afd3-4fad-8aef-7e9cbbbbc2e4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-20",
+    "setCode" : "h17",
+    "setName" : "HasCon 2017",
+    "variation" : false
+  }
+]

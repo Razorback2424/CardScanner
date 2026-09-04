@@ -1,0 +1,2242 @@
+[
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "d7777518-2c63-44af-b85a-fd4c79eb8ea1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasteland Strangler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2467167e-b366-4ccd-84b9-05a6cacad572",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiant Bloodlord",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5327bc98-56df-450f-8824-88c281a23503",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiant Bloodlord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5b6c75b-ca0a-487a-8842-47a69c703ad9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, Liberator of Malakir",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cef3287f-4f76-4595-8c2e-d443874230f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guul Draz Overseer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58bfed5d-103b-438e-92c6-d9d03203ba27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis Reignited",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58fe1f38-5c36-4749-b3f5-0aeff16fe3cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis Reignited",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b728a235-67fc-4beb-b921-8674176645c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oblivion Sower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cc6743a-ca91-48db-ba15-22bb3d3be194",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Truths",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c580cdc-c897-4f89-bf90-d56e2de15df9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Truths",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a41a241-ee56-486a-9b4d-fb355b5f65b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruinous Path",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be4b85b7-1d5c-4add-9493-fac02dc4b3ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruinous Path",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "654291b2-c93c-4e7e-82f6-2d8f7cd2ccd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrage Tyrant",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "adf81fdf-0499-4deb-a658-0cdf03595e99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrage Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "030f71b7-f236-4ec8-92a8-5ad4b1bc5268",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serpentine Spike",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d637cb2-b770-4637-a75c-c2ed9e562538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akoum Firebird",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a96d1704-b554-4662-9974-92f99adb9450",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akoum Hellkite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7417983e-3048-421d-b4cd-7bcc79b0f064",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonmaster Outcast",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9c63bd8-3db2-4169-bcf7-f1a291dd5a17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonmaster Outcast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2548487e-a355-4a05-acbc-3031d98f4289",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Flames",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abaa3489-b00f-449e-b555-f6d33897388b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Flames",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ecae6b7-423a-4c50-b435-abaaeeb390a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Ceaseless Hunger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41de1c32-2b9e-46f9-ac23-dca869d83920",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "8337191c-180c-41d8-9a03-dcbb887f0841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "From Beyond",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ce47d81-1e45-408f-94ad-cac020ab1d08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beastcaller Savant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e470e011-5f83-468a-a767-578dcdf54e24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greenwarden of Murasa",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0fd55f1-fe89-43b6-ad62-ccd487e84460",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greenwarden of Murasa",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d9dfacf-6cc1-455f-88ff-068e1c4d87d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Winnower",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee3eabf8-48a8-49b8-858f-a246e549d1fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Winnower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86858f6f-a2d0-49cd-8c58-4ccf8db23ee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa's Renewal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "155f16eb-32b2-44b6-b12e-64e8997fda1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oran-Rief Hydra",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a772aa7-fde4-4c52-aba6-de652bc65fbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oran-Rief Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a4d78be-63d4-4139-b5c1-6d7fd02de711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scythe Leopard",
+    "promoTypes" : [
+      "giftbox",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3db40f2b-c2b1-4dfd-9fa1-c335664ee45f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undergrowth Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29f61e3d-613e-4f3e-a032-974942efc1ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Wanderer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "79d8dc86-c027-4852-9266-72316b6c2623",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brood Butcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b87c785-d06d-4965-8637-0444ee7fea90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blight Herder",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0cd0e11a-0398-431b-b523-9d3c8a0155cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brutal Expulsion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "4f83e21a-5217-41e2-8b57-38006fafc9e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Stalker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "89923289-0f62-444e-a781-d9948f32eedd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fathom Feeder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "fc760157-2908-4c8f-b498-e2ad8a8a78c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sire of Stagnation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd29062b-c638-4ba5-985c-464be1753602",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Captain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95074259-1d48-47ae-98e6-f85b5365901b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58c6a939-a8e9-4901-b15b-e68643801357",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Master of the Depths",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85aa9af2-b179-4752-9ccd-fbd5f4e5a42c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March from the Tomb",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "863af3aa-8127-48c2-bb2a-386efeb904bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Munda, Ambush Leader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14e80ae2-f960-4ee0-a2eb-9eb7581159df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noyan Dar, Roil Shaper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e8b1f17d-c806-4911-a1cf-78312b8b8592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-06",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cdf3e94-137c-4add-92bc-a744455ef6f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9c9f5ff-2d55-414f-b287-2f3bbfc52b2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veteran Warleader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b41cecd5-85d0-402a-ae50-a31b397c1fa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aligned Hedron Network",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0970bd7-fdc4-4f81-81e8-20060446870d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ally Encampment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2eb942b5-fe9e-4619-97e5-48bd784354a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emeria Shepherd",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cda2c210-8da3-4b50-b11d-d88459a22451",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Vista",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cd6955d-13a4-4fc9-a016-d1b3b5f20712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Vista",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0439e59-6dbb-4f51-81c0-b60af3f0df62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Glade",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75d14576-6257-4920-9a4f-b2907ffe158e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Glade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc69700c-418f-4644-aa1e-3e81e2b81ab5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Falls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8701c6ea-b919-420b-8d34-92be330cdc38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prairie Stream",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27e090c6-64bb-42e7-8a91-91aeca681131",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prairie Stream",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c817a0ac-7917-4542-b7d2-52cf43158533",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Ugin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e67b1ca-fd55-4768-809d-5e133df729a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Vent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f9de1ab-d0af-49bb-9512-f4f30b1de8d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shrine of the Forsaken Gods",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23a48f4a-96eb-47bd-9384-3bcc959a7c4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoldering Marsh",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfe9d050-04eb-41a8-ae4a-fadca3fac250",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoldering Marsh",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "290a9dc5-1067-48c1-99e5-f3b7b5230b52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Hollow",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "367fae2b-9128-4df8-a42b-3ea03d0b9345",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Hollow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02afcfc4-3a88-4b1e-b992-36204b44c315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felidar Sovereign",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78769295-e1e3-4bd7-9ece-b60e124efbba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felidar Sovereign",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-01",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05de38ac-84ef-4daa-b311-11c20ad680ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon, Ally of Zendikar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2758c4f-8d3b-41f3-84f7-9d8d5c301b93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blight Herder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "847c5aa0-3995-4946-8fac-eeb388f13dcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Goma Fada",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8797c33-c731-4748-bcf0-3b2400b9ab42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Goma Fada",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "517996f1-0783-4be8-be5d-3a0765d07421",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lantern Scout",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e751ec7-1305-4030-971b-3e0830e427f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Outburst",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc57091d-fcb2-4eb7-beeb-028e4a98c92e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quarantine Field",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91ef023f-a22f-4a63-8856-17dc4c569f88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conduit of Ruin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4694ece-a576-45f9-8dd6-4fee0df9751d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stasis Snare",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "daae0570-8b5d-40b6-9ea8-26cb52d4f970",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drowner of Hope",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0ded2b81-67ee-4abf-807e-215f810b664b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drowner of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ac84590-6ce6-4851-afbc-5f07dc9edf47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desolation Twin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d608d1ea-6b26-4b56-97f0-6aff4d91d743",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exert Influence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47490870-e961-4a3d-a761-0dceea8b08d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of Tazeem",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd1582cf-5a25-434b-aab5-cfde257beaf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Part the Waterveil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b49f638-f1c9-4f91-85f5-315707d6eba1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prism Array",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a7bd120-72a9-4fb7-8488-0b0fe0ce298d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scatter to the Winds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0d86395-5ced-47af-b8c8-0ff80dd89c1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin's Insight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70532516-d39b-4a0f-af57-fa640284e5c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless One",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "e6f372a8-f69d-4c4c-af5d-07488dc3bc5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smothering Abomination",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca2ba2c0-5434-498f-9fe9-2d79d6186e32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruesome Slaughter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pbfz",
+    "setName" : "Battle for Zendikar Promos",
+    "variation" : false
+  }
+]

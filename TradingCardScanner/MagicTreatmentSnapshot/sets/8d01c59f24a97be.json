@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e2338a6-a9de-4908-ae8e-4f8b4d8d4474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rankle, Pitiless Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59c1e4e5-da4b-418a-833a-f96c10abdf6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jessie Zane, Fangbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae3257ec-d5f3-4cfb-8446-cbeb236ee10e",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Albiorix, Goose Tyrant // Wild Goose Chase",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b6987c56-8bd5-40b6-8e4f-44d2dab801d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emperor Apatzec Intli IV",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8bc6b7e6-dd44-4411-88f7-fd7259a3abc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grenzo, Crooked Jailer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7cc3c74d-faae-48d0-9ff3-2482739e6087",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Illusion Gadgeteer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae7e0a65-c348-4171-a793-9d49da9249d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa of the Ghost Council",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "853e5a1e-91eb-486b-8121-b5bc78d3e827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vona de Iedo, the Antifex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61d89be7-0b3c-4d73-ac3c-95409278677f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saint Elenda",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-07",
+    "setCode" : "yotj",
+    "setName" : "Alchemy: Outlaws of Thunder Junction",
+    "variation" : false
+  }
+]

@@ -1,0 +1,113 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "05c4e808-8d87-4d25-b893-d6e56b4c98e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keeper of the Secret Lair",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-01",
+    "setCode" : "ph19",
+    "setName" : "2019 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ae9da8c-0189-4474-ae3c-aca3fae6bea3",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Champions of Archery // Join the Group",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-01",
+    "setCode" : "ph19",
+    "setName" : "2019 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "snow"
+    ],
+    "id" : "d7e57d2f-141f-461a-8f5a-4cec3020442e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myntasha, Honored One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-01",
+    "setCode" : "ph19",
+    "setName" : "2019 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6799b986-0c07-4082-8b5c-f28bddc42ee9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Cinematic Phoenix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-01",
+    "setCode" : "ph19",
+    "setName" : "2019 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3729066c-4f63-47ca-8e2d-41c8bf8eb7c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Path of Searo Point",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-01",
+    "setCode" : "ph19",
+    "setName" : "2019 Heroes of the Realm",
+    "variation" : false
+  }
+]

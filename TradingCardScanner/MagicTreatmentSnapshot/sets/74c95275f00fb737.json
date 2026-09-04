@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1903d03-21c2-42e3-bac4-c8b972d8f62b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frodo, Determined Hero",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-16",
+    "setCode" : "pltc",
+    "setName" : "Tales of Middle-earth Deluxe Commander Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e7b9e2b-f773-4df8-b3ac-de6744e9b3b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, White Rider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-16",
+    "setCode" : "pltc",
+    "setName" : "Tales of Middle-earth Deluxe Commander Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02beed67-1968-4bc8-8e9a-02645da19c46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gollum, Scheming Guide",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-16",
+    "setCode" : "pltc",
+    "setName" : "Tales of Middle-earth Deluxe Commander Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "28768fb2-cf23-49c4-93f6-14cc36b9a812",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Balrog, Flame of Udûn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-16",
+    "setCode" : "pltc",
+    "setName" : "Tales of Middle-earth Deluxe Commander Kit",
+    "variation" : false
+  }
+]

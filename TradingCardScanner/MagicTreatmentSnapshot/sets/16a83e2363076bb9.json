@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05578e28-2258-492d-9637-4f1ab7091247",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ephemerate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-08-01",
+    "setCode" : "psvc",
+    "setName" : "Summer Vacation Promos 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23655119-0551-48fa-806c-38252ee257e5",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Infernal Grasp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-08-01",
+    "setCode" : "psvc",
+    "setName" : "Summer Vacation Promos 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44168620-bbfb-4180-851d-1bdb7b098749",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-08-01",
+    "setCode" : "psvc",
+    "setName" : "Summer Vacation Promos 2022",
+    "variation" : false
+  }
+]

@@ -1,0 +1,95 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "13df67bf-21e2-4c2e-ad39-08a38fc33fdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, Friend of the Shire",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-07-01",
+    "setCode" : "pf23",
+    "setName" : "MagicFest 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d23aa765-4fc6-402f-9b49-5e55a90eec11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Thicket",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-07-01",
+    "setCode" : "pf23",
+    "setName" : "MagicFest 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab474dc9-945d-48cc-8c74-7e5bd59ef8b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reliquary Tower",
+    "promoTypes" : [
+      "playpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-10-13",
+    "setCode" : "pf23",
+    "setName" : "MagicFest 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb5d295a-c098-4647-be70-bbb913ff6b70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "TARDIS",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-22",
+    "setCode" : "pf23",
+    "setName" : "MagicFest 2023",
+    "variation" : false
+  }
+]

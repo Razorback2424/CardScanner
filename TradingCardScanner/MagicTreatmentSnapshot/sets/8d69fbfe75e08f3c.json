@@ -1,0 +1,893 @@
+[
+  {
+    "collectorNumber" : "U1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "38cd438d-be12-40aa-bd6c-be55e88b63ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1e945c79-6c1e-404a-8993-655851566928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Veil",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4b7c0082-5f92-4d8d-b327-e1461535e483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Unhallowed",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ac394f35-d999-43ea-97cf-99a736d4b2dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reanimate",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "87e58c1d-a3b7-4752-928b-168ec0d8f154",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasigur, the Golden Fang",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U14",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55f132a1-5c06-45a4-b4a8-fa6b03ffa9f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balefire Dragon",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U15",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "611e7909-6b74-4b8b-beb3-ec9e94804d5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Through the Breach",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "47961be7-f8c8-4aa0-afa1-51a20a129406",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eternal Witness",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b6f329e-4ed8-4a19-a0c9-3690b8bb6894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life from the Loam",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "77cc142c-9e74-4bc0-ae3a-a7699cf516ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Hierarch",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8a34e2df-a9ee-4c61-bc4c-518475a39925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarmogoyf",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "247689bc-b97c-4a2a-8854-1cde24a185b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn Liberated",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "99556953-8425-4052-957a-dd28a42e2f44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vengevine",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "701418b2-5d26-4da8-9091-d7f909f3ea3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaddock Teeg",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "dda80811-0410-4b51-bc67-82c50209a0a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leovold, Emissary of Trest",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9dcd19d9-2a84-4ae3-9cff-66c5b62c1440",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord of Extinction",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "57418b2d-238c-4637-9830-9e672e3bc6da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maelstrom Pulse",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6027eb04-62a6-4044-9f48-26816e050e1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Host of Herons",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e37bd3ef-3252-4ec3-9fc9-e12634748977",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fulminator Mage",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U27",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "763083c4-a1ec-4e90-af70-26b203b369ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitchen Finks",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "67bf3b19-1037-4157-8f28-11edbb7b4545",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Engineered Explosives",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "16951cdd-7367-46c7-b915-93d4ed656918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Vault",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fedb3888-a020-4c13-a845-0b5c808b96d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U30",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "861100b0-ff7b-4aac-82aa-039365c826aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Platinum Emperion",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U31",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2ca06f4f-1212-49c8-b45a-6f1597e0a3ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Tomb",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U32",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bea9f6e9-69ae-4c49-9682-ad09e787c01e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U33",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "051f18b2-9d16-4831-8f7e-458877b0c1fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U34",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e7d7e102-c52d-4891-a2a2-55fead79dc61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Tar Pit",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U35",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e8fa97f8-2f52-426a-84f3-a7b85fda1344",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U36",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ff790ded-af9f-4e93-84b7-ddadff5ccad4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karakas",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U37",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7c9fb3d9-e018-4aa3-9c14-1a51fae176b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaclaw Reaches",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U38",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "54f41726-e0bb-4154-a2db-4b68b50f5032",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Ravine",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5e63fd70-ca5b-45fd-b551-9ebe02410e9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Wildwood",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d8705c3e-d620-43fb-8773-65b412f555ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U40",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ff92804a-0c62-4eb8-bbba-f1ca6f426b6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ee203ede-b9af-4f97-84ca-597debf2efd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snapcaster Mage",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7b821fbd-5186-45bd-b154-176a1436d24d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Manipulation",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "25dd861f-ee63-4d79-b31b-173c9c336426",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterblossom",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2d957ecf-93e7-4a32-88bc-4d10feaab4ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Tutor",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "U9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "35b6baa0-508a-403c-89a0-f6ea04aa93a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goryo's Vengeance",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "puma",
+    "setName" : "Ultimate Box Topper",
+    "variation" : false
+  }
+]

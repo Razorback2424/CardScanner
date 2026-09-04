@@ -1,0 +1,238 @@
+[
+  {
+    "collectorNumber" : "2022a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99843949-4bee-47a4-8bcc-7cf5a3ae4d33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gush",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-26",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5caa7293-9674-4613-bc28-7d3534a4c365",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ponder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-26",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70c0abe1-5003-472b-a8c7-894a60d72e62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mental Misstep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7a87d6d-597d-4798-a4b0-f8bf5a006866",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon's Rage Channeler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cb56953-8450-475b-9be5-5ff628f56818",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-10-12",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d68f607-b8a7-465c-a331-282a01916f5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-12",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6aeb2c1b-0f91-4afe-8105-dfb78c8e6420",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tendrils of Agony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-10-09",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7a515e9-9db7-40e6-b967-bf3c7d7f8d25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trinisphere",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-10-09",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9d0b72e-4ac4-4457-9e04-919bed223377",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Cruise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-29",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "beea15ef-1b1f-4c6b-82d7-9c3b7f422f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life from the Loam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-29",
+    "setCode" : "pewk",
+    "setName" : "Eternal Weekend",
+    "variation" : false
+  }
+]

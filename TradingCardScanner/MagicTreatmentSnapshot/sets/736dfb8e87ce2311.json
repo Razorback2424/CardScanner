@@ -1,0 +1,223 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72219be6-3806-4f9f-a414-78317cfd4e04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morophon, the Boundless",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e566f373-ba8e-4dbc-ab96-deb271979fcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zacama, Primal Calamity",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2dc6a50-2a7e-4366-82a7-3c5b5aa2cca6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "K'rrik, Son of Yawgmoth",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-12-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c936967-b8eb-4d32-a6cc-c6bb006023d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edgar Markov",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-12-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8607993c-84b6-4625-926c-0e4191e9c60f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-12-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "debd0dfa-c20d-4886-a80e-26f800cfc17b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83afa82f-e3e5-45e3-87e4-51f59b1a0688",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Arbiter Augustin IV",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "10c9597a-abcf-4b88-9bb2-ce2d1fb68f5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlov of the Ghost Council",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "edd5eedf-4065-4ed0-805a-de47e5d98ac9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix of the Izmagnus",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-12-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "originpwdfc"
+    ],
+    "id" : "0a77fabf-481d-4fff-be8f-faf35af9160b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nicol Bolas, the Ravager // Nicol Bolas, the Arisen",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "pj21",
+    "setName" : "Judge Gift Cards 2021",
+    "variation" : false
+  }
+]

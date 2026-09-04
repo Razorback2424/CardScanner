@@ -1,0 +1,557 @@
+[
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "25baac6c-5bb4-4ecc-b1d5-fced52087bd9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Voldaren Pariah // Abolisher of Bloodlines",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "7f95145a-41a1-478e-bf8a-ea8838d6f9b1",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Conduit of Storms // Conduit of Emrakul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "0900e494-962d-48c6-8e78-66a489be4bb2",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir Garrison",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "671fe14d-0070-4bc7-8983-707b570f4492",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir, the Writhing Township",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "0b0eab47-af62-4ee8-99cf-a864fadade2d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Smoldering Werewolf // Erupting Dreadwolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "460f7733-c0a6-4439-a313-7b26ae6ee15b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Vildin-Pack Outcast // Dronepack Kindred",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "27907985-b5f6-4098-ab43-15a0c2bf94d5",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Bruna, the Fading Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "5a7a212e-e0b6-4f12-a95c-173cae023f93",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Brisela, Voice of Nightmares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "f89f116a-1e8e-4ae7-be39-552e4954f229",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kessig Prowler // Sinuous Predator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "a63c30c0-369a-4a75-b352-edab4d263d1b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Shrill Howler // Howling Chorus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "ee648500-a213-4aa4-a97c-b7223c11bebd",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tangleclaw Werewolf // Fibrous Entangler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "0dbaef61-fa39-4ea7-bc21-445401c373e7",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ulvenwald Captive // Ulvenwald Abomination",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "3e2011f0-a640-4579-bd67-1dfbc09b8c09",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ulrich of the Krallenhorde // Ulrich, Uncontested Alpha",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "078b2103-15ce-456d-b092-352fa7222935",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Cryptolith Fragment // Aurora of Emrakul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "1d743ad6-6ca2-409a-9773-581cc195dbf2",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir Battlements",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "b6867ddd-f953-41c6-ba36-86ae2c14c908",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Extricator of Sin // Extricator of Flesh",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "c75c035a-7da9-4b36-982d-fca8220b1797",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Gisela, the Broken Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "9a55b60a-5d90-4f73-984e-53fdcc0366e4",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Lone Rider // It That Rides as One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "22e816af-df55-4a3f-a6e7-0ff3bb1b45b5",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Curious Homunculus // Voracious Reader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "30c3d4c1-dc3d-4529-9d6e-8c16149cf6da",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Docent of Perfection // Final Iteration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "1eb4ddf4-f695-412d-be80-b93392432498",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Grizzled Angler // Grisly Anglerfish",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "3dedaff6-bd69-4fe3-a301-f7ea7c2f2861",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Graf Rats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "5a57187c-f0ec-40de-b725-786f787b00a2",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Midnight Scavengers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "mooneldrazidfc"
+    ],
+    "id" : "70b94f21-4f01-46f8-ad50-e2bb0b68ea33",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Chittering Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "emn",
+    "setName" : "Eldritch Moon",
+    "variation" : false
+  }
+]

@@ -1,0 +1,7347 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa1b63ce-47d3-4633-9062-3fecd810e85f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Capitoline Triad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d5a1bec-9128-4c5e-98c3-317424f892d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Templar Knight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b4b10aa-47ff-4897-b56a-00c8b19a2d34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Light and Shadow",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66ad5a57-7296-43cb-b477-826e65d37222",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4578c984-afb6-4532-b5be-093ed4ecb8b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a22426c4-914a-4e0b-a28a-b8573b63e320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a76f785d-1972-4bd6-8a43-848d51068712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c163a697-01ee-4a55-814f-b0ba79be3a7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07a6df7a-a080-4aef-9a76-5b08bbc4e762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a534ae1-4e6f-43ae-a8ad-89e306f11f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0a55d99-d668-4621-bb14-f7df210adbe4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8a081ef-a2d4-4989-8b06-721f8b2c9798",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe034544-e13f-45fc-ae43-83d0f399ed33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "What Must Be Done",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "650e47f3-476f-4b32-b892-c1a01335d0fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bd5b2ce3-3cf0-47dd-9b76-940ae7eb8498",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunbaked Canyon",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e73be68-aec6-4033-9cdd-bc473d7db93a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Islet",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f7b4c94f-a38a-461c-9bb8-aadc587a1ae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ab4b80c5-fe04-4e5e-9637-b745c2c8956b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nurturing Peatland",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0de40ccf-5db9-4e4f-b61b-8fc4454209ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Clearing",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6631b9b3-57fb-45d0-94fc-7d07556c8f7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waterlogged Grove",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2e0f02da-62b2-424a-9f1d-6b6b387c15cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Capitoline Triad",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bba0ca29-99a7-4cfd-8e16-e32ccaa5ee1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo da Vinci",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2c7f82c4-7223-4dae-b037-aac96a32212f",
+    "language" : "it",
+    "layout" : "normal",
+    "name" : "Leonardo da Vinci",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "serialized",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "52adcfc1-d8eb-4753-b6fd-a093b6d23637",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleopatra, Exiled Pharaoh",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9ebdd18-7f07-417c-8f30-470c1f14dfae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin Gauntlet",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f44a19dd-2ead-4712-928e-008a75c64fe2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Read and Anne Bonny",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4ab4bfe8-c213-4cff-80fd-824b8f2c6f8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Read and Anne Bonny",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "serialized",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a0b107dc-387e-4c92-a273-6cb44a485caa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokrates, Athenian Teacher",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2d9b2ac8-5bb6-4d40-abd5-e885e1e1fa7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apple of Eden, Isu Relic",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "780e0225-e272-4a25-a32b-085c4b950597",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Eden, Vault's Key",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4ba4c892-fe7e-4d0c-bce4-724eb4744831",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Feast and Famine",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e7736bed-b0db-435d-86b3-fa860dbf55f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Light and Shadow",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c563a0e0-0f9b-450d-8840-728429b9f4d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yggdrasil, Rebirth Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "597080d9-72a2-4da8-bcd5-53ac01da8503",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Layla Hassan",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "94f9ff05-8a97-425e-b556-cc658630c869",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Senu, Keen-Eyed Protector",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a8fb3313-b171-4264-81b7-8c043ddcacda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evie Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d6b1b2f-903c-438c-baba-a3b3e60b1d4f",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Ballad of the Black Flag",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "31006604-83cf-4d8d-bf68-bc2ebb2fb5a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desmond Miles",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "07ce00ad-acb5-4418-9ea1-50eaf2273242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "24dd5f46-2a61-4553-8469-fd69cccec9d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jacob Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f8ca1f92-2b5c-4d16-be17-6ba450b43ea3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roshan, Hidden Magister",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ab907c09-56c0-40ed-aebd-63b64c7e1c2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alexios, Deimos of Kosmos",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1dba9494-1443-4043-8cb9-3b3f18cd6676",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aveline de Grandpré",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c2e0ee24-94fc-4042-b3cf-a5a8a2432ba4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adéwalé, Breaker of Chains",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a96abfdf-21fa-46dc-9632-37add4c10c2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altaïr Ibn-La'Ahad",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "458bf178-a2d8-4f7d-afed-48a7e2bbf246",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arbaaz Mir",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "60a97041-4c09-46f2-b979-e4f63c676fb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arno Dorian",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f321777f-399b-4f80-9baf-da6a0aaa325a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Become Anonymous",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "720096c1-cbbc-4a2f-b585-899c3b87032c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aya of Alexandria",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0e74cc38-108d-46d4-9d4b-43ed5653982a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basim Ibn Ishaq",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a9d27847-42d8-442d-9c3d-7e58f7d1ec5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bayek of Siwa",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "181f4713-6167-4a79-8584-30cb87e6f92b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edward Kenway",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "24f45655-c9c9-4adc-a263-106dcca97c69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eivor, Wolf-Kissed",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c3f4e32b-9252-42a9-a259-cd9a68cb3f4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio, Brash Novice",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4ffdd5a9-bc4f-48de-b87b-8087241f6d41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Havi, the All-Father",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "23aa895d-659f-49cb-82af-fd8fa491004f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haytham Kenway",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d7016d0a-0352-4955-86af-949cf6ba6a3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kassandra, Eagle Bearer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "910570c8-c868-4513-8b27-22268d0cff68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lydia Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b10fa72b-6742-4b65-8654-ac70b6240e38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Skull, Isu Spyglass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4f0e1e27-9a74-4151-8902-aacd12897946",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratonhnhaké꞉ton",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9313f099-7f76-4b3e-af6a-f62b13cad7b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shao Jun",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5395d40f-75ae-4198-bb8a-c91265bcf824",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shaun & Rebecca, Agents",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bf3012ba-1537-4f54-bb4a-65b909b87e59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shay Cormac",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7769bc61-cde4-4033-9bbe-e01bc9574261",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigurd, Jarl of Ravensthorpe",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "badfc613-88d9-4a81-a525-1ef74f3ac420",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caduceus, Staff of Hermes",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7f9bf9e0-cb43-411c-a955-dc8e2f331e2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8a5f9cb4-a912-4117-97c8-ffe3f5c88eed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "What Must Be Done",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1068ed8a-a062-4249-802d-6f4070992de0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Skull, Isu Spyglass",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5096632a-a156-4aa5-9b09-f222939ab574",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desynchronization",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ddd3561-0143-40b7-81bc-640a978b8b15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desynchronization",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6edb50b3-27dd-4d1b-b811-8a2ea5bead1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Trespass",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "318f8ec3-0613-448d-87d2-0bcc9e95da64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Market Connections",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4a6aeb38-811c-4b5b-8bdd-876f41211035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a40c2274-250c-4aa1-8c28-7d963d31435f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cover of Darkness",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ae86188f-dcee-4d19-b5b0-e0d18df4f081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8b729699-efb7-4769-a166-29aaadef335b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spear of Leonidas",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b4c0e5f-3437-4fae-ab9f-36a36a086e88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "55196729-4a74-49b9-acd0-07b8f2d632bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackdaw",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "330dfd52-5e11-4df3-b2e6-7160c940e4cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Animus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ae9f36b1-9f73-490e-87df-c17434113dfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excalibur, Sword of Eden",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5197e8d6-cbfe-4469-95e1-f17eeb4715f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eagle Vision",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3f43e214-2e20-4168-abff-e5abefc5b009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mjölnir, Storm Hammer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "760d9a05-e0b9-4c26-b994-6b0eaf0af90e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abstergo Entertainment",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4fa62c7e-7f03-42c0-b761-1fdeb3c9e4ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Capitoline Triad",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6a42db7f-b1f3-4588-9ff5-4f4bc3f53ee4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caduceus, Staff of Hermes",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "2285f6e4-99bd-4f61-9788-0107c119753e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Distract the Guards",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c5fffb8d-e639-4863-84a1-37cd330a3226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haystack",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "52b283b1-a3df-48f8-b1e6-a97a1aa1dcc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hookblade",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "67367ca8-0a23-4192-bca5-08dbd655f0ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Layla Hassan",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5f532fa8-9a97-4d9d-b6aa-f9d356721459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d0e9c27c-d73a-4c8e-a396-4348a2695edb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reconnaissance",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec676a8f-612d-4ef4-a370-6208407a86af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Escape Detection",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "9648392a-78a2-4ae5-a218-cfd2bcd9bc5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "eca84e5a-4ce8-47fa-98b8-9d2dc65dd6c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Senu, Keen-Eyed Protector",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "825615d2-2bb9-486e-8a05-4244b7ba66c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tax Collector",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4107fda1-ed94-4920-95c9-329d243fdc01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Templar Knight",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "3f9cdb95-d110-4cc8-bfb0-665539fb4712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "What Must Be Done",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "bede0e73-35ae-42f2-af1d-db1a346743ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin Gauntlet",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "9f4c9ebe-996a-44ae-9f97-46f0e8096da4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Become Anonymous",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "72c07fa3-a823-420a-b9c5-72f0b9766bb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coastal Piracy",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "be26a459-2595-44ed-a875-1163942b3656",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Skull, Isu Spyglass",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "adeb049f-6d05-47c5-9f6c-e0f1547e3638",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desynchronization",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62f1ff84-d363-4aa2-b884-e9640cf62537",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evie Frye",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "21ab7020-bd24-4c43-9c7c-5a283d6f650d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eagle Vision",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "726bf33c-1555-4056-9544-e7477659726b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Escape Detection",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f34d942a-8f41-49fb-982e-152001855ee0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evie Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a3f8996b-bb80-4722-9b47-3b54472155e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo da Vinci",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "317cb518-1b76-4402-93b5-01c971a5dc55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Inventor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "923c8a2b-dbba-423d-8f86-7c5ec184bfcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Propaganda",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "39c42842-d844-4b3b-bef3-dc7da7d2efb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Trespass",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "653745b0-4e3b-4147-8b48-16560e706055",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin Initiate",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "86c3514a-5e57-44b5-867d-cbfb66a90dfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Market Connections",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fb11374a-183c-454a-882b-cbc2059dba26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chain Assassination",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b60f18e-4709-4b91-a342-74eb3fca71e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caduceus, Staff of Hermes",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "283d04a5-3639-42de-b940-ffa7e609e527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo da Vinci",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "454aa2e5-fc90-4338-a319-010d4d706ae7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "e90bbc98-f3ae-4963-910d-f5c8d9a0ba72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cover of Darkness",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a3c1e9c6-a9ec-4aca-a80d-9a00b05c1218",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desmond Miles",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5a5184ac-f73a-4fdc-a531-0f577892997a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "841fefda-5da3-455e-9f11-1ef5c97c1b0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fatal Push",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fbeed2f0-f42a-4f1f-a9a3-12140f4842f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go for the Throat",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "181fb6b8-7c74-42f7-82f2-33503c1f910a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hemlock Vial",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3666fafa-54b5-495e-8168-c579fd901b58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jacob Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "95e18830-3668-4c23-96aa-d241f79adbd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murder",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "99ec58f0-494d-46bb-a49e-265a6d852244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petty Larceny",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be1e598a-840c-4166-88a6-92a8b9958536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Inventor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "9e5b5257-f171-4bd5-80db-f5a627fd337d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantom Blade",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "02d6e71c-e401-4e5b-a4b9-d67c21bd1b7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restart Sequence",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f94ddae3-192e-4b88-836b-b0e3defd2e99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roshan, Hidden Magister",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c319a380-974a-486f-9b1e-495383c58d82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d00d6fad-24c7-47dc-8feb-de58c8e51c33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alexios, Deimos of Kosmos",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "16abb80e-12ef-48a2-855e-c237c10a3f92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathartic Reunion",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c014fb8d-748d-4a58-9065-17937fd4a9f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Footblade",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "30933821-a64e-4c15-a7aa-e13cb89f46f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monastery Raid",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "b62be00b-b6cb-47df-aa60-7c77c2f15fd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overpowering Attack",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4a71cfd0-0e24-4ae4-9a7e-a5ab5fea46c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spear of Leonidas",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ce4e330-d878-48f3-b9fe-3158d69f2da2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin Initiate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a7f97fbc-2abd-4496-a29e-4cecac1440c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aveline de Grandpré",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "ac1cc216-14b3-4870-8162-18c646f958f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunter's Bow",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "262c036d-4c44-48e7-a6df-f54442d93386",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palazzo Archers",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "eaa22038-6b13-422c-a07c-41e233b7405b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viewpoint Synchronization",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5eb23cf5-f046-4310-853b-e5995693f2dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adéwalé, Breaker of Chains",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7ba4aba6-6ed8-46cc-89eb-ce546940e250",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altaïr Ibn-La'Ahad",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0c92faf6-1fbb-4e5e-93d8-22da66886f33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arbaaz Mir",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b11bdd4a-861c-4df4-a34b-f1a49a8e74fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arno Dorian",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d66da05e-b3a7-4557-a7c3-97051ba24cab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d1f8afbe-1c29-4b23-9832-5656ac60acea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aya of Alexandria",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4bcd9c9-5957-48ee-9c12-f659c5fd07d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chain Assassination",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2146945f-efdc-4612-a341-acadb4bb36f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basim Ibn Ishaq",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "381497ac-653e-4c98-be03-2192d42885f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bayek of Siwa",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "829debdc-862d-4277-9c87-1e5966e4837d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bleeding Effect",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6ef2b03a-0956-4086-85cf-c32cce09d6ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleopatra, Exiled Pharaoh",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "da0ce737-8066-444b-ae33-c84713305b1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edward Kenway",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cad1af4d-9643-46da-a91b-e85d56829c43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eivor, Wolf-Kissed",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a5e48432-2e3a-4673-aa08-1d1d4ed2f472",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio, Brash Novice",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c99b18c2-3732-4e3c-a553-d2cb833f5eb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Havi, the All-Father",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bba72b7f-7dd2-47cf-a0fc-d14662878db8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haytham Kenway",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6e4e1b9a-ac75-441c-bfdc-2dd7fc07d2c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackdaw",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9523cd1-c3cf-4745-af09-77c1a83ac86f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desmond Miles",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c803e701-61d5-4f13-a0c4-78f00af1a4ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kassandra, Eagle Bearer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "88081ed8-0416-4c1b-bd59-5bf9fdc3cc5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lydia Frye",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f7b07542-b347-43ca-8203-cbf648d5426c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Read and Anne Bonny",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c96eb5dd-e846-433d-9cad-15c309c1ab75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortify",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6133c3ab-9552-4b02-8c07-4128773a78b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratonhnhaké꞉ton",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "62d341e9-4d06-48fe-b668-3bd883c1bbe8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reconstruct History",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d4f07870-359c-4f7a-8287-b5f59b7dc72b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shao Jun",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a375bfc8-9272-4421-96cb-80bd8759db47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shaun & Rebecca, Agents",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3293c01a-5b3d-4405-979c-726c0a6b0e97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shay Cormac",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ac5c62a9-65b7-4ad8-a276-568c2a3d8cff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigurd, Jarl of Ravensthorpe",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dae9ee75-30b8-4e24-af8b-031c816d3221",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3b54844c-f757-426c-8d4b-5636673cb87a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokrates, Athenian Teacher",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4d640f44-7521-4e36-ba27-cb1c94507d0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f42de1eb-0d5a-406d-ab09-2913d59b9788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adrestia",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "81a84bf5-bb15-4a6e-b4c7-7218967b33f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Animus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cf0f7995-1817-46e9-93ba-6f10051d3865",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apple of Eden, Isu Relic",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "1d2e512d-0aa2-4a1e-82cc-8ed60129bf5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Regalia",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4e357b2d-a3c1-490e-a37c-cdf42abcfa60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excalibur, Sword of Eden",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c5986796-08a5-4bbb-992e-5fb8cdf2864a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Blade",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "aaeb2f71-f973-4565-9c24-dab21da80b14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mjölnir, Storm Hammer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fd57bdd4-9b93-4a0c-8c80-46bc02af9a3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoke Bomb",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ea6cde3-a4e6-4052-aca3-4d209be15db3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hemlock Vial",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6a63c09d-2898-4ebb-b88e-b5962d427abc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Eden, Vault's Key",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "47c187b0-f196-4180-bbe0-d7f470974880",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Feast and Famine",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0ef2d91d-97fc-4523-8471-511e6376ce64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Light and Shadow",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c6e84b05-15fe-4335-a5fd-a26d1905f313",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Towering Viewpoint",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5ef1c0fa-590b-437e-992c-811577e14e58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yggdrasil, Rebirth Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6e9f47d4-44fc-4278-8cc8-8914e9a9e565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abstergo Entertainment",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "280e43b4-2208-4df0-a8b2-380cfd22dde5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Headquarters",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "282a9380-01a1-4fc6-bcd4-2c8543a75eba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9f92d7b6-58c8-485c-86ff-d63f1d3dd481",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altaïr Ibn-La'Ahad",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "861f4e4d-e3ed-483f-b9af-2f4072524742",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edward Kenway",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23422e75-e1c7-484b-aa1f-155ef9a998ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jacob Frye",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "00fcb189-1a34-4bf5-8bde-3846eec88172",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eivor, Wolf-Kissed",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1f053676-de35-4465-b3b2-ce6050055e85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kassandra, Eagle Bearer",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c2036b2e-89d6-448a-bfcb-50b2247ee17a",
+    "language" : "grc",
+    "layout" : "normal",
+    "name" : "Cleopatra, Exiled Pharaoh",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "serialized",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "23a5db83-0098-4e2b-bf23-146e88b9cca9",
+    "language" : "grc",
+    "layout" : "normal",
+    "name" : "Sokrates, Athenian Teacher",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "serialized",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4242961d-87e8-4dd2-bdea-5d765a5cf136",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eivor, Battle-Ready",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bbdc8019-9b5e-4d9a-a09b-2a14f41ddfe1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio, Blade of Vengeance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2cf2cd1-f7b3-4a23-a23a-6eb0af5451cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battlefield Improvisation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe06e87f-8915-4fc2-81fd-168a371dc407",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Detained by Legionnaires",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c11c9e60-fc14-48fe-bca9-b74f82301835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Escarpment Fortress",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fda99319-9312-42c4-adc0-77b49768d014",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keen-Eyed Raven",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45abc0a4-ae33-470f-9a39-2dd776dd6adb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petty Larceny",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "301310b3-c031-4fd3-a47e-9645b6177329",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Settlement Blacksmith",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef45be55-42d7-475c-b405-78e856530277",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin Den",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0157325c-b064-4c0a-9b5d-ecdf0ed15d9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Spy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "551d1f1e-8bc0-4196-8998-0aa7db23b388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hookblade Veteran",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60ad4bd6-c6a5-420f-8491-7696f9850a05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquilize",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91ef922e-81b4-47e6-bd37-8ec0cb29700a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Ambushers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b79ee23-d917-48f3-b014-d513f1c5ff54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Patriarch",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bb19a35-7224-4fe2-a0c0-17b93d2837ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merciless Harlequin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3efb96a-a722-493a-be0e-a64583f8c3df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poison-Blade Mentor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59fcbf2a-46d5-4371-b4eb-a8dbebe18dcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Headsplitter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec5ec61b-5393-422b-b021-46b80bb42ac4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantom Blade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddc770fd-d513-420b-94f8-f2d28d8ed8d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Labyrinth Adversary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e34a45ab-793e-4198-8327-e13287e0b74c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misthios's Fury",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b16fba05-25d7-4495-a9f6-cec6b3aabbbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spartan Veteran",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be38985c-f7a9-4885-9035-09390b4b754a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surtr, Fiery Jötun",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8ead24c-dd4a-40cd-839e-de08017a7c29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Achilles Davenport",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7426f3dc-385b-42ea-85cb-853e6035ca6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Auditore Ambush",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58766566-6e19-4f74-bfce-5a61429ffaa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bureau Headmaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01de51d1-bbea-407c-b19e-dfef7fce1510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raven Clan War-Axe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50aef0eb-5b11-49e8-b2b2-a9e0422f6e65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rooftop Bypass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac703b47-398c-42cd-8d30-99c398cf734e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hired Blade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5554433e-0dee-4960-a58c-c4a24e01a989",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Distract the Guards",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a2b1b20-e5fd-4ccb-8529-12dbde0e0811",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restart Sequence",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16e66e29-ef63-4faa-b60f-8a128800e093",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Quarry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78f04f32-f672-443a-86c0-63f5f4747c67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Submerged Boneyard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd3df51a-d173-44c8-9630-4652630cc544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68dbf10c-a813-4f76-9066-b3cdd9cfd5d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36aaa8d9-4b03-4dd2-9b3c-d8b3bf19da73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b469d5fa-89c2-4e5e-9c1d-c3edb80f7b59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7d9cde9-8937-4861-8eec-17a94e1602c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "bundle",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4e2d197-48bf-4df1-bcd3-caf07339e383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Blade",
+    "promoTypes" : [
+      "buyabox",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed77def5-ac92-4907-805d-261cae0db357",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Revelations of Ezio",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb17e6aa-8be5-40ea-a627-783c478c8eda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roshan, Hidden Magister",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e81b94b2-4052-4686-a788-9baf0fa0f81a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alexios, Deimos of Kosmos",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e188fe5a-92ac-4c1c-a9a4-2dd5912cc14e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Footblade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e2e91f0-3a4e-4388-9460-6756f758316b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monastery Raid",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14da80cd-d0b8-4094-bfe7-28811d655f8b",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Origin of the Hidden Ones",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4ad338e-88ee-4919-aec4-320071a7cfb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overpowering Attack",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "160d6ce7-2452-41a2-aa70-41e1b8045c54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spear of Leonidas",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2efbcea0-53ba-444d-b2e0-6d184f945f92",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Aesir Escape Valhalla",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85a8c84b-7d6c-4068-97b1-bc5dec46732c",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Fall of the First Civilization",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db3b4f73-e241-4d60-a877-25327092c291",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aveline de Grandpré",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca2765df-edff-4607-843c-8528d5d4fce9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunter's Bow",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d37a14c4-5398-491b-8b37-8c4eeff3054f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palazzo Archers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0f10999-c7c2-462e-bd75-e3710f7a3364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viewpoint Synchronization",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "914efc24-5c3a-4d22-9d77-fce337a08d4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adéwalé, Breaker of Chains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "358026de-ab7c-4a17-8cac-cfbee391b127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altaïr Ibn-La'Ahad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7187506-4af3-47e9-bad0-4ce8c78ccc10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arbaaz Mir",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41142b10-a493-499a-9fc5-043eeca5d1ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arno Dorian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80bd1928-18ec-4f55-acd8-9a62f9869fff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aya of Alexandria",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8aa19c1-4e87-4f42-814c-490e75565f6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basim Ibn Ishaq",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46e791f0-297b-46bf-acd5-f62458009d76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haystack",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e4510e9-dc3f-4403-ae52-348d2a3eef84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bayek of Siwa",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e942730-712a-42b2-8683-a18702d685f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bleeding Effect",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "769bbbb3-37e9-47ec-9cee-db63672275e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleopatra, Exiled Pharaoh",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9472be1e-388c-45fe-a18d-35b2cb12dc5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edward Kenway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88667198-3bec-413c-b41e-de96abc8db7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eivor, Wolf-Kissed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3351cae2-87be-4438-ba58-f4f4aff2416c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezio, Brash Novice",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c44cc99-eb71-4be3-89f2-74473f2717d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Havi, the All-Father",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73468f53-7de5-4a64-8f83-c0376f1d1f3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haytham Kenway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63056bb9-e825-418a-a8ff-692980aa65fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackdaw",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e127a40c-90c8-4c2d-aff4-daab1c56a4c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kassandra, Eagle Bearer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e17eca56-f658-410f-b505-8cbc87d4f253",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hookblade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9dd6c700-f961-484a-8fe2-57107f5b7717",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lydia Frye",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "116bf8c6-8488-4eff-b350-b3ea821353b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Read and Anne Bonny",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b16a212-602c-4839-9e34-fc5c5b0388f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratonhnhaké꞉ton",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "085568e5-d622-45ff-9a31-52eaa513ff31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shao Jun",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d90080ea-062b-4b92-89e7-b6dcb2c70a8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shaun & Rebecca, Agents",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42ca7f13-df00-4904-a7be-44f94272bfee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shay Cormac",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25ceade9-f12a-4724-b198-312fb4b1210b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigurd, Jarl of Ravensthorpe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9266244-e8bc-47f8-a440-55d208b961df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokrates, Athenian Teacher",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3d878fc-cc21-407f-b3cc-95bf2d717a80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adrestia",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ad574010-01ee-4bbc-87c5-4b04338b6ef6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Animus",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2278d97e-791a-4843-a385-65bac79bde7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Layla Hassan",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "17dd0b7f-bd26-4a46-a7a1-bc65138d54ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apple of Eden, Isu Relic",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a6439a6-288d-427e-b14b-a99e8ef8c5cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Regalia",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26dbf574-3193-413e-a982-4b9d27dafaf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excalibur, Sword of Eden",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a07a488f-cb64-4f4c-9c2e-6cdb5d563f13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Blade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df09fc8c-e008-427b-b007-ceec9a4aa4ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mjölnir, Storm Hammer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4330d8ce-3b82-4297-ad5f-c63b54b6665a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoke Bomb",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31ce94a9-d6f4-432d-9447-e6d1446c393b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Eden, Vault's Key",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d19115bf-562c-4bef-967d-52ec1e54c82e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Towering Viewpoint",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f240a9ef-06cd-4c48-ba97-fea1e55f20e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yggdrasil, Rebirth Engine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d197866-7633-493c-80dd-ec3a09165934",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abstergo Entertainment",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5671a03d-0858-41e7-976c-60825c29af04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Senu, Keen-Eyed Protector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "535f43c4-8926-4981-967d-f681f98e07d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood Headquarters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e4ed445-7b35-4090-9d0e-92532b07c8c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f203ce7d-a079-44b8-bfda-4c63ec79b82d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reconnaissance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98040e14-8182-4a94-9322-bbd967dc4dfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bdc8ac7-a9aa-4323-84c9-fa0cade02bd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coastal Piracy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c7c9072-d14c-442c-a386-bfdc0cbe110d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Propaganda",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7385611f-d26f-4a6e-b141-adcf3dbfc438",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Trespass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bac8176-d0db-4397-820d-acbdd3264377",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Market Connections",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa3cbcbb-d865-42df-88e1-0c9bd24b5c79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "512263f7-975a-4107-b58f-6c8ec85e375e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cover of Darkness",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a300b5af-9223-4e97-9d33-a9226bd900f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tax Collector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6949e85-2db2-43a7-93bd-485c7b196298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fatal Push",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f95ad5d-d0c7-4a65-9e46-1d33abbf77aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go for the Throat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86d73f4c-0bbd-4616-81a6-102db6cd7db9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b18205d-cce3-4aef-90bd-06cfb4d8387f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55aaab05-db3b-4317-ae32-553c76f6bade",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathartic Reunion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "def90432-6d13-4d28-aa27-f75dd26456bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11de7338-243a-40e2-84e3-c31240840768",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortify",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d80d4e1-8883-4951-8081-a444ab26c5d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reconstruct History",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6c38679-5563-4390-ba1f-804731953206",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfb6176a-3938-4c59-b485-8751969358ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Feast and Famine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "acr",
+    "setName" : "Assassin's Creed",
+    "variation" : false
+  }
+]

@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b04fea2-ef5b-4311-bc52-8222f1501eac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasteland",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61587ac5-0cfe-4e5d-baa2-c9a458e40474",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "540a3b26-ca61-46c6-9e75-981cae435b2e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26e0e196-36e6-4d7a-a76b-1c2a18270267",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14ef4815-3dfe-47b3-ad81-1506925280d3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3b52233-d240-4be5-bbde-b1e67367ede4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin Soldier",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a21bc37-6f21-4dda-a313-a0d75696f7fc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bear",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce45e037-5efb-4735-afee-12d7dc3127d1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "mpr",
+    "setName" : "Magic Player Rewards 2001",
+    "variation" : false
+  }
+]

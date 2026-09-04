@@ -1,0 +1,5867 @@
+[
+  {
+    "collectorNumber" : "100a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64c7428a-8fe1-478a-838d-661e6ed20d7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ebondeath, Dracolich",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e13fa16-2893-42a5-bfc9-0eee7422835e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ebondeath, Dracolich",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c4b7611-8466-4c3d-8144-81f9fc586a00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ebondeath, Dracolich",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "852f27c7-7fe3-4fbe-83a1-20a7f298325d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsworn Paladin",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e8a307c-d030-46b2-9aaa-0ddfd2b95d49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsworn Paladin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14c0e0df-9f3b-4e88-81e1-372798900cc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsworn Paladin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8734acc6-a857-4a76-a751-dc1035844cbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gelatinous Cube",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a51451b-e291-4158-a1dc-2ed7fcdd5dd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gelatinous Cube",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b135096b-49fa-4c80-a827-dc1c63879d40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gelatinous Cube",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8aa4e634-8e4c-41a6-89dd-e52c37d605ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lolth, Spider Queen",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26c4f762-4c25-496e-8473-0f44756b1c6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lolth, Spider Queen",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a0300e-0c5e-4830-bd88-f7dea57b8904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lolth, Spider Queen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "615ea490-89d1-43d0-82e7-6a2a626a8f20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphere of Annihilation",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "019eb4a9-f20b-4654-9f90-851eadfd6865",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphere of Annihilation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a47547f-bc8e-496a-a367-aa3ac782ac9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphere of Annihilation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c768ff6b-dc7e-4279-b4d9-ba1c3b747fb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorpal Sword",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6922814d-e598-47c7-af40-78a5d0623302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorpal Sword",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a5a3051-8984-4887-80a7-63e6770819d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorpal Sword",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2c9f896-dcd8-4005-bc9b-4281017e649a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Westgate Regent",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5876b8cf-ae0a-474b-8d32-b56cef9b4fd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Westgate Regent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4e85184-20aa-42ce-81e2-5afab13ed73d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Westgate Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ef641f6-848f-46c6-8a66-fd89c696f500",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wight",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c86ec3c-fdac-4b99-80e1-4f8f34cab55a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wight",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "384ad52f-63c0-4c55-8e6d-847d532e610d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96544d67-9063-4a40-abad-fa3f705ee288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delina, Wild Mage",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e2306d6-0ada-4c20-acd4-b2b43897a215",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delina, Wild Mage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1336241a-687f-46bb-ac71-d380571d9a92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delina, Wild Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "117decca-6519-4b08-8509-095b08487e73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flameskull",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6c478fb-00c7-4e9c-802a-09e635b6cca3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flameskull",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9546df9-c70b-4bb6-a195-ae9d37cac440",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flameskull",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f991beb8-1a41-4e9b-8697-6c46ed278bbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobgoblin Bandit Lord",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b0fda95-0a94-4d27-b5f7-230af52c0887",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobgoblin Bandit Lord",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b12274e0-1a6d-463f-8d55-824f3706827b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobgoblin Bandit Lord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "710d3a81-ff34-4bc4-a9ec-dcb34260f9d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno of the Star Mounts",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ede6b5d-9a64-4626-b860-50bb0b3956da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno of the Star Mounts",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ba30485-add4-49dc-8d5d-da06dd524ee6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno of the Star Mounts",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bc2d1d4-4440-49d7-857c-8be5175d95f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Swarm",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a056526-38a2-4da2-8bc2-c763c0af3367",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Swarm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa9109c2-f4e4-4b43-bd6f-a81aaed03553",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Swarm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "379bbd15-e41a-4794-a24c-7290c4fb8390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minion of the Mighty",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11dafdcc-bead-4c79-acfc-55cf2247a731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minion of the Mighty",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d53d32a-3073-4add-9e5d-de1226e3be95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minion of the Mighty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bcb6db7f-2e06-4124-b8fa-58a7a01f612f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orb of Dragonkind",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "504b3c0b-915e-4719-9d10-a2e58c134546",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orb of Dragonkind",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dce49903-8ae2-472d-8153-63c1fd302b71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orb of Dragonkind",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53e72fcb-2825-4c89-ae02-26977daef452",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flumph",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f9cc078-0413-4a50-8330-470fd2590686",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flumph",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e52c226-88df-40cd-a742-214824387278",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flumph",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4267c785-0bd7-4759-a901-08f5b97b9035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wish",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9e1d325-8556-408a-a52b-c314a6ef1e24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wish",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26c15805-ed6d-460c-8376-1a3f83116756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wish",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "186b7c53-c002-4e11-ba57-b465136a22f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xorn",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "355032c5-f588-4b36-a117-ad18bc1680cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xorn",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61b52b62-7c58-4426-a01e-97eb1c91eab5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xorn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93aee637-4cfe-41c9-a903-ff3e6df8a445",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zalto, Fire Giant Duke",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a4a9ee8-ebe2-4a33-99ca-554d966941b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zalto, Fire Giant Duke",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af1b7fa1-7356-4757-ade5-888738bb0f27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zalto, Fire Giant Duke",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e60646d8-75ad-485b-9108-ffb4470e5b12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zariel, Archduke of Avernus",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a615209-1762-4630-bec6-f089ec4d8f5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zariel, Archduke of Avernus",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3066d9dd-2e98-4505-94fa-01062331ed1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zariel, Archduke of Avernus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df9e0f24-07f4-46be-879b-ee8dc67bbc0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circle of Dreams Druid",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b24392c1-2c8e-4682-97e5-87313c273244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circle of Dreams Druid",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3a884d6-081e-4a0f-b9c0-56c8c4487128",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circle of Dreams Druid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9aa1bfb1-071a-4e97-84cf-c2ae8f749ea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Master of Flowers",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b761e86-308d-4253-ab68-1a0c74c9bbf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Master of Flowers",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92351d3a-fd4d-4a7e-8af4-52b0accce0e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Master of Flowers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65d173b4-907d-47ad-8afa-84fb53773675",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ellywick Tumblestrum",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d12f05c4-b52a-4ff8-b3c7-c98d25abf9d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ellywick Tumblestrum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4497b3b5-854c-4de9-8298-188726c05c87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ellywick Tumblestrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "269e66d4-ee96-40aa-9590-46d067d9b506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Froghemoth",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f0340ed-64d1-438a-88e9-9d52db6c512b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Froghemoth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef909a59-753c-4ecb-b8ea-d3e37cea652d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Froghemoth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c4b8b8e-7208-4235-b473-7579a51b4d54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of Faith",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02f093c0-135f-4e92-8baa-353b49ad4b5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of Faith",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04473e78-6bde-4285-bffa-214d69e8e09f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of Faith",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00d078a4-281d-4550-9e09-343d6d44b625",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Instrument of the Bards",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "052fdce5-81af-4642-9c9f-563e124c710c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Instrument of the Bards",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce87ba30-3222-46de-955f-b22b312144db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Instrument of the Bards",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca9686d3-3a5b-43a0-9ace-e6cd019415fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long Rest",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b9e2fdc-b050-4ff6-8975-69725b5800fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long Rest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "655bb2cf-f945-4fa0-93b6-52405e1c4547",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long Rest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5b09e51-4607-43b1-bca2-12ab0f8d0350",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ochre Jelly",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42cf8cfb-9334-4731-accd-6871889961c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ochre Jelly",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40895b38-092a-42ed-a152-cede1316eed5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ochre Jelly",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6889b69d-3938-4867-85c4-9baf3f4889a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Gnawbone",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "643c027f-1e8b-490c-a1bc-91a2966153ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Gnawbone",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88bc7e41-9d05-417a-ae42-8d69d97619ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Gnawbone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e3b2eb7-7f99-43f9-a7ff-98fd9fe3688c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purple Worm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cc78a8f-91c5-49b0-9033-3351847c09d5",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Ranger Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98cfff0f-d73e-40a3-acc3-537100bdb4c5",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Ranger Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a07b06a6-b7ef-45da-beb3-5479dc7fdb0a",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Ranger Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "43d01445-de3d-4b44-84dd-679bbe7824af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Tarrasque",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39d55450-8e1a-43a3-8f44-565ce02064d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Tarrasque",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "444e64c3-8398-4f24-bdfe-ddf907fa456e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Tarrasque",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6835a127-031f-4001-bf26-f9e885fc2b10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varis, Silverymoon Ranger",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a2ec037-f178-4d93-8d6d-1bb930bfe383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varis, Silverymoon Ranger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f1e37e1-b32d-4beb-a18d-f4c319eb221e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varis, Silverymoon Ranger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac2ebfd8-eced-4a68-9a3b-177770596dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icingdeath, Frost Tyrant",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "459078d5-88f1-42a0-84a9-80d3d322f6bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icingdeath, Frost Tyrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75bb4e9b-d05e-40f4-8189-5e2a7d1cab15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icingdeath, Frost Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a311a7ae-e737-489a-aa2a-61c02ccac182",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Werewolf Pack Leader",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b979195d-8b5b-4687-928d-684ad00f5850",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Werewolf Pack Leader",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8591d2e5-7f3b-4589-aec9-eca2320ef29d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Werewolf Pack Leader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80b055bf-e5c3-409a-8bca-c26be73c0c7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adult Gold Dragon",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb45f649-ab73-4a91-bb7a-6b641b802370",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adult Gold Dragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6567f4e-b6aa-4b4d-936f-4214b1d67b59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adult Gold Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4b683a3-15a9-42ce-8641-2df3a8eec44a",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Bard Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb088162-f819-4abc-8ae9-5088c5a5b8a8",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Bard Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea5f41ac-12ae-476a-a86f-e06946137f2f",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Bard Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91eb7f8f-9dcc-45f0-a839-9c29de4b97c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drizzt Do'Urden",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "049c8129-07a6-4761-85f2-e3ed859d818b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drizzt Do'Urden",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1a524d4-24f5-4184-b599-033f116537b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drizzt Do'Urden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6690ef1-7d6c-47e2-aeac-f1125d0996f4",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Fighter Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5051d145-ff13-4416-9dc2-d19834336bd2",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Fighter Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42fdbe43-3546-40dd-8ac6-e2985bed5a17",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Fighter Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b4b03ce-ad50-4afb-aff1-a1add6a3e56c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minsc, Beloved Ranger",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3f13dd5-894f-4a64-896b-dd76c7a6c237",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minsc, Beloved Ranger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63d5f812-1c77-44f6-90fc-90d66fbecf34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minsc, Beloved Ranger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d62edb8e-9b3c-4421-a008-8801c7693a3d",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Monk Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d308cfb4-05a8-4ec3-89e8-45ae17188b4e",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Monk Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "430d7b22-3cea-4034-bd33-af8a2f62a1e6",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Monk Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1c5a5411-22b5-4200-a026-4f4c17c273e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcus, Prince of Undeath",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54031480-7382-4404-981b-627ada530d68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcus, Prince of Undeath",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6590e103-0040-47c6-96da-a634d21abc94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcus, Prince of Undeath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58b7fe53-7478-4e1d-9eb3-d106eb8e70b1",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Rogue Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3abc00ae-d418-4d48-88f8-8030faaf64f2",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Rogue Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14c1cfd0-81a0-4745-9288-15fcd7c5b0f2",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Rogue Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43c8451b-e8a5-4878-b167-31fc3f0ea333",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skeletal Swarming",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afe53fed-6065-42a2-a275-b0f9778d6ce3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skeletal Swarming",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0f910fc-929c-4979-968e-8083e8701871",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skeletal Swarming",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f843f0f9-0801-4467-8f46-84ac0b4958b5",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Sorcerer Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f647096-f6b8-439a-948f-c49a851aa3b1",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Sorcerer Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef7ff54c-0094-4b62-a8a2-11a03eb49967",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Sorcerer Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8d80dfbe-d691-4d00-a6b7-8c4f6d18be05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiamat",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f96d69e9-c200-4d60-9adf-452520868d35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiamat",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e7510528-6054-4f21-8ca4-8832277dcada",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiamat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "954ecea4-28ee-4938-a7bc-09b116836c03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triumphant Adventurer",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee6e88b4-0efb-470e-b6ca-4278a1683269",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triumphant Adventurer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d5d0cc6-ea9a-40c7-b7f1-3b0d0292d065",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triumphant Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f0945d45-8545-49bc-b54b-ae6a88a12cce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volo, Guide to Monsters",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f7c431c-f99f-4349-9542-ae98612a8abb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volo, Guide to Monsters",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c761f5be-b0c5-41c4-9e51-3e7d1fdcb6b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volo, Guide to Monsters",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d434136c-4072-4340-a659-bf2fec0446fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xanathar, Guild Kingpin",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87777f10-ff6f-4344-9aa0-984494696366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xanathar, Guild Kingpin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc6b0af3-13dd-46b9-8263-8afc4cd3c21f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xanathar, Guild Kingpin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa229a63-e2e6-4329-8d0b-799854101ee1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Warhound",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3aba84b-f3ad-4f5a-8465-a872c322b560",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Warhound",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17aeaff9-4d60-4527-9f98-20bb5a6497cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Warhound",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26ada0c7-c45e-4db4-8827-3074d41e5d81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Deck of Many Things",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4bb70d72-f5f8-40fa-b526-5098a3a12713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Deck of Many Things",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de20b245-bbb7-4228-91f0-0c9c9c165042",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Deck of Many Things",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "523a78de-712e-4cfd-b34c-cfa1febf329b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eye of Vecna",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc6e78cc-5460-44c2-9842-65a719668780",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eye of Vecna",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5ff69e99-61ff-4dd3-abf7-9c35407b75d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eye of Vecna",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b36ab800-dbf9-49fa-a89c-ca21f75911ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hand of Vecna",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c967e5cb-48bb-4d9b-91bd-1c9d777e15ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hand of Vecna",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48b4a449-08b3-4dd9-ba14-3e6853b15eb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hand of Vecna",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f19d9849-386d-4bbc-91f6-4ccb90646f5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Chest",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ad3c3e6-8def-478d-a379-eff380186540",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Chest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c6268a9-13c7-495a-8fa1-ebb65ae5ff0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Chest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a28cf4b-42ab-44f3-a7bc-9260de14ea7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cave of the Frost Dragon",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30f1734e-33b1-45b5-bc27-0547a8e8f950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cave of the Frost Dragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "edc9c9e0-19b0-49ac-8f91-c9cb536285ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cave of the Frost Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5234e8c3-d623-4a13-b6a9-78214a6e3395",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Den of the Bugbear",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59a7f755-7230-4255-9299-36c307393033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Den of the Bugbear",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "461ea351-9dfb-4e40-90db-e95f5faf2b03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Den of the Bugbear",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de9466f5-ec94-4dd9-91c3-22d0199cbfe1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dungeon Descent",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17f8a921-9983-4703-adbf-706085539e69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dungeon Descent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fa514b2-bcf6-4716-b260-0eeeb1f5273f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dungeon Descent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97a8d685-8fd7-49d8-90ca-f2c4de735d26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Storm Giants",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3185eeb2-b1a2-494b-9169-4145d034ff9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Storm Giants",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eaf4e0b9-1ed3-421d-9a9f-58d23be47189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Storm Giants",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c265af28-acee-4f31-b389-db2392d589d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hive of the Eye Tyrant",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c048e757-b9c8-4d06-ac26-f7621e9924d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hive of the Eye Tyrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88eecae6-befe-4906-9e95-dafffffbc3a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hive of the Eye Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7571949b-af45-4725-a9b8-1ac37ce71193",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lair of the Hydra",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25fc7e9f-a2da-4c81-b6b0-7f9c13ecc014",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lair of the Hydra",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11a65d71-978d-4a4f-8407-2662117f6223",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lair of the Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81bc564a-f4ac-4591-b287-6f685b55104d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Vault",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7533316-5c40-447b-87b6-eaba5143519d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Vault",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31fd0855-309f-48a4-bb8f-a3f6fc61d4d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Vault",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21ddac60-f5e8-4897-9363-931982c1cb37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadaar, Selfless Paladin",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15a2853d-3ac0-4839-afd4-8cb3882c5489",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadaar, Selfless Paladin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "779a3e32-ea1c-430f-b4fd-fa3b04292f91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadaar, Selfless Paladin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e94a6cc-68f1-4dd9-ba58-f520a49b2f53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oswald Fiddlebender",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de0975db-2244-4c1d-9d2f-708c6f31e427",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oswald Fiddlebender",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "573a70bd-457b-4259-8150-27b7fafda6bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oswald Fiddlebender",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1575f6c4-ee71-435f-94e8-f81f3e40ca48",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Paladin Class",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83d73f9a-888c-47d3-b000-b0408124db0e",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Paladin Class",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86295ee4-479f-41c9-9f17-8b613ee9b078",
+    "language" : "en",
+    "layout" : "class",
+    "name" : "Paladin Class",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d6f78c6-529f-4f5b-a840-9aef921ba529",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teleportation Circle",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4892b560-f382-451e-a7e6-54ecfcdf177a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teleportation Circle",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36ea2674-de5b-4245-9977-ab007003a4c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teleportation Circle",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "927684db-b3e7-4bac-aabb-6de52c694d73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Blackstaff of Waterdeep",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f09a2d0b-02b5-49fb-bb63-a3ba95b33aba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Blackstaff of Waterdeep",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d799d33b-844f-455c-8fb4-60c1ce1d578b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Blackstaff of Waterdeep",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dee0d6d4-321e-456d-9040-42f7845ff6a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Exalted Deeds",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0477339-1a1f-45f3-a9ba-704de1a788cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Exalted Deeds",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b34a9ad-3198-4ff6-b27b-62d97a7ca743",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Exalted Deeds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fff82e7-3d0e-4da3-81e5-c0e5397cde60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demilich",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d51a8325-3b68-4608-b466-d94023f5de88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demilich",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a334c950-032b-4dcb-ac4a-5b4fd630308a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demilich",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d83e4c7-dc4a-4cbe-b43b-a34c47927e5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Turtle",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91dddb0c-57df-4b58-ae06-6ad794745723",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Turtle",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef1d3c3f-b191-4d0d-bd37-a3b7f34541fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Turtle",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3d2b3fb-63b0-4b20-8054-54e543ab0b55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grazilaxx, Illithid Scholar",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "69190722-069f-40eb-ab8f-3ebf09f5c6b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grazilaxx, Illithid Scholar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "feb26d69-3ecf-4648-8408-032f6c030fc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grazilaxx, Illithid Scholar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2d641e51-f206-42f1-ba06-421c6f4d2ca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iymrith, Desert Doom",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d4fe162b-ef9e-43bc-8af7-e8ef742e3f13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iymrith, Desert Doom",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7151e71-7f8a-49ee-a9fc-7aff09dc3e43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iymrith, Desert Doom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f004269a-f780-4bad-b964-994dbbf4f7a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Flayer",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0a79a8d-6c02-4d56-ba4a-b471d68cf7fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Flayer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e824ef4-9057-4800-aa7d-6ab5ecca18fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Flayer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28f95593-0f10-4aac-9a19-b986d18b3dd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mordenkainen",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7eb2977d-02da-4451-99db-b47e53be91ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mordenkainen",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1385bc1c-72d7-464b-9c24-8538a028ec20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mordenkainen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8ca01e0-a64d-4e04-8ea4-b4179aaefb61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasha's Hideous Laughter",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbe64367-aca8-45a1-967b-5650520e3e19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasha's Hideous Laughter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0586e473-2745-4e5d-9543-644837ca18fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasha's Hideous Laughter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bcbe69e9-8dc2-4edd-879b-2f2127003137",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "True Polymorph",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5045ee26-7544-437a-adc0-15cb5ed66f1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "True Polymorph",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2570bde4-9a80-482e-a078-155ace91877c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "True Polymorph",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e78fc6d7-2fd9-4b84-9000-3238b4b4635a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Spellbook",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "018414d2-adee-454b-9b00-7065ed8e2f11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Spellbook",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e452352e-1e1b-40d3-8cad-7cb4f1bbf064",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Spellbook",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0abacc39-7fed-41fc-aa9e-d9c83bf480d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuan-Ti Malison",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bdc3ec7-af72-4370-af5c-fd137f3a5f11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuan-Ti Malison",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1154ae71-b2bc-41d9-8589-0c4fb7369820",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuan-Ti Malison",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "621a9aad-403e-412f-ad21-b90bc84bc696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acererak the Archlich",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b7cf655f-6328-4fcd-82d7-3964aba9fc0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acererak the Archlich",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1968705f-6a7b-4fcc-b968-b61aafcbd604",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acererak the Archlich",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f0221f8-dddb-492a-8bef-a5c1db8cf459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmodeus the Archfiend",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1d4558e-099a-440c-8c2c-1c4fa6a522b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmodeus the Archfiend",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "025fb0e7-913d-441f-a9d9-77d569f5a16a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmodeus the Archfiend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "deb64214-5d1b-4fe6-8d38-0175bb1284a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing Sword",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f137c19-45d7-43ad-ad0a-fefeeb396667",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing Sword",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03f1fff6-b9b9-4973-b832-e6007965a9aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing Sword",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9bfb5b6-b1a7-472a-ab4f-8b2d778e4149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Vile Darkness",
+    "promoTypes" : [
+      "embossed",
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "128bff45-fbc9-4f6d-ac22-d3777f40c775",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Vile Darkness",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2711992-84e8-409a-ad4a-25f69d0c4e06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Book of Vile Darkness",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "pafr",
+    "setName" : "Adventures in the Forgotten Realms Promos",
+    "variation" : false
+  }
+]

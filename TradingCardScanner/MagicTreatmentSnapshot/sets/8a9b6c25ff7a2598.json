@@ -1,0 +1,3685 @@
+[
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99255a66-b868-45fc-a2a9-0c89bd851b69",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tarrian's Journal // The Tomb of Aclazotz",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d61d8895-7f2e-4c77-951f-4f1a49e96f57",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aadf5028-8dfe-40d3-89b4-22bd7ed0aae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, Eager Pillager",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa7a55aa-ae61-4933-b7a4-dcc55dac6fcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inti, Seneschal of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50f8e2b6-98c7-4f28-bb39-e1fbe841f1ee",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Axonil, Deepest Might // Temple of Power",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72e805e9-69be-45c1-aa04-f460641a0c1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Stampede Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "004524bf-b249-4dac-9c10-44d57143feb9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "57df2563-18d4-4526-a8bc-0c114e6fd4d9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huatli, Poet of Unity // Roar of the Fifth People",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0cbc43a3-8cba-4988-9de1-c89aedd79ada",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b56a7631-5f94-468d-aab7-7e9e129c5f49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Skullspore Nexus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40eee689-2514-421a-8056-eb7668be66ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abuelo, Ancestral Echo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3ee62dd1-97d0-4e5d-8937-26c9e51e9414",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akawalli, the Seething Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9acf80a5-f2ca-45b4-aca8-fbc690e35401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amalia Benavides Aguirre",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "66dd43d7-76a7-46ea-b431-097fcea417af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ancient One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "868856b7-8875-43c1-8249-0f8fb2c8319b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anim Pakal, Thousandth Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "690ccdc7-6c43-4902-9d11-2f07b7a36b11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bartolomé del Presidio",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1454af8c-bce9-47d3-890f-283e2fea2cf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Belligerent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ea82964-fd9c-48e3-962f-94954476b31f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caparocti Sunborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14c65f5a-10bd-4f9b-b816-46c2240b11ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Storm, Cosmium Raider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc4a65de-23b5-48f0-b8b7-94608eaced3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gishath, Sun's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7112c366-b36a-4bc8-aa64-6bad16bebc39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Itzquinth, Firstborn of Gishath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01739030-c280-492b-a5c9-b3e9f6debc6d",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, Daring Traveler // Journey On",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9f88a40-a6ed-4c1f-a309-011aca1acddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kutzil, Malamet Exemplar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "caef93cc-70d0-4cce-9aaa-13c0931b2ef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mycotyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e6f4aba-3500-4fb7-ab78-02f63c03778a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicanzil, Current Conductor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ba99b60-c7d0-4041-a065-f2c510745223",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, the Sun's Brilliance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70c75aa7-e2f9-4a69-8086-c982019ca714",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sovereign Okinec Ahau",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a062202c-f9fb-4dd6-989a-c3083644f1c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uchbenbak, the Great Mistake",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4fd9047-df91-4d82-be00-c623acae0f01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Fanatic of Aclazotz",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c06f0ff2-d42f-4854-bbe5-4b022fb26d7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zoyowa Lava-Tongue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "27a1bfb5-ddfc-49cf-baa3-5d1958d2067a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chimil, the Inner Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4c31b29-06ba-436d-a3d9-18f4796c39be",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Matzalantli, the Great Door // The Core",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "deabba7f-05ef-41cf-ae3a-d950d051cf1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Millennium Calendar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ca79dd4-67fc-496c-96fc-489b039c4932",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Taq, Deepest Foundation // Temple of Civilization",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99413817-1218-4947-b12f-9a952b095a89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarrian's Soulcleaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c13e8e3d-2a6b-4782-a3c9-71af7336a881",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Throne of the Grim Captain // The Grim Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "acaf4dbe-5b63-4948-bc85-b5d288378d4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akal Pakal, First Among Equals",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b3ed6341-59f4-44f3-99c9-80f636fa484d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, Alluring Scoundrel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5cb60b23-2397-4897-9462-56b09f45f321",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, Eager Pillager",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0548ddb6-5301-4911-93fd-bb988275f44a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inti, Seneschal of the Sun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b94c8a9e-5b9f-4a80-bced-ee99e5ed060a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huatli, Poet of Unity // Roar of the Fifth People",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e0bcc6f3-bae4-485c-82da-56c15c97c7f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abuelo, Ancestral Echo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "88e9dbe6-5685-480d-b0d7-828a7058fb22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akawalli, the Seething Tower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9b1ae96c-012c-4bd4-81f0-5944fc03a8a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amalia Benavides Aguirre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7fc97d16-c54c-4a2b-9691-39e8a41c7777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anim Pakal, Thousandth Moon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f82bb486-7009-4b53-973f-477fc13ad7e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bartolomé del Presidio",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "380ed1dc-afa2-4b00-8da6-6177295965b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caparocti Sunborn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f5e13dad-e326-4b8e-91c7-dc0d6c3bf51d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Storm, Cosmium Raider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "12fede45-8c95-45eb-915c-c3ee5101dfcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kutzil, Malamet Exemplar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b27e6494-6f64-4adf-96ca-65a17100b8fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mycotyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6059b64c-3064-46de-af47-6dc6542dca23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicanzil, Current Conductor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3dfc085d-4c11-416c-ae00-d41d32f32bb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quintorius Kand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7a16ca40-2210-4f94-bfb1-960b34a7d98e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, the Sun's Brilliance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5d6e7f53-d8c4-4356-a31d-ed3d5e0627cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sovereign Okinec Ahau",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d30c23d7-8a3b-4162-89dd-5f7895c55625",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uchbenbak, the Great Mistake",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8f58c496-2b70-48a9-befa-9cc7baef8597",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Fanatic of Aclazotz",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2cfd2cf8-95e4-4df5-a803-66e7c4eb065a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zoyowa Lava-Tongue",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4f7a6892-5f6b-49aa-9b4f-3fcf20236306",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Throne of the Grim Captain // The Grim Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e87dff94-71ed-469e-a10e-3ddfbd4a8bec",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Taq, Deepest Foundation // Temple of Civilization",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a1fbfb8f-600e-4b29-98c5-7c6714d35347",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "95775b13-2761-424e-9828-2275ec987368",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Aclazotz, Deepest Betrayal // Temple of the Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5140d5d0-15ad-45b2-8ae8-aa53b1cd8132",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Axonil, Deepest Might // Temple of Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d6ed63e0-d6f1-455a-b29c-e2c91dcfcc6e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f1ebe99d-4994-450e-9abb-f0bc3750f098",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ancient One",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cf4639ca-d4dc-4630-b696-a8107767cf1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belligerent Yearling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "22897e93-bb69-4ad3-bdcc-723c7020a378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonehoard Dracosaur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4be8d613-7697-413b-a107-0a25c1662835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Ceratops",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "467ffe37-f466-4eea-8efc-50b53e2c27da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scytheclaw Raptor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "35957bfb-c75f-4181-9726-19956992a6e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trumpeting Carnosaur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "158ad2e4-5e81-439b-9629-a9d217c45d83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earthshaker Dreadmaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f591b6a9-ac99-42ad-9b01-c09a3e90201b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Stampede Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "27b95a76-688c-4bd9-a759-f83f1aa18e2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hulking Raptor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83cb05bc-5137-477e-b7f4-e914f7fa543f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pugnacious Hammerskull",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4cb1c91a-398c-437a-9a77-5b8515fc3ef2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrashing Brontodon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "952cef59-bc7a-48e0-b05a-d9bdd6e05927",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gishath, Sun's Avatar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "44f2aa6b-a092-4348-a24f-5edf46544eb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Itzquinth, Firstborn of Gishath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a0817334-d7ba-4de9-ade7-67beef358d1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palani's Hatcher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7d60e0bc-1ce1-4b91-9952-16b394b5a348",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Get Lost",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e827612d-5a43-4a29-b0c1-ab7f3285ad98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resplendent Angel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "604e2bfc-655d-4d3e-98aa-374780ca4016",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tishana's Tidebinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "48c5b98d-73cd-4b69-9933-4867da6e8389",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodletter of Aclazotz",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09e732f7-85d7-4b2e-b332-9be30bfba3d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bringer of the Last Gift",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e6ff99a-9ecc-4f1b-9c85-e0820f3a5729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starving Revenant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3cdeebd8-28d4-42a5-9a99-3c72771359ea",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huatli, Poet of Unity // Roar of the Fifth People",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "85c4b837-1557-4dda-a324-9646ce702dfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Skullspore Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "95a9d11a-ecf0-471e-9dc3-a5baa6725044",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, Daring Traveler // Journey On",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ecda9470-7150-48bf-8fbf-1cb0cc80d2e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Collapse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e435c3bf-2b64-4db4-b9a2-322095b566bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wail of the Forgotten",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0ff7858d-f18d-4e5a-9467-ebef3ef53ac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roaming Throne",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d842f91-a04c-4b11-8ac9-0c0536b82d03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c6392d30-07c4-4c63-acb4-ad12d08c080b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Deeps",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0fc7725d-eb04-4778-8f5e-4c1239ed08b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Anchorage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7802788a-8a40-40e7-9d33-58191d1d678a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Prairie",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8315e121-cf10-4442-91c0-036ca5bbc652",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Reef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2634eb9f-d797-4af4-90d3-7a39fae8300b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Ridgeline",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9200f9b5-20fc-4ff0-97f7-ef22da5acb72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Vents",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03c80368-0fe6-481a-bee0-7d9f65afb233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quintorius Kand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "647d2fe5-674d-4b3d-b658-ae6901e8044f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abuelo's Awakening",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5b5efc5e-1582-4bb7-9ae1-bc4c0487ee94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabrication Foundry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "685b735e-52a6-4fd6-a12e-d059c13d4afc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kutzil's Flanker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a046c0df-7dba-4a05-b4b4-a76321b15480",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanguine Evangelist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "89a0f7fe-6bff-4c0a-b419-1f4f457c194c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thousand Moons Smithy // Barracks of the Thousand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a8a23e3f-57c8-4cbb-bb6c-d5fdf49a2d9c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Unstable Glyphbridge // Sandswirl Wanderglyph",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "848b1e97-d1c7-450e-a935-50b386b6b762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warden of the Inner Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c8157978-259e-4af1-890e-ea56a55a9997",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Braided Net // Braided Quipu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "790d70a9-ff02-4676-a804-ee0e030dfe3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deeproot Pilgrimage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8d9cbb83-a89f-411b-88c8-c01718f265e0",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Enigma Jewel // Locus of Enlightenment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "581327f5-6e79-4720-9695-198b287a92bb",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Everflowing Well // The Myriad Pools",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "27c2a1f9-7846-4f96-b20d-ceb638e9ed42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitesail Larcenist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2c87307e-59f0-4747-b0d2-e8b65f4b260e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subterranean Schooner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6b3eb24e-bba4-463b-ad7e-e3daebda1e74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpses of the Lost",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a0db433-7ca2-48d6-b60c-0a9a9149378a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Preacher of the Schism",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a40cdb01-d303-438c-9c87-ca334ac68582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen's Bay Paladin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "efc2f3d3-6bac-4ca7-9c42-badf649269f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Souls of the Lost",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d8754c3b-2deb-45af-9024-1f070496b45b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stalactite Stalker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3577ac1a-7c14-4463-a8c0-530f37f3d935",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tarrian's Journal // The Tomb of Aclazotz",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "39776030-4a89-4b22-952b-4a7f33f655b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "db940d06-5e3d-4831-a200-de614c093aca",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c3c5e4a1-7668-41a0-acd3-d45809b6a95e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Dire Flail // Dire Blunderbuss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "73e794c1-33a3-462f-b8e5-479c3acf91d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hit the Mother Lode",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3ba4238b-e7fb-4859-87e4-c192e7e6c047",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Galleon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0c9bec4a-084b-4972-9a6b-58050088168b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poetic Ingenuity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4fea4c57-326e-4783-b5b5-0b28fcf6fe7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedrock Tortoise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1f8f827d-300a-4d75-b894-c6dd2e5997ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmium Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "36651c33-d570-4d48-a1d3-bac736d3f043",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "112da23d-3f13-4438-b027-10c5493808bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intrepid Paleontologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0987d47f-8a4b-47fc-9c5d-641f57631af0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jadelight Spelunker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f0563531-ccd5-4dc4-88dd-a1e438507cba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sentinel of the Nameless City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5a31f6e4-9fc7-46b3-85f8-82025817a35d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Belligerent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "64d78301-333a-428e-9af9-588a103cc527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deepfathom Echo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d165f708-65e9-4dbb-8a8c-085c5a2881d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squirming Emergence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5e03b08d-f0f1-40e8-af48-1622430bab38",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Matzalantli, the Great Door // The Core",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "53a710ed-6a2a-4702-9648-7807e8c24edc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Millennium Calendar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a0d8cca6-d92c-40e8-b657-b708a08b63ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarrian's Soulcleaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a6bec46-1acd-4726-b8d9-3045ac6a2ea2",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thousand Moons Smithy // Barracks of the Thousand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "180d3058-cc7d-4bb7-a312-4d2d7365ef19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Threefold Thunderhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2018a8e6-7699-440f-94d5-91cf6ac3edb5",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Treasure Map // Treasure Cove",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "58f4843c-8033-4775-9ffe-4f3980fabfeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Citadel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cee66a2c-0684-4324-82fc-60c13a55602e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jadelight Spelunker",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b3ed0f5-b476-4595-bdff-531488961a87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hit the Mother Lode",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "24643b00-9062-42bd-9ecd-f6990ddbca91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spyglass Siren",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "444190a9-5ad7-4132-aae4-247ad3d9ea01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep-Cavern Bat",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9fb48483-5990-46cf-b200-032500c4a6b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geological Appraiser",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9f338f13-eac2-4088-a33c-cb389fbe967a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cenote Scout",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "aade7c6c-fa34-4f69-9b5d-cf57a5341ccc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bartolomé del Presidio",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a6675d55-5960-4da4-a31c-45654ab9974d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fcc626a1-cfb0-4e1f-80fc-7c1ff07ee424",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09f9b3b8-090e-4152-8d44-52d92375905b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d89bcbd5-772a-4ff2-b48b-6fea07830578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0b773b4e-7af3-4836-8c7f-3897f968a33e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fde9dbec-ad25-488b-8472-4bd85fd6c757",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "neonink"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab9f6a1b-8467-4584-affd-8c71d3e34d2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akal Pakal, First Among Equals",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e98970d-06a8-4c91-ba47-4a02c5b949f2",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Enigma Jewel // Locus of Enlightenment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf573fb7-fa6c-4df7-8e5e-1e071585361e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Everflowing Well // The Myriad Pools",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19d6834d-afa3-4747-a62d-0654f4d9729f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, Alluring Scoundrel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9d71007-bc04-4dff-ad3f-e2c0b5b4400e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "627c392c-4d18-4eb2-a4e8-c668f61f5487",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Aclazotz, Deepest Betrayal // Temple of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-150e",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71dec77b-e790-48b8-8c13-91305d9f97ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Geological Appraiser",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-04",
+    "setCode" : "lci",
+    "setName" : "The Lost Caverns of Ixalan",
+    "variation" : false
+  }
+]

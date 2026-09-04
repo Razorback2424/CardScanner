@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64da69b8-c9cf-4cca-bd15-36270242db41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd08f69b-4210-4f24-b038-9507f04f3214",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72519051-4cf0-4273-8679-e0c1cb9e0c95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22b85759-532d-4632-a2e0-c598597133a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19aee1cd-4314-44f4-8357-fc300a6fc046",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1015077-3c6d-4c46-a240-26b74e453cd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disenchant",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33e95953-0bd1-4bfc-b9e8-58cee092871a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fireball",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-02",
+    "setCode" : "parl",
+    "setName" : "Arena League 1996",
+    "variation" : false
+  }
+]

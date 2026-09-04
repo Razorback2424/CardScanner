@@ -1,0 +1,222 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5252ab51-43e8-4b24-9830-de0ad9b9d3dc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "856e308d-6268-4311-9667-c2f761db8f99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poison Counter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a563df7-7b9d-4692-ab1b-578be1887b62",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b37f4fdb-1533-4c38-a654-f715fbef6abf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85f9e977-f718-41b2-b30b-77a9a17e9733",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cde8b3e-c006-41fd-a926-8746c794e149",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c705b843-ca62-47bb-95dd-f303c60088bb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Golem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "182308b3-86e0-46d8-9104-95576a3d3921",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Myr",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e46e703-2157-41e5-9c21-c17af43e0d3f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee53b9a0-8e07-404d-87ae-ff8397a0ba29",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-10-01",
+    "setCode" : "tsom",
+    "setName" : "Scars of Mirrodin Tokens",
+    "variation" : false
+  }
+]

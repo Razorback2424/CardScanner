@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "216★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e0b6ca1-9008-48dc-8103-2fe4def3c345",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rukh Egg",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-07-26",
+    "setCode" : "p8ed",
+    "setName" : "Eighth Edition Promos",
+    "variation" : false
+  }
+]

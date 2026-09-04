@@ -1,0 +1,4431 @@
+[
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1f287ad-55b5-455b-9082-15d68dd27f35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, the Hate-Twisted",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b049e8fe-aa50-40a9-9d2d-5ae69314bcef",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, the Hate-Twisted",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1734d2d0-8068-44a6-be11-cc609b450083",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Fire Artisan",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9a7e21b-d047-4878-9202-9fb278d291e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Fire Artisan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3d375ce-ab87-4d1a-a018-7d227bf1abe3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Chandra, Fire Artisan",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57306188-9fe7-4bc8-9759-4f8f23e598d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Arcanist",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ed0f828-4675-4bed-a80e-ccabf57156d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Arcanist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0073802c-2758-49e7-8b1f-8113704ed8a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Promise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5dbb033-33bf-4209-8ad7-8b3559db197b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Glory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca14c782-97a9-4532-a188-5d06a5c3192d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ilharg, the Raze-Boar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60c8b571-8a7e-44f1-a52e-ab5e847d0ef3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya, Venerated Firemage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "965a85e9-33db-432d-ba2d-6b0108bef96d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jaya, Venerated Firemage",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4bf960b4-bc71-4966-9014-8dd4242c162b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Tin Street Kingpin",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de1b2455-6ddf-4b1c-8be5-2767c7957ccb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Tin Street Kingpin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "159b094b-28c9-4b90-b3ae-4d538ff2fa48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzium Tank",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "011a7e74-e54a-4b31-8aff-83b1387d21b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzium Tank",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "faf841c3-f52b-4e76-b48a-7fbec4637f08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon Blackblade",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd3664c0-2402-4b0c-b2e1-6c0855653a30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon Blackblade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab846ecc-4037-4e33-ba9a-347d3d191dbc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Gideon Blackblade",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f617d6ef-8d7a-4642-9de6-2cebc4980b24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, Dreadhorde Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "838425d1-7486-46af-926f-d8ef7f753db4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, Dreadhorde Champion",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-01",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c55a4b3-8066-4a99-afe2-d3bf9ad30e16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan the Masterless",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa83a8c7-9670-428d-8cd1-879266d34b12",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sarkhan the Masterless",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abe4c794-9601-4338-b13b-3ca360fbf292",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tibalt, Rakish Instigator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "243e8f12-db15-4ec3-b5cb-c077aa9e8620",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Tibalt, Rakish Instigator",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0369b49-064c-45bc-a2c6-935e6a22be7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arlinn, Voice of the Pack",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8de4dd9b-46d5-4141-9a72-000d96698e74",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Arlinn, Voice of the Pack",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4116aea7-8a5a-4a5e-b7a9-2437cfcaac7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awakening of Vitu-Ghazi",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42c2bbae-ec08-4846-9940-64a0c47b4e25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Devastation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09c2da24-2ad7-4c72-944e-84aa919ded67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Devastation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef164368-7bed-4412-af44-6d0ed43e8351",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Rhonas",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47770786-b291-4a7d-a2b3-9ec25aaae0a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jiang Yanggu, Wildcrafter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3634a763-66cb-4929-bc02-1188c732ae90",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jiang Yanggu, Wildcrafter",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41e108a5-4e2f-42cf-9ea1-87bf3c0a2b7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Who Shakes the World",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee6178b8-6f42-43e7-af24-4982af5f2983",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Who Shakes the World",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "544caea6-4ec6-4f59-9406-a4706d2dfe2a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Nissa, Who Shakes the World",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fa8b06b-fb70-4ffd-995e-25884e61d2c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Oketra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7810e5c8-cb96-46aa-831a-c04ed7d771ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paradise Druid",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed71c29a-a03a-401e-80f0-c8a08b902e71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planewide Celebration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69f0f563-0f9b-4c61-966d-1384fefb8152",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien, Champion of the Wilds",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "595db00a-be48-4f35-8685-8f6005e56c69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien, Champion of the Wilds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbb3e263-e7e9-4834-ae94-20146322a7ec",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Vivien, Champion of the Wilds",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97a24162-6a95-4dcb-afe0-753b8680c456",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Arkbow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7af52788-3f4b-440a-87a1-2f045130d5b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, the Greathearted",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82513401-13c8-4495-acb8-e321875af9f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, the Greathearted",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c8d3dfc-6e14-4e9b-a79f-986df2ab120e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ajani, the Greathearted",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47226a26-2b07-4877-b5dc-cd3e734f558d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bioessence Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccbbaed4-ef48-4f19-9e33-8df7514d097c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casualties of War",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69e7a17b-c2de-469f-bbf7-5f9833e80069",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casualties of War",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "159a7470-e345-4597-b960-304a4489e66a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ignite the Beacon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c32b49e5-e506-4659-9cf4-62fb64846d9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Domri, Anarch of Bolas",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "821605b9-e090-4477-87ee-8c78d8ff5a45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Domri, Anarch of Bolas",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f30584c-31e6-4227-96b1-00ce1acb47ad",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Domri, Anarch of Bolas",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d60ca98f-7f91-4bbd-9d06-dadb0c1da282",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dovin's Veto",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf858f4b-cc70-44c6-a800-f3279699c5c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Butcher",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff18f9c2-123a-419c-8ae3-086be217e142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Butcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "633dce48-673d-4ba9-9929-e664ff902477",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enter the God-Eternals",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a7236b0-aae6-48ad-8770-70051d3809d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enter the God-Eternals",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d77a054-c2b5-4e37-a111-dc12123c2bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feather, the Redeemed",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83630e86-0f84-4d56-88f9-6189a62eab1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feather, the Redeemed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4455b2fd-3b44-4100-9573-5d2ba4507b6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, the Great Creator",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a85cde02-5f6f-4c85-b0f2-46ec472fd151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, the Great Creator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "753f7c1a-8310-4b66-9359-f072b353e9ee",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Karn, the Great Creator",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18f074f3-d4f2-4c5b-b4f8-a790a798b625",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Twister",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3dfce88d-f3bf-447d-a481-473b45da815c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Twister",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43f7dad3-fd67-4a6b-8daa-dbda75d995c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, Dragon-God",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68504179-5d31-4cbd-8562-fba8d3013baa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, Dragon-God",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1c8a552-eca4-477d-8f78-edaa9dfb9a9d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, Dragon-God",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b81b3c44-2be6-45c8-81f8-dc9b31a69d30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet Reborn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4565b563-fc89-425a-b0f8-9384746e4f3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Kaya",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d27be68e-4650-489a-92a0-4bfcb309e486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Kaya",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5eec5a3-e914-4516-aee3-3e3d78c7188a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral, Storm Conduit",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57522c97-9c70-4a56-835e-0fb63157dfff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral, Storm Conduit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3aaf86e6-c171-4c9a-a64b-d01a42883928",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ral, Storm Conduit",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d85783d6-bbaf-4720-8151-5083de1e9f55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roalesk, Apex Hybrid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7e6dff6-f7cd-4934-9e77-ed0983860940",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Role Reversal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f6de1fd-12c6-4cbd-b8ce-09602787cf53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solar Blaze",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5300a42e-0e7b-408a-8b0d-5b09448b6d60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solar Blaze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2aadad8a-33e2-4ea3-b923-0fa41f5a92e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin, Vengeful Bloodlord",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c9ea5ec-c8da-4c8b-916a-923a8c836799",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin, Vengeful Bloodlord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfe03682-6f68-4a74-b0b9-98c75e75887d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sorin, Vengeful Bloodlord",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bb9ea33-30bd-47f4-8f8e-e4e3a5982028",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Diviner",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1af8977f-1613-4515-9e9e-433365b2a8af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Diviner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ad3ac990-2a67-4d45-b09e-7562a800f359",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storrev, Devkarin Lich",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "49830b13-0de1-4aef-b7d0-4103f6be0747",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storrev, Devkarin Lich",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "786d89de-da0c-47af-80ae-2734dc0514fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo, Collector of Tales",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cfe0e2be-063d-42da-b536-9998ac304660",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo, Collector of Tales",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2fdcd08-0bce-4282-bc98-b4a95a71c2c2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Tamiyo, Collector of Tales",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d767032-16f6-44b9-8b41-15e8465dd811",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Time Raveler",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b1bca59-7c33-4354-9db7-45d3e9b62b83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Time Raveler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f12b95cb-60aa-4655-98b9-bec8f99ce756",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Teferi, Time Raveler",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ab4b490-67d8-4f13-86cb-858a8012a46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Wipe",
+    "promoTypes" : [
+      "instore",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a64ff64-88c8-4e12-b556-8c7d401ffaf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Wipe",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1da2e74-1e4d-4ec9-ac19-1a6f3bc397e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Wipe",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c80d95b8-0bf7-430a-be10-6f89b4712606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolsimir, Friend to Wolves",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b435f989-15a3-469d-8f5a-13648ffd9a93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolsimir, Friend to Wolves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba6cc677-9e1c-4153-bb63-d9e812ceae74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Widespread Brutality",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96b358db-f798-42c7-9666-ab9fe112dc6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Widespread Brutality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aedb1bac-b650-4955-b8b7-d1e7a4ad5cdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angrath, Captain of Chaos",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a936293-84ea-4884-915d-7b540f51d508",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Angrath, Captain of Chaos",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee592de0-5f41-4017-b21d-ec8c65365582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok, Dream Render",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc92f1c5-e112-43ed-977d-6ededa8d804d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ashiok, Dream Render",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45abf8eb-c583-4eec-a91f-0e58424a8b1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dovin, Hand of Control",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "885b304f-0a74-488a-bece-9984af6eca49",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Dovin, Hand of Control",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e41af45-34f4-41dc-b847-bc0511034bbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Huatli, the Sun's Heart",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9cdbd03-b0b2-438f-8543-b375451e299c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Huatli, the Sun's Heart",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d221d9c-c543-4ed2-bdac-259085037994",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya, Bane of the Dead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4520e0ef-ac6f-4d59-bd9c-88af29aef746",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Kaya, Bane of the Dead",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db38ea58-bdd1-4c3b-8a23-dab4c8b88d90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Behemoth Beckoner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cac63378-c0e4-46c3-9cf8-bc8af05e3c37",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Kiora, Behemoth Beckoner",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50c95872-f895-40ff-b1ad-5876fbf5f5c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Storm of Stone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91460b22-1717-4b4a-b488-65d404530c0a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Nahiri, Storm of Stone",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12612d5c-9264-48bb-b5ad-21710c9f080c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, Sublime Artificer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c97ab88c-fbaf-4e32-bb26-2d9cfb852d4d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Saheeli, Sublime Artificer",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92b3de20-293e-4305-88ee-ba3e520ba7b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Tyrant Smasher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b35e998f-9005-4c49-8111-3378c23f78f3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Samut, Tyrant Smasher",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0be61d61-6a5b-471b-9a62-8a7fdeef1331",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, Swarm's Eminence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8f9a9dc-5b70-4956-91d0-b7ef34509559",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Vraska, Swarm's Eminence",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d092c69e-3de0-4b32-8abd-c91ac4497288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec979bd0-d571-4fac-a211-c236ef968c2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "729114ab-6c0d-4962-b6fa-0eb07d9b1020",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn's Bastion",
+    "promoTypes" : [
+      "instore",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee58ea1e-af16-4c32-8df8-7bc5fe59802d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn's Bastion",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d6b189b-c4db-4606-8f90-7807ed66be99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn's Bastion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78e8e836-906e-4636-9677-a9f7781a1fba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mobilized District",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fb6587b-a945-4dce-8985-c4bce3c7de71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mobilized District",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "813b991e-b812-4fee-8f21-c739292ade53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parhelion II",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8aab33d1-afcd-4505-a882-12ee3496991b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravnica at War",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8141dd1-3826-431b-8f20-1bde757b0e00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Ineffable",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a32b532-cf7d-4658-bff7-a4bdcecbc042",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Ineffable",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0eef6bf1-bc03-4874-b4fa-6e02bcd7f4b6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ugin, the Ineffable",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "886d8eb4-778f-4322-bbbd-a2cd6489b0d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Single Combat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d727d39d-ffbd-4a44-bcec-a1368c4376a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teyo, the Shieldmage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f22e1a12-9917-4921-a957-83ead96c9b9f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Teyo, the Shieldmage",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0fdbd1c2-cfb2-4a5d-8f5a-cff484f7456e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tomik, Distinguished Advokist",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a342bae8-71f1-4340-96a5-386559e97e17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tomik, Distinguished Advokist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "536b4bda-a06d-4a71-ac9b-17098d8c7cef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wanderer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b059e7a9-6d63-4e17-a067-3c8a9b24a564",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "The Wanderer",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3d05b48c-a0a3-46d0-a997-a819e0ed7ac5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Augur of Bolas",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f80b4a02-2ca7-4f2d-bebb-a54b93afd5e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commence the Endgame",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c6d4c55-25ac-4db7-9a3f-6f3413609cec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commence the Endgame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "103de18d-3840-4fc5-8ad0-554c86d21771",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fblthp, the Lost",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a048d5fc-bf79-4ef8-bf56-7e4752ee507f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fblthp, the Lost",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ffee435f-77f7-4506-9569-f316a564827e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Revelation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd12d502-f8af-49b9-9997-7cc74556e8b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Revelation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33dde3a3-076e-4e50-b26f-e66823aa50dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Kefnet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "454ce11a-f52d-4f26-87ac-052d888a5575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Wielder of Mysteries",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d9db47b-b0b6-41f6-90bf-0a4a3b9f9e70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Wielder of Mysteries",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9db5ae90-f2ea-442b-b638-67bbc0423927",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jace, Wielder of Mysteries",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "199b36b4-13fd-4233-98cb-f8d148e7fd2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kasmina, Enigmatic Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cd6a0ff-046e-4c1e-b5fa-0d472e80a058",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Kasmina, Enigmatic Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7805b1e-b6ed-4c73-9f16-1b18318fdfcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Parter of Veils",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a292d75-ae06-41e7-bce9-a5331ba7a9be",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Narset, Parter of Veils",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8527509-b237-4419-aa94-fcdc77ad6f88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset's Reversal",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49face5c-4779-4504-80db-7c494fc9fa72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset's Reversal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4923dc1-cc0d-4551-b898-6282d41ba6a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Submersible",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fad8ae2f-f003-415c-b79a-34406e9df42d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Double",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c015a58b-46ef-438e-9448-e0d770322232",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Double",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33010ef0-8eba-402e-bf9b-e2efb41d2290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolas's Citadel",
+    "promoTypes" : [
+      "draftweekend",
+      "instore",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb51c4f3-b1c8-4741-98a9-0fb8d39267f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolas's Citadel",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bb6e5c8c-2c03-45b2-a0c0-e3a365e2fead",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolas's Citadel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3881d38-066a-407f-9bf3-60261b7a911d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command the Dreadhorde",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64e368af-4e39-455f-8a85-50ac5efdb64a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Davriel, Rogue Shadowmage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8899a2c-37d5-4786-8612-3dfc6b615777",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Davriel, Rogue Shadowmage",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f5c8116-69f1-4b66-91ab-69619e01288e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deliver Unto Evil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a94e64dc-b8d6-42a2-a060-8319aaa50f6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Invasion",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "412edbd4-53ee-4014-a7d6-b71afb445889",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Invasion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ddebc3e-230c-4072-995d-4b25e6c1a017",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Elderspell",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a71cc22-69be-48a9-b6f9-c568d6962a58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Elderspell",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c7932d3-97fb-4224-a51a-ac63a2d57894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Eternity",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90188f56-fad8-4d4c-936f-db80a09b167f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finale of Eternity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a70b1ed-0db2-478e-8ab4-e48f13a4ce1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Bontu",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccd070c5-93c1-43bc-9f8d-615fc6824b71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Dreadhorde General",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "921d4181-76de-4143-8941-74c9c62f5af6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Dreadhorde General",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d1ebec8-b6d3-4695-812c-06d078ff3a2f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Liliana, Dreadhorde General",
+    "promoTypes" : [
+      "datestamped",
+      "jpwalker",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "adee67d7-2f9b-4a72-b5d1-5e99737ac483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Triumph",
+    "promoTypes" : [
+      "openhouse",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d6f5494-7a4f-4624-86f8-a9673189b072",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "pwar",
+    "setName" : "War of the Spark Promos",
+    "variation" : false
+  }
+]

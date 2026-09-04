@@ -1,0 +1,2988 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "462e887d-6b91-4b31-9487-2780ffe8943f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anhelo, the Painter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9235977e-a999-4ed0-83a3-742be87b13bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tivit, Seller of Secrets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "59569e25-0992-46ae-99a0-b558c4a10361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anhelo, the Painter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "087edfc0-4d57-4c2d-95a6-e52ed8f78327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Beamtown Bullies",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "266dd649-b767-4e40-8ccc-06d9f8db9be3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Henzie \"Toolbox\" Torre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e45f3236-d64e-4416-9e71-be7b22dc9878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamiz, Obscura Oculus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "dc2ec12f-5768-4e2a-b632-fc1fe44c09ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitt Kanto, Mayhem Diva",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "be85251c-51e2-4182-9bee-2d8a163e6f62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kros, Defense Contractor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "20f06fae-4677-4245-bd19-fa49edf4a87b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parnesse, the Subtle Brush",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5f0d7ab3-8a67-4793-9535-98a44f55530d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perrie, the Pulverizer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3d879f6d-feb4-48c5-997b-0841e9fa558a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phabine, Boss's Confidant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5326a876-0c56-4368-af10-e9bbd1188d45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tivit, Seller of Secrets",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fa1f1295-0b9c-45ac-beec-0850b970cd33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vazi, Keen Negotiator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4234e98b-c89c-4169-bddc-141cc1ba363d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Threefold Signal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d51d45ad-1301-43e3-a56f-c3cc2b9383a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aerial Extortionist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5381dd61-7d20-4a4c-a6c1-67e8c9020ed6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Sleuth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e388935b-fc98-476b-8fe4-234fb4d7f105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boss's Chauffeur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c2511fcf-f394-4b0c-8ed6-db0826cb296c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contractual Safeguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "85c45df6-a4c0-4639-98ab-51533a758c9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damning Verdict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "41b489a6-f838-41ad-aca0-a437849bb789",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Crescendo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cc0bdc3f-17ff-4ba5-8637-ef7963d9fd59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jailbreak",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "85f0efc3-556f-4a8e-8068-286361720543",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Ceremonies",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d8477b30-cf8c-4396-9ba6-66228a7fc2e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resourceful Defense",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f1b027d5-29b6-488d-a146-4ce870745b04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyboon Evangelist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "229caa63-ff7e-4e10-99e9-c593d5dac92f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Share",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f462456a-21eb-4da3-accd-dc89b73215c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aven Courier",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ebe86548-99ff-4c29-aa4c-1af092989707",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cephalid Facetaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e87ff81e-2ca9-43fa-8d13-86a1a7602942",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Change of Plans",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4576b8a6-f950-4975-bc35-a44f89e72aa8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extravagant Replication",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "30f461ff-6367-4a04-bffc-4e3df6e1ea79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flawless Forgery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "72e7cece-60bd-4641-bbca-99d549654f26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In Too Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e17635f7-8235-40fc-9b57-56b708e0528f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mask of the Schemer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "533810d7-5aa8-434f-94f6-1806d090aeba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shield Broker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fc7787d7-3bb1-4762-83d1-919f3b9e4e8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinister Concierge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9b5fe0ef-30bc-4174-8b65-c129448a90e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyway Robber",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e5e14342-bd45-4b3d-b4b5-ebc60dbc94ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Forms",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "54fe1db9-1ee8-4ba3-b484-68a698b17359",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bellowing Mauler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "35e0d087-89ba-4e37-9b7e-980f00b39be3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body Count",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a41c39a2-68fc-4a49-ac74-e696a25f7f85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dogged Detective",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9b1e7289-6681-4b32-8ee6-035d24cc0263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lethal Scheme",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "42102c48-9e90-4042-9695-c87ab0a7b993",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Make an Example",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0dcaa19-e223-4ccf-a97e-cf46f55e2b64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misfortune Teller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "046c2801-4e94-4e33-9039-9b7d2f409d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Protection Racket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "418b5431-8d96-42ce-9db1-226624f9f8e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waste Management",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e108e7ac-7a4c-4d02-9278-02868997f7f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wave of Rats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3ea2ebb2-1a88-4371-a948-512f8dc18d0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Writ of Return",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "50b87b5c-4197-412b-a079-24f76fcfe058",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xander's Pact",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "db2d0be9-ba0d-4d6e-a7dc-79201eb05175",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Audacious Swap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7060364e-1227-4134-bd7c-5c2a572534d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Determined Iteration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a5cb6cc9-4a86-4d65-be42-167b9b972ec0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Industrial Advancement",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4ca47ef3-4c57-4928-ab87-fb786879d8d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life of the Party",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5aaa4be7-32d2-4e17-95c0-78344b09c889",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mezzio Mugger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c78e9aaa-806a-47a7-8b43-d9bb959bb0c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rain of Riches",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a5f6f869-0960-4b3a-9798-49056b964e8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rose Room Treasurer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "71073a08-2e66-4410-8b59-3bbabac913fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seize the Spotlight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ba347203-3792-41a3-8888-424ead494f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellbinding Soprano",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cab2c151-385c-4899-af0f-cbd4ecee5115",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turf War",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "08d8a568-196e-4865-b2df-858152e3aece",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bribe Taker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "287c7d61-13a0-46f7-a8d7-33320e250bbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caldaia Guardian",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "79af4f9f-e6dc-4b36-84bd-2924a2f492eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crash the Party",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "330cae18-9b9a-4ec9-a4c6-83bbf42f1f70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dodgy Jalopy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "26f752cb-6be7-45a7-9096-8ebf82395be6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Family's Favor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "acbeba6e-3dbe-4b28-97fe-9eaeb535cc39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "First Responder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "acbdfd1d-3a01-41c6-a0c9-c24223967b53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Killer Service",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d63f0ae4-84c2-47d8-876b-38d55765f6b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Next of Kin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ecd0459c-c4df-40fc-b886-ac3882571e49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Park Heights Maverick",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ce4a2c21-5a32-4500-a9f8-f7596c8991cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scepter of Celebration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "886531e0-425e-4bf9-813c-3db399a7223b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Stampede",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4958486a-0f02-4312-8b3f-fb90e54d332c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent's Toolkit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4ac65212-f276-4be1-837b-27872fcd246b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bess, Soul Nourisher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "95d03a26-b981-4042-8623-4259e5505605",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brokers Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8d3eaace-2813-480d-9d4e-d095c2bba528",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabaretti Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bfffeceb-b3a6-4d0a-88bb-6386eccbfa8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Pursuit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "91329a8c-ebbf-4b81-bd71-04f47ab95f7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Denry Klin, Editor in Chief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e72d9121-fd09-4035-bb3b-0eb6241107e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grime Gorger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9cc91ea6-4246-4d99-be3a-62187c3261e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolene, the Plunder Queen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ce427aca-8a81-4596-bdd1-925e7c4a8b19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life Insurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "877cfc63-54d9-4288-9121-601f344a4afa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4ccbfa84-e2e7-48f9-9ab1-ddb77f28f8de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7943423b-52aa-46f1-a44d-e284375f23c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oskar, Rubbish Reclaimer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "add03d30-cc8c-4cd8-ae50-959124df3265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosperous Partnership",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "233721d8-636b-4061-b0ed-57c3b7192634",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riveteers Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "609fd302-e49e-4ee9-9ae6-3f014b1d0227",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syrix, Carrier of the Flame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "06ab6802-da97-4ad8-95ee-2362b2c03975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Currency Converter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "65deec7d-5dfc-4f74-80bb-4c66f33418cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "False Floor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b364920c-8d11-44b4-aec9-90b01798f512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gavel of the Righteous",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f06268a3-d092-4e4f-8a6f-922a2484bdf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Buggy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "41e1cf4c-fa52-4cec-a040-2794326e01de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weathered Sentinels",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0543510b-c28b-4b3c-b1c7-ae6f944556f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anhelo, the Painter",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "86cf1196-cf25-49cf-9fed-98f7dcd56c06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Henzie \"Toolbox\" Torre",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "19fe0961-b3bc-4a2e-b403-85a3f9202fdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamiz, Obscura Oculus",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d1ef51f4-3d9b-49b7-8538-cbfd8087bcbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitt Kanto, Mayhem Diva",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2c91da53-4233-4802-8a72-240b0b46d459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perrie, the Pulverizer",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee228dcc-3170-4c24-80bc-28bcee07cb43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Henzie \"Toolbox\" Torre",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34aa30ab-e1a7-4ce2-ac99-f8d49ef0cdcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, Liberator of Malakir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42ba534f-b1d8-4ac6-8318-f8ead5a02370",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fdc43b5-d7fe-40cd-b36f-7ee7694daf2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8232acd-4645-489c-8cf1-4efdc75d9322",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c62990d7-a337-4fc3-859c-63bc1dade1b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurzoth, Chaos Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "e905a310-02d5-4a86-bb58-2bb3502edba2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "74b8ae28-e169-46be-8180-ebdaf80efd81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamiz, Obscura Oculus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fcd6cd6-ec95-406c-92f7-c063254fb19a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abc9e41e-fd03-4b6f-8f44-17ba94fa44f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alela, Artful Provocateur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d2eca63b-7fb2-4a69-84dd-aa0a038a2f8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos of Meletis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9f39d28-08eb-4eff-ae55-abd377877a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Ojutai",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c658f583-c115-43c7-9986-2c6010549313",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gahiji, Honored One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4bcf5b5f-b908-4975-91f7-c4c6f819e0a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jenara, Asura of War",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e83e6d7a-3af0-4955-8004-2310f051e306",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kess, Dissident Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b4b3c5f-32ea-4208-86d4-bb86e3b8d7d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kresh the Bloodbraided",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a52a5f4b-d2e1-405e-82b4-ea35ab851c42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roalesk, Apex Hybrid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb1ad2b7-bdf1-4c37-9591-edaa271e9fa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Explorer Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e7053ff-c825-41bc-9dad-eaf7a37447e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorel of the Hull Clade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c96b11ad-67fd-4a2b-89ea-e9df9c50731e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrexial, the Risen Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b9850d6-49d3-45ec-9a45-75aa0fce9ee5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitt Kanto, Mayhem Diva",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d438237b-c6f7-44d0-a3e6-6ec7d7465d33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perrie, the Pulverizer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f0455a79-15f4-4ea6-87ae-263ce943cfac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Beamtown Bullies",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d96c33f5-f891-44bc-8ae1-11bc6f6544b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bess, Soul Nourisher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "12e71d52-5c75-4798-9fe7-8a34a2bf0c9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kros, Defense Contractor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac40ca08-50e6-46e6-9d50-c4e84325620d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Denry Klin, Editor in Chief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61c217d9-21d5-45ef-938a-138192a901f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolene, the Plunder Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed87e25f-9dad-4858-92bc-e859fd2be2a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oskar, Rubbish Reclaimer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36458554-b8b8-4768-a138-eba615b480af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parnesse, the Subtle Brush",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "492d484b-9af6-4055-9893-627b56c69544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syrix, Carrier of the Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b21be33-c0f0-4ba9-b283-e498a71323c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bennie Bracks, Zoologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce26ccff-91dc-4564-8b5d-d9adf1c55821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mari, the Killing Quill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f0f238f6-3578-4e16-bfd0-2f5a452e46fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phabine, Boss's Confidant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "551a6ff5-0f6e-4925-98c7-4d426358e959",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vazi, Keen Negotiator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "10d2df76-a495-48be-9f86-3f4ddd2ad3dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bennie Bracks, Zoologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "97de1297-2e0b-43a5-8b80-5b57d222e9f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenuous Truce",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "954a88f7-9d8f-4794-ac2a-b9e87c8e3b62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swindler's Scheme",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2889e0ad-0ea1-4ace-b795-b26811b9d2bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mari, the Killing Quill",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "545afa4b-cb38-41f4-aa6e-ae27c43944d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiteful Repossession",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0add67db-e26a-419a-aa1d-841460c5f69e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boxing Ring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ncc",
+    "setName" : "New Capenna Commander",
+    "variation" : false
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1U06",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08c7812a-99a1-46be-8729-08321e64ef6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakura-Tribe Elder",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1U07",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cffcd230-6e01-45b0-91ac-fb8be99593ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soltari Priest",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1U08",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1e92953-a469-4aaa-92bf-7f7880487202",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Anthem",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2U06",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f1b4646-7016-4b56-8b9a-fabf8624ec1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shard Phoenix",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2U07",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a24a043-b8e4-42de-bfa4-e7e8bb9c473a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirling Dervish",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2U08",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8159908-afa4-499c-99af-c5efb4263077",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Champion",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pjas",
+    "setName" : "Junior APAC Series",
+    "variation" : false
+  }
+]

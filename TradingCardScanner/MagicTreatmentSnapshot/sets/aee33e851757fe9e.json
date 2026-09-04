@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59f9b7f9-1f6c-416f-ba73-62924bca1856",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dirtcowl Wurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-10-01",
+    "setCode" : "ptmp",
+    "setName" : "Tempest Promos",
+    "variation" : false
+  }
+]

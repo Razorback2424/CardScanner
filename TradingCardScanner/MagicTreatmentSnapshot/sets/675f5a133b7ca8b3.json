@@ -1,0 +1,324 @@
+[
+  {
+    "collectorNumber" : "11†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd87344d-9113-4fec-9a93-38bc1abe2af5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "War Elephant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "7416c366-95cc-4799-b6c6-34d8fad8c202"
+  },
+  {
+    "collectorNumber" : "13†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c066c452-1d87-4946-8d3b-6cc160a82282",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fishliver Oil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "deb6ed87-aa07-4b5e-ac40-1e16dc2a817a"
+  },
+  {
+    "collectorNumber" : "15†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "170fa026-c17b-4731-b520-455c39ccbe6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Tortoise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "096f7ac8-c639-4347-9767-7305eaf490ba"
+  },
+  {
+    "collectorNumber" : "25†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2717b2e2-bea8-4ba8-9ad1-abb60abf6e4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erg Raiders",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "35c73a97-531d-4dd5-8236-39b89c183c38"
+  },
+  {
+    "collectorNumber" : "27†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8fcc83f-c67f-46a2-bb0e-dafbf0a2bfc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hasran Ogress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "9f310cf5-0985-4826-9779-19a713089d6d"
+  },
+  {
+    "collectorNumber" : "2†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9899352a-a4c9-47bf-b9cb-0c34060ae1c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Army of Allah",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "3d170015-b125-49a6-a15e-8fd116bbcb14"
+  },
+  {
+    "collectorNumber" : "31†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58d74d1d-3f68-4cab-903e-e146a33258f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oubliette",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "30d1450f-2909-410e-9920-731278fa74de"
+  },
+  {
+    "collectorNumber" : "33†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb0b28ac-144e-43c5-84f3-d4a2a229f49b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone-Throwing Devils",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "d1c387dd-1347-4443-91ce-b71f7ccdceba"
+  },
+  {
+    "collectorNumber" : "37†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "709532d8-cd3e-4844-b580-e6925ce837ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bird Maiden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "5c1ba0b9-db01-447f-90cc-a2fc2c24146e"
+  },
+  {
+    "collectorNumber" : "43†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c4defc2-b1a2-4ae2-bda0-24ecd4ff8181",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rukh Egg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "b28f9e63-e5e4-44b5-a17e-8301ff17c623"
+  },
+  {
+    "collectorNumber" : "52†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ecc8d7c-c64f-4ada-b389-756728401b64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nafs Asp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "965f722c-2b18-4c22-8c30-12552def5940"
+  },
+  {
+    "collectorNumber" : "55†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1cc1188c-4331-41dc-a577-bd4bedd7ca76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyluli Wolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "15ccebe1-ef08-4805-a65f-a1c57abed9f2"
+  },
+  {
+    "collectorNumber" : "7†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "113a6b31-3748-48c1-a915-ab0b613eabb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moorish Cavalry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "f86f0781-7614-4779-a58d-f13ce96bdf33"
+  },
+  {
+    "collectorNumber" : "8†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a5a1a13-dfc8-49b7-9b17-3f0c5ca1b8be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piety",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1993-12-17",
+    "setCode" : "arn",
+    "setName" : "Arabian Nights",
+    "variation" : true,
+    "variationOf" : "f649c571-d7ec-4ebc-9e18-b0657cab495b"
+  }
+]

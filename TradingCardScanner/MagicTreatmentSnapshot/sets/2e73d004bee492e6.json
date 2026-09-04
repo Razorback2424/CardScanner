@@ -1,0 +1,140 @@
+[
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d3c824c-c20c-4708-897f-3796ec4245f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Griselbrand",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ac2b852-92b2-4daf-9d1f-f71d3b27c241",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Angel // Demon",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1995b46-cd88-470d-89ec-37ffb6596348",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruna, Light of Alabaster",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95a576a5-e873-4f27-93df-d363fc5945d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisela, Blade of Goldnight",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d7b3923-7740-433e-bfbb-1898923eafe8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Host of Herons",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "446f001c-2164-4c3e-8017-5f4ea33e5d08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-04-28",
+    "setCode" : "phel",
+    "setName" : "Open the Helvault",
+    "variation" : false
+  }
+]

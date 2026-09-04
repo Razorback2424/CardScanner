@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32adac7e-ef3b-4b15-ace8-80e8102bf126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamachal, Ship's Mascot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-05",
+    "setCode" : "ylci",
+    "setName" : "Alchemy: Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cd90255-cfe9-4a2d-86fc-b72d1aefc8e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythweaver Poq",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-12-05",
+    "setCode" : "ylci",
+    "setName" : "Alchemy: Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31d2e591-6df4-4445-a16c-c7a576ff3e20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Marshal Arguel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-05",
+    "setCode" : "ylci",
+    "setName" : "Alchemy: Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96b1d02e-5dd1-4621-b8f9-353b95152185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tan Jolom, the Worldwalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-05",
+    "setCode" : "ylci",
+    "setName" : "Alchemy: Ixalan",
+    "variation" : false
+  }
+]

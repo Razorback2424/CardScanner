@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "edc84f49-86e9-43a2-b98c-a59b1e0c72ed",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Stangg Twin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "tdmu",
+    "setName" : "Dominaria United Tokens",
+    "variation" : false
+  }
+]

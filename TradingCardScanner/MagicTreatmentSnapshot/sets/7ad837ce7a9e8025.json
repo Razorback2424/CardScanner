@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "14★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "924863b6-6d7b-441b-90cc-4e98e1c41aa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow Lance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2006-02-03",
+    "setCode" : "gpt",
+    "setName" : "Guildpact",
+    "variation" : true,
+    "variationOf" : "02b5590f-d964-49cb-8e2e-94b067112c8e"
+  },
+  {
+    "collectorNumber" : "37★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "381a7aaa-6cb8-47db-a381-6d1102e2338e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderheads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2006-02-03",
+    "setCode" : "gpt",
+    "setName" : "Guildpact",
+    "variation" : true,
+    "variationOf" : "56de9727-021e-4b37-b80b-08dcd898aec0"
+  }
+]

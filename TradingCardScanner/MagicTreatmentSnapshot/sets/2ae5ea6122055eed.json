@@ -1,0 +1,301 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75522385-2f94-4c7c-b7d2-e8827ea1164f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bottle Gnomes",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f337250e-3491-4ff8-b79a-1711d55c6ca8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sparksmith",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df9b9093-e322-43da-95b9-13a0a1ec447e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Tusker",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "691135e8-1c41-41c4-9426-48bffe23bfd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Withered Wretch",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32316acb-9206-459b-83b3-64be3bf4d396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disenchant",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe45d58c-9831-418a-a588-f530af3dc36f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muscle Sliver",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5ff53ec-9ae0-4a74-b0e6-9bf0dfc8c4c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Sliver",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a51c1a95-e484-41e4-9c49-ffb115a7d1cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Capsize",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c23b2d4-fdbc-4c62-8e5b-c9235c53c96e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Titania",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a1960e6-00b5-44c6-9fd1-dca49f58f433",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Bombardment",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c355e0e2-6854-437f-9fff-86f98bd16f34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scragnoth",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1089ee82-518b-4b0e-bc53-1c5ef66beca5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smother",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "297f11b1-aa18-4dd2-87e8-cf43f9b78a4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whipcorder",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "f03",
+    "setName" : "Friday Night Magic 2003",
+    "variation" : false
+  }
+]

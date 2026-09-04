@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ae4162d-e080-4db1-912f-d53674c76170",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monstrous Hound",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1998-06-01",
+    "setCode" : "pexo",
+    "setName" : "Exodus Promos",
+    "variation" : false
+  }
+]

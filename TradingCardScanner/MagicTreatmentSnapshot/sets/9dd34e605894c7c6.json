@@ -1,0 +1,223 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d06e4086-2e38-4da3-8354-c7fa0446f5f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lorthos, the Tidemaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "80e5a909-7643-4491-8daa-1719ba3f362c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Binding",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "442dc5fd-0b44-4263-b2af-155703514e65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "975852c7-9759-4ab5-83d0-4655585aef52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Bombardment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5aa5bec9-904f-42fb-9511-4706d6e6767e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najeela, the Blade-Blossom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ae9fdef4-ce8f-46ee-9ff2-92f9423e539a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine Lives",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "de819fd7-0823-42da-99bc-db87bb71acc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5047bf16-982d-44b4-ae8a-9c5a271cae0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parallel Lives",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "81031889-3d69-455e-9abe-27c1f8ecd4b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alibou, Ancient Witness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "84d396b1-a193-4bea-bfb5-a6317029ae06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "omb",
+    "setName" : "Through the Omenpaths Bonus Sheet",
+    "variation" : false
+  }
+]

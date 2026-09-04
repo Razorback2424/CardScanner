@@ -1,0 +1,288 @@
+[
+  {
+    "collectorNumber" : "101",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f829249f-2b51-4f13-9d54-319da81e23eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys the Redeemed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-12-12",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8d6e144-385c-4b1b-8e67-0480e3753f49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-13",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb008ef1-840d-4e55-b940-601a21494b83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-02-15",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "10b93890-25e3-4bc9-9768-4adbcca19fcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladewing the Risen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-03-20",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d29ce094-e373-42b8-8540-8fde33f8a2a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hanna, Ship's Navigator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "de9cabbe-96e9-410a-8440-d4439830400d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "bd45e4e1-8459-412a-b021-88cdab8837c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "e9c6c520-fbaa-423a-ad7a-aacc46d6d2ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-10",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "5a641c50-8480-4377-9e59-a2e051f6c61e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "78ab5ec3-decf-41cc-9f2e-d76a2a2e8dcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "86ed77dd-c4aa-4c4b-b670-4c6009215882",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "54a23169-4add-4227-8662-cc282002956d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b720a1bf-d4e5-4291-863d-b4a1c143dabb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-02-14",
+    "setCode" : "pana",
+    "setName" : "MTG Arena Promos",
+    "variation" : false
+  }
+]

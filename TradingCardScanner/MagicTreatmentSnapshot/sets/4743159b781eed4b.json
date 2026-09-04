@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb04266a-ee41-4db3-99fa-bd8a333f1a61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moraug, Fury of Akoum",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-21",
+    "setCode" : "pl21",
+    "setName" : "Year of the Ox 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e075bbdc-822f-4549-bfd5-ce4a2a4354f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sethron, Hurloon General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-01-25",
+    "setCode" : "pl21",
+    "setName" : "Year of the Ox 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b85f59ce-a382-418c-aab7-90c22e17255f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tahngarth, First Mate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-12-06",
+    "setCode" : "pl21",
+    "setName" : "Year of the Ox 2021",
+    "variation" : false
+  }
+]

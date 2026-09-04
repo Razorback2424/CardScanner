@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd1cd45c-080a-4d5c-91ab-78ab0a394884",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Leonardo",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ftmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8d37eaf-5c1f-4a9c-b2ba-d7f7eee6df4a",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Donatello",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ftmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49068aa9-903c-4386-98ae-4976dbf919a6",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Raphael",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ftmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f630c58-253e-47b2-a845-5426bcc8b513",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Michelangelo",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ftmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1d0e8eb-52e4-4832-b226-e0af2e91e5bf",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Bosses + Events",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ftmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Front Cards",
+    "variation" : false
+  }
+]

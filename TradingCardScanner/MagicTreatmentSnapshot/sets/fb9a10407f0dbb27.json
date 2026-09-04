@@ -1,0 +1,3437 @@
+[
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "8f6a631b-e3e7-4647-825e-c0b6aeff76df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "16eb4c0a-962a-4df9-8101-a6baabfa80db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "632e2c82-0122-4f87-bb83-88064fbb91ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "c55fd65e-7701-447f-a42b-942eadccae3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e70bac07-b011-4c30-a29e-1852b23a3ed6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iona, Shield of Emeria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "ce561d66-bdfd-408f-bf5b-49b4a53d3807",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "3bce79b7-f964-4442-b3db-3ecffbba8d92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Wastes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6c36c6c9-688d-4b23-95fc-f219f3de407a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f0c93e1-1057-42b9-8503-10ab757df2e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hogaak, Arisen Necropolis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc6ac0e9-7419-4a77-a144-d2983fc6aa6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "O-Kagachi, Vengeful Kami",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fe21296-7e04-410d-b441-aed64451682f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kataki, War's Wage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "42356138-daac-4baf-9c46-b83cdc2fed2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Environmental Sciences",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f6ddb34d-3ea7-44e2-9a8e-259d98f4101f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit of the Labyrinth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ea211f0-322b-4a78-8853-61eeddccdb3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "620535aa-9daf-44d1-9e4a-dd922b2ce161",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Goblin Nabob",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "565ab4c8-abf3-4b74-9f4b-882f73322a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b02605cf-ef0b-467c-a6e8-064c2e260cd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bdf479f3-807c-4a2d-978f-89ee7bbab8aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Sisay",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0137f066-68ec-44d1-877e-009256127ede",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gerrard, Weatherlight Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e5436ba2-1b89-4d1a-ab5a-6f64ded34078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirri, Weatherlight Duelist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0276898-a1ef-4ae3-bcfa-75dd54d554ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xantcha, Sleeper Agent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "038b1b24-e823-40c2-8fa4-7193854037d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Legacy Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a396551e-882d-48ef-807a-81e5f2dfe517",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigardian Evangel",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6975357-5d6c-41c8-8fd5-c1bfb34a1e84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oracle of the Alpha",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7c08707-9467-452c-96ee-2e9d3661dcb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanguine Brushstroke",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f095067-cf24-4061-8626-dc68a66a0b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toralf's Disciple",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a8085d0-48cd-4439-b516-e6c07fb477ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenacious Pup",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c153d43d-fb7c-47cd-8796-4a0f6ff53579",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rusko, Clockmaker",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56491238-5228-4bdd-994c-0849a59ebc2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsaken Crossroads",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a16665a-2600-460a-a5ad-417930fda62c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolas's Citadel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "501",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e328353e-d43f-46f7-ab4e-d3e1f3e57c7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indicate",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "502",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8a5d0caf-8f15-4c25-958d-19ffc7ed462e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Compleated",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "503",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed3c605e-5c21-4a3b-b71d-8336d4621249",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa's Surprise Party",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "504",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34a870d3-c2c4-40e3-adee-666215dbd6d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnipresent Impostor",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "505",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ed896f8-ed15-4639-b709-5b728c894c34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rule with an Even Hand",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "506",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bf7cea4-033f-417b-9cd3-689b926b135e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Who's That Praetor?",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "507",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8290c0d0-a580-4f89-bc93-6a84ca709ddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abbot of the Sacred Meeple",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "508",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9d23521-8e35-4547-971a-d06416c84a71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcanum Things",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "509",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e4c67bd-a87f-4938-8a57-46946263cd44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn's Collar, the Symbol of Her Church",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "510",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e838ae3b-c71b-4134-b60a-c467c5f77940",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brigid, Who's Seen Some Stuff",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "511",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f824505d-9e19-4150-a26d-0cd0db4807a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champion of the Hareish",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "512",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43ac96ca-c25a-47fe-9194-ff3d2bf07854",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defender of the Queue",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "513",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d5329a8-b3bd-498d-98c0-ba8b11ff7ddd",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Essence of Ajani",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "514",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d97d719-3a1e-4160-b393-71e289e005e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Friarball",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "515",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40a5e12b-9fe9-40ee-8114-08241668765c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A Girl and Her Dogs",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "516",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2563d76b-0613-42af-96dd-37ead0051f1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intangible Vibes",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "517",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b06c51f3-7489-4588-901d-3f7bfb12cfdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Baller",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "518",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab606e8f-8a08-4de5-97f9-6dc312bd41ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of Lost Causes",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "519",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0ad445d9-8c80-4146-9539-d36a966e8a07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muraganda Eldrazi",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "520",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8f750d6-27a2-4494-b91c-c05953e9c943",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "New Master of Arms",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "521",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ba2f0c7-bbd2-4375-8a4f-d627a45832d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Ox",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "522",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "826f08cd-4d5a-47fe-acc2-cefba51c778b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plain Walker",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "523",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3767593-9d7e-4546-978a-de87709b7bdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sliver of Hope",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "524",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56e068e4-b7ca-43ca-b4e5-e95f5471b76c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tax Taker",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "525",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c134dea-ee5b-4d3a-a2fb-7b0910443790",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alberix, the Trade Planet",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "526",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44940856-84dd-413f-ab3c-5bf9ebafdddb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blurry Visionary",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "527",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e65a3a97-88ab-4949-9aa5-3dd43204a804",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Can't Quite Recall",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "528",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a701069-7fdd-4fce-858c-1d9e6fe9410d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Catch of the Day",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "529",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da56c50e-235c-4e55-92f8-bf6cdf39fe79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duelists' Convocation International",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "530",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5517a3a-8914-4649-96ed-5db28fcdc59d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heart of a Duelist",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "531",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec6d971b-b981-4a7e-8308-f1c6cc679d89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Map to Lorthos's Temple",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "532",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e94f0d03-29e3-4a18-9dfc-6c72997f3171",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Night of the Flying Merfolk",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "533",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b47a9081-e86c-494b-9f48-a366567a4409",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No-Regrets Egret",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "534",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5350eb3-ad35-420a-83a9-14c356210ba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Panglacial Shinobi",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "535",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6885228-5eda-4678-a970-82d49b9c4f3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Search Elemental",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "536",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3144ee6e-5dca-4fda-9f78-852541b3f4c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subgoyf",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "537",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f04cceef-c65e-44e0-b0b6-8616b2bc0234",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "There // They're // Their",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "538",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72b127d4-dfe8-4a98-9bfd-09d3d836060f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Two by Four",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bad9faa8-b527-4dbf-b308-3137bced36f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wisedrafter's Will",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "540",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95b399c4-d221-4312-a0fd-6bd43e8ba30b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Your Wish Is My Command",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "541",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "183aca7b-62ce-4891-93d1-f60fc205801a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call from the Grave",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "542",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b588e61-ef9b-4603-9f38-b72e9f0edaf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleaver Blow",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "543",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44ba16ca-bc75-4d7b-9f40-547ff76ac02b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Common Black Removal",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "544",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cd1bb9e-dde2-4a8e-9676-a69ec2796fca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creepy Crawler",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "545",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63c0e008-58df-4a22-aa09-c33ee6daa923",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Halving Season",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "546",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c20bc090-26ae-4c7e-90ae-157228917c65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lich's Duel Mastery",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "547",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ab0dfea-ca51-4d89-9d48-6a21cb07a201",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifening Elemental",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "548",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9c1e5c2-8706-4c46-8b25-b045020a3a7f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Liliana's Other Contract // Liliana's Undead Minion",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "549",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6c97b8f-5365-4ba9-8afc-f01ec5ef6835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magus of the Chains",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "550",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "175af5a8-879a-403c-901b-23f354c9b71c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Many Deeds of Belzenlok",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "551",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d2ad2377-bd13-4b6c-8206-ca590234392b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oddric, Lunar Marquis",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "552",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f30ca928-4fc2-41ae-a26a-e0abb4973fb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pinchy McStingbutt",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "553",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6f78f7f-a5cb-4cc8-a23d-efb085cdd3c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "TL;DR",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "554",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d98efa7a-b2f6-4885-b424-332c918ae885",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toofer, Keeper of the Full Grip",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "555",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30f04aaa-014e-422a-b357-a6e98deebd1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth's Day Planner",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "556",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afb8ebe9-8648-4bd1-b725-e0d9656f53e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "You Compleat Me",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "557",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08b0e80a-7590-4ce3-b0ec-fddafd60b7d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Star Kicker",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "558",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88ef7207-30f9-4fd1-95dc-9bf7ae0c9511",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolshack Dragon",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "559",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ae6e66b-d925-431e-ab81-849e969b595b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boltfire",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "560",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb089ab0-3d40-4d5c-beba-6251d1591ffe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boulder Jockey",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "561",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96cdc702-a314-4f97-96ab-998eb03cad4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Confluencer",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "562",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21bda5a9-4faf-4f7c-a04b-20934657f8ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flanking Licid",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "563",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "081ec377-30f4-4eb3-8801-78426045d100",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gobland",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "564",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06aea80c-e74a-4376-ac39-add04c803991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immersturm Battlefield",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "565",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fef4c08c-447e-4a15-859f-45927c06984f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planeswalkerificate",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "566",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70d1834c-c01a-44db-9368-fd285dbf08a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyromancy 101",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "567",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc51b39f-fd6e-41e8-9c1b-5e5087796788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snap Judgment",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "568",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "434049f8-921d-4457-b555-e62423972707",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toddler's Rage",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "569",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a08483e0-7b75-4141-8707-57e22438168d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vuzzle Spaceship",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "570",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a05307c3-23b1-4cf5-a44c-650356d1e6a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wormhole Warp",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "571",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "834bdeff-e816-4afd-98ab-834152b97851",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zone of Flame",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "572",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "571ac996-8fbb-4315-820e-5023db0ae972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Built Bear",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "573",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0c98dca-b499-408f-8f99-9c59742027ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Colossal Dreadmaw",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "574",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90489370-dac6-4e45-a837-d9cb6c8e66b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dairy Cow",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "575",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca8606d7-0da5-4fb5-b541-a129005e3342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flavor Disaster",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "576",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "303e4892-49bc-4b5e-a769-2661b7797821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glade of the Pump Spells",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "577",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "294fed54-63a7-40f2-a924-c07b3554adb2",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Keeper of the Crown // Coronation of the Wilds",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "578",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d17d858e-8df7-4f90-a3f4-b08f1eaa1fcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meandered Towershell",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "579",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d50f89d4-56fd-492c-bd9a-28eab5a5b1aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naturalize 2",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "580",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c3abc5c-8741-4aa2-842d-5b72e3d75394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Penumbra Umbra",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "581",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd2de002-28c0-427e-a61b-4d6032bca83a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Seedling",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "582",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "062bb64d-b256-48c9-8159-8146bc0549ef",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Plant a Sapling // Fully-Grown Treefolk",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "583",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fae8698-5cbc-4346-8989-f654520a58c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Questing Cosplayer",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "584",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ab644ff-38f9-43bf-aa2f-db2f2daf1ca5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spuzzem Strategist",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "585",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "710ac5cd-04bf-44d7-985c-5a4bc35e1957",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starting Town NPC",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "586",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "153d004f-2698-47f5-9938-217049685954",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Druid of Argoth",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "587",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eed63226-bf02-4765-bb51-4673ad42b615",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Werewhat",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "588",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0aec3061-91cd-4454-be4c-9d4443f091dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrenn and One",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "589",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a04f917d-deee-45ad-a5c4-f5b67c1471fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anax and Cymede & Kynaios and Tiro",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "590",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "193afb87-9695-416a-9b1c-7b362a4a99a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatzuk, Mighty Guitarist",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "591",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4fab6c4b-bb56-4705-89f6-598a0de519fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chea, Friend to Maybe Too Many",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "592",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7005db6-21d1-4a3c-acc1-0f7727dfce38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Don't Worry About It",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "593",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4adfa1f5-5d5f-4d94-827a-4be99bb15dc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fludge, Gunk Guardian",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "594",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc34e23e-6de5-43ea-8714-a93cc3714069",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse, the Unthinkable",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "595",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bbaddee-5d3d-4b86-b3cc-fefb8e0ecd76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hish of the Snake Cult",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "596",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db024903-e6e7-4244-877a-98725032c274",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jund 'Em Out",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "597",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "706d7c68-fd0c-4f25-a0e8-5486646a8478",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, Pauper Otter",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "598",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e05e9af-33e4-4c4d-a3b0-1f2988cd4386",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mothers Yamazaki",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "599",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60873d64-8ea6-4f8c-9c92-d0a833d87e8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narod, the Beige Flower",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "600",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "320ca807-2c10-49cb-ad14-2ad1f4593cef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pokey, the Scallywagg",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "601",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf509983-8d3d-4895-b957-255a0a176d2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rin and Seri, Inseparabler",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "602",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4246c47f-a8b2-483f-be2b-11ef1310075a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Drake",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "603",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f22b393-05ce-45c5-8887-39bfda082bac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terry Pin, Turboturtle",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "604",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7346d60d-0b0a-4d1e-abb2-a98656b3a6d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wowzer, the Aspirational",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "605",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d38ddf20-d1ba-4b91-a08c-8f9add66bc0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of Leknif",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "606",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d125658-4fa7-4429-9138-39eefda59ce7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luxior, Ignited",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "607",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82c19074-c00e-49b0-bef7-59eb34563f0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Microscope",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "608",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "543ce1cc-5918-40bf-921c-855268d51356",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Poison",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "609",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46199a5e-ad37-4e66-b296-39428021d951",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orb of Origin",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "610",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f57f150-9d02-448e-8fd4-3abd8ee4c182",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runed Terror",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "611",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "372ed92a-76e3-472e-b665-b1abfecdba93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fetching Garden",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "612",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5986aeba-c0d8-497c-9573-5d0880dbe49a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Heron Moon",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "613",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df054f6d-1aa1-4b67-ab8d-6c86fc680f51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazotep Archway",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "614",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4056ecfe-6817-4138-b76d-0caa61e1529b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Madlands",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "615",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a1d595b-23d7-4236-8737-49ea78ff8907",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros' Totally Safe Hideout",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "616",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41b7743d-7134-4d35-b128-7bed315656a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omenpath to Naya",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "617",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1b63b0a-e634-4473-96b3-e8c4b0a207a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Processing Plant",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "618",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20609bfa-c3d3-4985-bbbc-ecbc30c42e5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slumbering Waterways",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "619",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97466491-ca10-46e1-b288-e5b1c376cb4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Elevator",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "620",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f127a058-824d-4f91-87f6-406547465b84",
+    "language" : "en",
+    "layout" : "leveler",
+    "name" : "Under-Construction Skyscraper",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "621",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d4ad5a7-bb3e-47ef-ba33-018b18248bd0",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Value Town // Take a Trip to...",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "93e53510-e7fc-432b-9274-a790cf826b02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ice-Fang Coatl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "966780e5-7d74-4886-8c6b-f1ff7d44783e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a234375-c9cc-4471-9993-1f775950a056",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia, Azorius Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed1f9061-4df3-4b3c-a8b1-1d62d354de4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uro, Titan of Nature's Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "a245bb3b-9126-4361-824b-2b27fbba9696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "mb2",
+    "setName" : "Mystery Booster 2",
+    "variation" : false
+  }
+]

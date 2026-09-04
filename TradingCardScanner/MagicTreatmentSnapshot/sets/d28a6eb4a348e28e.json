@@ -1,0 +1,462 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "faeed7f4-b444-4cf5-ba7a-dcd99de54d61",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Evie Frye // Evie Frye",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77184f8b-2a3e-4ca4-a474-d3da107f7081",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yggdrasil, Rebirth Engine // Yggdrasil, Rebirth Engine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b76c53f-f88c-4f7f-9710-6d0effb80249",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cathartic Reunion // Cathartic Reunion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8842be1b-c4ca-4bd4-b76b-16c86ada5fdd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mortify // Mortify",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b167b409-d2aa-4d3b-8a0f-6f837a689428",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ezio Auditore da Firenze // Ezio Auditore da Firenze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8126c100-5462-4757-8589-69669850be25",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Adéwalé, Breaker of Chains // Adéwalé, Breaker of Chains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a919ef73-7604-4fc8-8066-fcf0f6d0d81c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Altaïr Ibn-La'Ahad // Altaïr Ibn-La'Ahad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c6d26ec-bf56-480b-9801-79c5f88961ba",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bayek of Siwa // Bayek of Siwa",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9559e47-3c6b-4945-a7d6-f65fc9435774",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Eivor, Wolf-Kissed // Eivor, Wolf-Kissed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ee2021e-0169-48cb-b258-b770c7b338d1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Eivor, Battle-Ready // Eivor, Battle-Ready",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "856cbd55-f145-4865-9035-7d865dbb2af3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ezio, Blade of Vengeance // Ezio, Blade of Vengeance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a979a548-e0bb-4c79-ae8b-0ed2e1c1f4e4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Desmond Miles // Desmond Miles",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d504b52-3598-494c-94e5-cc812b0a5797",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rooftop Bypass // Rooftop Bypass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ff7c58b-37e5-4ff2-b4f7-56c806c00738",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Restart Sequence // Restart Sequence",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fed8d7e-6944-4b56-9f33-958a9c1b6fc3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Spear of Leonidas // The Spear of Leonidas",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a03411f8-fa27-46b7-b0f7-f968efc9d3d5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Edward Kenway // Edward Kenway",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59354603-03cf-48d4-9c1c-d64f93af2ba0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kassandra, Eagle Bearer // Kassandra, Eagle Bearer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8583bab-3e3b-4a5b-b009-d5c9df3015bb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mary Read and Anne Bonny // Mary Read and Anne Bonny",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b39305f-91a8-4b6a-9a8c-8e8fceadc354",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Adrestia // Adrestia",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c6d9a18-ef30-41ad-ba9f-8445a2be11db",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hidden Blade // Hidden Blade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "aacr",
+    "setName" : "Assassin's Creed Art Series",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d67c7d80-05c9-4bd3-9a8e-14dfe4c075cd",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Gremlin // Energy Reserve",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "l17",
+    "setName" : "League Tokens 2017",
+    "variation" : false
+  }
+]

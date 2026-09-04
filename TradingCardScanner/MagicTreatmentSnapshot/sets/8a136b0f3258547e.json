@@ -1,0 +1,552 @@
+[
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b060e36-225a-49b6-9b19-48ee90fd764c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geth, Lord of the Vault",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4c257487-5494-4251-9e93-43bd9cc6558f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bca6f8b-6e6a-43dd-b6a4-9eedfcc24281",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Goblin Nabob",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3592fbe4-8588-486e-99ba-c327b0b6ba24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "K'rrik, Son of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d415858-5f7d-406c-bb30-b4c48ebaad08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara Tandris",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34ea44f2-cb2f-4b86-83fc-fe507f05bb9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani, Selesnya's Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d8aac24-564a-420f-bb05-c67c3b0e2187",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimoire of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d922754a-37d0-42ec-9f55-134cf4f3bd1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geier Reach Sanitarium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "913dd06f-ed2f-4128-9c9d-9cd0d8a55425",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anje Falkenrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f6aa473b-85cd-431d-844b-218368fe955e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atla Palani, Nest Tender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d7b0a8f8-d368-45e6-a546-984e7b1913e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Nightmare Adept",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b977c0b-07a1-4d16-9fdd-fc0563e0b68e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elsha of the Infinite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c835a37a-776a-44ef-a252-4af1f31bf0b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gerrard, Weatherlight Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0825bcd-8cf8-498a-a61e-406f136e1f3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghired, Conclave Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bda22fc3-31a5-451a-9a8b-372884f7bc61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greven, Predator Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8df64c80-9e98-4429-b869-7ac824fe9580",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grismold, the Dreadsower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68a144f1-df18-4dc5-81c3-dff2af27527f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kadena, Slinking Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c366e1c0-f62d-41ce-baec-de11dbc1c5f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marisi, Breaker of the Coil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8569ad47-a243-402d-899f-4e6b17ea4e1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pramikon, Sky Rampart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6997ad62-f34c-4490-aee4-6d5c08e14709",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rayami, First of the Fallen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c209efe-b4dc-44a3-bd45-d647f5680cbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sevinne, the Chronoclasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1692c11b-018e-47bf-b38d-3c3e6b79b37c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tahngarth, First Mate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a149d6a5-c865-475a-87b7-596a19f6c80d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volrath, the Shapestealer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f557ebfc-6fa2-4512-9d46-b6a2b0464eeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abe8b487-b188-44c2-adba-141516b90849",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-08-23",
+    "setCode" : "c19",
+    "setName" : "Commander 2019",
+    "variation" : false
+  }
+]

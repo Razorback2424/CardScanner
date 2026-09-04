@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b02c1fc4-0a90-4861-88ca-1f18c4517f8e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Drake",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf9a289f-cd3f-42a0-9296-8c7cc7d01a91",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66d0f626-eff9-4e2f-ac62-5bf190ea0aeb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd69689a-dfeb-4390-ae82-78193697fb18",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c22421d2-fb62-436b-bc2c-9d99e5fb684b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f11416ec-ab70-45ef-98e0-9b51506606c5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "844b811d-dfe1-4f93-89ad-800df97ac1b5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "tdds",
+    "setName" : "Duel Decks: Mind vs. Might Tokens",
+    "variation" : false
+  }
+]

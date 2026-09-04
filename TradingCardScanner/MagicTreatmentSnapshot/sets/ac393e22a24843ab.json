@@ -1,0 +1,3740 @@
+[
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e713f40-545d-4650-9649-fb6a4f1c8e01",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Hagra Mauling // Hagra Broodpit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "575d0bcd-925e-4854-9dbd-84621debbbce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Ruin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54aa11e7-46fa-4cf8-b513-ba853a79d4a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Ruin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ce97b6d-9988-4be5-a674-727424a09e70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nighthawk Scavenger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af2eaf7f-dd1f-4caf-b753-8112adad05ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nighthawk Scavenger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0195245a-a48f-4972-a7ce-1e7eb82d4d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nullpriest of Oblivion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7763e07c-189a-4662-a4d9-70902d931f46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nullpriest of Oblivion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56131f19-c8da-425d-8139-522173776e3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scourge of the Skyclaves",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67b9dca9-c564-4d90-b8b6-5b3311512e78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scourge of the Skyclaves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d4f90f5-10d5-4a28-8db6-6993524ae155",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadows' Verdict",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24df3688-1c2b-4305-ad91-8eb9f37ebadc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadows' Verdict",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4c32adc-c314-45e9-8741-b4ec3aaecfa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Shade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cc70f02-9a57-479a-b3a4-cd50965dd74a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Shade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1ee43ae-43de-477a-8130-f8c41ef08e82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Shatter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6bf770a-18bc-4f47-b77b-e1c54c70ee3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Shatter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "79817dad-b763-4370-833d-327a440b0d65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taborax, Hope's Demise",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09b3b6c3-5f93-42c0-923f-bf0c83b7af33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taborax, Hope's Demise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10bd9fc7-f079-42e8-8436-c5462abf0220",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Emeria's Call // Emeria, Shattered Skyclave",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17d4d58e-5a37-4129-b9bd-4b5d2d456079",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kargan Intimidator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d52e4230-63f7-4a82-8fa8-30363ebabbce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kargan Intimidator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d752f9d1-af24-4902-97e9-96c0f9a95908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Tyrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a06701ba-e1ef-4782-a6f0-5d2040b3aea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7550d06-70c3-4db2-a1b0-ea24563d027e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Channeler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57e97739-7df5-4325-a03d-1d57c7b50e3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Channeler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "320fb49d-5985-45ff-9bf3-41af38082396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moraug, Fury of Akoum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fdaf6f77-1514-473c-a53f-9c05a3e96fd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moraug, Fury of Akoum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3802a09-d9f8-45d8-afc8-1182dce715b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Lithoforming",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9530495f-1b43-4706-bf07-50ece779106b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Lithoforming",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50d98f85-afbd-46d9-b67c-4f2391ea6b09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relic Robber",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fe374c9-a721-4de0-8b07-65e3e90dc871",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relic Robber",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e7315b9-5212-43d6-8011-ed40d1f09a45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roiling Vortex",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1dec49b2-2306-4a72-b375-ff87c944d509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roiling Vortex",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d315b39d-adcc-44b7-b04e-6a6c2e2cbf83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shatterskull Charger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0061031e-4189-492f-a55c-aef827c0c6ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shatterskull Charger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caf85b78-8318-4dfa-9c75-5b5857a4cf07",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Shatterskull Smashing // Shatterskull, the Hammer Pass",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0701454-2ca2-45a9-8aef-29657a45e99d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felidar Retreat",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f10ce3f9-54b6-4e74-87cb-d4ffe3484e6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felidar Retreat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "299bda14-d657-476d-ac1f-d9f1e920d6c1",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Valakut Awakening // Valakut Stoneforge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6efa8fc8-8359-4995-9b4b-78e806411462",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valakut Exploration",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6baa9ab-a187-44e2-9417-51913f42b2d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valakut Exploration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccc52e5e-9427-4a22-be3b-f9d079399d76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wayward Guide-Beast",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a0d661b-26e0-4df3-83de-488865efccdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wayward Guide-Beast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31f9ca34-8bc0-4821-940b-912918ff2ac2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Greenwarden",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf12d9e9-2168-46c3-ac15-6e973c567b6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Greenwarden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1bb1df2-8b81-4a64-9581-b64424490dcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashaya, Soul of the Wild",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd3b3b7c-8d19-4908-9f93-978315698580",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashaya, Soul of the Wild",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ee344f4-8ed8-42a7-8239-2d0c5a2c175f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cragplate Baloth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38dfa693-2cea-4722-8b12-fbc2f2fd8081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cragplate Baloth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd955dcf-f9af-4a30-9daa-345e2b7c6a48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Abundance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd282787-3fc5-472d-b0fd-7c83720eccc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Abundance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37002423-4984-45d2-8aa7-b1816fef6e91",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Kazandu Mammoth // Kazandu Valley",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4db85866-5ce1-479b-8a6a-e4b86da8fbfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Cobra",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "577ad25e-75bf-43c4-b0d9-112ce3116b9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Cobra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a41a564-d71a-40dc-8cdc-aeecf8c843db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oran-Rief Ooze",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51ace107-f8fe-4ff4-8b81-300e76d27926",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oran-Rief Ooze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ac27853-fe5a-4402-9872-1fc98d083277",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scute Swarm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cf51c72-f237-4eec-8b95-d068c77bde8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scute Swarm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efb56f91-cb6c-4ce1-89d2-35036ed0c3f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scute Swarm",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-10-01",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "121deaec-29a1-496b-b357-c6db81988aa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm Shambler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56ab0aa1-a289-4e7e-9272-36f8635a4bbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm Shambler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca767812-3ff1-4f4e-a8de-cfd7c650d6fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajuru Paragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4dcb05d9-37f5-47b1-80fc-a3db134354de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajuru Paragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd11928c-aa2b-4022-86fd-8cbfba5e2685",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Turntimber Symbiosis // Turntimber, Serpentine Wood",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a29e2dc-180f-45e1-b5d5-5424da31198c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akiri, Fearless Voyager",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52ec2a93-0708-498e-86f2-6f70d51ae4cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akiri, Fearless Voyager",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cdb5b964-720e-4c11-ba0a-7bdaab1f302c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grakmaw, Skyclave Ravager",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25850394-05ff-4600-8d4b-819605658dee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grakmaw, Skyclave Ravager",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ac9b854-701a-44a6-9f2e-a9c0d0620ed2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaza, Roil Chaser",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3e3bb0eb-1615-4751-9700-236828e1c16e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaza, Roil Chaser",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "008c9605-7652-4ef6-9742-de325168141e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Linvala, Shield of Sea Gate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "611f55b9-b324-4c25-9365-c44e086fa97f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Linvala, Shield of Sea Gate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a382d191-a3fb-4fb5-bd43-8b0dab57f432",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Heir of the Ancients",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30005416-7913-4fbf-9987-2b988ad5a6d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Heir of the Ancients",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82c3e0e1-be63-4a6a-9c9f-bc38e16e587b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa of Shadowed Boughs",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d78ff190-db65-4996-b526-94c8a642eba5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa of Shadowed Boughs",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bfb90093-9ce9-49f7-abdf-8d74de7f5af8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Creation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "140247b8-11ae-4a52-a94a-c0a1cb6ad0f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Creation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1969f815-cffb-48ca-bd01-2b9420685644",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orah, Skyclave Hierophant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d8b7aba-b2b0-4d57-aeae-56e0b4179477",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orah, Skyclave Hierophant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7d97ae3-d471-4e75-983f-35b102bad6a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phylath, World Sculptor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8bf04c09-2cec-4cc2-a9b1-2bbeaa9a8443",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phylath, World Sculptor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "58082e41-27a9-4133-956c-b9db1fb6df4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verazol, the Split Current",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37386f39-ce92-452a-b5a0-f02c802d189b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verazol, the Split Current",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58464969-870d-431b-b7b3-300d81cc505f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Angel",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0f001c2-372f-41f0-b38e-3f6f26bcb8ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Angel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7cc89118-9546-4ef7-acf2-196edfdd5a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yasharn, Implacable Earth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a5b66b95-dcfc-4eb2-a0e2-9bd901ef94f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yasharn, Implacable Earth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5d3d3c17-ab43-4168-8edd-86074ea01553",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zagras, Thief of Heartbeats",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db178032-f6f0-4a1f-a8c7-f357c4298d61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zagras, Thief of Heartbeats",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5af8e56a-4253-469c-8bd7-fd0ed2dc35c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zareth San, the Trickster",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1856bc9f-f4c2-4d4d-aec5-7d51f45e9796",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zareth San, the Trickster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca7e891b-a302-4c8b-897a-fa17e64156df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsaken Monument",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9447720-8476-4509-ad36-5c532733174c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forsaken Monument",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1bfd1257-0ad4-45e7-a77a-d98cc18578c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lithoform Engine",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2eafb1cd-7ce5-4de9-9e1d-b4854804bf88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lithoform Engine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44950da2-53c4-43ca-af3f-6154c2a66f5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myriad Construct",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41d5c1dd-185a-43ee-bf8f-a9d268037178",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myriad Construct",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1238003-f218-46a4-8ac7-8ab98a59fa41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luminarch Aspirant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42bdb2bd-fb25-4715-9754-42ab0c5c8cf7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luminarch Aspirant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4caef453-f88b-47ec-b8d8-22c9616e2a1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Relic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "498e4b8d-c66a-4617-a5d7-6a4e048504e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Relic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51da2aee-d438-436e-a62b-1548bd5d56b9",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Branchloft Pathway // Boulderloft Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c773f3a-50dc-447c-b2db-e122168732e9",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Brightclimb Pathway // Grimclimb Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27d8e671-8d7a-479d-987f-b3e4acd72b41",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Clearwater Pathway // Murkwater Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f346605b-ab5c-4bc7-bcb8-ae3743a834a8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Cragcrown Pathway // Timbercrown Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "954e1d00-cc8e-49ae-9dc7-bd50f0acf6d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crawling Barrens",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e9ec90f-b69a-4ab2-9bde-03896d3d07a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crawling Barrens",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c6c6e31-c8e3-4461-9118-68ca6c8e0eb5",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Needleverge Pathway // Pillarverge Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19b09eb3-4ffc-47b8-aa37-7f760f86e11c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Riverglide Pathway // Lavaglide Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61419be2-90db-4096-95f6-7a3cfd419ec5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Throne of Makindi",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbc75060-d8c1-4f7f-9b5b-15c08d50203c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Throne of Makindi",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe91a1fc-d2a9-4efb-9315-d77caadd02fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maul of the Skyclaves",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2537b138-6fc8-41de-b682-fa4c998d980b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maul of the Skyclaves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f885a37a-4c51-4801-ab40-5d1ca54a5810",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Destiny",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44a4c8f0-8562-4c75-886c-f04231cadb67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Destiny",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9595a1af-0eae-4beb-bdde-d09706209aa8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Ondu Inversion // Ondu Skyruins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3491b0ba-8a51-4afb-802f-4463997d31b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Apparition",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0d0ebde-9ee9-40d3-96e9-b12b8f1e4245",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Apparition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "021bedec-4bee-4ca8-a969-38ef1bb43a3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squad Commander",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "073ba259-2de9-4b53-80dc-b1f47ae7659a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squad Commander",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7a0947b9-94f0-4322-bb7f-dbba6634ad86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Beacon of Unity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26962d1c-cd5c-42ab-ae13-842a9cbbb339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Beacon of Unity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0c098ed7-5f2b-4d9d-ab24-73ddb2e681fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charix, the Raging Isle",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "960b7f5d-8cea-4bf6-8d30-a4b688a8f4ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charix, the Raging Isle",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ecb6321c-069e-4da2-9751-204aab3cfc13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Emeria",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3483a15-6726-467a-94f3-01373aeb37a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Emeria",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd33a44d-7c3f-4757-a68c-fc56d49e9247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confounding Conundrum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddd0134c-627c-40f5-bd02-13be69d028a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confounding Conundrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fd09121-b269-47b6-a18d-c5130bf659cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coralhelm Chronicler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ecc3273-6ac2-4e81-9284-591cdd4bb3aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coralhelm Chronicler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c924ea10-477a-4f0d-a9e0-c44eeb3d0a00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archpriest of Iona",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56120233-d81e-43a5-88f7-fb08017b230d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archpriest of Iona",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a8e4f61-007b-4ae1-91d5-b8c3028925b4",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Glasspool Mimic // Glasspool Shore",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58ae274d-99f9-45c1-938c-03f591302adb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Insight",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89931d7d-032b-44a5-ac21-6892e77d83ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inscription of Insight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54c6a4c3-ae00-4f29-bb4f-383dcec21747",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Mirror Mage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "573ab90a-61af-4e2d-9da8-ba468086a716",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Mirror Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d771c395-c68f-4034-a9ca-6a1cc6a72b8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maddening Cacophony",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "738b29d9-18a9-423b-afe6-171751fa5c18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maddening Cacophony",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac246b34-dbf1-45e9-89b6-c49695521423",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Winds",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbc9bae6-05c0-437a-bb78-bf3a4118fbbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Winds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "105d23a6-025d-4083-ad3a-6995bb45c01a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nimble Trapfinder",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f5de6d9-8ec3-4a85-bdcd-824459cf8263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nimble Trapfinder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6cb69b6-88dd-4ae6-b123-c75d8f39c538",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Sea Gate Restoration // Sea Gate, Reborn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b2f41f3-0b42-4bc0-afb7-da3b81757b30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sea Gate Stormcaller",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9062bc1e-229a-4ddf-953c-830b5984b2ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sea Gate Stormcaller",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8541c7cb-b59e-46be-b388-78ab1603c7ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieving Skydiver",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0cc4a3d2-8dc8-4d14-b207-dba10e33bdfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieving Skydiver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c1a55f2-36c2-4434-896c-c43d43e7095c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Agadeem's Awakening // Agadeem, the Undercrypt",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dceacc17-c5a9-40b7-a54e-b8fcc0267ad0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coveted Prize",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "854a9780-a11e-4b3e-8c2e-380188907fa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coveted Prize",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e17f039-ea8a-407a-a38b-9ecbd69a1d12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, the Last Bloodchief",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "534fbc19-a8cd-4ae9-9807-2d0408f2c401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, the Last Bloodchief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pznr",
+    "setName" : "Zendikar Rising Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,576 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbab4309-daca-42d9-ad0b-0457717c4503",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfcff41e-b6ff-4ddd-bcb6-8943f7d88aef",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4b7e3b5-2f3c-4eb7-abc9-322a049a9e1a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46a2c363-c879-4c36-b08a-dd57e3da19ae",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c08c83d8-b402-4168-9384-5b329a9bb757",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6181330-7521-4ec6-be6c-b35487c2d2d4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b53ee2f0-afbd-491f-b3b8-c9997f175199",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d9415be-356d-45a5-a62b-a75368629481",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tentacle",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b2ccede-36a9-4d9f-888c-27b8aca63548",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Orc Army",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6943f966-fd21-427c-a13f-44727edcaa4b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Orc Army",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6df0025-8f6a-43e1-8f07-36f18da3a485",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bb4ac08f-f6a5-49d6-91e9-38c4f217932b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Smaug",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "389a6f88-0c90-4b67-a72c-7e9674f00898",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ballistic Boulder",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a48f8f0b-8239-49fc-9ff2-247042ea0aeb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7fc5b674-a2dd-48c1-a94d-318b4913a90d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a029bdc-92e3-4d85-8af5-e33429a5f017",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b29d7556-9051-4451-812e-91513ef10e62",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57b674ef-f541-4ee8-9727-1c5b3c0c8f4e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eea4e628-4ae2-4e33-a3b6-176ed87c1840",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tentacle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f8b43e8-dd89-452e-b572-8559e19fdea2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Orc Army",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db598f33-2ff9-4e0b-a067-05fecc03435f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Orc Army",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16d2b87e-f8f9-4756-9ea2-64bc5c13bb96",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Smaug",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9d70342-9d3c-44cb-9026-db5e5941b9fc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ballistic Boulder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61f04cd9-63ef-4dda-948a-0be76628900c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "H13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7215460e-8c06-47d0-94e5-d1832d0218af",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "The Ring // The Ring Tempts You",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "tltr",
+    "setName" : "Tales of Middle-earth Tokens",
+    "variation" : false
+  }
+]

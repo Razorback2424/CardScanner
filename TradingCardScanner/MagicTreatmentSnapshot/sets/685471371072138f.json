@@ -1,0 +1,6438 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "278d7781-ddfe-4bcb-94bd-3c155030dfdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "386b9f57-b75c-4431-9abe-a5cec2a35340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inga Rune-Eyes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7ae923f7-1bae-42d4-9f4d-281e70c9efe5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7a6d8011-7903-4580-919f-2fe6fe52af89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bf223d6d-c356-44f8-b332-90b0e4cb4c9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina, Soul Steeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "05b55c95-a04e-424e-ab53-889b44067ca2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ba955921-5b43-47bd-a3f9-039d93136d57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3fe76768-be19-4b66-9d3a-711258232532",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firja, Judge of Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "770750a3-17dc-49ed-9b36-e48bd025db93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimgrin, Corpse-Born",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "59ec860f-e2c6-44f4-997e-36c78df9be0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a7cd77f9-91dd-4ff8-9f11-7d5a499bffbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a9e8b27b-3ed2-4a0b-a821-68658e8fdd7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "77fd8de3-bd4a-473d-b1ed-05305ab15d75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Core Augur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f456d064-4196-4bb4-ba5f-77668ea90d38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a346f5ac-1dba-4522-8eba-052e4258fd48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0bf5c3e0-ff45-48e7-9308-7a891a5e6b28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6deed06c-4813-4283-9d74-26ab30bad417",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "aafb2d82-295e-4148-a36c-f7e4cb8cdad4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c27205fe-136a-4d3c-88f3-ae83af3ebd42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "59aeb2ae-4adc-4e14-97c4-148afcc9f44d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "978ca725-a3e1-4f2e-ab25-2d0d09a87f53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "41ac1aa0-c350-4c77-ac3a-2c5abfcb7e35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet Reborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "699ca859-b0a1-43e8-a568-027e9cacafc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "469beb59-1e57-474e-9dcf-9c13957cbfdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c863bc0a-6d71-46f6-b8dd-2befa419f814",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "11a5871b-377c-4e01-a655-490a0c40679b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9c19b9b0-4024-4f01-9a89-72c0d4e3592b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a0e34ec0-de3d-4a31-9774-da48f926bcf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5eeb883d-b1d1-43ea-b1a4-028d53b7095f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "90df7a0c-a62f-4fec-b680-e2147ea3fa7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Ojutai Master",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "36c78f4d-ada9-4e7e-b113-758b969a6956",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "98c9cf61-9f32-402b-9db5-f5c11a8a60e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9cd3d727-ab8c-4e73-b99f-eed2cffbca51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarok, the Desecrated",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e40512d7-e083-4dd0-9dd2-5b81f557c87f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e915b51b-761c-432e-9565-f3aca2ca33f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara, First of Locthwain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "companion",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4722cf09-7de9-4ed3-a3aa-983358905cb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "262ebc87-fcf5-4893-8357-dcb985a9ba60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "af6ffc8e-9ef8-4a2c-967f-8b5f967c7080",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b0d926a8-4c5b-4491-bdb3-693ed09246fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "353a4398-5b8e-48bd-985b-62c8f33110e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b6463953-0579-4f43-baa2-5b7127b73e30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "221a1c14-db49-47ce-847f-b574301408eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6544139b-90a6-47e4-96b9-2f17f7d2fa22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "89e2e2e7-d609-4216-8b87-9b45a6a80d1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "575de622-9f20-49e1-bca8-6c3c689b6f2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dd0e8824-3b68-42a9-8977-ca266007a3db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b8822de1-fdeb-44eb-9913-0b72cdd58394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f08ae802-1321-492e-87cd-d1c2ccf73197",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "26e17c75-8a53-41fe-9f2b-4dec07dcc760",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "43fe36b0-2a16-4fa4-a1f1-b38ed4a3faad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "365502b9-ab86-4c26-94ce-9ac1b60d3085",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "127f2716-7c24-4ca1-bcf8-5f367627dec4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4212be53-cdf2-491e-b5f8-f836a1ac2631",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emry, Lurker of the Loch",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "74769812-4d0b-48d7-8dd6-7be1e2b04e15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emry, Lurker of the Loch",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "25f16054-64fc-436f-b926-4abcfedf42b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horobi, Death's Wail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "03a3f4d4-7bea-4d6f-b223-177278557342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inga Rune-Eyes",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a658c6fe-d75a-4144-be99-23d9e7505028",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inga Rune-Eyes",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1d9b8b31-adac-4ace-bd0b-62191716cd10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Core Augur",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "00fbe0b5-bf75-41ca-b0ba-1bb2a99defd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Core Augur",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1200435a-90e1-4288-a201-cd904d66fd2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "680119a8-8154-40e9-987e-f94fafb4a430",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "31d8b740-007d-40c5-a176-2e10ef246db7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara, First of Locthwain",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "06921700-6094-41e6-9f50-4d0e208d0ab2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara, First of Locthwain",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4a25740a-3851-4be6-b2bc-414c60e41532",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horobi, Death's Wail",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "81a459ee-3c97-4df6-bff3-14f85aec12f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horobi, Death's Wail",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d038e95d-2aed-4572-8506-656e00f74031",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seizan, Perverter of Truth",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c1d4f6fb-fe71-418a-93df-6b32190ce618",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seizan, Perverter of Truth",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "da37bbb7-660f-417f-b262-1ffacf95c8b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fd6e6a1e-235d-47e2-8c57-9cfe25358a3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fb073d70-e289-467a-b754-6a6ee7294e45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "28b3bba9-4140-4a01-a270-8da5aaab1b59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "820360d7-65ea-41be-a2e9-226006fba41f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e5dca062-ef50-4c72-a71c-9862ab487f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5faa04e1-aba9-4a06-8ef5-916d658e9a2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "64244678-708f-412a-b9b5-9f47ca05769d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d6716f24-6b25-4a64-bb52-b6eec7f91180",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seizan, Perverter of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ff0bc835-63a0-4288-8811-65002446cb30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6c2d70d2-8759-4b0e-aa39-ac4f73a766e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3a29b9b5-8c15-4058-a7d2-db7297635364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fae3bf4a-a732-48aa-a1a4-7e5fd007774c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4ef53667-7c47-44c7-a398-c6e286cf8cdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0e1f9c33-9656-41c1-8760-a46ed0171129",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b6bb6cbd-1ac2-48da-8456-33829bf3dec2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask the Hidden",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9827b52d-5a4c-4b20-a7e2-507b06d7b9af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask the Hidden",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e3f66167-f7d8-4e9c-b93e-17a6742ef37c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5817ec15-caad-4782-a480-2fa695f758b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7ec60f51-9845-4b5c-a920-c1bd22e0e7b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "15309fb1-3691-432e-a7e1-c48e260dc5a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ab127115-40fa-466e-9626-a2aacc4a1edd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fynn, the Fangbearer",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2da0033a-aeea-419a-a0d0-ee07be66fbf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fynn, the Fangbearer",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "080a5356-61d9-46cf-9095-d59c048f9d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f4d18240-d843-4573-b490-5ee72ceb4c1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ad021f67-bef5-4d21-886a-97516f23dc4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e1e32a3b-41dc-4dea-8b8b-9d7f812145c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d669568c-8a45-44bc-8737-f5b7d54d1342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Voice of Hunger",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "02831922-f225-4cc6-8797-aef31265b1cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Voice of Hunger",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dc2234cd-0a1c-4dca-b94b-0dd927bb32e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b2e3a335-56ec-4e9d-8171-c436783666d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1a124f4e-b44c-4ab5-bb99-77df62b6c953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2a4dd90b-f4e2-4f22-80cb-56f1c3586abc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegar, the Freezing Flame",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9f642fd7-d892-4def-9d1b-be32f177cfae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegar, the Freezing Flame",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "17125218-1506-40c7-8bc1-5c1b1d5eabdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a2dd9c9b-a06d-46d1-bab5-b8c9a0c77296",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "20e44330-f880-455e-852c-16d0a985cdf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3a65dc65-5911-4502-916f-4008779d0b6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3c7ca7d7-e706-4a6a-a198-2ee8ca808714",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "59bc3e18-ad64-4249-8956-8fdc158f4c65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d9400614-83bb-411a-b0c4-117deda4e802",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7854156d-f6cd-4582-808e-4bc67672e4bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+      "doublerainbow",
+      "ravnicacity",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8cd3faa1-c9cc-4448-b984-5042fd680e66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0579d842-7b36-4b83-bba9-60864104bcae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d0628126-7cdb-4d16-9965-f62be911f43c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina, Soul Steeper",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f6190d91-658c-4867-83f7-d8f5eef5749f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina, Soul Steeper",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4fab3acf-820f-444a-9169-08cb6f11f6c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b02cd3e2-2ab4-4bb6-84aa-6f4a0df2eb31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "71741abd-9a27-4c19-ae6d-39f1d6bafc83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e4c12596-228d-49d2-94a0-ec100bdab6f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ee0d41b3-42ce-4645-96c9-baab109033ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f6f619fe-6d12-4c90-a253-7471d881adcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firja, Judge of Valor",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "44990a9d-8723-4158-9f27-25ee6de3a1a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firja, Judge of Valor",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d7570efa-b476-4a13-83ed-3069420b611e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimgrin, Corpse-Born",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c8506627-a687-4607-b4ed-b9be5b5cf2d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimgrin, Corpse-Born",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e044ca59-1947-49d6-be58-57ab85b2668f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f38301d1-d9c9-4487-9350-24808ee381e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e77a3f58-1131-47f9-af9c-0859ae34badc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e0da1688-3852-4719-aece-de012d61e1f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f4b86816-8f45-4c4c-b6fb-6936c7d9dd68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2313d399-bbb8-4938-995c-489cd6fdd165",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9777eb85-cf88-449c-b6ed-6618f04fa7ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c47e960d-11ad-45b7-8d5d-25fb149d003b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "doublerainbow",
+      "ravnicacity",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f2d88a98-102a-440f-b20c-421db3c1b807",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "556ea272-d9a9-4246-936b-428c1d0dcefa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+      "doublerainbow",
+      "ravnicacity",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1a13b8a1-aa33-4686-9e57-9b96721871db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d4e6889b-6903-44e9-be2d-5b1afabcc6a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0ffb6fb1-5579-4185-89bc-7224eb5b6035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ad2a846d-7fee-4fe9-bc32-5479cfcf6c85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8e19366f-16ae-4335-8f87-ccb3e6c6af20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c6d77715-4282-4616-a19f-2fc29783fdfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "aff4fb74-8fb8-4d58-ac1b-be3de156411a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "00e84208-b622-424d-b9b7-2f093e75c593",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4dfebabf-64b7-4bf8-adbd-838807c05cb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "097ff232-477b-4b50-a8ea-4391b4ae9efe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c2c9065c-54e5-473b-b2cd-f2826d92bc17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "aab0badb-2879-406a-afee-425f42d2490f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f78d2de4-517d-46f4-adda-a85140341361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ddac4fff-0555-4b74-a818-8119fa866712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet Reborn",
+    "promoTypes" : [
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3d0763ed-8ca5-4755-8c79-c20c042ad466",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet Reborn",
+    "promoTypes" : [
+      "doublerainbow",
+      "ravnicacity",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d0673109-41f6-4474-8874-b8a3bb5efde7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7b9a0668-57a0-4da6-99b8-a238562e2075",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6977db37-54cf-4706-8ac5-7ef463bb6799",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ddd126ec-248d-45b4-a519-1e008340416b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "41deb356-2640-47f3-80cc-a8e5c3ed8fd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7cd95e86-ae06-451e-b5b1-268b01909f96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8eb76762-6dbf-48a2-bf73-bc2080fee5f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b57250e2-b0d1-43b4-bc00-e44825161856",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6469989c-04d6-427f-b221-2e1343e62e9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5bc5ab12-b8e9-45ec-9217-8d83e817a219",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "453a7e8d-5336-4b9c-9ba5-5b3c08c46fcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8927bd79-94e9-43e5-96bf-64c3f8debe30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e07104c8-3af9-44ff-8f24-ce420333e05b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "28dbafb6-1529-45e6-8b61-15185e3a79d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Ojutai Master",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a8db3f81-7e21-4780-835d-b4494a8a13ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Ojutai Master",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c0deec19-cf27-460f-99ed-dceb0feb6b09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cf72d487-fc57-482e-af05-840e836e0e63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+      "doublerainbow",
+      "ravnicacity",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e996afbc-e6cd-473a-a194-a345512e6963",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4af29607-8907-4dda-9575-b6ae6ceaf027",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f9820834-7a8b-4ff1-ad34-75780aa50658",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarok, the Desecrated",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "513dd256-7a2b-43ba-9502-cf77172987a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarok, the Desecrated",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9809d7f7-c91c-4883-872a-0c8581eb71e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d754022f-9921-4701-9b41-d40f265cb311",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b9eebeff-1ec0-4631-b2bc-e46984fb63c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5a8df264-e89e-43a6-a4a1-9cf4f038172a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "42496543-db8c-4053-aaf5-8e96948bafb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2ab5252d-e6b2-43ae-ac35-75f32082486c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fc898fec-4cc6-4587-b556-c5a8d38ccbd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e5483306-885c-44e1-84ce-b6e2124a6ecc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0533d7e4-6b5b-4e2e-8407-279fe438c676",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask the Hidden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bc26c152-b1d4-4afe-90fb-fddd6c1e67e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8994524c-b9ff-4ca0-9ff0-2d074911bfe6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "837e18d9-a5a6-4a0c-a604-9374d5b0dea4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fynn, the Fangbearer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a5f3fddf-a82e-4297-8ee5-458981700d9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1998356b-4eb3-43a7-8534-10eb212c7f2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bdcd2ec9-a8e7-46b3-8d79-eb15d6e95a3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Voice of Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0ee0719c-07d0-419a-b6ed-fc3bf982e4d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "606715cc-c0b8-466a-90a0-719cba1968d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0a0d2ebd-99ba-4968-a79e-68288626bed1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegar, the Freezing Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2fa20406-86ce-48a1-876d-c434cfca2237",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bd0d5a0c-5dec-439c-b037-9d17dda5ead3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e023d642-1784-4e7e-b5de-dc9943f0099e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1e7c2afb-e04e-4012-b8a2-7a7273b52136",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+      "ravnicacity"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9a833fa7-5934-4c04-be42-e215a61f450e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8d07b9f4-7a92-41ee-bdd8-2c8dbe247ac5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina, Soul Steeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "703b9b74-e1f3-4218-b504-07bba71187c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "90e0031e-de69-41e7-aef9-78ed1d4b3361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5ed8b9c5-8b09-40a0-ae08-bc7a7a391256",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "46f485c6-a2b2-4da3-8804-b2b816eba344",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firja, Judge of Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2c0056d5-4d23-4c0c-bbfb-c091cc3fb9ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimgrin, Corpse-Born",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9cbe6748-8ef1-4697-8b7b-72c5ea5b34c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ab58b800-2caa-4b0b-9548-9c43e97bc213",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "51b8d3a9-2b2b-4b14-8886-459cd83ae4e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0a1b14a8-c194-49d3-ab6c-1db377b69495",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c94cd726-8d67-4510-ad56-3ead1931214b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+      "ravnicacity"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e9c296d0-ad8d-4139-97c4-e36c4af3d3c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "814cd870-a4da-4987-a69b-5ba6cee136c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cf9bf8c4-f977-449b-8d16-539060b40777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "427cf253-71c1-40cf-bdc3-eeb0431ae37f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fb721716-1027-4c2c-a156-30fb6a939e82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4b32771b-d89f-46b1-8c70-95a4f058ef05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "08d24f3f-bff1-4424-a029-3221c4e395b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cf0d7769-d98e-4cf2-900e-11dc74142c0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet Reborn",
+    "promoTypes" : [
+      "ravnicacity"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4a0116c9-ee0f-435a-a599-96cc04a994b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ca9bdaae-55f4-4e90-b6b5-28eb1cec198b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "651c3dd6-e1a8-4a65-a200-f86d308570ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d44478d2-20eb-4dba-8008-687a293444f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8eaeb2b7-ad2d-4e00-b37a-06963ae41bb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "40c00370-0160-48a9-87ac-07a3b2bbd459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cb7eb35d-2684-40f7-b678-0d9a180c955a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "eb90aae8-34c7-484c-80da-626393917720",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Ojutai Master",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3c48a7da-0d01-439f-8cfb-22af30cffbba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "81826ef6-02ea-411b-ac08-8ac5e459daa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e56ba25b-1803-4e1a-b7cf-c2c873159010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarok, the Desecrated",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "572f03c2-cd20-4e09-90a4-13bd291c5478",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5fe75365-7f6d-4faf-9f55-0ba83821836a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cf348206-1dee-417c-a3e1-7430b84371c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "71689446-2d30-4e0d-8e77-7aa7843fc039",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "10a8226a-e9ba-4b2f-afd3-713270f37c21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "be43006f-8e5a-4c00-9fd5-1b6fda066f0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9716a5ff-f1ed-4285-a0a7-68114eeb1ba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "66601e3f-67ff-493d-b62c-e5106672d55d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3e28ac6e-79fb-42e8-8987-96fc9ddb39f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "20cb6c55-7d25-4e78-8d4e-450d6a74b4d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "65635901-a583-41dd-8711-73a9698db048",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a985a612-2625-443d-b3b8-3135efd3b653",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emry, Lurker of the Loch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f88fda18-74eb-4de4-9430-ee4cbfa82fb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inga Rune-Eyes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7886ef8b-56d2-4489-a37d-6ae5b87d41c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Core Augur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ca292dc9-5302-42c0-bc83-97dcd45bc0dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1a03774c-bf43-49da-996e-dcef203793f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara, First of Locthwain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1a96384d-efd4-4a73-a000-b325fab08675",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horobi, Death's Wail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "47eb1fa4-a332-4618-a400-c082719f7d5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "880e5fd1-2090-4dc1-ac78-537303531f89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seizan, Perverter of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "613d6668-6086-4672-a665-1c5f22f5a01f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "833b812c-d7c9-41f5-92a8-e539c2a9e142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "de5ababf-a0b7-4f5d-b31a-b7c86e1822a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "894f8c11-00f0-41bb-bbd8-4491e8df53ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "81334045-422e-4d7f-a379-ac3531664f7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e90f19e0-2461-4233-80ef-dd9c582726a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "da4d4cc8-c4c6-442f-b1d7-65a5b111bea8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c5ee69c3-e9fb-4b7d-a3ba-08e7e4300081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask the Hidden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0952da7a-0f53-44c3-b379-18a89e41b836",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "766a0ac7-2051-46f6-a5e5-32fd65b09553",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emry, Lurker of the Loch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a9673216-eddc-4efd-81d7-d593156ed41b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "42cfdb8a-88d3-422b-ab4c-149f048d5738",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fynn, the Fangbearer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5090c3ac-3df0-477a-a12a-0aa0b09b3bad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9d21e314-bd0c-42cc-a139-278452fb5ed1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5bad83b2-3b03-441a-8cbd-5a5317bfa5ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Voice of Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d5f097cf-a032-45ff-bc0b-7d3625f05c1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d75b009a-60d8-4b34-8f7d-948b85172c9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegar, the Freezing Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "da0c7bc5-3e3e-49f2-b7df-b98da3fe00a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cf7e8917-8bd1-4899-bc78-7a5815c08057",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cb0668d0-c7e4-41a6-8890-644b20cc04d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-120",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8faf1de-2e69-4144-a3e5-2efbfda837f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Radha, Coalition Warlord",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "mul",
+    "setName" : "Multiverse Legends",
+    "variation" : false
+  }
+]

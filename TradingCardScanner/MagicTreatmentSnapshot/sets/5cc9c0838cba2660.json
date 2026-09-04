@@ -1,0 +1,357 @@
+[
+  {
+    "collectorNumber" : "115b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b94f871d-3902-4686-8290-f685e214a84b",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Chittering Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71cece3e-0c43-48e3-8272-34c8d04b7909",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Archangel Avacyn // Avacyn, the Purifier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e42bb55-6fe3-4d0a-9634-43e41837aa5d",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir, the Writhing Township",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25fe1de0-431e-4a33-a6e2-c68dad7c17fe",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Bruna, the Fading Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1895e487-467c-425e-be65-df64d81f5264",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Brisela, Voice of Nightmares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "045b6009-6215-4d2b-acce-5d90f2d4e391",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishkanah, Grafwidow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b23a6f7e-c0b8-4e85-9270-254bfb221ae0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa and Geralf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a078e99f-1e47-4618-bf5b-594b64893e48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olivia, Mobilized for War",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1b34868-c8f0-4e55-beac-8068af672618",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Heron's Grace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56b4708a-9795-4799-82b5-13c69a2611f8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ulrich of the Krallenhorde // Ulrich, Uncontested Alpha",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de5c1782-e2bb-40f2-b3df-9b74a9166c73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a046c90-5161-43d9-a4d9-01d93c12c097",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geier Reach Sanitarium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bcaad0d2-4f73-4d09-80f2-5975a498ea19",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Gisela, the Broken Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e73d7fc1-d380-4939-a9cc-af722a9d0cbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b77a1b8-093c-4f34-908f-efaadf2ba595",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Heretic Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aef9212c-9a66-4621-842d-c8b64f3937b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Promised End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sir",
+    "setName" : "Shadows over Innistrad Remastered",
+    "variation" : false
+  }
+]

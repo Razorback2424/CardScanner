@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47202d15-cb80-496f-84fb-8e3998c3d27b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Fodder",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-04-03",
+    "setCode" : "ptkdf",
+    "setName" : "Tarkir Dragonfury",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce134b85-2cbd-4dab-b233-040fd1f31765",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord's Servant",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-04-03",
+    "setCode" : "ptkdf",
+    "setName" : "Tarkir Dragonfury",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "865d90ee-c436-47b0-a77b-d77043b9fe36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foe-Razer Regent",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-04-03",
+    "setCode" : "ptkdf",
+    "setName" : "Tarkir Dragonfury",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13ff769b-455b-497a-afc4-d87e1ff7e33d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolving Wilds",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-04-03",
+    "setCode" : "ptkdf",
+    "setName" : "Tarkir Dragonfury",
+    "variation" : false
+  }
+]

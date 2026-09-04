@@ -1,0 +1,1734 @@
+[
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ecdf2bd9-87b9-470a-ad2e-0ebf98560f87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vilis, Broker of Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f1b1d5c-f71e-4c68-8baf-c134e42ed6f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Regulator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d09af78f-efde-4107-8406-cb12fd11c686",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drakuseth, Maw of Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e446e90-6e31-43ed-bcb1-a01422b503c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gargos, Vicious Watcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cfbcf6e7-d7cf-4103-85b3-8d9d104587e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpse Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : true,
+    "variationOf" : "8b45117b-8369-48fc-8e5d-8986e662d123"
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f400655-f495-4b21-ab9e-57fe4d845d45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia, Zenith Seeker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe28de73-76f3-4a9e-a020-dbe5921b9be5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kethis, the Hidden Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "594cb7dc-ea88-4909-ab40-1d40fecc9817",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kykar, Wind's Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb53a29d-2de2-4874-a6f3-0fecbfa14cf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of the Roil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1001d43-e11b-4e5e-acd4-4a50ef89977f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarok, the Desecrated",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1fa48620-4c3d-4f75-be1f-c12c4aa59f51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golos, Tireless Pilgrim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1fd040a8-b818-465b-a78b-d68402982abc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rienne, Angel of Rebirth",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dba41e5f-66b8-4459-8a07-bbe893216f1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Inspiring Leader",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67edcb9b-f56b-4a34-b4bd-d22ee929041a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldmane Griffin",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b5fa4bb-e061-456f-808e-8d98b2c8abf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savannah Sage",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6397d426-00e0-44da-b23c-44ccea65f5aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twinblade Paladin",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84ae9595-8e76-4d8c-a08c-00434be75672",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Celestial Wind",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89e92e98-202f-4790-8411-17aebffe19fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Messenger",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "184bfbc4-1c9b-44f7-b4a7-068290db3bac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waterkin Shaman",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93aca389-6830-4297-97bc-e3a2a1a1d41a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yanling's Harbinger",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf20ea7b-e480-4b0e-b080-888f24d3c08d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin, Vampire Lord",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a25ea81f-9786-4622-978d-b082fb72622c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Gorger",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "416b000d-77d0-4c83-bbbd-d1107f746dde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin's Guide",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "599e8ed3-4341-4373-8871-2768a90d98c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thirsting Bloodlord",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d1c6c4b-62ab-4d44-a2d7-64b44d163606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Flame's Fury",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f13b6a7-fa62-4d94-a56c-f2e64c8c1666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Flame Wave",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d57f8b5-fde9-498d-82bf-34bfb2370703",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyroclastic Elemental",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "272e317c-55c4-43b2-91aa-3e0009cfd7d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildfire Elemental",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7ead409-3bce-47c8-ace7-498c38522369",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien, Nature's Avenger",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f4d0ed2-3fc5-4cb0-b886-e30b21e76872",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ethereal Elk",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68a69558-aca0-413d-9762-2fa115b44abd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnarlback Rhino",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c51c6bd-2ecc-4d92-a406-fcb31e889b45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Crocodile",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e058dc51-b200-42ee-a345-a63cfaa397fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Guardian",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cbf17a0-2dbc-4e79-9cfa-ea49b1605105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bastion Enforcer",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55f32ff8-3b49-4ce8-96a0-ba0d99477de1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concordia Pegasus",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f766418a-eb1d-4536-ae51-7f3e8969bb78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haazda Officer",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "696d6c4b-69d7-498b-87d4-0a03b16cc971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impassioned Orator",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0dd3aca5-516f-4500-9d7f-95630401d3ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Outrider",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5d57e98-e05a-4a89-900e-20fe675a62ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ironclad Krovod",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e689e4a-fc54-46f4-b0c5-c0e65d88340e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prowling Caracal",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84784231-2675-4b5b-929f-a796c091a77c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra's Guardian",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ab07387-a9f2-4325-804e-6383408644fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Show of Valor",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71fd27a8-2de6-454f-8174-a60918bfe60e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Mastodon",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30fff340-8e2a-4182-9ece-af5749fa0d2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Take Vengeance",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70e3a90c-1e5c-4646-b3d5-ff46d3fa7b35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trusted Pegasus",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97a74ccf-8165-4db1-a87c-52c2d8ea0058",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coral Merfolk",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11cbdf06-f6b5-4bd8-80bf-6d7e57649684",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantom Warrior",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7980e24c-bcb4-479c-8012-f19f4e87f0bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riddlemaster Sphinx",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef46580c-a204-4b0b-8526-2310b1ca32b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snapping Drake",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "445e41d8-317d-46ce-b858-54df716e0214",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bartizan Bats",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad005eef-d4e4-4f46-81a5-9bbce87014ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bogstomper",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c926d38-a741-47a9-8961-f5bcf2909939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Remedy",
+    "promoTypes" : [
+      "planeswalkerdeck",
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7debd8f7-2f34-4fdd-8eb6-fa8f9d2a60e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disentomb",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f624f77-032f-4b28-bec2-95d3a3fcb806",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravewaker",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3db03880-0138-44f8-8147-f2c07878a7d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skeleton Archer",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0dacbb2-21e1-4220-bf43-75a0729cdc60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin's Thirst",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ced4b4a9-73a8-4135-b150-cd78d1558aca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampire Opportunist",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f44e94f0-5f64-4991-aa45-c2b05879be40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Walking Corpse",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f198c7e3-8a85-48f3-a7c2-93320fd4fb81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Engulfing Eruption",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89f08297-f477-4330-a99e-3f0847c31364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fearless Halberdier",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cfefb65-b6e4-44a1-baa9-d3c00ee8ba96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Assailant",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e1263ea-adc9-442b-b13e-9afb69596372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Minotaur",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afcb9f15-be65-494c-9672-162d38c6f0a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immortal Phoenix",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ff9bcbd-48fe-4a74-aae5-a447c99aa64b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nimble Birdsticker",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0d43107-713d-4ff2-8cbd-237c7393229f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rubblebelt Recluse",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "227cf1b5-f85b-41fe-be98-66e383652039",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "planeswalkerdeck",
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f35574c7-c21c-4d07-87b5-9935b8da9832",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Dragon",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e68b3bd-996e-4383-b134-f529bcb768de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aggressive Mammoth",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77d9f200-cfbf-4d59-9294-2bbbd532fedf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristling Boar",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ae7fabb-dcb6-4c21-87ee-2893b63814be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Spider",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73c755ff-3fbb-4128-9357-0874eb61ff4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frilled Sandwalla",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1ca08a0-c58d-4c13-bf63-0401d89839b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oakenform",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "baac1604-379f-4f03-97ae-9ec10921167c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prized Unicorn",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0db41405-87a2-4a91-97f4-a8af2ffe8313",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titanic Growth",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d6117cf-5cb3-41f3-8756-c01b5e9c760e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Mystic",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc95881b-8fbf-4d82-b631-5e4404ccc28a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sephara, Sky's Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b8f527d1-25c0-49b9-83d5-1278ca72d009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atemsis, All-Seeing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-115",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4926ede3-deb5-405f-b867-a0079bb9f4d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Sorin, Imperious Bloodlord",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-18",
+    "setCode" : "m20",
+    "setName" : "Core Set 2020",
+    "variation" : false
+  }
+]

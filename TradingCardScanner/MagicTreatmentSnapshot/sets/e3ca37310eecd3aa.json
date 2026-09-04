@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39475e91-1e71-4546-ae4a-47ea66e47536",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Voja, Friend to Elves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-05-03",
+    "setCode" : "twar",
+    "setName" : "War of the Spark Tokens",
+    "variation" : false
+  }
+]

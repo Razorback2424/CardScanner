@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8ae31d1-9a6e-43f3-9b04-bd15699f73d6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a73e348-5bf1-4465-978b-3f31408bade9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "993b3b90-74c3-479b-b3e6-3f1cd8f1da04",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9577d3c-ee19-4b53-adac-b304287a066f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "698d48fa-d6c1-44b9-8aa2-bb03e0e53788",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c75b81b5-5c84-45d4-832a-20c038372bc6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wasp",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "t10e",
+    "setName" : "Tenth Edition Tokens",
+    "variation" : false
+  }
+]

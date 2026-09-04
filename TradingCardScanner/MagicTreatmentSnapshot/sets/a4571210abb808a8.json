@@ -1,0 +1,945 @@
+[
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "547e7238-ed01-462a-8135-08114ada7541",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evasive Maneuvers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94f68b16-121a-49e1-abf4-0bd2cd3e74ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Head of Security",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5174a37-fbc7-4dbd-a5c2-e2f256ea7a6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shuttle Crew",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d78afa7d-1952-46e9-bdaf-870b27c77844",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sickbay Orderly",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ecf2358f-542d-45c9-b5c5-c57b2b0c1122",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfleet Crew",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b1c20ba-df95-4a22-9646-df907c5700f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will Riker, Assuming Command",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ced54aa6-c8ee-451f-91cd-967fe766ec13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worf, Chief Tactical Officer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e453d221-41b6-4e95-83b3-b16695e81c75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryogenic Stasis",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46012ec9-9605-44fe-84a9-6aab0738737f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exocomp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0167486d-ed77-4612-a385-25251b544a14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolinahr Priest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2412446-ddff-40fa-b180-9385c691a9fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "La Forge, Perceptive Engineer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4f7ef05c-e9a9-4431-8cd5-4cd41c64de67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pelia, Immortal Innovator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "686a0be0-9374-4454-8bc6-a1bcec95df40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "T'Pol, Vulcan Representative",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "294e0651-99b4-4792-8ee8-107e7484117d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Badgey, Malicious Glitch",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ba16590-26bb-4bc9-9147-b7f4728da549",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ceti Eel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67380a35-1a15-4c45-8a24-3c6077af85db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defense Force Aggressor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97388288-9254-4fa8-bcae-c2e2a55ef92b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Direct Hit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5d7bb33-fdf7-479a-93df-b2d0acddf033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gin'tak Charge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9158819b-3961-49b6-a167-fff1a5504b8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kruge, Genesis Seeker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f503eb1-d95d-4c72-bc58-a7b9e9f92eb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mek'leth Berserker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b6d130a-60f7-410a-b45f-ad81dd203c8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warship Flight Crew",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "061dc7da-c803-49eb-b50a-a0801f09b5c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorn Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1cf2440a-63ed-485a-806a-dd267fc6e298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gumato",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f49df857-5488-455e-8ac1-b000f600eda7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talarian Hook Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b3ba275-0671-4328-a337-9de498ec2d99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disruptor Pistol",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40a37274-af28-4019-86fc-197e764e9e3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Operations Officer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddfbfc4f-eeea-4b49-92c2-3060e2cef830",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Picard, Steadfast Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a741052-e92d-4e9c-8cfa-3b5ed1f432f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spock, Logical Choice",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3ff8a24f-2771-454b-abb3-619b1c56f7e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trelane, Squire of Gothos",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb9805a5-eea3-48a8-92b6-7387bb23bc88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bio-Asset Allocator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb07e5e4-154e-4ba5-85a4-ecc78f1555d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Borg Queen, Perfection Manifest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1d339e1-3433-4630-965e-1841e46b40a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirk, Enterprising Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc121e37-b01c-4cf3-bd41-19a1cb21caa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klingon Strike Force",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6cf853b8-4479-424d-998a-4fc53456c38b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Benjamin Sisko, Besieged",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4adec7ae-b6aa-4018-bbc8-7ad378cbb1f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenacious Tosk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65a688e8-6427-4997-8712-46a4ff43d47b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Christine Chapel, Combat Medic",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "579",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3ef9271-f16e-4912-9e92-75c3777b4102",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Refute",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "580",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d9c8d6b-b49f-4777-baa3-6381a624e3c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Gasp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "582",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b18e1c55-29bc-434f-85b7-765d7ba71ff3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Run Amok",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f2efcab5-3aad-4edd-87d1-289978e8855e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Christine Chapel, Combat Medic",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b5d9bd2-cc78-4c30-b6ee-65b76c60a588",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Kirk, Boldly Going",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "trc",
+    "setName" : "Star Trek Commander",
+    "variation" : false
+  }
+]

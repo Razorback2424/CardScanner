@@ -1,0 +1,2156 @@
+[
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68b69d14-41ff-4236-9301-967a1e767353",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "One Ring to Rule Them All",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10f14c9e-6776-4efd-9e3b-1d25b7625e17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Bowmasters",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be79c609-3e72-445a-a2cf-a89dacd5cb9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sauron, the Necromancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb201a1f-3860-4006-9018-9a84da1c021f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of the Enemy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06ca4385-c438-4efa-8db4-fcc8151580dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witch-king of Angmar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1220b26-9dc1-4ba9-a5c5-3e18df82f7c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Display of Power",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "07754b94-d84d-4eeb-b7bb-7253f9cc8894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Éomer, Marshal of Rohan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21a6028c-4372-4fb7-bbc0-fdd1139807de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fall of Cair Andros",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a7721718-dd45-414a-9634-da926abc6d29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glóin, Dwarf Emissary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf6c83b3-ab10-487a-a282-409a60c81ca1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hew the Entwood",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e44120a-bf63-4871-b068-733e19ef2b0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moria Marauder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca8d86f7-81cd-437f-9265-aadabe78ccaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiteful Banditry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14394a67-d88a-4fb4-8ab1-9851c2af9df2",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "There and Back Again",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10829a5d-d8cd-4285-8fd1-da52c61eed0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delighted Halfling",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14f11a55-9fbf-4fd1-a703-cac259ca446e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flowering of the White Tree",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b19ac413-1c7a-4dde-9871-9dd926d1bd05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Chorus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66f7158c-c26e-4383-94f0-856b38404b35",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Fall of Gil-galad",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da2e490e-86a1-416f-9242-65ea2cfca336",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fangorn, Tree Shepherd",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a78ec65-147b-486b-a31a-847707d4b41c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last March of the Ents",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "239f0955-28e1-49e8-8b3c-b79f7fdbc5b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legolas, Master Archer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75527581-3aa5-4a3e-9548-7b0fed735986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forge Anew",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37d73770-6101-4f7d-bae0-8672838ebe1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radagast the Brown",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2edaa87-8f82-4891-9543-8d6a53dd0313",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ring Goes South",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df386185-8dc9-4aee-9593-c9d25e9255b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frodo, Sauron's Bane",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e7b69719-331c-4205-9167-8351883dac89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aragorn, Company Leader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0598a6d7-135e-464d-aa0e-5e2ece9e658f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aragorn, the Uniter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f43e9590-499f-4dc6-a7da-f4a695f58dbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arwen, Mortal Queen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a1d9e9e-7baf-477f-b494-63abc331e998",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Balrog, Durin's Bane",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6d589d54-2efd-4d1c-9b74-b3bb41f70b99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doors of Durin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2aaf6c5b-9cba-4552-8409-8b280cd6e210",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf the White",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23e7f246-6470-4607-84d3-420f790e8f2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elrond, Master of Healing",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e5490ecc-01d2-49cf-be7a-f0f1fbfb4ee8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Éowyn, Fearless Knight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fcaa1392-12ea-4f9f-ac3c-fce3f47a8220",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faramir, Prince of Ithilien",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3217a59a-7fc6-46a5-a331-cac02167ab63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flame of Anor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d6b72421-3827-4cfc-a53d-5a570525ff6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galadriel of Lothlórien",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1cae7f01-6fa1-49fe-b4b7-1c0be751cc97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf the Grey",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "244879fe-e785-4e61-9ec4-64f61804a6d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gimli, Mournful Avenger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a7fb95f-744a-4fe9-a117-0a9d16938793",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "King of the Oathbreakers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd257a12-1003-453d-8eb0-ac0faa71cba9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotho, Corrupt Shirriff",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9743037-525b-4e1a-9320-fa757229150a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merry, Esquire of Rohan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "050ee59e-23fc-4476-8d1f-3f29d3ec9e74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pippin, Guard of the Citadel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba0bc521-90d3-4adc-a8f9-bb6f3ff82a16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samwise Gamgee",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "994090e0-ca8b-4975-9fc8-00ba2a077ccb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saruman of Many Colors",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc8d7f48-6a18-4f18-b4bd-7308390aa340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sauron, the Dark Lord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "699f8852-d9e2-4604-a1f0-a37ade630d11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sauron's Ransom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e59822e-0ed9-493f-bd6c-3fdc55edc997",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shagrat, Loot Bearer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89735963-c3c5-4185-beef-3c38f0a6f443",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sharkey, Tyrant of the Shire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fd0db35-4033-476f-8c1f-42380dd7734f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shelob, Child of Ungoliant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3fa150aa-28d2-418b-b1a8-7d10e5f1c139",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sméagol, Helpful Guide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e3b97d48-3bf7-409f-8b1c-6dd529ae58d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tom Bombadil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed36c685-df55-4d62-99ba-9ad1cb7547f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Andúril, Flame of the West",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6828d86d-531e-4e90-a67f-99eb88881913",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glamdring",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d491a358-9305-4d45-94a4-b2064e6d4e1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horn of Gondor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "858507dc-d656-458c-a21b-fde604f75a53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horn of the Mark",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0e8c371-d9ae-40e7-9d99-b38bcc0c3500",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mithril Coat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a163a525-1091-42cf-ad94-1c60c1b2c738",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The One Ring",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b4eb9a2-7d4c-4a4d-b57b-92f00e65b6dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palantír of Orthanc",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "594b2290-d1c3-4403-8456-ddd33a3b8200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phial of Galadriel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e11ae7e-45fa-4d05-a4fa-c43d33d6daed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sting, the Glinting Dagger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40afbbb5-055f-4271-b291-272ffbaab1fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barad-dûr",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "969df973-e45a-485f-91d5-a25b3dc0e69c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minas Tirith",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "679335e5-f425-4dc2-bcb2-03cc328ac664",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mines of Moria",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b182f0ba-c93d-414c-8ada-3306d0997cd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mount Doom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "982db03d-d4b8-41cc-b7b4-5def7e8be1ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rivendell",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14350cee-99f6-465a-a76c-aac06b76d233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Shire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "108aba8f-e99a-4c21-8e9e-acc106cee71a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Battle of Bywater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "970d1218-f15b-4181-8da4-a6a6a4202d40",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "War of the Last Alliance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "74830e41-4e59-4683-a08d-13b9f693c00b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lobelia Sackville-Baggins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "be7284a9-bf48-4667-94c8-462952c44599",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Rockets",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "47354056-d51c-4dbe-bdb0-9623b88f64dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, Friend of the Shire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e65be588-4209-4ad7-9bdc-d601fdc0e8f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delighted Halfling",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "edb13910-8e2b-4623-a4c6-a833a795aace",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo, Retired Burglar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3ec29d0c-0449-4f1a-8b61-7f3490323827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frodo Baggins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10513e15-a660-4194-8b00-1431beb77db7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Borne Upon a Wind",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "20f1f2a0-aa98-4a13-bcc4-e9b340478e55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boromir, Warden of the Tower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "57403e9c-2558-491e-95c0-a748636fbe28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldberry, River-Daughter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f312dd75-8308-4283-9ddd-f5648af2bed0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawn of a New Age",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d417931-03c0-4960-9e51-e0fb5d556d1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Isle Calling",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbd40a88-3f4b-4c11-8365-2a973732ff22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Press the Enemy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9968b769-d926-4a5c-887d-ad1108882bd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rangers of Ithilien",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47777f83-c65e-4e42-a529-84e117d121f0",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Scroll of Isildur",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81cfc85c-ff43-44e2-8143-2c4a4c768732",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Saruman",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "665297bb-f224-46fc-8452-c940db0514f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Watcher in the Water",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c492e865-a9db-41a0-ba75-b8de3551357b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call of the Ring",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bab202d-5a44-459c-ad42-5bcae374f5ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isildur's Fateful Strike",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "260bb7d8-693e-4b79-8e3d-46e59d8f24d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lobelia Sackville-Baggins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "pltr",
+    "setName" : "Tales of Middle-earth Promos",
+    "variation" : false
+  }
+]

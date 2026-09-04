@@ -1,0 +1,1244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d0bff47-7d3f-4071-84e2-5d268dbc4da9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Toby, Beastie Befriender // Toby, Beastie Befriender",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "998c2aac-9c98-415c-ac81-c9cf4ce1e191",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Valgavoth, Terror Eater // Valgavoth, Terror Eater",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fabdf45b-f741-49f3-b600-5c4026d50022",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bedhead Beastie // Bedhead Beastie",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce1314ee-0f3b-4bed-b334-2e60b96cd852",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Boilerbilges Ripper // Boilerbilges Ripper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8b019a8-8d63-4030-962a-5cc44f57d34c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Diversion Specialist // Diversion Specialist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37f299f5-2aa2-4758-a043-a61a8409c043",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cathartic Parting // Cathartic Parting",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25594ff8-cf60-4438-b269-b3fc56af5c7d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "House Cartographer // House Cartographer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4fbc956-d90a-47e4-aa4e-7d246029a103",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Valgavoth's Onslaught // Valgavoth's Onslaught",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb312c97-5cd0-43f1-a43b-75ea894483da",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Inquisitive Glimmer // Inquisitive Glimmer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b16115c3-d2bb-458a-b768-0a61cd512ad2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Jolly Balloon Man // The Jolly Balloon Man",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e6ed7a7-6ee1-4669-8597-512c16671049",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Marina Vendrell // Marina Vendrell",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66c4b771-a332-4d8f-82aa-73bb68cc6daa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unidentified Hovership // Unidentified Hovership",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f71534cc-15cf-4578-b2a1-18d28706b941",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Midnight Mayhem // Midnight Mayhem",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "803c4578-c30e-402e-a2da-b7a917bf1211",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nashi, Searcher in the Dark // Nashi, Searcher in the Dark",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64a39225-066f-4969-baa5-bf4b96ab6f75",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Oblivious Bookworm // Oblivious Bookworm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d229868-5a64-48ec-82cd-e03902ccad57",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Victor, Valgavoth's Seneschal // Victor, Valgavoth's Seneschal",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d9b488f-c2b9-4186-8d21-7285833a32b0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Winter, Misanthropic Guide // Winter, Misanthropic Guide",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc713aa0-ef5c-4cd2-a17d-3e5445bfc2e7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ghost Vacuum // Ghost Vacuum",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "007a6422-20b7-40d0-aed1-99eb7482556a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hushwood Verge // Hushwood Verge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5aa2c0c6-a04a-402d-a312-9b96f94b6bab",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Terramorphic Expanse // Terramorphic Expanse",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94dcb965-3e4d-4a78-afe8-bb7f29e95747",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Island // Island",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45007d21-b015-4a4e-9496-caaaa0fcb188",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "422d4e2f-f836-4f66-bfd8-3b2aa2259d7a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abhorrent Oculus // Abhorrent Oculus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "444dd3bb-2523-4c56-b1b5-2cc62698c27e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eacea51e-ffec-4809-95c1-4d2c72aebd11",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unwanted Remake // Unwanted Remake",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07cfb439-705f-4b71-8f8c-00881a68e181",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Demonic Counsel // Demonic Counsel",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "090f821f-05ee-43d7-b85e-568ee19e7376",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Withering Torment // Withering Torment",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d28d7db-5ecc-46bb-ba62-2953d9d0b74a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fear of Missing Out // Fear of Missing Out",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "079682d3-c6e5-408f-a594-0d6dccbb0627",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Waltz of Rage // Waltz of Rage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "847c8e53-9066-4001-8aab-0c911029259f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mirror Room // Fractured Realm // Mirror Room // Fractured Realm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fe54b2c-8b99-4837-a85c-5817b503c6b7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Roaring Furnace // Steaming Sauna // Roaring Furnace // Steaming Sauna",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6902435-e18c-4c55-b089-fb9b0ed119ad",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Doomsday Excruciator // Doomsday Excruciator",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77cca794-a7ca-490b-a342-4d28605441dd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Razorkin Needlehead // Razorkin Needlehead",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "840a96e2-3803-4444-a930-19fad6ee8943",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Overlord of the Floodpits // Overlord of the Floodpits",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0851a4a-b6c9-4e13-9905-31ce19e08572",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hauntwoods Shrieker // Hauntwoods Shrieker",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "813150f3-f945-4082-a167-76e7ae7c3626",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tyvar, the Pummeler // Tyvar, the Pummeler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aea1d114-b6f7-418f-b51c-71bf96f7ecef",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kaito, Bane of Nightmares // Kaito, Bane of Nightmares",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "134d3484-5e64-407a-b218-7a83cdaa4236",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nashi, Searcher in the Dark // Nashi, Searcher in the Dark",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "124a3040-102e-4c53-bc76-d1ef905f9499",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Victor, Valgavoth's Seneschal // Victor, Valgavoth's Seneschal",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b2495c8-76c1-4b5b-885e-8597013438c6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Marvin, Murderous Mimic // Marvin, Murderous Mimic",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0193a123-3d3b-4850-8ec8-87d33191fdaa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Enduring Innocence // Enduring Innocence",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a53f4ec9-1972-401b-a5d6-0cca2ebd2c0c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Overlord of the Balemurk // Overlord of the Balemurk",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d19d31a-7f39-4408-98bb-7bd324a1a9c1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Twitching Doll // Twitching Doll",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "909e4a6c-b542-4fd2-ab55-267912296ae9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fear My Authority // Fear My Authority",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6407c85a-b08f-40b2-a137-2399e16d5c91",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Paranormal Analyst // Paranormal Analyst",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d87c93a8-eaa2-4656-a3f7-45a592865460",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "I Am Duskmourn // I Am Duskmourn",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e74efff1-37a9-451f-8be1-7e1ad79dc5ee",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Reality Is Mine to Control // Reality Is Mine to Control",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bc6ca9f-2de2-4039-bde2-544f22acd278",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Exhume // Exhume",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4ecc134-b6df-4932-8b9c-9414c503878a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Damnation // Damnation",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3514d472-abf3-4157-a827-96c2adf9e517",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider // Spider",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a4332f3-0032-4c0b-b487-f9d4d0d26969",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dashing Bloodsucker // Dashing Bloodsucker",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fc529c2-eb2d-4129-9da4-b92bd9a17e21",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Demonic Counsel // Demonic Counsel",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4dfee9f-dae4-48e7-b6ec-bf731f82399c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Let's Play a Game // Let's Play a Game",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "508872a5-36e4-4818-b17a-caf34cc2fc49",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Murder // Murder",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "adsk",
+    "setName" : "Duskmourn: House of Horror Art Series",
+    "variation" : false
+  }
+]

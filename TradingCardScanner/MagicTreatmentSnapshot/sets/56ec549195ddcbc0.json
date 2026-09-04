@@ -1,0 +1,464 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5009729f-6365-42ca-979f-d854a10e463b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d197efaf-4c60-460a-81d2-651e2914b82b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Germ",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b0a71ed-f693-4228-9077-93c62d057ef9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99a6ebce-f391-4642-857a-4dc1466895f3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6722527e-883e-49cc-9eab-daee962a740f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ogre",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b067ff1d-32c5-4bd9-ba7c-749a5ad7acdc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e0eeebf-7c4a-436b-8cb4-292e53783ff2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0302fa7d-2e34-4f4a-a84e-7a78febc77f5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43b42383-6055-4c85-9555-d95aaa3078d1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb508d76-5e34-45f9-b0bb-9dbbf8caadbf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Worm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "248ae300-40cc-4e6f-8fa6-2bd6ab85fee6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Horror",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6e6d6a1-4a05-4b6f-9a80-81a0ac6f2b34",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "799070d9-2e04-49a0-ba2d-fe149f23fa4a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Myr",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e5578f7-3b45-470d-a5b0-7a2c50b9a333",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Daretti, Scrap Savant Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7810827c-55ab-431d-a342-d115d97da082",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad511e21-5139-43d4-b07a-9d340465e100",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a47f751-52f1-4042-85dd-ea222e5d969d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b3c4b73-9a95-4caa-9a91-b4777f85b6f8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09ae926d-80be-42c5-8c36-658cd38d2597",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b247ed9c-f5d4-43a7-bf9b-3a42878de840",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squid",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c9a9020-2bf0-4bdd-94a2-545304226a53",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "tc16",
+    "setName" : "Commander 2016 Tokens",
+    "variation" : false
+  }
+]

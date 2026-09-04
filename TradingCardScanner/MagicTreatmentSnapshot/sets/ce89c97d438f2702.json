@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e3690fa-627e-4b3b-b517-e2cd1b4bbdd0",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Servo // Thopter",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "l16",
+    "setName" : "League Tokens 2016",
+    "variation" : false
+  }
+]

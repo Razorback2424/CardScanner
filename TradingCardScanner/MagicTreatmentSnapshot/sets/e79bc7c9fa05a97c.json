@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "25ab0711-a06b-4c4c-a49e-d951915d918c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reforge the Soul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "c16",
+    "setName" : "Commander 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b4036bb7-835d-4690-aca1-1ab566776e9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroas, God of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "c16",
+    "setName" : "Commander 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "cac216de-7303-4757-80b9-d1eab9899d76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastation Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-11-11",
+    "setCode" : "c16",
+    "setName" : "Commander 2016",
+    "variation" : false
+  }
+]

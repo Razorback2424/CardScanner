@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "107†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c59579a-326b-4f82-ac33-1f4912db367b",
+    "language" : "de",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-04-01",
+    "setCode" : "4ed",
+    "setName" : "Fourth Edition",
+    "variation" : true,
+    "variationOf" : "0fc44673-7f46-4844-a434-11bc80d355f0"
+  },
+  {
+    "collectorNumber" : "134†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "320906ee-791a-41c0-9b28-9a287cdb3340",
+    "language" : "de",
+    "layout" : "normal",
+    "name" : "El-Hajjâj",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1995-04-01",
+    "setCode" : "4ed",
+    "setName" : "Fourth Edition",
+    "variation" : true,
+    "variationOf" : "5fe5d21d-a926-4012-adaa-ebfddaa9205f"
+  }
+]

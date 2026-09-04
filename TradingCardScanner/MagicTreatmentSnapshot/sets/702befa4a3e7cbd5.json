@@ -1,0 +1,2570 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "120e2b4b-afc7-4bf0-a09f-568e08f6bd8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Ring",
+    "promoTypes" : [
+      "buyabox",
+      "doublerainbow"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4eb25311-a07c-48bf-8013-392d0811abbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, Exuberant Explorer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4ede872-a120-43e4-875f-7eaecc209193",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, Exuberant Explorer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f39f2298-4307-4de7-922f-00e10bc3fdc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mossborn Hydra",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f900c26-3d75-4106-92e5-cea11b48a21e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mossborn Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a01e775-f86f-4196-8b91-3a5e663d468b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Preposterous Proportions",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2074e1d2-d4f1-42d3-96ce-f6ffdb41a3d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quilled Greatwurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9601eb3a-04d5-47af-906e-f526b55c5f45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinner of Souls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ec632eea-768f-45f8-bbca-ed7db8dce255",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Scavenging",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "251fe149-183d-41b3-b2c1-3462d925d05d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Laughs at Fate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15bd3c4e-8ec2-4661-860c-6a75bac09b72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Laughs at Fate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "97e6f58a-73a3-45f1-8e68-da3bd91173ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anthem of Champions",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0a5a589b-30d5-44af-8059-56278f5db1af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anthem of Champions",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10b583ec-1f98-4470-853d-bb4c2e0b3f61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashroot Animist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8fc3a6d-22a8-42ce-95e4-855df8a20f76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, Saint of Dusk",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24bd57f7-197a-4dd2-8448-c7b1275fc63c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, Saint of Dusk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3fd66e7-784e-4b05-9bd2-52ad1b5296a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exemplar of Light",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "422e5ef2-230a-4b30-96a8-ac6af4f0ec61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exemplar of Light",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fab86fc9-4ef8-4e79-bebe-70a8e2b8a45c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, World-Eater",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cdb0a664-3598-4073-96f5-08ccf33e646f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, World-Eater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e371a29-bb06-402d-8ea3-f2a0b982a310",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kykar, Zephyr Awakener",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2d2c5e8-c005-4293-9fe3-5cefd2001fef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kykar, Zephyr Awakener",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1250307a-3097-4c40-b9e5-29927ca308d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Visionary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8259f3cf-a28d-46c8-9bb9-decd7d9bcced",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Visionary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b01579b4-f328-42ee-a773-9bc3b29fe5b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, Paradox Sculptor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "861c6ef2-a00d-450f-9141-c3e838ee999c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, Paradox Sculptor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a00f5d5-1c37-45c9-9a9f-b42d0591178e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banner of Kinship",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d59654a-ae7b-46a8-84ec-f641ca7c132f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banner of Kinship",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e27b5fa0-af26-48ea-9f82-5032a6208999",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Axe",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49abd29d-639b-480e-95c6-28ec72458888",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Axe",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1ea1b51-d67c-457e-befd-ce46358759b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrawling Crawler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "696ed860-99ef-44d4-b2a9-2de50e5b1151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrawling Crawler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8276abc8-06d0-4e9f-a69d-174853720f8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulstone Sanctuary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee826988-0bd3-4bf4-84f9-a1a5fdfa2cbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulstone Sanctuary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c54b626a-02a9-4d5f-be1a-286950e153f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Caller of the Pride",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b908bd6c-401b-419d-a26e-8db4421f809b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Authority of the Consuls",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a7512993-aafd-4c0c-b1e1-e967a0043883",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Authority of the Consuls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d6a9a5a-329d-4ce2-92c2-f3c24b17c5cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Judgment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e779119-9cac-4e0d-8d3d-76be4a91a5fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giada, Font of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8e317f6b-2dc1-4ff5-a286-bdc275a5b986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extravagant Replication",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9b08643a-1f96-4c33-906c-5cda9adb4f45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omniscience",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "377f971a-dfc8-444d-aa9a-031f16faf764",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Stop",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a46f2f18-c104-4c49-8bd3-e1ce5dab115a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Dreadhorde General",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6cf953e6-d741-4239-96bc-42abfd1f6e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Quandary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e8214a0-7c14-4a77-b32d-55a823696600",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herald of Eternal Dawn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e5cc9c1b-a4a8-4cfc-804e-aabd95d443c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Arena",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5e50f209-634b-48d8-972b-c32f8e655f88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Arena",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "143f465a-9b40-406f-aa02-fea7b469d4eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise of the Dark Realms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53677ad3-d7af-49ba-8d90-3014f33fdf8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rune-Scarred Demon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84ff997f-4852-4533-af06-fef596337496",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brass's Bounty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c3adecf-67dc-4a5f-bc82-053e5237256d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drakuseth, Maw of Flames",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5758216f-b444-49ad-96b9-d5c53d38cbe7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "384c5118-a021-44a8-829d-a6b437e2ae96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flamewake Phoenix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aed8a937-577f-4841-9eb3-44ac3aad0654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sire of Seven Deaths",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ca5b4ab-a596-4d1e-8081-fe8c4ce31e0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sire of Seven Deaths",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f888f402-c6f7-4387-a512-6edf9b262bb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Mob Boss",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a87c8ed6-f83d-4aca-abc5-8749067b7517",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slagstorm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "13f23845-87c2-467c-90b8-a170ec4ded97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doubling Season",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "420eca07-ce31-47f9-ab03-335257952dc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doubling Season",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f98e07c4-d750-46a3-9042-5609978447d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Archdruid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "226c7b27-e6d1-4e52-9182-41adf26f6936",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis Wave",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fc811cb-8851-4ad8-8b82-37b7d875ca8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b79fbe6a-dba4-4317-9ac2-8b68b17180ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raise the Past",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a06c77d7-79e4-4d47-8dc9-b6ebd47d1482",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenging Ooze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d28d98e0-d593-408a-918b-d7dc74bebd46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien Reid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5923cfa-7963-41af-b1fe-3e2f8984dce9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consuming Aberration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27ea23c0-c3cf-4bc4-807d-2ef97d92e6aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyknight Squire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "266b32e4-122e-4b30-9d95-fbfaeae0d45a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathril, Blade of the Elves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4539efce-0e23-46ac-a632-730b52111868",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "525e5b61-f085-4749-9525-82ddac84555d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Progenitus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "032abde4-a460-453b-acc1-a4a486ab00e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftblade Vindicator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "23089673-64bc-48c1-9526-e5b0b51e7493",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Year Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b114e94d-2c60-45e8-b6e8-55ad8415db5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Simulacrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fa5af47f-de45-4d83-a1e6-625fa6ba54f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valkyrie's Call",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4bf656b4-020e-491d-9074-f2f0514e67e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arahbo, the First Fang",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0073371f-a31c-4b1f-9926-53efa0aadda4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage of Runes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdde8c96-b429-4e28-9de2-68795f96b08b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curator of Destinies",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85fc7552-e4f5-4926-be35-6303ed9587d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drake Hatcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba7f7547-f54a-4d9c-bb1b-4df896d76b9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Fae Trickster",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7cab831-9950-42fd-809b-7ae9b7ac7544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Fae Trickster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0dc6670-9b8a-41d8-bbca-54a881d61c7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homunculus Horde",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64b34e25-11f3-44de-b385-89741c59397c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito, Cunning Infiltrator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0fab2dc4-0a3b-42ff-a11d-75fd102f431f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, the Rising Tide",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d4ce6c3-a66d-45f9-b576-53b4468cda9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, the Rising Tide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5aba3d93-9db9-4d57-abc1-9cb034377345",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lunar Insight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27ccfd94-cbbd-48ea-b0aa-b3835154dc7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of Forgotten Lore",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24c747d6-0b51-42e9-b94c-185bce2dfef1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abyssal Harvester",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca5e1766-a531-4bc8-ab73-f58b89f18333",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blasphemous Edict",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e184d447-1766-4776-9fbd-f3d6a076f0c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blasphemous Edict",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "940b3aa3-0f57-4b44-8ccb-60229c8cc72d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodthirsty Conqueror",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3051049-cf58-4ff3-bd36-79e6b43c183d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodthirsty Conqueror",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5235d36-7150-4cd9-af01-c2b496d1a581",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Armor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a2b3c87-9d8d-44af-8c3d-739ce0a2d6d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High-Society Hunter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24587cc6-0fbd-4e28-b94a-e808885fcc61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine-Lives Familiar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3dcbbf6c-e00f-4934-b86a-240a9c85a0c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones, Bauble Burglar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98e73089-8683-401e-bcaf-5e1b5db8ae60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zul Ashur, Lich Lord",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "973dc527-8eda-4550-a759-71252b2de41f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zul Ashur, Lich Lord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f95d60d8-2021-4308-87f5-668403a027d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Barricade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a270cbf4-3c15-49dd-a226-a90536edd0d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Barricade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83f27410-bd9a-465d-b6b3-7ca0e4019caa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Flameshaper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52c75ecc-6a92-486b-98fe-ecc026b2ba3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electroduplicate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "264db9d3-1cc2-48b8-9716-0c8fd249bd9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kellan, Planar Trailblazer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "eed399eb-59e6-4782-94db-83325af5a1c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rite of the Dragoncaller",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89d97d33-6299-4ad1-81f0-327a6f52c2ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Searslicer Goblin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa72c2fd-53dd-4a34-95e1-89e2b2d2ac72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twinflame Tyrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db7215ed-ec6d-42cc-bd04-6eb31c0818a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twinflame Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "pfdn",
+    "setName" : "Foundations Promos",
+    "variation" : false
+  }
+]

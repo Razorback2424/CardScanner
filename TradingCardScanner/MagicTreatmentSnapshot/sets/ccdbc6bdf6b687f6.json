@@ -1,0 +1,122 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36da00e3-3ef6-4ad5-a53d-e71cfdafc1e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "ppp1",
+    "setName" : "M20 Promo Packs",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc101b90-3e17-4beb-a606-3e76088e362c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "ppp1",
+    "setName" : "M20 Promo Packs",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "783616d6-e3ea-43fd-97eb-6e4c5a2c711f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "ppp1",
+    "setName" : "M20 Promo Packs",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27d30285-7729-4130-a768-71867aefe9b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "ppp1",
+    "setName" : "M20 Promo Packs",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "893b309d-5e8f-47fa-9f54-eaf16a5f96e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-12",
+    "setCode" : "ppp1",
+    "setName" : "M20 Promo Packs",
+    "variation" : false
+  }
+]

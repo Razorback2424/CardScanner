@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b3d4fc9-ed2f-48ad-9f02-a03538ac9196",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-27",
+    "setCode" : "ha5",
+    "setName" : "Historic Anthology 5",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3a660f8-e583-4442-90d6-2b270cb4ff91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask the Hidden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-27",
+    "setCode" : "ha5",
+    "setName" : "Historic Anthology 5",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "46886564-eef4-4a04-a148-c23f2a1877af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Voice of Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-27",
+    "setCode" : "ha5",
+    "setName" : "Historic Anthology 5",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4f74725-44d4-4ad1-8365-b21bc67e952e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-27",
+    "setCode" : "ha5",
+    "setName" : "Historic Anthology 5",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a7b8a82b-7dc2-4a39-8af5-c71511d164a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Core Augur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-27",
+    "setCode" : "ha5",
+    "setName" : "Historic Anthology 5",
+    "variation" : false
+  }
+]

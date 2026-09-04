@@ -1,0 +1,122 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6078962a-a98d-4d76-9126-5f0f9a6fdf8a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pmps09",
+    "setName" : "Magic Premiere Shop 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95762dd0-d8d8-4416-853c-4f24043f159b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pmps09",
+    "setName" : "Magic Premiere Shop 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da54204f-b684-4b89-a8bc-eec9bd43eb32",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pmps09",
+    "setName" : "Magic Premiere Shop 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2f2c29c-fe34-40ab-bc25-10d76868ffb9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pmps09",
+    "setName" : "Magic Premiere Shop 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a502d95-f89b-49c0-8023-a243ef834929",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pmps09",
+    "setName" : "Magic Premiere Shop 2009",
+    "variation" : false
+  }
+]

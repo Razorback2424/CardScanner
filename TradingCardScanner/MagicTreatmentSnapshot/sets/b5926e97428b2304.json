@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8954272c-fac8-41ee-8fa0-0f01f5cf353a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d8cc4a9-ca3f-4151-80af-a430b835c52c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4afa9474-c487-4a54-a2a1-21b84f6683a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba719b3b-c328-4331-945e-a1758e9a51b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fd19809-f675-4fc8-afb2-12e5e636d26b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c15d933-63f3-42d5-aed4-0e420ee4a7d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genju of the Spires",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b2449d5-937b-4049-8eb2-3dd669c3f3aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Okina Nightwatch",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1e4a4bf-6fd4-46b9-8f1d-c20c52e992f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyknight Legionnaire",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pal05",
+    "setName" : "Arena League 2005",
+    "variation" : false
+  }
+]

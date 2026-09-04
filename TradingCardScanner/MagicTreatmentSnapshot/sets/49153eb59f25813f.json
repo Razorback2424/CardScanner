@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71766a5a-ce00-4e48-b4f6-0d1a7f5b2691",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1fb8ca6-7351-457a-b2a4-48f57ec3c64a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b938d2e0-7e90-4f57-b363-5c68a6207d6c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Frog Lizard",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9af74e26-69d7-4683-9a71-9b420c03d75f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cleric",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79a71b52-58f9-4945-9557-0fbcbbf5a241",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Horror",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a5a5a5-a8ae-41ed-9af5-b99d80ce0b35",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91f3a4b0-0992-4245-b245-033ad1083a93",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1612f546-1bdb-4861-966c-4eeb7d1e65e8",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Domri Rade Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-02-01",
+    "setCode" : "tgtc",
+    "setName" : "Gatecrash Tokens",
+    "variation" : false
+  }
+]

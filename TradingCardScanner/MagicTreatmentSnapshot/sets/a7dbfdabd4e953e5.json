@@ -1,0 +1,528 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdafb8ac-e9af-4195-928a-43d004a2e9bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow Mercy",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34f1e901-7728-41e2-ad1b-94c877404a58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yule Ooze",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ed5261d-4bf1-4cb4-8ffe-a51439eb40c9",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Naughty // Nice",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "616af376-26a2-4302-8a0e-e922634602f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stocking Tiger",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f839548-e6d9-41c3-ac56-ffe2cf13cfad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stocking Tiger",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : true,
+    "variationOf" : "616af376-26a2-4302-8a0e-e922634602f4"
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de9211a8-3321-4987-bdb0-3882ef9ccd6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Toy Workshop",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-12-02",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "464ff1cb-3731-4e72-8a70-fbe7043e12ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Sleigh Ride",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "833f4412-98eb-4ba5-8ae7-f3c973291db7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Pie Network",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f7d0eda-2ecf-4479-9c2a-060f65220084",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Some Disassembly Required",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8527dc1a-57f9-4328-98d3-a83874069b8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bog Humbugs",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cbda4a6-e01b-4df2-aee9-b6f14336b85f",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Decorated Knight // Present Arms",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "461d92f4-7071-4f6e-983a-350e00181034",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Topdeck the Halls",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-12-25",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6942c80f-5ab9-4317-98a4-0fc1211ed972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last-Minute Chopping",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "5379b994-5f9e-44ec-a69c-8d58ffb0dbd8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "event",
+      "metal",
+      "serialized",
+      "thick"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-18",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e24502f4-53d3-437b-81d1-8f22635814af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaos Wrap",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a2c94d3-a389-4f23-8d32-e71ab8eaf540",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seasonal Sequels",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69d12634-311a-4088-bee5-d9687b3b8788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eggnogger's 'Stache",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-25",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5f33832-b196-49a1-8dd9-bea2c27fc2c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cheer",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-15",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4022a4e-9e8a-47ef-b0e2-9e8910857e76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fruitcake Elemental",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba72c564-0ca6-4f52-b19a-175646965291",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gifts Given",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b74ed7df-0d88-49e6-af51-21f2a42114a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gifts Given",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : true,
+    "variationOf" : "ba72c564-0ca6-4f52-b19a-175646965291"
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af171b8b-05cd-4a05-ae0b-6e80935addab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evil Presents",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e177c12e-551a-4688-aa34-740f873dd37d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season's Beatings",
+    "promoTypes" : [
+      "datestamped",
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-12-01",
+    "setCode" : "hho",
+    "setName" : "Happy Holidays",
+    "variation" : false
+  }
+]

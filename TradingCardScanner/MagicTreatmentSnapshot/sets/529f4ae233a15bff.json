@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b441a33a-3459-4d33-b733-7084335a16cd",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Nicol Bolas",
+    "promoTypes" : [
+      "fnm"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-29",
+    "setCode" : "pmda",
+    "setName" : "Magic × Duel Masters Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccb36368-afd5-472b-a409-73d04541e026",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pouncing Jaguar",
+    "promoTypes" : [
+      "fnm"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-22",
+    "setCode" : "pmda",
+    "setName" : "Magic × Duel Masters Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c81d8b2-b776-4e20-9671-6f3f89f6d78b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "fnm"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-15",
+    "setCode" : "pmda",
+    "setName" : "Magic × Duel Masters Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e043ee05-9b3f-4607-a44a-70faa50687c4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Earthquake",
+    "promoTypes" : [
+      "fnm"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "pmda",
+    "setName" : "Magic × Duel Masters Promos",
+    "variation" : false
+  }
+]

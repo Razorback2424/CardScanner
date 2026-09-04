@@ -1,0 +1,394 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9542c2ea-5ac9-400a-80f8-3486695f024e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar's Expertise",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-21",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1402d294-8772-4b13-b1d0-f4205d57208b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Ham, Peter Porker",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a513b54a-fc86-4a8f-a427-6fe972d246a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Jane Watson",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c76914f-fc3a-4cb2-b825-e92d8b801ec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultimate Green Goblin",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1efc11ba-8fe9-45cc-9de5-bd5a577f0a87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carnage, Crimson Chaos",
+    "promoTypes" : [
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fc7d4ed-9e30-4daa-997d-6916c916c5fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gran-Gran",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-01",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6415bd7-8585-4dc5-a183-4499e54fa42f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unlucky Cabbage Merchant",
+    "promoTypes" : [
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-01",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "31572625-b4a8-4ac0-8f08-999d6a6636d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuna, Grand Summoner",
+    "promoTypes" : [
+      "ffx",
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-12-05",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ffcf7acb-23e4-4658-a5fd-0ae585602dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "playpromo",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-12-12",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "790f5de2-d37d-4b00-b222-91a4549c3870",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon's Hoard",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2d89f635-ce35-4f6d-9bfa-af4bafa9b052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Despark",
+    "promoTypes" : [
+      "boosterfun",
+      "commanderparty",
+      "ffxiv",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-01",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "be918553-aed5-455d-8b36-23a73dc3f907",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonspeaker Shaman",
+    "promoTypes" : [
+      "boosterfun",
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-18",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "db7d9ff5-71ab-47af-80b4-07a5e83b0f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Culling Ritual",
+    "promoTypes" : [
+      "commanderparty",
+      "ffiv",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-20",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "035be14f-57fc-47d4-9710-7f3bc36fcfdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palladium Myr",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-07-25",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66cfaf27-3284-4d1d-a352-c50260998cd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trinket Mage",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15f23472-8fd9-4218-9aab-73079daa7fd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monstrous Rage",
+    "promoTypes" : [
+      "standardshowdown",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pw25",
+    "setName" : "Wizards Play Network 2025",
+    "variation" : false
+  }
+]

@@ -1,0 +1,464 @@
+[
+  {
+    "collectorNumber" : "111",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9a5e924-291c-43b7-bb34-5ac2842a60e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9b7d945-0c34-4576-abb0-a6e2a816c052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev, Skyship Raider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba07c7db-9ec7-47c1-96a4-fa67492870f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1c2b1b4-6439-4203-967d-c8a40a2e701e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oviya Pashiri, Sage Lifecrafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60c5f5d3-fc82-444e-80c3-dd8ab8bdece4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b490955-14cf-4796-b699-d430e34d960a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Depala, Pilot Exemplar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1fbbbec-aa47-4063-8c06-76cbfee6b684",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Consul of Allocation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e29077a-5e72-4104-bc9e-25a59a470b24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Ajani",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c763e27a-3eb7-48b1-88b6-177c7ea99d22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi, Eternities Crafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df28695c-e56b-442a-9e18-d424d459b722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherworks Marvel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34cac0f5-7199-49a9-a5ff-fcf33264a524",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heart of Kiran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15362204-08c7-459b-b763-069be394b5ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hope of Ghirapur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ecfe191b-2b08-4c6b-a607-cc7db7276522",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paradox Engine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dcb26bd7-a66f-4a2c-9e8a-081876b5b784",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Bridge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8acca1e6-739e-4155-93f5-3684bf77d496",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skysovereign, Consul Flagship",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c379f057-46ed-474e-83b1-72b843901864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3448561f-cfbb-4134-a1a8-d8ebd32e2a89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sculpting Steel",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1461c66a-9f23-406a-b035-fea244c831e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8267d101-d20b-479f-b80f-1bb1d7757158",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b69fae08-0d12-4652-9f06-fbda7a306f34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Padeem, Consul of Innovation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56836320-356f-4ec5-9e2b-3a73620044a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-12",
+    "setCode" : "klr",
+    "setName" : "Kaladesh Remastered",
+    "variation" : false
+  }
+]

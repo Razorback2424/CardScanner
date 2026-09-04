@@ -1,0 +1,610 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38d3b35d-3ae7-4f41-879f-e05146112b24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amateur Hero",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d98f0e44-f5c7-4e08-8a4a-d0280f22d132",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lethal Protection",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a79e848-ca3e-48d6-8522-f564f6f3e908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Symbiote Spawn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eab647ce-fe86-450d-b5e8-ebcda631f6a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom, Eddie Brock",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9a73605-3a17-4887-8395-5bb8d10714bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Trouble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa0ccd32-63c8-47a2-8de1-5845dad8e682",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost-Spider, Gwen Stacy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88ede451-65c2-4169-b7a1-34edfc4e92ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mary Janes",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58bd0a52-3e71-4059-b1c5-b3b3e3e99cfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Classmate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "169fbdcd-5a08-4410-b7d4-fe04ad7891cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prowler, Misguided Mentor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61c17573-437e-4ffb-811f-8390d388d5a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Miles Morales",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5dbd3de-4ddd-4243-904d-0cedb4545729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twisted Spider-Clone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ddc2386e-18a4-49f0-9c08-da870dc6f96e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amazing Alliance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e88f2d0-d014-49cf-bb3c-fadbfc12765d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom Blast",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83e8c09e-c195-4137-a6c1-45abdcaed10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grasping Tentacles",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7d2cb243-08a7-47c9-9d71-7748c499ac30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom, Deadly Devourer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b2860277-5b9e-444a-81f9-58e23355a722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Green Goblin, Nemesis",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ad287357-9602-4090-8feb-6f658f2a47b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock, Evil Inventor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7a938fa9-cba2-4773-9be9-db1e37aa001f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sensational Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e9a83b6-2881-4ba3-96d4-0fd89110837d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pumpkin Bombs",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "46734558-4af4-4773-8c13-59e110bacae9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "MJ, Rising Star",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "415bf221-215b-4c9f-b995-8d31ca95adc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Peter Parker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c28edfe-8b30-41b6-889b-c42d5eca778b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alchemax Slayer-Bots",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "62a8b9a4-86cd-4fb3-bda6-a044a79cc6fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Future Flight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26ea86d7-34f8-4358-8fdf-a18e53397755",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyla, Holographic Assistant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eca05fe2-f203-4e7c-ae90-41f1f2ae94cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man 2099, Miguel O'Hara",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fa7a8dc-67b3-4f96-af6e-98bb0a052d92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grendel, Spawn of Knull",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spe",
+    "setName" : "Marvel's Spider-Man Eternal",
+    "variation" : false
+  }
+]

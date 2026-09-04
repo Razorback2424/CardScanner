@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74d11d10-90c7-4deb-bf7c-2208a0fcc19f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Revenant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1998-02-01",
+    "setCode" : "psth",
+    "setName" : "Stronghold Promos",
+    "variation" : false
+  }
+]

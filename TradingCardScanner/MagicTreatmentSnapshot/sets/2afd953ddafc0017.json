@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "139★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b2866a9-9f44-410c-8132-9d9822253332",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Figure of Destiny",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-07-25",
+    "setCode" : "peve",
+    "setName" : "Eventide Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d0972df-08da-4b4d-8139-09a0f5b7d170",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overbeing of Myth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-07-12",
+    "setCode" : "peve",
+    "setName" : "Eventide Promos",
+    "variation" : false
+  }
+]

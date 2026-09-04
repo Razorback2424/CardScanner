@@ -1,0 +1,464 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aedc7a6b-c481-4719-bc83-424eeb216aef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mimeoplasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2e330dd-7cd3-445d-9c05-56e4a57526e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32625c5d-6e62-4bbb-bd8d-d752090585ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fumiko the Lowblood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f2abcc3-dc33-4b9d-a372-1d936e954f94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ikra Shidiqi, the Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e89ce6a-6bc9-427f-a8b2-c07a9fc3218f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishai, Ojutai Dragonspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc4c0d5b-6424-44bd-8445-833e01bb6af4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuktuk the Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8afad106-a49b-4910-959e-228c109ea983",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyhan, Last of the Abzan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11590bf6-184e-4134-b1f6-7b8de5a23564",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghave, Guru of Spores",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "69dad154-2616-4bd6-8448-0e0458ee136d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skullbriar, the Walking Grave",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dac8975a-0d41-4538-8e49-a2de5d410b6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Szadek, Lord of Secrets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47edde50-81c8-4fe0-ae13-9a10171361bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorel of the Hull Clade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e946dda-65db-4a01-8abd-9a92e8e3eddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrexial, the Risen Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9f3869d-dbc1-42bb-aa43-8e4c2e79cfc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damia, Sage of Stone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35943c5a-24ea-48dc-8ba3-956e0ec93cc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorosh, the Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf57d9ec-d161-4cb4-989b-72278bfdba4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jareth, Leonine Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7dec8214-f074-4150-89e8-76ca05a3dc97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bosh, Iron Golem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1665327f-8267-4054-9be5-43a610887c26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c718940-dc07-4449-ba35-4029f366c3eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalemne, Disciple of Iroas",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61740668-9f85-43ed-aaa0-33ce7101da6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Patron of the Nezumi",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01eb2243-bfe3-48c6-ab16-95672356858e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anya, Merciless Angel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "365c43c2-1a65-4f6a-860d-39dcb15255c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisela, Blade of Goldnight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "cm2",
+    "setName" : "Commander Anthology Volume II",
+    "variation" : false
+  }
+]

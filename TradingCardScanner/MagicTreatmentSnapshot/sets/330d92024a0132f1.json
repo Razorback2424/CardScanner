@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "705adcf9-c15b-4f75-afae-939f59aeb308",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "First Mate Ragavan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ttdc",
+    "setName" : "Tarkir: Dragonstorm Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37316fc0-83cc-4f53-afc3-6f3235776239",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Karox Bladewing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ttdc",
+    "setName" : "Tarkir: Dragonstorm Commander Tokens",
+    "variation" : false
+  }
+]

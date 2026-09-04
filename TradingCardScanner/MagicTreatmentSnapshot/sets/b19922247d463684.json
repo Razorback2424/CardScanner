@@ -1,0 +1,1910 @@
+[
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cab61c7e-e00a-413b-a0b5-7718b479582f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "123d1368-fbbe-48f8-9b44-d51946529322",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godo, Bandit Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b17f5403-7692-41ca-a3c9-b81c31bddc00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuktuk the Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "881607c8-bfe7-4903-861f-b51a5a332c17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e8e92cf6-8382-44b5-9f14-c91e572685b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kemba, Kha Regent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0d33d52-3d28-4635-b985-51e126289259",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2143f700-7311-46a4-ad9b-4e743a345785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breya, Etherium Shaper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25eff27a-eb58-4a95-b2df-4a341cf9bef6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c6554820-e501-44d4-9141-7c83f81d3fd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geist of Saint Traft",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16352af7-c001-41e8-8052-cd98997aebbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hanna, Ship's Navigator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4f77d23d-6257-4dae-b585-29f45f13f2e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Weatherlight Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0cc9eaf-c8d9-4da2-8fd8-8d423a02a3a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia of the Vast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bfb85e8-278b-48a4-970e-e65bad1c4c47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karrthus, Tyrant of Jund",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e7fb8520-1bc4-40e7-a4cc-2933ed7e0c00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazirek, Kraul Death Priest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b91dadcb-31e9-43b0-b425-c9311af3e9d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys the Redeemed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70dd138f-391a-4956-bc2a-fe186429c71a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riku of Two Reflections",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d79ee141-0ea6-45d6-a682-96a37d703394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Scarab God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "13ac5292-9817-4f5d-b3fa-611f9ba44443",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sen Triplets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af80ef38-ab95-476f-b0dd-b5ef3e9bceab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sharuum the Hegemon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba5f9d21-4cc9-4b7e-9f55-322dcf91c1b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vish Kal, Blood Arbiter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90055174-ad09-4a0b-b65a-10ad80727d8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bosh, Iron Golem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbce79af-968a-481b-8cd7-a323c083851d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hammer of Nazahn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56001a36-126b-4c08-af98-a6cc4d84210e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Opal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a95b7645-154f-4904-bf71-db7eb24d4df2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Ruins",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00cb17a0-5a13-4d02-b7fb-f99531bc8ca5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96d1a254-01a8-4590-8878-690c5bfb4a95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn Liberated",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec386bc3-137b-49b5-8380-8daff470f0bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, the Mind Sculptor",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "db149aaa-3da9-48c4-92cc-b3d804285290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "32301593-f16a-4a46-8a4e-eecedd2a9013",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Council's Judgment",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "eb49805c-8546-463d-b78c-f4ea109851b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stoneforge Mystic",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd595e2f-65e4-46e8-9d28-f94ac308b275",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f9baef6e-a086-41d4-a20e-486f01d72406",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclonic Rift",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec136ce7-bad4-4ebb-ab00-b86de3d209a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cacaf5ec-6745-4584-9175-36c98742958f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Metamorph",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6c821158-f71a-48f9-b6b4-b0e605f22bec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Confidant",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b9a50516-a20f-4e6e-b4f2-0049b673f942",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fatal Push",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "95702503-8f2d-46c8-abdb-6edd6c431d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thoughtseize",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "73731e45-51bb-4188-a54d-fdaa4bdfaf1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toxic Deluge",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d35575d0-0b10-4d1b-b5a2-a9f36f9eada4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Moon",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "62d2058c-3f20-4566-b366-93a2cbbe682f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Guide",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5b8c11ba-533d-48c9-821c-3fec846bca97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sneak Attack",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "187abedf-c2eb-453b-bea0-a10afa399e03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "20c9c856-af15-40b1-a799-1c2066df2099",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doubling Season",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1c3fc61c-c26e-47f3-a1eb-f6f10f8469e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exploration",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8008977f-b164-4ab7-a38a-25b382c6a16f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Hierarch",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dac080ef-8f40-43a2-8440-b457b6074b69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Praetors' Voice",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "86f670f9-c5b7-4eb0-a7d0-d16513fadf74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia of the Vast",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3c9847f3-5a4c-4b49-8e25-e444d1446bf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meddling Mage",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2abc5ac8-b944-4b71-b022-c78183eb92c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Batterskull",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0ccd5597-2d4e-4f3e-94b7-46783486853a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blightsteel Colossus",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0e94d334-e043-42f2-ba5c-be497d82f2c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chrome Mox",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bc6178b-16e7-4089-974f-7048b9632fc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expedition Map",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "70eab734-875b-4b76-901b-3ac7d2133ad9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Greaves",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6d7cd274-ed83-475a-9b4f-adb9c780a6f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Crypt",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "547e3aa5-d88a-4418-ab9d-dd65385f031b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Opal",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5cc0b4eb-8ee9-4213-8194-02e7d63428d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Body and Mind",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0a469d00-1416-48dd-ad91-eb6f3fb4b42b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Feast and Famine",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "22cd80dd-1c57-423c-81e2-9a956901565f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Fire and Ice",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3a195efe-8c4f-479d-bd0f-563ee4bb49a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Light and Shadow",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93c0681d-97da-4363-b75a-079c209e7e4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of War and Peace",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f097accb-28ad-4b22-b615-103c74e07708",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wurmcoil Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "69e55604-56da-44b5-aa78-f5de76ce9d20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Ruins",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "546e0452-5304-41fa-9e3a-a3fa5a571315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "936335d7-1c4a-4fcd-80ff-cd4d4fcab8c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c75672e0-fa2d-43c5-9381-e17f2fd6d3bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc3db531-3f21-49a2-8aeb-d98b7db94397",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f015fe9-c7fa-4503-b0cc-c0e7f098882f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91595b00-6233-48be-a012-1e87bd704aca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2a51829-8319-4271-93b2-a7a635b30e80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e5eef83-a3d4-44c7-a6cb-7f6803825b9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94cb941f-e3cf-45d2-9989-2a0a454d5497",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6418bc71-de29-410c-baf3-f63f5615eee2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8584b531-6dfa-43b2-99ba-b614b147f9a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "146b803f-0455-497b-8362-03da2547070d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c10cf58b-e01e-413e-979b-c6fe9e93100b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a91be77a-bd5b-485f-b5ca-0e6148c236ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of God",
+    "promoTypes" : [
+      "buyabox",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ef345fc-e64e-4053-b643-2f8648a5473a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chord of Calling",
+    "promoTypes" : [
+      "buyabox",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5ecf811-2efc-4fa6-9af8-ef09f559ec1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcum Dagsson",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "593dfb2f-ede0-413a-b037-46ae5c3769e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Conjurer Adept",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0519776-3d86-4f7d-9c3b-71c1dfbf7e12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "920d56a4-fc94-43d8-9d65-361b66172a5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geth, Lord of the Vault",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "2xm",
+    "setName" : "Double Masters",
+    "variation" : false
+  }
+]

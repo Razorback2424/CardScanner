@@ -1,0 +1,223 @@
+[
+  {
+    "collectorNumber" : "S1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0732d372-1000-435e-905b-4a6c852ba427",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eager Cadet",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "010c3ded-9df5-4880-b178-80f0e3c54731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spined Wurm",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "314e7a88-d721-490f-8b62-23ce58092be8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vengeance",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00223901-d462-41b0-9749-b093058f682f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coral Eel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a391d681-3530-4f6a-b421-12025e7c3b89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Octopus",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01491b39-283b-438f-8c7c-8df1285e9a83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Index",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a82ffff-e02a-4ecb-a92d-8ed571beac46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vizzerdrix",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S7a",
+    "digital" : true,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8e7df3d-8147-4323-ab15-22e225d3f14a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vizzerdrix",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : true,
+    "variationOf" : "9a82ffff-e02a-4ecb-a92d-8ed571beac46"
+  },
+  {
+    "collectorNumber" : "S8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f026d65f-c365-475b-9454-e9935af00ec4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Raider",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "681faafe-68ce-4b71-bf23-a8028614ede5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enormous Baloth",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "9ed",
+    "setName" : "Ninth Edition",
+    "variation" : false
+  }
+]

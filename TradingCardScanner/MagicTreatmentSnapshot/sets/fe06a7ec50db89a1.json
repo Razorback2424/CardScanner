@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b77caf8-711b-4597-a5a5-dead81568e5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Powder Keg",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7f3264a-7b4a-4fef-af73-d4241742a4e8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fbb0dc6-2f9e-4389-8a90-531e94009bfb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Pentavite",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "187cf6d5-c352-48f2-b8bf-fe1bf946e2ac",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Myr",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d02d5670-fff3-4011-8e45-e6843e4e8988",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46b60d95-b9bc-40f8-b986-bfa8e3eb74f3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "p04",
+    "setName" : "Magic Player Rewards 2004",
+    "variation" : false
+  }
+]

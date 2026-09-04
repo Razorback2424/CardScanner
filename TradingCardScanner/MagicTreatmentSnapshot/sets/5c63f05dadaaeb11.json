@@ -1,0 +1,1514 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e0d18742-d661-4223-8880-9ed995379b2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Approach of the Second Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cc9ece2f-7eda-4fc5-a562-3e16e71560e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "28e21c8c-5ad1-4830-8621-f0fd6500ca79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protection",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3cad77b5-94eb-4715-9fc1-75c45c28e83a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blue Sun's Zenith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "11d27509-07c2-4445-a1d5-e56523fb8566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0f578fbf-c3c7-4407-9fda-3c13b165798c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Compulsive Research",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ffdf9d2a-c163-43df-9a2f-20b8749c86ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "98c1b465-b6d9-491b-bfc2-c034cc825d27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Lapse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "95f4e609-7fb7-4903-8d4c-45d38cf743be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind's Desire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5bfe3a17-3349-4fcc-a9b5-418faa55cc43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Negate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ab59ac4f-2a77-4566-85c0-32666447dcf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5bf85d00-52cc-4594-b4fd-5ec424210524",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Judgment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fd7b2ee8-9f2f-4624-a788-15b88e6a2d50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strategic Planning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "05e5dbfd-84cf-4fe1-850f-3d2965ed3120",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret's Gambit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6e70332c-de0b-45ce-bbd1-5de4314c08db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Warp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f7a0c25a-8760-44ea-a418-fcd4a9761632",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirlwind Denial",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "57b7f7bd-6db3-4716-b1c3-015b0a6d37e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agonizing Remorse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f3ccea48-ee90-4da8-832d-8c30c98bf1dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crux of Fate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6fc57076-cac4-4f5e-956b-e3d77bd258b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3009ba46-c9f8-46dc-8ffc-2aa4cef7b17c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Tutor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7e6c0fe2-a82b-42cb-8629-b9f00b7f08e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doom Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5bb89f3f-f3b0-402d-9f3c-5b4b8a9d1e91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ade8f339-4afb-477a-9434-e6cd9126cd10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiant Strike",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c55b2b50-ac83-4a78-8f84-580193d1ca0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eliminate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d47df2c2-437d-4b8e-82cc-1707e3efd5b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inquisition of Kozilek",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0ef84fcc-7685-41e5-bcd0-25b974ce570f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sign in Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4c92756f-1dc2-49be-bb38-0f8cf10079fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tainted Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "659d0ca7-90c9-473a-8b46-4fe40351b57d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tendrils of Agony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "da3de5c0-acda-4116-b0c5-eceb2c19cb2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Village Rites",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6d0a3996-5a03-481b-9bda-15c6f6e5f9c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaos Warp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e3cb6157-ea56-4921-b803-59e3fbef0b94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Claim the Firstborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b429172f-2182-49dd-b6f6-e5e09493628d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faithless Looting",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b99b45df-9602-4037-a695-09decb5f21d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grapeshot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5ae3b199-92a0-4d94-819c-fbf24a87d353",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Gambit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6ef32c03-14f5-4ee2-af3a-4cbee45cd152",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Increasing Vengeance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "71a5dfad-c8b4-46cc-9a06-73d23b269df8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infuriate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4eaac4fd-95f5-4f38-b593-0101e79a20f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "89978bd5-8222-4052-9625-3a5db81baa27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix's Mastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "60eeb025-704c-4a82-90b2-f91202ae30d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f60687e5-9384-4453-833e-2c76f25bfac5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Rain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "78ba24c2-73c3-4630-bb8e-7431e5b3aebd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrill of Possibility",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d80e9897-d84c-4992-9e8e-3a00f377c7e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "16782095-0b7f-4489-8a97-b74f8efef352",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abundant Harvest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e7b44893-e6d1-48d0-ba69-06b9569e1e38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adventurous Impulse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7be5092f-cd24-4aea-824e-67b9767019b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ephemerate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0e07a16f-d836-40f9-85e3-a78582a97109",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Channel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b3896717-1e46-4aa2-88b7-1c4fe76edde1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9e1f1110-0919-49cd-8b5b-979b2744fd3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonize",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f847439f-a9b6-4a3c-abd1-76d54e0aed99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Grip",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4bb72f05-5173-4e70-9e71-278249b378e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Natural Order",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3a95986b-532b-4e3a-acf4-c93c6db7282f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "af727601-5251-48b6-b5e3-b68ca0608bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regrowth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d9849b22-1fba-4f6a-bd94-df1bc1764e6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snakeskin Veil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "02f960f2-1324-4d48-bab7-c46b836a8907",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weather the Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c2743ca3-8b4a-429a-9f9b-090d632b6601",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Despark",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "07bc15bf-1923-45d7-988f-9a4adf3982ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gift of Estates",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "08a4d142-b98b-4027-94cb-314f67fb1d4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrolyze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ae9f9b3d-d463-4bc6-b822-872a1f8867c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Growth Spiral",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "227ac87a-7196-40d0-ab00-98ebafcca09a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Helix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3882ebea-2864-40ef-a21d-6ba80a0bd417",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Putrefy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "57e547cd-eba4-4a75-9c4e-8eeb6e00ddc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gods Willing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e7f32354-893d-4f0b-b555-e0757fb5443b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Tithe",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f8da7312-91e8-4f8d-84ef-6888360b3718",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Revitalize",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "sta",
+    "setName" : "Strixhaven Mystical Archive",
+    "variation" : false
+  }
+]

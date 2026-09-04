@@ -1,0 +1,7145 @@
+[
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62242a80-0444-4a0e-a868-97eabcc77648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Speed Demon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8f31beae-9b8f-4c32-af84-9f3ee767ba1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Count on Luck",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be626e2f-1075-4497-bd5b-bd805777afd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daretti, Rocketeer Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e2f66043-0872-4334-a91f-0e9bbbdddf66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret, Godseeker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4e5590e1-0ac0-4bdd-815b-136bf24ced03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kickoff Celebrations",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c22e415f-636f-4394-9b21-600ab720ac98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outpace Oblivion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "159dc5a8-5cba-4c20-8c07-28a3d86c8411",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrox, Saurid Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "148400a0-7819-4551-9815-9357eed1db4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dredger's Insight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b1964ec5-0dd1-4b54-917c-cbeab05aba79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of the World Ooze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee5f504c-33fc-4a91-b69b-8ef555987c79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oviya, Automech Artisan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8fd4c73d-0e9a-4ffe-8062-f2f4d0e601fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Point the Way",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ce0e1ded-9b00-4d7b-884c-70a429783b1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silken Strength",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b44255cf-5264-4ead-9de0-20cc0f7cac6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrian, World Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbdaa29b-85ff-4a06-b27e-fcdbdfd4a3fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aatchik, Emerald Radian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0957c90f-e10d-40f8-a4be-9e9ef623dd43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Howler, Sea Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1256d22d-a2a9-41fb-b669-0661ba230bc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caradora, Heart of Alacria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9ab169c1-4e25-4a5d-8961-4f06298c3781",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightwheel Enhancements",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f523e96d-9df1-4854-accb-9876aef787e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Far Fortune, End Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cffae8d0-7b4e-42ed-8124-24a86b38f490",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ketramose, the New Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36bcd476-a236-4434-b191-5c8b6fa7be7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolodin, Triumph Caster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b04e3f4-103b-4845-b3f0-5417971c7666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lagorin, Soul of Alacria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33c59c04-4c0b-4a60-826e-3a7757d0b2a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Pathfinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f434b103-490f-424e-a0a1-efb1b931c8e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mendicant Core, Guidelight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34e4c342-dc22-4e9c-81fc-a691ae9e21c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mimeoplasm, Revered One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fba3820-32ba-47e9-9fa8-f985ff471b3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redshift, Rocketeer Chief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ef555b1-666d-4386-8983-0e88f9b6cdec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sab-Sunen, Luxa Embodied",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8efd8222-5c37-46d8-a2ec-1d7aae25320b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, the Driving Force",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb523c06-6f3e-4e19-b777-19aefc4a4e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sita Varma, Masked Racer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02d46d0e-3161-45b5-a49e-5cd592c67ddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Cursed Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31944ea5-045d-481d-9aff-3c7ed663813a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahur, Glory's Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8f2a9154-7b43-4b8d-9d81-d11cfda5d597",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roadside Assistance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "89e66d63-56be-46f5-b0df-e1350106ba45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Air Response Unit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6118bb1-9530-487b-a211-7cc56cef3fbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Broadcast Rambler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0e45f00e-2156-4e8c-813c-0e36ab34982e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Detention Chariot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "37c2e68f-3f40-45b1-9afe-cc1c5fb41203",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec0eb86e-371c-46fd-a261-384b2a603b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyseer's Chariot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c0303505-d6f1-4626-a932-0e577d9572fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spotcycle Scouter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f142d6c1-90f6-49d6-861e-36e9a6fac958",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor's Flagship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e7c7da86-902a-4d40-a230-4d22d4b2df59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voyager Glidecar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "991270fa-a391-4c2e-bd9a-19151386fb67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri, Tomorrow's Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0279171d-1623-438c-b796-d294c6675604",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hulldrifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4aeb6fa4-569e-4ede-94c5-a8f3c28f55e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Midnight Mangler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "821045bd-c8e4-40fb-babd-5d13b64a71ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Possession Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "530159a6-0672-485a-867c-aa0bac961765",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rangers' Refueler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1dd26a5a-ca58-4cb6-b599-7c84d601dc07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Fabricator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "818931d1-258d-4dda-9d0a-2015ec330bab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carrion Cruiser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "914f4e3c-2729-488b-883f-7657deea39c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptcaller Chariot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c322936f-3b56-454c-a89e-fa53faab6a33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Junker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f2d563b1-f03b-4ce3-9de0-05dab257b67c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Last Ride",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ba1b096-7424-4ce9-8dfd-56a86fe612e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ripclaw Wrangler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2e5435c-52f3-42d7-bcee-5aa13afd6626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sundial, Dawn Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3501b938-7a25-43c7-b1c5-03cd9b690930",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boommobile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "267c93bd-1313-4c7b-bd6f-91e329932dea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burner Rocket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "79d3c041-976c-41e2-9ce6-4b292e499526",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clamorous Ironclad",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "03a07256-3305-4178-bd4f-d1583d23106d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gastal Thrillroller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5f348c0a-41f3-4d88-be1d-19c0821f158e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spire Mechcycle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0d95a5f3-7f14-4d59-8329-559ed4ff0491",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earthrumbler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "11c196dd-61a9-4e75-bd43-9531ba3dc961",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Worldwagon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e5f6a1c-7b34-4c23-8172-5b869c96eb65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Velocipede",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cfdffb27-5035-49c2-b214-abe46a17433d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veloheart Bike",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ea55a6ec-634c-4590-9875-db4e5b81795d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apocalypse Runner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "85bb2217-d3e1-4638-9a14-bb72bfedd18c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boosted Sloop",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "73918759-b7b6-4a09-baa1-7f660ecef42e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloudspire Skycycle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b8fe7293-2d85-42dd-b6a1-21e98487cbfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Debris Beetle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "71586675-e9f5-4bec-984d-8683b2494b35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dune Drifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83566cd0-2253-477e-ae99-4c0c4902ad6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guidelight Pathmaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d68c20a-f377-4613-8771-cdda1745cdff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunted Hellride",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3f0d5c5c-d3d6-48ae-9775-fcd2cd9a0c65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rangers' Aetherhive",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2db27c67-0462-474c-844b-4f69d8fe6734",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocketeer Boostbuggy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b4adfba1-c73a-43b4-8400-e11617958f7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Broodwagon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1f0aa565-1ef0-41f5-a86d-0701e357cde9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecraft Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5c4e88ae-7f5c-4dea-add0-a53a6a9bd8e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marshals' Pathcruiser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5a3b07b7-8d51-428e-a399-61da45529c8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rover Blades",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cd9e294e-cdb2-423d-a034-f68f673b5973",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skybox Ferry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "27736f40-a87b-45e4-a0da-accf9433c1fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bulwark Ox",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "309072be-b813-42bd-adaf-7d45053029c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Sunmare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bcda94fc-43f0-4fa6-b38b-bb8c4c26d9a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindspring Merfolk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7fc820fb-eec2-4873-a272-68e8379470fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waxen Shapethief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4560bd1f-eb63-45bc-a8c7-b5de200facc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodghast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3150199e-9e4f-486d-bfb0-fc2a9feb8536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gas Guzzler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6c4045e7-6d2c-4ef9-922e-3681fa820c4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Speed Demon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "eb1ffa8e-2794-4f11-8351-42f1a0f26831",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burnout Bashtronaut",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4712279a-ae45-488c-870a-0187201c860f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconautics Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6a758d38-adfe-4894-bf27-d988a228e944",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howlsquad Heavy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "328d60a4-af43-4a2e-98b5-1098478eeb02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agonasaur Rex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15f978b9-d464-42f7-ba8b-0c0795d54cb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "District Mascot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "14e8e016-2b68-43d1-b25a-553bad97e431",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Webstrike Elite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2e8aff7b-bcf4-46a2-a8f5-dc00394a84da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fearless Swashbuckler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e5e6cbde-ce5b-4c25-9a27-715fe7abe4e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret, Godseeker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82000701-d4a8-4f9f-a4b0-236858c84954",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brightglass Gearhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b4574869-9598-4295-bd43-ce3633e0d8e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coalstoke Gearhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8af1dddf-6c95-448b-acc8-df5a99202e9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor's Flagship",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3c8a81bf-f63c-40ca-a4da-db68df3f3e1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ketramose, the New Dawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "099ead92-1d35-495c-8ee8-14d73e9f1437",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oildeep Gearhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e0aa0bc1-3c31-4886-bfd2-f1ab6e048559",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrewood Gearhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6cdbb98-a5b8-4b9e-aaaa-457eb9d4041e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riptide Gearhulk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "43655ecc-af27-494f-bee7-a5542cae9b54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sab-Sunen, Luxa Embodied",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "440766a6-5820-4248-ad91-4d946235e136",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri, Tomorrow's Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a7d0d849-d400-43fc-a42a-0eeb27131d1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vnwxt, Verbose Host",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "38a867af-cf5d-4e3d-bba1-361e3cfeca82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Night Minister",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3993ac84-304a-4e42-aa39-b72be30471ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daretti, Rocketeer Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c9b47651-5607-40b0-9e73-ad356b10acc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oviya, Automech Artisan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e789df76-d658-47a4-9efb-74da6bd8821c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aatchik, Emerald Radian",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a8f0f937-5519-4d38-9fc3-46460669bb86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Howler, Sea Scourge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a7bca478-48c0-4c39-95ae-ba8afb207153",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caradora, Heart of Alacria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ae0bd239-25ae-496e-9be2-c2d968dc9346",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Far Fortune, End Boss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "33887384-a2bb-4daf-b932-a4259c93b808",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolodin, Triumph Caster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6f11d7a7-72e9-406e-a701-5c3a556a43e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mendicant Core, Guidelight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c56bc66f-12d1-4eae-8de7-2fae34976d6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redshift, Rocketeer Chief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "227036a1-7570-4657-9c0a-635dd6d889e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, the Driving Force",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "119a39ce-80f6-48b3-b159-e5d919d3b617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sita Varma, Masked Racer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "61aa759b-a940-4071-9373-13e6aef62fe4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Cursed Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e1004f64-5052-4b1e-8fd8-eda463fbd9b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahur, Glory's Past",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ba2edc7-dbc0-4948-9f37-a27a91bdf7b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bleachbone Verge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "70efc6f3-2fdc-4629-84b9-f3707b799460",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riverpyre Verge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c92a7ca5-a25b-4888-a319-6e176ab4d0ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunbillow Verge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "78ab2fc7-7945-4b49-8ad0-223815d0d2c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wastewood Verge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "38218d0f-4b70-45eb-a753-cdb44f94271c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willowrush Verge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "934cc1ca-2ce8-4062-b1b7-1976e76da8b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Aetherspark",
+    "promoTypes" : [
+      "boosterfun",
+      "headliner",
+      "rainbowfoil",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d1edff87-8563-4cb5-ab9b-7696e920346a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perilous Snare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b513dfeb-d7c8-4e4d-b419-f67b45608b4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Pileup",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c4797dcb-507f-4219-95ff-994e2c0d251b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Wind Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "231c4f52-5a12-407f-9917-d2ca91ba4706",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Repurposing Bay",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "131df43b-2a72-4ca3-8aae-c0dca2eca8fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riverchurn Monument",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "ce40ff0e-04ae-4786-ac0c-54a66ffb48a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstoppable Plan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c0a57479-6409-49e1-8896-2bd3e88d554d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursecloth Wrappings",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5d6498f0-5ebd-441a-a851-461b0460e7d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quag Feast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "5d2abab5-c4f0-41ec-ae6f-e42721ca2cfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Count on Luck",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e7967282-ae00-4fdd-85c6-bcc8bc9b790b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Full Throttle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aafe531a-f1f9-46d4-aff4-2b0df789be66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Afterburner Expert",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "615e3ebb-c41a-497a-b71b-6549366e5b07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of the World Ooze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a198715-4f82-409d-add0-e0200a88d708",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regal Imperiosaur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a258dcf4-b481-4ad5-96ef-2a42de8c9c2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Getaway",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2528d058-5ca3-4671-8bf1-c8161872cd36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Pathfinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "115088f3-9fca-4120-8ca5-c124c3d32975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mimeoplasm, Revered One",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "93211140-5aa7-4700-804d-aa46a8b141d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marketback Walker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c66cbdac-1d15-40f5-b76f-6f21b917abbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monument to Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8ef84601-6ace-4847-abeb-16dcfdba5c89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Lotus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55b87e12-bd95-450e-a528-a44c76dbfae5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muraganda Raceway",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d56cb1b9-38b7-42ad-b176-dc265bc8abe0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ec93ed6d-a840-477d-a16c-ffd15a52c941",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Pileup",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7fe19f52-ae23-4a23-800d-f3cf186279f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Wind Rider",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e8654e38-4230-4094-b815-778bfb5d06f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caelorna, Coral Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c5280941-bcda-4ac7-97d1-db02c7a18ef9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursecloth Wrappings",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a1864b99-6893-4e4d-94de-641837c05da3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Spark Hunter",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "455027f1-26a4-464b-a456-271a6ec88669",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of the World Ooze",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "14a81f86-e80f-47f7-81cd-0c4b9330e646",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Getaway",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4f5b04ab-4c61-47f5-88e4-c5c2f93edc11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Pathfinder",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d5a8caa7-714e-4987-8d44-04fbe5a77c6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mimeoplasm, Revered One",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8eb85966-66a2-4fb7-b89d-05db7f4e2cb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Lotus",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0e73d4ed-def7-4456-a750-74fb2bf10f9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Engine",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "22fd4f1b-afbd-41a5-a76a-f9788e0cec9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Pileup",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8327b4b6-058e-448b-99ca-7d2de52d3b4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Wind Rider",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3c15a04e-b0a7-4560-a838-94213dbb2336",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursecloth Wrappings",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d6a40fa6-4378-413b-bed8-7eb0d61b70ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Spark Hunter",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1b9fbbfc-8920-46cd-95cd-2372feb4617a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of the World Ooze",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b3dd66b9-f292-4b10-b753-2df112f6f714",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Getaway",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "89fba04a-20ab-40eb-9edf-89fdd03bfb7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Pathfinder",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6b243165-79ad-4193-af89-2ad5e34fc415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mimeoplasm, Revered One",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "656ba742-b00f-4fce-8418-987226c25a81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Lotus",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b832719-ac31-470f-9d50-0b514ecc6845",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tune Up",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4a8b12dd-2ce3-48a6-9ea7-7d5f155164c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gastal Raider",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "194ebb23-fecd-4aa5-96b7-447c9768794e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marauding Mako",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "57402f7c-5d4c-4f1e-8bce-a2328a297111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flood the Engine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b7de8c7e-7270-4a4f-af03-9f088b04c05b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyserpent Seeker",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "30789c9b-7b4b-43e7-a161-aa6595ea9dee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voyage Home",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06a85032-0c45-40f7-901a-3fd77ff212a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Worldwagon",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "23eda600-af1e-4444-a822-830037133c0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecraft Engine",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fb37d984-5a9c-45e3-8213-4af93872d512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amonkhet Raceway",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "21e9b236-f0e5-4e9d-a9c9-7d625e8412f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avishkar Raceway",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9db48a2f-5110-431e-8d72-b70bd2e9d887",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muraganda Raceway",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "932d4e0c-2653-4353-8e70-b7cf0f6808ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri, Tomorrow's Champion",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "146670b1-0b6d-4d9b-b931-137c508309a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bulwark Ox",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9a6b0d3e-0d3e-44a7-99e3-4ccba6c832e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Sunmare",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "87181867-f63d-4642-875f-001c1ed7912f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perilous Snare",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7f338af2-f173-45a0-bbea-02517d41bef2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3a062cbd-b769-49d3-a9fd-7aeb414f44d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyseer's Chariot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d21406e-0c00-4501-a93e-ccd8172314e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Pileup",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1f73b484-1503-4899-8b6a-076e8b087810",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor's Flagship",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "559dd83b-f24a-43e7-9195-9fcbe6c0c64b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voyager Glidecar",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09e15402-8cc6-4ad2-8088-4df92fa20d8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindspring Merfolk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "40d45912-7b8d-416e-893b-1d103492a5a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Wind Rider",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "438",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "858dc258-965a-4d1a-aab5-447e0fecbf81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Possession Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5277eeef-50af-4654-9216-caf0c37c27d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Repurposing Bay",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "440",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "06d22866-07ac-4aef-b43e-29a37f3db1c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riverchurn Monument",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "441",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a98ff182-4a84-4d69-83ce-57a7e5b18ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Fabricator",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "442",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "62a95aeb-b1b0-42cd-ad67-fd13717d3c6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstoppable Plan",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "443",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7642f9db-3eee-471d-ada6-60e990ec3fab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vnwxt, Verbose Host",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "444",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cb17c37c-907d-4416-b8c1-d6a6f4e312f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waxen Shapethief",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "77534750-fa92-42b4-8f32-be437eca64ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodghast",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "de65f4cd-3ba4-4e1a-8810-e43cf26b38a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptcaller Chariot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2b283c18-abe7-4b73-8532-dd76a85fabd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursecloth Wrappings",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ad0eb3de-796d-4da3-aab3-08c2b5b6943d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Junker",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e7e8e6d0-d155-49da-ac5b-47fb408202e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gas Guzzler",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "21ed5dd3-e67b-4425-bb98-6b07db1e9d1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Night Minister",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "451",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a901a616-b8bb-4e10-9886-ee9c6fdc6435",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Last Ride",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8684d080-070c-4419-9cc8-777500573f55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quag Feast",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "453",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "da8a7c1f-9d05-4a4c-bdf2-cd9ee7ed18a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Speed Demon",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3b1bff20-0b7a-49f9-b967-773f3043be13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boommobile",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "60c9b613-1494-4df0-9a38-cc0a69fd3945",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burnout Bashtronaut",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "625b175a-b63f-46d1-a7e1-95dfc7c03e3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Spark Hunter",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "eee38fa7-d5c8-4f76-92f8-4c5cb5bae5e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Count on Luck",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "458",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0a17ef59-177c-4c39-8cbb-efa8ab7ac24a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daretti, Rocketeer Engineer",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "459",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7758b89f-9629-45f9-ad37-6435dba37997",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconautics Engineer",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "460",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "76bf1b29-5a8a-4ac1-aa17-58fcbda969a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Full Throttle",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "461",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5a80bb9d-da0d-4f98-8946-43513db4aef6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gastal Thrillroller",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "462",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "05bbbcb2-822f-4729-872b-20638e7ad155",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret, Godseeker",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "463",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a28b514a-29a1-4d85-8eaa-279f3d7e09c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howlsquad Heavy",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "464",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3985ee93-3aeb-4f0d-a6af-686efbcadda4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Afterburner Expert",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "465",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "54fc56fc-8c82-4d74-8119-5d260c691b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agonasaur Rex",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "466",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e7926c8-1a46-4edb-950b-2c8bac91b476",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "District Mascot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "467",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bb97f9f-e7be-4794-a3a0-a0d73445c8fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Worldwagon",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "468",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "f89e403b-9653-493f-a3ac-e01aa6f006e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of the World Ooze",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "469",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6d6eae8b-73de-4d79-bbe5-2921db1987b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oviya, Automech Artisan",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "470",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d72328b4-19d1-4855-aa0d-331321eb9945",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regal Imperiosaur",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "471",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f63dc8cd-34a7-43ea-a422-3ced3c11f5be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Velocipede",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "472",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "10c14636-3ff0-4fbf-9df1-1b6d3d52e29e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Webstrike Elite",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "473",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "71074080-d83d-4b4a-b385-f918186530b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aatchik, Emerald Radian",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "474",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c0e29a88-34b6-4c3d-9956-b7eb8d5ef591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brightglass Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "475",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "db48629b-dc1b-4609-aea2-e4833f66d894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Howler, Sea Scourge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "476",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "61bc2ca6-427f-4f07-88b0-cf57a1fe74ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caradora, Heart of Alacria",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "477",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "07cf7eba-b917-4f14-8bf4-420bb919b7e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coalstoke Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "478",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "92766c53-703d-41a2-ad13-8c366dcf25ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Debris Beetle",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "479",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a556367e-7db7-47ad-9f10-37d277d80e77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Getaway",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "480",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3655e0a5-af3e-4720-b4cf-c93ae9c10cac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Far Fortune, End Boss",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e3bb615c-e142-4a6e-8d7a-f0a7a3b30568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fearless Swashbuckler",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9a86678f-e4b4-4c40-9a99-83029fd97730",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ketramose, the New Dawn",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "483",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "46164400-0557-4c99-83d5-194dc814b46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolodin, Triumph Caster",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "484",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "542fe4ca-d3d8-469c-b5cb-4d0824ba514b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Pathfinder",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "485",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ec057f26-8d14-463b-84ce-cce82b95b08e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mendicant Core, Guidelight",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "486",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2976e7e4-c53f-47d5-9890-cd30acad4f68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mimeoplasm, Revered One",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a749306b-26ce-4c71-8586-a1ef9788c286",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oildeep Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "794b7a29-eb42-4c52-a4d9-3976611efdd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrewood Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "63ea12cb-c927-44f4-b304-f24919b1104e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redshift, Rocketeer Chief",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "81d5d0a0-b0ae-4a5c-ace6-77d87fcc8563",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riptide Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "36581aa3-8970-40cc-bd1c-e78787ebe441",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sab-Sunen, Luxa Embodied",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c1bd0f7d-1686-42ae-9bea-66b96309f322",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, the Driving Force",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "493",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "321d595f-7efe-4004-9bbc-390b5a6eb734",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sita Varma, Masked Racer",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "494",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5f93e48d-4681-4354-aa85-493a48287233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Cursed Rider",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "495",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f10ee92a-85cc-48cb-b0b5-8e5185781fb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahur, Glory's Past",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "496",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c0ea3cfc-64f1-4289-ac6c-82d55bab65de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Aetherspark",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "497",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8c14d4cc-79c3-4934-b7a8-25e1973ffea3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecraft Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "498",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "20419718-d922-4f3c-aeb2-30ffb2ff7cbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marketback Walker",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "499",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c75f3b27-7c08-4e92-ae9a-6208aa9aec0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monument to Endurance",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "500",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "333039ef-b328-4082-85ae-162caed5612e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Lotus",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "501",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "712aab40-5452-4d62-8ad3-fec96d03db98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bleachbone Verge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "502",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6457d47-8e68-42db-85c9-e0f981c53aa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muraganda Raceway",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "503",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c21462ee-76d7-4910-9a0c-b470f96b8b51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riverpyre Verge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "504",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cff03662-3879-4ca8-b73c-34918194203b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunbillow Verge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "505",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ba0c9044-13ae-465e-a9d1-7dc63827540d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wastewood Verge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "506",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8e928cc4-be33-4c99-b0d0-c808c225e3ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willowrush Verge",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "507",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "4e196d67-1923-459d-98cf-646337914d3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "508",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "9b33841e-7006-41d4-98b0-313ab151c9ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "509",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "ba042d60-b1e8-44ad-9103-f40588a0b29c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "510",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c7533cbb-ab73-4a0c-9ea0-baa97c4665b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "511",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "fd1b6c5c-4585-47c1-82eb-a324189f3ebd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "512",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "5dd76e71-df9b-4fd2-b534-d3f724a56a91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "513",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "d13bb767-1123-48d2-960f-b90b6db3f6ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "514",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "f4d198b3-2ff5-484a-905f-c272de7c139d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "515",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5e4952a8-4e1f-4a74-8a06-c9d633b25dcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "516",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "2a7aba60-d300-4c33-9e1e-846d6167dc50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "517",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f2c7805b-c952-4847-b321-e0567923c80e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "518",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d18d5057-39f7-42aa-9dd5-ecc52f861366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyseer's Chariot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "519",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "58d4d35a-1f7e-4c5e-a999-09ad42f8b4e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor's Flagship",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "76423446-d62f-4cc5-a23a-3175be88bd73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mu Yanling, Wind Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "520",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b3666b4e-d6a4-41be-a529-4a577e75c86d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voyager Glidecar",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "521",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "96f0c1eb-603e-4e3e-b40b-65662c22d72d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Possession Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "522",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "66f1f362-fa4a-49e6-baa5-6797a9408cad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Fabricator",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "523",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fa56ae43-4a6b-4af6-9707-679068bd0934",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptcaller Chariot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "524",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a9747c8c-024f-417f-86ad-ee7c6f756aa2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Junker",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "525",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f85dac5a-c6fa-4a86-9fe3-7a17db06f07c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Last Ride",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "526",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d62d070e-52b7-4d7f-bd98-13622d859a7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boommobile",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "527",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a02b39bc-8eda-4c5a-8705-5416cdb24f0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gastal Thrillroller",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "528",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83725fcd-d5ec-4b99-b3f6-e7f5325c766e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Worldwagon",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "529",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ac4ff9fc-5c34-4a07-a1f3-35c21a3323b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Velocipede",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "530",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4efa1ade-00f9-4736-8397-11d4faf65b7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Debris Beetle",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "531",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "91496c82-44bc-4bb7-9e2a-5f4a3a199f4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecraft Engine",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "532",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4d4e8762-0aed-4009-86f0-7935a1d12b52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bulwark Ox",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "533",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "72eb0c5b-ef3f-42db-9f40-0463cacd548d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Sunmare",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "534",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f1191c3a-a6eb-4765-bb79-2f0d920899f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindspring Merfolk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "535",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec7ee49c-1e5d-4b3a-8e0a-59a0d258e804",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waxen Shapethief",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "536",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3489de46-e90c-483e-ac2b-547497f64e82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodghast",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "537",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "48b75e83-2ed5-48c9-881a-da3d77bdef99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gas Guzzler",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "538",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "36bd51bd-e451-4f1d-af19-bb777ec1a85c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Speed Demon",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b2151639-5621-4ffa-9374-3a1c48a635d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burnout Bashtronaut",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "540",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9419e00b-062b-4bb2-9203-f2f86b502371",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconautics Engineer",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "541",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf709cb6-8953-40ce-9fcc-396b6c0ab37a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howlsquad Heavy",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "542",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8d815a94-cdf0-4a19-ad06-4292efbb7105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agonasaur Rex",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "543",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3d8ad303-505d-4e2a-9380-80ab9f91a0a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "District Mascot",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "544",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ecf3bcd2-fdc6-4490-858d-3334437a3148",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Webstrike Elite",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "545",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "47c8f0f0-f2d0-44fa-8163-41a8e35952fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fearless Swashbuckler",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "546",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c5e0ead2-933a-41ad-b1c3-0aa79cc41e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret, Godseeker",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "547",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0b787e28-a6bf-489c-affb-4043845c9769",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brightglass Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "548",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4363ec0d-a473-4afc-9ae5-4feed762a630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coalstoke Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "549",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1688041b-a654-493e-bfac-247fdca68b22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ketramose, the New Dawn",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "550",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "41dd7467-4e77-4fad-b8e9-b258fa6254f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oildeep Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "551",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec50050d-1da8-4f37-a975-f81d5684a619",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrewood Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "552",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6127cd9e-5785-4ba5-89d0-5eeb0d8aaa0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riptide Gearhulk",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "553",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fb5f9907-e187-4c01-964c-24b3d27948b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sab-Sunen, Luxa Embodied",
+    "promoTypes" : [
+      "boxtopper",
+      "firstplacefoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "aaeb5981-7e6a-4ffd-bb02-4757b2e92f08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstoppable Plan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "893254c7-64cc-4cb9-b79f-2c41a8935ea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vnwxt, Verbose Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d79ca40a-e5c0-4956-8df0-ecbd2a25656f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Night Minister",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9192abc8-05a3-4e72-a634-fc5acbe97b26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hour of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1214fc6d-ae47-418d-88cc-58633ec2ac7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalakscion, Hunger Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9cbb7b4e-bd32-44a0-9396-16738c5e4381",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Last Ride",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "38513b53-384f-45e7-9905-80dd2c3c4918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momentum Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "dft",
+    "setName" : "Aetherdrift",
+    "variation" : false
+  }
+]

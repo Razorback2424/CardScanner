@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da46c734-a37c-4eb3-bfa9-10cee00ab1d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gather the Townsfolk",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pw12",
+    "setName" : "Wizards Play Network 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fa2b4ac-a62f-45c6-88fb-6ad44c6af28c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curse of Thirst",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pw12",
+    "setName" : "Wizards Play Network 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41422a18-1c35-4dac-b159-a323ed5736de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nearheath Stalker",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pw12",
+    "setName" : "Wizards Play Network 2012",
+    "variation" : false
+  }
+]

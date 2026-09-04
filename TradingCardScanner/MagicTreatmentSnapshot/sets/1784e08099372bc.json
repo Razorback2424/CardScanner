@@ -1,0 +1,49 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "originpwdfc"
+    ],
+    "id" : "d8b718d8-fca3-4b3e-9448-6067c8656a9a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-01-28",
+    "setCode" : "cc2",
+    "setName" : "Commander Collection: Black",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "779e3944-4342-4151-9963-87e8d41fd2ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghoulcaller Gisa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-01-28",
+    "setCode" : "cc2",
+    "setName" : "Commander Collection: Black",
+    "variation" : false
+  }
+]

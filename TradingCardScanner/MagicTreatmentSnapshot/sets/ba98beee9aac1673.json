@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4cd810d-9697-480f-bdb1-8729966a6449",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f639b8b9-0439-407c-9ed6-764ba96aec4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Capture of Jingzhou",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96759d4f-8965-45d4-946d-33dbb998d003",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaddock Teeg",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e14a24d-e31b-4e25-b004-5812f33a0d97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homeward Path",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9e032a9-40fa-45b8-be3d-f2fc8a38e0e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, the Siege Tower",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28117e89-8803-4bac-aa44-cb11988e4b8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Geoscope",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed085430-d12e-43e0-a374-53215fcdf151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellskite",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ec5d646-ce1e-4723-b7ba-b83beda8e4d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pendelhaven",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "332adbfa-f786-4685-9c31-968454e9f947",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rules Lawyer",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "j17",
+    "setName" : "Judge Gift Cards 2017",
+    "variation" : false
+  }
+]

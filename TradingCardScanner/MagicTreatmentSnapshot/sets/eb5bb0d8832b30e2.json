@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "105e687e-7196-4010-a6b7-cfa42d998fa4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "tuma",
+    "setName" : "Ultimate Masters Tokens",
+    "variation" : false
+  }
+]

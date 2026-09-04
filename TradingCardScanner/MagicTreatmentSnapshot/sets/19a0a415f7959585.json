@@ -1,0 +1,361 @@
+[
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "8e7554bc-8583-4059-8895-c3845bc27ae3",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hadana's Climb // Winged Temple of Orazca",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "d81c4b3f-81c2-403b-8a5d-c9415f73a1f9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Journey to Eternity // Atzal, Cave of Eternity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "66d9d524-3611-48d9-86c9-48e509e8ae70",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Path of Mettle // Metzali, Tower of Triumph",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "1d94ff37-f04e-48ee-8253-d62ab07f0632",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Profane Procession // Tomb of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "c16ba84e-a0cc-4c6c-9b80-713247b8fef9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Storm the Vault // Vault of Catlacan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "303d51ab-b9c4-4647-950f-291daabe7b81",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Azor's Gateway // Sanctum of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "397ba02d-f347-46f7-b028-dd4ba55faa2f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Golden Guardian // Gold-Forge Garrison",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91685732-c118-4f52-ac77-f96866a687a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, Scheming Gorgon",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d47f91ff-c916-4938-8e01-2c684004dd9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampire Champion",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d890a17-ffd4-4bda-bef3-2c116f7bf66f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska's Conquistador",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "569ff807-365d-4f25-9fad-86617ed1c8f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska's Scorn",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f17103dd-f31b-4f6e-b2ea-4ea91815bdd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angrath, Minotaur Pirate",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48181263-11fd-444e-9fef-02ccfe016c8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angrath's Ambusher",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0403b8e5-29c5-4a4a-b9e7-1e79a7452f14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swab Goblin",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "708006ba-d494-4093-b108-8249b110831e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angrath's Fury",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93f6bd6b-92fb-4b4f-89c2-762cc2c465f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Barrens",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "rix",
+    "setName" : "Rivals of Ixalan",
+    "variation" : false
+  }
+]

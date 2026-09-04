@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0640c256-ef99-476a-95e1-31368472647e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frost Titan",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "pdp12",
+    "setName" : "Duels of the Planeswalkers 2012 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6a86111-3556-43a0-b034-2bc9bd8c3230",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grave Titan",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "pdp12",
+    "setName" : "Duels of the Planeswalkers 2012 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17ac2bff-f570-4955-a8d4-7e12d616dd8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno Titan",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "pdp12",
+    "setName" : "Duels of the Planeswalkers 2012 Promos",
+    "variation" : false
+  }
+]

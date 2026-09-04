@@ -1,0 +1,2552 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6cb82b10-d785-4e20-84ac-0660d49be8ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breena, the Demagogue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c381bc2-d26e-4d7e-9a0b-a8f7d2d802be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esix, Fractal Bloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6d471f97-e812-410e-9354-1d1d330010bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf44910a-4e24-4e36-a58e-ae7f463db368",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naru Meha, Master Wizard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f4e8d4c-79f8-4313-bdb4-2062d8f5299b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9ac0e01-9732-470c-abd1-560386e30f80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97879ddb-b00b-4f24-b901-af19c436b9f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9d2502c8-bf80-404c-9a9a-b843d355fcaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db1d67fe-bffe-45ad-af6a-cb131ddb1a12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Losheel, Clockwork Scholar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "95bfae4a-01fe-4309-9291-b3123395f057",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arashi, the Sky Asunder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b73d2f5a-028d-4d5f-9b52-9328872bbf5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felisa, Fang of Silverquill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "873f5d0c-7fee-4921-90d3-379c483e2882",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nils, Discipline Enforcer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "576d86b5-2541-4ebc-8992-73248af7c805",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jor Kadeen, the Prevailer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3cae9bae-bcea-4b4b-965f-8b14339e724b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaseto, Orochi Archmage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33c19062-9e1c-4cae-bb97-7ca9e4523593",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sapling of Colfenor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abb21cf7-c5e6-4be5-8da5-9d29e95e2208",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa, Envoy of Ghosts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4f4187f1-05bd-4db6-a2e7-d677eff588ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alhammarret's Archive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09fb3b1f-c3a0-4da4-9b29-eff81fc1d562",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bosh, Iron Golem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f92d8df-e913-4a95-9f65-4fe98c332a6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyromancer's Goggles",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75d15e8c-1c5a-4aaf-92a5-5d4f500def06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deekah, Fractal Theorist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb5e63cc-eb4f-40c6-b298-99cb8fe8585f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Octavia, Living Thesis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56d93855-c749-4bdf-9a90-4f69f4226e46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veyran, Voice of Duality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f788b3c-bc36-47a8-b4c4-32c8642e26ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikokoro, Center of the Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7c4cb151-432e-4652-9ebd-b4640cc04c3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breena, the Demagogue",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "229dec6e-7997-4954-bff7-c79dd4339211",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felisa, Fang of Silverquill",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a017e7b9-e202-497a-b09a-a66f035b5148",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veyran, Voice of Duality",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "21420f60-6443-4dec-ae35-331706592e7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zaffai, Thunder Conductor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c48d1586-23e9-4b0e-91ff-01bd6f32427c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyome, Master Chef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3fafd34a-bbb1-4c02-908e-244089d956db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willowdusk, Essence Seer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0c9257ba-f729-4a5a-bf04-f27bbb71a12d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alibou, Ancient Witness",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b4181b80-414e-4bcd-9d92-391cd504afe1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Osgir, the Reconstructor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "823ccb07-cf08-4ae3-9b9a-f16de8e6d745",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adrix and Nev, Twincasters",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f695b960-d55f-471d-b1b0-68220e6508ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esix, Fractal Bloom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b2babb93-6b30-4446-bf51-b0303e2e9a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of the Ruins",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4847b1f7-7ade-4544-b157-a5453db371b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archaeomancer's Map",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "392c1de5-968e-4ac4-9170-a0c6263857d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bronze Guardian",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "acde0431-0226-495d-80e9-fd3de1b9473e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combat Calligrapher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0050be51-8c4e-4b97-b171-ede5fadfd141",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Digsite Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "38435284-52f8-45e6-a6f2-595eb974886e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excavation Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c5acd77a-5763-4663-886b-1bfa8a98ef03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Archon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "da01e447-ac5b-447a-b94c-6db3320d196f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Losheel, Clockwork Scholar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4c1d9656-7a27-4142-a307-cca3449cf42b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monologue Tax",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2de6edc9-4dd6-402e-a697-58957522fabc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nils, Discipline Enforcer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e16ca4d8-ba19-44a0-9854-e16895fa78f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Promise of Loyalty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8fe7b44e-c47c-4180-b255-171f7dea2607",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scholarship Sponsor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "340415b3-219c-4e17-aff7-e0c6fbc155a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Insight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7e01c4c7-ad59-464c-b01c-7cb7010b816f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curiosity Crafter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3cce6e69-a0cd-4f21-8d13-36625596b786",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dazzling Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f0ae3869-8429-4fd3-902f-e36362d4feb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deekah, Fractal Theorist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fa083791-6c1b-4165-b0bc-393cc369503a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Refrain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a6154df1-c9c0-4ec9-a3f1-8a4ae3f0f0a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muse Vortex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f35834dd-876e-4f5e-9b0c-ce484b14ef24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Octavia, Living Thesis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6d44945f-341c-497e-b67c-2239c00b5c43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perplexing Test",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5f1badb9-d2b1-41dc-88c4-ebd013f39bda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Replication Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0fb17dc-12b1-4f37-a03b-573a95ec7bd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Instigator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "84f7819e-9e69-4442-a0cd-d5ecbf40a0ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spawning Kraken",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0afab37-a6a7-49b5-8924-b549750f2088",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Theoretical Duplication",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "87373340-e0d0-4cef-9400-639041010b94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Author of Shadows",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1261acee-a01f-4fd3-a737-fd97dcaa7656",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blight Mound",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0f081282-73da-4469-92bc-d3eaf688a0aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bold Plagiarist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "879ce7b1-535f-4d74-8409-9d358bf989c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cunning Rhetoric",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aec4825e-0369-4794-9cbd-0b0c69da3d23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Pulse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f5829ea0-1f41-46ba-a5e6-b7bd7051a591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fain, the Broker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "43cabf97-0e52-43ac-9ecf-049456b83a7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incarnation Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f675e19d-377e-4db1-b1bf-a4bf4a7d1c85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keen Duelist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d62ba421-1387-425d-bf88-71207f2be1ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marshland Bloodcaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e76553b9-3945-4185-b383-8954e5406312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinging Study",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8916186d-a613-4ca1-8490-79550a5d25dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tivash, Gloom Summoner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c13e1d08-8926-4b80-9a48-a1e8c1847b6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veinwitch Coven",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "71df4a44-189b-4d8d-adc7-1ea4b0f8c622",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Audacious Reshapers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "91df9e44-c124-42cc-b051-cbe58af14cf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battlemage's Bracers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "441e8877-fa7e-45f3-bbb1-9581885e51fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creative Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0c3bbdd4-146c-40ea-99e8-6cef0d04e953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursed Mirror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3bdc3066-de4a-4cc8-9086-f90f55ba8ff5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Encore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f6a09368-3fa6-492b-8cfd-8d92113cadca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno Project",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "00760b58-8a7d-44fa-a5e7-9df54c21c77d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laelia, the Blade Reforged",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dea0ea77-1c78-45ec-b3d9-813d4035c34b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Performer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "536c2936-2fdc-4664-97fd-bd580fc2d90e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rionya, Fire Dancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "80d6b500-8146-4102-9a60-5f0164d6bb52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rousing Refrain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c82ec87d-5e65-4936-8097-c4bca0fd1d94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruin Grinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1b55a58-6317-4406-93a7-373f05ebdb45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge to Victory",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eaac5673-fc6f-455c-a4e9-a19061f34d32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blossoming Bogbeast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "88ba90ae-21b9-427a-b33c-cbd6801d4ef2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezzaroot Channeler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7315ebbf-44fe-4a6c-848e-917e06d5e355",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractal Harness",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5c0dfab3-e130-4295-bcc8-da11074497b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Augmenter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "207a9a0c-4cae-4f96-ac41-3a7d501c6cd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Healing Technique",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2368e844-6db2-4715-a4c2-2e56ccd5f422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paradox Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "99b7ac6b-b320-44b3-90b9-337a8be5a8e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pest Infestation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "72de20ad-82dc-4161-9627-42ac2e1258c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruxa, Patient Professor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e24b682-d0b1-4869-9645-7e31493ce3f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sequence Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "80615351-a27e-4df7-a49b-8f73d138ac4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sproutback Trudge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ca77dda1-d21f-47db-8f6f-778eadaefb1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trudge Garden",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a7d8f80e-ece1-49f1-8e14-589d579a568e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55da1378-89aa-42b3-9323-0842d4831a58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkshield",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0baba16f-086f-4051-9e86-527e45c0f367",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oversimplify",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea1ab937-8647-4c83-99d5-6a40dffa4c9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zaffai, Thunder Conductor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26acb9db-1a2f-4b08-b121-88f953e597e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fain, the Broker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "60c19928-4e54-445c-83b4-1ac124bfa3b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reinterpret",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "694bfbbf-4246-4b2c-96a0-9e895b4f7709",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Revival Experiment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f19e64de-d7bc-46d6-a58c-97701f159e1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wake the Past",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b7b0dfee-563a-43d1-ad2b-e4bee663f435",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elementalist's Palette",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a887ffb8-ed37-4935-aae7-f87f151ff38d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geometric Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a971b3d5-9a78-437f-a385-3390e64c53de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempting Contract",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8c610087-d56a-4b38-b4af-bd7ef350f741",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triplicate Titan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "af47131d-4cc8-4c62-9643-462207351e47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witch's Clinic",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e3b2a152-7bb9-495d-ac84-516097754137",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tivash, Gloom Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5dd7dd1a-6dd1-43c3-8298-7db703d384a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyome, Master Chef",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3bb2881-e8fb-4fba-a9f9-d93e6ca24378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laelia, the Blade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1e92b9c-4234-436d-a741-37c5e45859e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rionya, Fire Dancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42a97ec1-f613-49a5-9236-7fded1a81f3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willowdusk, Essence Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e07b8142-6a49-46e7-b862-41f89a59b894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruxa, Patient Professor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fd2fc2d4-c4fb-4dcb-93fa-aaf8c1182f15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alibou, Ancient Witness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "320b9678-5bbc-40dd-a508-90a647e95a71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5815fe6e-e26b-4918-a090-55d6442722c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Osgir, the Reconstructor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d495e084-92ec-4675-b6aa-8ade2775b796",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adrix and Nev, Twincasters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "c21",
+    "setName" : "Commander 2021",
+    "variation" : false
+  }
+]

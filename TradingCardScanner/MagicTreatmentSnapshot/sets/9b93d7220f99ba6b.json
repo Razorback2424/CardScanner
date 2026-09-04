@@ -1,0 +1,376 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55db30a7-6834-4a64-8edc-05ce18166c91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Hunt",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-01",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e199afa3-d16d-4b8e-b553-86bc3884aed1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voidmage Husher",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-14",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "474f4537-905d-44f2-bc69-1e94c6727ad1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ogre Arsonist",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-02-20",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4ca5099-48d1-4581-9345-b906c2e5b894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corrupt",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-04-17",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4bfe5d1-0914-4c0b-b851-598d0850dc01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-10-09",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1aca163e-abff-459f-9925-09dda212dce2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaze of Granite",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-11-13",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22e088e4-91bc-4b0f-b999-660c0c371a2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wash Out",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-15",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84f89c49-7202-47ca-8453-c62c448f9908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acquire",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-22",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25b9319e-1a6f-4e7e-b69d-1c0de558b14d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-03-19",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03e0147e-841c-4593-83ce-001bf03885f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faithless Looting",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-29",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69311f43-a025-4760-a81b-e5d91c1775d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrolyze",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-05-23",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "658bf8b7-fbc4-4046-9300-249cdeb87924",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of Blood",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-03-28",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b5b9233-d183-41d1-a0a8-fdcf240f9d73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arrest",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-06-27",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f267137c-57f5-43b1-9a4b-98f2b84106b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consume Spirit",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-08-08",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b48dbe81-b964-4bd4-a17e-8a0186f6f040",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Standstill",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-09-19",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b3eb5c5-7ff8-4557-afe7-056ea5f09a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breath of Malfegor",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-11-07",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a11b59db-b1e7-47c4-aed9-a1792fc31ce9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turnabout",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-12-05",
+    "setCode" : "pidw",
+    "setName" : "IDW Comics Inserts",
+    "variation" : false
+  }
+]

@@ -1,0 +1,506 @@
+[
+  {
+    "collectorNumber" : "10b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83ed4291-36fa-44d8-98cf-67fa43848ee3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Absorbing Man and Titania // Absorbing Man and Titania",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55630bab-6d01-4cdf-b2b8-00fe98d30199",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abomination, Irradiated Brute // Abomination, Irradiated Brute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "611dff23-0899-4a59-a6c1-95c6fe75abae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Loki, God of Lies // Loki, God of Lies",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bb5b100-0f9f-41ab-85e4-e6c1a475daa7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Iron Man, Futurist Paragon // Iron Man, Futurist Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6c30d60-5f6e-4f10-887e-e26e107ef654",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9608494-c947-4f39-8d46-88ae08ff2864",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hulk, Always Angry // Hulk, Always Angry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5dc03f59-3b03-4aa2-9191-1d6ad68d7b57",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b4ce41e-2d64-4ee9-8822-63e8ef047e86",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thor, Guardian of Midgard // Thor, Guardian of Midgard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cfb0962-054d-48a1-b094-a6a60035d1d6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62d3d1f8-9b85-4f2a-8080-1313379ca85b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Black Widow, Intel Expert // Black Widow, Intel Expert",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb04c552-f685-4aa2-95af-750800a2124f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6d96686-0033-4a78-8bee-b58959936f29",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Captain America, Unbowed // Captain America, Unbowed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24bad11d-dc98-4527-8f7b-d4e7189c23f6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95db162c-574f-4619-abfe-5ba65e7b9477",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hawkeye, Trick Shot // Hawkeye, Trick Shot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7880028a-0cb7-492e-a42b-cbc39a515e73",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d091a7cc-281f-42ec-9cea-874744aa79f4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ultron, Machine Overlord // Ultron, Machine Overlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9823006a-9ece-4a27-b853-f71c592f2cb6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "440a9187-f0a5-4b76-8a7e-e09ef39db080",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, Death's Consort // Thanos, Death's Consort",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8670e49-62cc-415e-8161-ae17f02a8724",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d71aa7c-7296-47b6-8074-ab4e3055c63e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "M.O.D.O.K., Evil Intellect // M.O.D.O.K., Evil Intellect",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19260830-1f01-4763-901c-9b04bf489453",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thanos, the Mad Titan // Thanos, the Mad Titan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "amsh",
+    "setName" : "Marvel Super Heroes Art Series",
+    "variation" : false
+  }
+]

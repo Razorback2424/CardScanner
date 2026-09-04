@@ -1,0 +1,187 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8532d72a-b2d2-49e1-85ea-35f4c91c6c8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon Jura",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6eb1c64f-be2c-4033-913d-d8482a169509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Martyr's Bond",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "206fd18a-f263-42cd-a77a-e40ae31a468a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bd29035d-819f-43c4-a8fb-d056b1ccfe16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "27946cc0-8278-4b45-8239-c22b5a57c40f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shielded by Faith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f8f4c56b-76d1-4c1c-a9d6-383278de272d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "True Conviction",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9aef2a48-07bb-44e4-943f-f62fdc384a81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worship",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9dccac19-a915-4189-beb8-5d279a15a54e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-28",
+    "setCode" : "ss2",
+    "setName" : "Signature Spellbook: Gideon",
+    "variation" : false
+  }
+]

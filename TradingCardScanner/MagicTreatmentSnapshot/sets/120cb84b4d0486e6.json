@@ -1,0 +1,238 @@
+[
+  {
+    "collectorNumber" : "120★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5833bc8-dfbe-42d1-b47a-c107ff4f5916",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadbridge Goliath",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07baef91-d7fd-4890-8c00-62f1a416dc76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of the Triumvirate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7c622d7-c8e4-4eaa-8102-3fae136559cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carnival Hellsteed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b519f1ed-0411-4c85-a266-3c4f2895000a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpsejack Menace",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ecc43058-6708-489f-a88f-33930c58ebce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreg Mangler",
+    "promoTypes" : [
+      "giftbox",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba617296-3cce-4933-8939-dde6445225e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hypersonic Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35e3b17c-1af9-4a6d-9cbe-e9d23ea52c53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supreme Verdict",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0b9097b-e2c8-4d9f-abb3-1cb410888988",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptborn Horror",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d88f8449-748f-4843-b4a2-480f6ebd384d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dryad Militant",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b164a0b4-b2b8-4ea6-b271-e89291d0d4b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grove of the Guardian",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-10-05",
+    "setCode" : "prtr",
+    "setName" : "Return to Ravnica Promos",
+    "variation" : false
+  }
+]

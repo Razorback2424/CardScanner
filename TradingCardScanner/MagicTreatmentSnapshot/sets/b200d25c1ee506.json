@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7649b77-486e-45e4-87c7-a1e6c8e652af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Ravnica",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-07-09",
+    "setCode" : "pdp15",
+    "setName" : "Duels of the Planeswalkers 2015 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c275a5f-ec89-4d0c-9183-cd657051fb5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Zendikar",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-07-09",
+    "setCode" : "pdp15",
+    "setName" : "Duels of the Planeswalkers 2015 Promos",
+    "variation" : false
+  }
+]

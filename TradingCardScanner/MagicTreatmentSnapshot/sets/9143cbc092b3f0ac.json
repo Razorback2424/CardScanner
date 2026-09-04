@@ -1,0 +1,27 @@
+[
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2e181878-d9fb-44d5-98ce-2899793ab2e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rafiq of the Many",
+    "promoTypes" : [
+      "boosterfun",
+      "setextension"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "ala",
+    "setName" : "Shards of Alara",
+    "variation" : false
+  }
+]

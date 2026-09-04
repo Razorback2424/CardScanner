@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3e6a0359-f4da-442f-a130-08d278ec2fec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "M'Odo, the Gnarled Oracle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-01",
+    "setCode" : "ph17",
+    "setName" : "2017 Heroes of the Realm",
+    "variation" : false
+  }
+]

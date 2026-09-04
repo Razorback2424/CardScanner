@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "1F",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e96d398f-7393-4b8e-9972-2d7c394d23ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "p30m",
+    "setName" : "30th Anniversary Misc Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1F★",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "7910ce6c-5cde-436e-8d28-62723f0fd592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-28",
+    "setCode" : "p30m",
+    "setName" : "30th Anniversary Misc Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1P",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13ce3ecf-5dd6-4ab3-8e79-d3cd33f00ad5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-06-15",
+    "setCode" : "p30m",
+    "setName" : "30th Anniversary Misc Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97720ff6-6209-4de1-9271-6b76ce4fbab3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Richard Garfield, Ph.D.",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-02",
+    "setCode" : "p30m",
+    "setName" : "30th Anniversary Misc Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "2a7a63b4-2946-4a25-acd4-742fec197ec0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Petal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-08-03",
+    "setCode" : "p30m",
+    "setName" : "30th Anniversary Misc Promos",
+    "variation" : false
+  }
+]

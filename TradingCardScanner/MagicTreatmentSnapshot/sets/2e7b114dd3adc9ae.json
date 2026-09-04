@@ -1,0 +1,784 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f2b2f381-86a2-42ac-b694-dcde437d574f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegis of the Gods",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c3bc8b9e-4d22-41ba-b593-d383fd301ef9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Rhetoric",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f2e73e06-d708-41dc-b20c-1f71651230e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogis's Warhound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8dbb2112-85b9-49cf-9ed5-9273829c34f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Blossoms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d107c72f-483a-4af9-b86f-681669d99c46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldenhide Ox",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f12149b9-b450-4ad6-ab5d-9a0eeb36997e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Humbler of Mortals",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3b9256e2-b59c-4997-91c1-4c565746d53d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harvestguard Alseids",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d8ef63b9-c021-40fe-910e-93c06d660c20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oakheart Dryads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ac71491f-3027-4257-a18f-ba4de6041feb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirespine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "52705c53-883e-4b6a-9c08-3fa35f6f17d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Athreos, God of Passage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cacf28cb-feea-4afb-b22e-1b8d50ee66c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroas, God of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ab70c262-37a9-4dcd-80bb-d4422368eade",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keranos, God of Storms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "27427233-da58-45af-ade8-e0727929efaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kruphix, God of Horizons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0e8553cc-8f61-4022-97c9-e31183b65059",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "75ec8548-5790-4eac-8780-cdd126438192",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pharika, God of Affliction",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ea5346e3-3fe4-47ea-a184-e237091cc4a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Coinsmith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "98d13a98-e715-49a8-a59e-a2adfcdec70b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx-Fleece Ram",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7e2fcd27-c068-468f-9825-2825c0cf217d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sightless Brawler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "88a60d25-b97f-40e7-a5ac-c456cee02aeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Nautilus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3b2f562f-00d1-41da-a6ac-bc019cce7fe7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hypnotic Siren",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e9f88da5-b013-478a-8a0b-da9d1e8eb2c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riptide Chimera",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d4ebd8c0-bb03-434d-b669-d9b35d07b2c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa's Devourer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3f61c85c-03cf-411a-aa66-cbe178aeaa02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whitewater Naiads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1e07a595-5579-4d5a-b07c-84239d690459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent of Erebos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "acdc31d5-6726-453e-94e0-69d2fe9447af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brain Maggot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b20eabfb-f086-45dd-97e2-b2ed5286bc3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomwake Giant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0a2b4819-8aeb-49c0-b40a-3ff280604970",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadbringer Lampads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "040af9b9-1e94-4dd1-b347-b54b6b9e0275",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnarled Scarhide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "732b5444-0410-430b-87ca-cf2d9f165bd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Guardian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d528f7a3-0a7b-42e3-8e4f-f1eeab02e23a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of the Feast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "69799971-6e24-4b90-ba72-44c6393fc3c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thoughtrender Lamia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "44a92b7a-7119-45b3-b9ed-5dbf5abca818",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclops of Eternal Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a6c10816-e825-452a-90b0-80eb9f20bd6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of the Great Revel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b80038ed-4206-4e44-943e-f332e4ce2f14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forgeborn Oreads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "jou",
+    "setName" : "Journey into Nyx",
+    "variation" : false
+  }
+]

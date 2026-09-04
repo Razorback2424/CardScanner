@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35bad4e4-d961-49cd-90da-aa4ed79d9ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "pss2",
+    "setName" : "XLN Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3298ee7-604e-40d3-8672-faad75f96928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "pss2",
+    "setName" : "XLN Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ac80b6d-8367-4780-91b1-fe26757f9090",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "pss2",
+    "setName" : "XLN Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3904e6b8-1188-4228-a7cd-701c20446a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "pss2",
+    "setName" : "XLN Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6fab1f9-28b9-44c9-8fe3-a5782f71aac7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "pss2",
+    "setName" : "XLN Standard Showdown",
+    "variation" : false
+  }
+]

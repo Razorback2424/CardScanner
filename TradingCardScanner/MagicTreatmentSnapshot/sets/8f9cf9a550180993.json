@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "13a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0da436c2-5cc9-49a6-bbf0-6fa3133a56c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guerrilla Tactics",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc0eefcb-2201-449a-bcbe-e4f9396e45c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guerrilla Tactics",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e08b23e1-a36c-4ca7-b7f6-cac03d6a6dd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86a62e94-7681-4124-8248-14c950e52c51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c80412d-f20b-4139-9608-e7878880b531",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya Ancients",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df3c2df9-a6cf-400b-9bac-9a68269ce58c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya Ancients",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef20bb8a-9aa1-4323-a047-21ecbe57d885",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian War Beast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "709ffe6d-8e04-4749-92c3-f8b5a3b6ce33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian War Beast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a872ab74-1f75-4ed9-b517-e1ed04517009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lim-Dûl's High Guard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "692c668d-3061-4bdf-921f-94af32b4878c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lim-Dûl's High Guard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a327ec15-f654-4e17-8234-baeacb575ed7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantasmal Fiend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f6c475a-a03e-4439-8cd0-51445fc2b711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantasmal Fiend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-12-01",
+    "setCode" : "dkm",
+    "setName" : "Deckmasters",
+    "variation" : false
+  }
+]

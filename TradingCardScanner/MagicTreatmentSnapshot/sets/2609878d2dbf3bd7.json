@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "139★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4e7f7e1-779e-46f1-afe5-ff0232b30dba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shield of Kaldra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-24",
+    "setCode" : "pdst",
+    "setName" : "Darksteel Promos",
+    "variation" : false
+  }
+]

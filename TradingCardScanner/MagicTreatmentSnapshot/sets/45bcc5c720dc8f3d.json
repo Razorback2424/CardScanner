@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b86ac828-7b49-4663-a718-99fcac904568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk Wildspeaker",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "pdtp",
+    "setName" : "Duels of the Planeswalkers 2009 Promos",
+    "variation" : false
+  }
+]

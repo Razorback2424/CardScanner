@@ -1,0 +1,554 @@
+[
+  {
+    "collectorNumber" : "106y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94643ca3-e9ed-4619-a579-dc771308f5c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crater's Claws",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "616db7a7-cda0-4b24-98d7-e266de3a099a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mardu Blazebringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1238755c-5272-45b5-b685-e4e36411b831",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mardu Hateblade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5ef1d34-bf7f-462e-b190-53984fca5495",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa Deathdealer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d69350c9-ab78-4162-8924-284a6194c345",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa Vizier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a6b25df-7aa9-4f06-8b6a-3aad9424c7eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Plans",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6df5843d-63f7-4091-80d7-a595f08851c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Brood Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "845d58dc-e1c4-4949-87cf-881a8bb0e00b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snowhorn Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e109a29-29cb-4bee-a9ae-4293c7eaee69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sultai Ascendancy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bbadb93-745a-49d5-8f55-ce7ec75f48e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wealth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65afe44b-d022-44a5-94a7-31f0eee2e13b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cranial Archive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aef570e6-b522-48f5-b253-bffb05fd9b87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Monastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b78840ae-7a9a-469e-af08-6231fc650200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nomad Outpost",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92cbeebf-cb90-445c-b9b6-5b9b1e8b3c0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kheru Spellsnatcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b1d437c-8a97-4fd3-81ea-c97123f200d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dutiful Return",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42f4c427-98fd-4416-a8a5-b1fd0f85ad11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empty the Pits",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01890d3e-3af3-42b6-834f-efcccc93d921",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Haruspex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5b59b1e-b7d9-445a-908d-96c5eb0cb2e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murderous Cut",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3fd55bf6-6fae-4135-a347-5903f47b4d49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa's Secret",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15034cbd-2f51-40c1-bcc1-cea19a7637d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rite of the Serpent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6e881c5-5482-4242-87d2-d6d7e437d93b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Attendants",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b90d9a1b-3768-4387-bcdd-ea60233341a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm of Bloodflies",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21a3500b-fa81-45d3-8aeb-345ed7ee3327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Act of Treason",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6aead49f-d0d0-459a-8273-a9159f5e1b2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arc Lightning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-12-12",
+    "setCode" : "ktk",
+    "setName" : "Khans of Tarkir",
+    "variation" : false
+  }
+]

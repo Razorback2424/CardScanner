@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7b55dcf-ae63-4b84-8d39-80b5a6de3c1a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-04-30",
+    "setCode" : "tarb",
+    "setName" : "Alara Reborn Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83790fd3-f371-494c-97a2-3aa469a399f1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Lizard",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-04-30",
+    "setCode" : "tarb",
+    "setName" : "Alara Reborn Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bb628da-a02f-4d3e-b919-0c03821dd5f2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-04-30",
+    "setCode" : "tarb",
+    "setName" : "Alara Reborn Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bde17901-35fb-4045-8ba5-deab046cd44f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie Wizard",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-04-30",
+    "setCode" : "tarb",
+    "setName" : "Alara Reborn Tokens",
+    "variation" : false
+  }
+]

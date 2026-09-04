@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "17aece62-a208-496b-ab63-70babb89e87f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crucias, Titan of the Waves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ybro",
+    "setName" : "Alchemy: The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4b3bdc0-2826-44d1-b39b-104aff3b9a8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jarsyl, Dark Age Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ybro",
+    "setName" : "Alchemy: The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06aac933-a8e4-4cfb-aac2-fe9c23baec61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raddic, Tal Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ybro",
+    "setName" : "Alchemy: The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed33af8b-d1e9-4298-852c-c9ba7f50e2e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Richlau, Headmaster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ybro",
+    "setName" : "Alchemy: The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01b4c54e-7950-4183-a69d-39a777f424bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rusko, Clockmaker",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ybro",
+    "setName" : "Alchemy: The Brothers' War",
+    "variation" : false
+  }
+]

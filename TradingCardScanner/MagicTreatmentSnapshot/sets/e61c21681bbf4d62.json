@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ea65e470-4892-4b2b-b187-2296c7a8d46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2006-10-06",
+    "setCode" : "tsb",
+    "setName" : "Time Spiral Timeshifted",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ebff1b5d-b948-48fa-9fa7-690b13ab5d71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call of the Herd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2006-10-06",
+    "setCode" : "tsb",
+    "setName" : "Time Spiral Timeshifted",
+    "variation" : false
+  }
+]

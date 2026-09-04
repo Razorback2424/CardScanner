@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "122★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ecac065-c807-4bf4-935c-badd3c64407d",
+    "language" : "en",
+    "layout" : "flip",
+    "name" : "Budoka Pupil // Ichiga, Who Topples Oaks",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2005-02-04",
+    "setCode" : "pbok",
+    "setName" : "Betrayers of Kamigawa Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0abf36e-a038-4645-ba39-12e610b9e135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ink-Eyes, Servant of Oni",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-22",
+    "setCode" : "pbok",
+    "setName" : "Betrayers of Kamigawa Promos",
+    "variation" : false
+  }
+]

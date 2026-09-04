@@ -1,0 +1,1583 @@
+[
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb169fa2-c92e-45f7-89a2-0ca0e3910a1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Key to Everything",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c936504c-4e90-408f-ba98-0fb8c0378471",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Jitte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8391dbb8-3c8d-42c3-892b-b85e40bb28e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collector's Cage",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "03304c72-fe8e-42af-96ae-1e64ba0105b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Abolisher",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9e068335-92f9-4ebd-bb00-f4ff741e3d7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oltec Matterweaver",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ab6ef698-caad-47cd-ba35-41be64a58c99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "94b4b7ac-d45a-4ce9-97b4-35789df8a162",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esoteric Duplicator",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "28a11489-11c5-4018-aab8-c9d036638414",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simulacrum Synthesizer",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8abd5601-c8b4-4ac8-aab0-be5c7b3aaf56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldwalker Helm",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "12cb3add-c39c-4124-a028-87333aab0929",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greed's Gambit",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d1e81c9e-02f4-4c18-9326-127e08c9b47f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harvester of Misery",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b6cd1d1b-dbde-4a2c-94ed-58395867799c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Investigator",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "351eea06-f5be-4044-b3b3-cc6bf805abb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generous Plunderer",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f1d67fd7-30c8-4cd7-ab1a-97225b9c9437",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Extruder",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "db47f1bc-7f50-493f-bb3f-c1285cbaf244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Vessel",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ad4ba0c9-ec77-4406-a62a-82a550791e61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Duplication",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "16cd6bde-29ec-4de2-b369-bb3e1d2714d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territory Forge",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2f23dffc-c76b-4f01-98c2-67dae3b3114b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Cornucopia",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "713be7b8-e73f-4ed1-8a14-cc1c144e844e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristlebud Farmer",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "385e6c23-0eab-4bc9-8b30-524879051ce9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omenpath Journey",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "82613173-2892-47d7-8a09-2102f2f0965f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandstorm Salvager",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c1f0544c-0124-497c-a8f1-5d5fb959ca39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaultborn Tyrant",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a3db1928-86f2-4606-ad2d-4b7dfd7e5d6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Key to Everything",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8d67c7fb-043f-4984-a700-5e8aa44c90aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pest Control",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dc679a0e-bf7b-40b5-b904-9c2d3508fa83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Jitte",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d0fb925a-5845-4d73-8122-6e7a36a9bd0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Ring",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f329b59c-1c1d-4a0a-89b4-c3fc4a8074bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nexus of Becoming",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aaf08dd1-3d35-4842-807d-37f94b9ba578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Wealth and Power",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "84dc2948-f185-4c3f-b80e-2bc8f47825c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torpor Orb",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7227906c-043b-4742-8141-694f7811dc06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmutation Font",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ad282dc0-6310-47ab-99cd-90f34168bd27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fomori Vault",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ad49fd74-db70-49c0-8ad9-1185e2b0787d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarnation Vista",
+    "promoTypes" : [
+      "boosterfun",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0ba9e2cc-e0a3-4c5a-9ca0-f683ff8b5c94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaultborn Tyrant",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0d18fa57-fab9-48f6-b80a-d03fb89d2683",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Key to Everything",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aa77cff4-0f0a-430a-b0c8-aab82299c570",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Ring",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "59193e1f-7231-4967-82eb-1cb0b5494dc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Wealth and Power",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ad50cee8-0f7f-4058-8fe1-5d7156c2429b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarnation Vista",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil",
+      "vault"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1f40f6a3-5f38-498e-99fe-e60e93d7a05c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collector's Cage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1439551c-6764-4c35-a5ba-c7adb727cf7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Abolisher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1617d39d-4989-4ac4-8cd0-ac1b4e7312df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oltec Matterweaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a52b1bc-cf29-49bd-a877-03a21fe8a6c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ba1736b-9e11-4169-9525-1540a64a3188",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esoteric Duplicator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f0e003f9-2fad-48b4-8e5b-4cda8612ecd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simulacrum Synthesizer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "29db3d9f-d95e-4854-8ea6-7970877221d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldwalker Helm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "47c57172-6de4-421f-93d8-be1c601c1d0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greed's Gambit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e2adbac7-e479-4c73-8978-f7fde9f6e14d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harvester of Misery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0a3c9365-af51-4874-be5b-57d0514825fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Investigator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "393bf5fc-0ad2-4116-83b4-346d61ac2911",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generous Plunderer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0ffddccb-4195-4c8b-b2b3-5c545c656fee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Extruder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3e9f1d0c-6f99-4b34-a367-052dd612ecda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Vessel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "61fbf320-63e1-461e-9696-561a2d6f554a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Duplication",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5999e2ac-7111-470a-b597-4c751ffecbfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territory Forge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1b9c600-72e2-4648-9276-99b21cec00dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Cornucopia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4fa29302-65bb-4852-94dd-9c5f5477f94f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristlebud Farmer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a33e6422-801a-48ec-8fb7-ff59e1fed25c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omenpath Journey",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "84c96b72-b0e1-4ea3-9984-5a67718d070d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandstorm Salvager",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "07ca436a-e992-40a9-978a-501a82e443ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaultborn Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2db35dae-6701-45a1-97c4-3e3049b45555",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loot, the Key to Everything",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1d62921-f76d-436a-ae8b-c3a52715b47d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pest Control",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a4a723b3-e93b-499e-a5cf-f79a3634d4da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Jitte",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "23d0c7a2-9614-4e72-a18f-7187de102dc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Ring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dbb8d780-ed74-4084-ac3b-245af39d00da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nexus of Becoming",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e5fdcd21-55a3-4cad-8b73-3d6f85a69ce1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Wealth and Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d034bf77-38dc-4b43-9a00-831d89af437a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torpor Orb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "47a2058a-24a7-4b10-a1d5-0b69e94c8688",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmutation Font",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "56419022-bed8-425c-99a9-fc288446efd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fomori Vault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8b85d6ea-e312-48b9-9c22-398454d9a45c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarnation Vista",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "big",
+    "setName" : "The Big Score",
+    "variation" : false
+  }
+]

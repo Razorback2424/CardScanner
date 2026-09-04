@@ -1,0 +1,439 @@
+[
+  {
+    "collectorNumber" : "2016EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "962719f7-ff8e-480b-985e-bd53a111793b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2016-10-22",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2016NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "644aba21-1fa7-4483-b9bf-56c5fe4d8975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Badlands",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2016-10-29",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "453e1bf8-e570-4b9b-8f41-5f4f31ae3b0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taiga",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "931184cf-0b9a-49d5-8234-a25b90dbaedb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savannah",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2018-05-04",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2018A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0829af6e-7dd9-4bce-bf14-1c5d509556cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plateau",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2018-08-19",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2018NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "154ce456-38d2-4195-93b7-302e11c006e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2018-11-04",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "771ab45c-1a14-4ea1-b35a-1cb00a0fc5ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bayou",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2019-08-18",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c19926a-7792-4e0f-8418-a44f0cf5eeea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "City of Traitors",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2019-11-03",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b68c652e-9413-456e-b875-bf9a0ca801a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karakas",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-10-16",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75876b45-4fc8-41b4-bc87-19c5a1d7e315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishadan Port",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-10-16",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8a7e4ce-b7a1-4476-89c7-74825ba31382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maze of Ith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-10-16",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34c7a81b-476c-4a5e-b26c-75a3f4eb46f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasteland",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2988d9d-7c56-4daa-8609-ea249c18134f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bayou",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-20",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb6b2d54-0b1d-4b0f-b5b8-6df5491d1bfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Library",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-21",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af241147-ebf3-4ef6-b8b2-58298e34b6b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Cradle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-11-26",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fe01ec8-55fe-462c-8a28-a8b3908aa6f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrubland",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-12-09",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68c7531b-d205-4ae2-ab82-b038dfb00c4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Tabernacle at Pendrell Vale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-12-07",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99838769-ada3-48ff-9acd-09b44cf188b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2023-11-24",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49d7d9a0-ebfe-4eae-9eae-37b911f40df7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "olgc",
+    "setName" : "Legacy Championship",
+    "variation" : false
+  }
+]

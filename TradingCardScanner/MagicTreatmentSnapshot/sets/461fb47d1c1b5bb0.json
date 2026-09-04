@@ -1,0 +1,182 @@
+[
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c55407e4-9d86-4ac9-9360-e44335852a29",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130★s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcd5d6e8-7e7e-4eb2-8994-10610ebcdf4c",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d936478a-c9a9-45b6-afd7-de30f1c3221f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Raise Dead",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157★s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3deb1c2e-49ae-4f26-9f7d-6643cb79eea5",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Raise Dead",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7167902-939f-4aae-819a-8b941ce45cb1",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Scathe Zombies",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161★s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6be514ca-dd8a-4b84-9125-03a0bf8a047d",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Scathe Zombies",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eaab01ef-f14b-4f42-ab51-b1537fa642d1",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Charcoal Diamond",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289★s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a52ecee5-ad2d-4f52-9845-f682119ee120",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Charcoal Diamond",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-04-11",
+    "setCode" : "7ed",
+    "setName" : "Seventh Edition",
+    "variation" : false
+  }
+]

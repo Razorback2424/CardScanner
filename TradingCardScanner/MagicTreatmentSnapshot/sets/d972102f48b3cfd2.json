@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "P1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57f25ead-b3ec-4c40-972d-d750ed2f5319",
+    "language" : "en",
+    "layout" : "planar",
+    "name" : "Stairs to Infinity",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-06-01",
+    "setCode" : "phop",
+    "setName" : "Planechase Promos",
+    "variation" : false
+  }
+]

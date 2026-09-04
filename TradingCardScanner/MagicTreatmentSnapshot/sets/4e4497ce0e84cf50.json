@@ -1,0 +1,223 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f3f309f-60bd-45e2-b226-27e634fe62d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2860980-7be2-4fdc-b758-4f7d2a9eab43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pouncing Jaguar",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7afa126e-bc99-46c4-9205-c33802aa06e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8755900e-ca16-43b3-8137-7af437e30410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : true,
+    "variationOf" : "7afa126e-bc99-46c4-9205-c33802aa06e7"
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2511d12b-77eb-4ed8-8bb2-71c94d496dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skittering Skirge",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae6ad5a0-a58f-4dac-95d4-85bf4d6c3082",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b9a0fc6-b28c-4065-abaa-90b324288da2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rewind",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d3f41dc-72f6-4346-b95f-4813addb5af0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a53d0e7-2dfd-48d3-88a8-286736b1e0d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Silver Golem",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7953bca9-ed74-485d-860f-9574d6783284",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pal99",
+    "setName" : "Arena League 1999",
+    "variation" : false
+  }
+]

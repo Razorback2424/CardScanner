@@ -1,0 +1,881 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "168d7532-c925-4a96-a756-2ce4dd0fec33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trynn, Champion of Freedom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ebc57f73-a517-463e-8d55-56aa996d091e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kathril, Aspect Warper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8d5b29be-2b1a-4ba5-8958-60eee4e3bac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "039d25d4-ce26-4ecf-bbf5-42187cf0230a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kelsien, the Plague",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "639df7bc-b87d-4bf5-8005-8eabc54e955b",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Otrimi, the Ever-Playful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5478952b-128f-4ca8-83e6-bcf07848307f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "066c8f63-52e6-475e-8d27-6ee37e92fc05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pako, Arcane Retriever",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9955d172-0b24-4c61-9dee-c935a1f26da2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shabraz, the Skyshark",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0088e145-d402-42bb-98b5-af33901de44a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Smiles at Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc9cbc83-b9e3-4a22-948b-5a71112154c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silvar, Devourer of the Free",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "504ad2a4-fb3e-46c4-9b7f-f05c80891cd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3ee3011-3d17-435d-a483-79b0419b589b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fumiko the Lowblood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "05b837a2-5773-4340-87f9-b4d6a43deb27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tayam, Luminous Enigma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c44cfa67-6276-4d23-9f25-a0576bfe1d25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ukkima, Stalking Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "447db519-7825-4330-99e7-a2429e1f6b2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xyris, the Writhing Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11c0e89b-ab29-4739-a88e-1e7966d87d25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yannik, Scavenging Sentinel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16a86a35-f7e5-434d-bf44-61ae7cb0f98b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haldan, Avid Arcanist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c07de85d-343e-49e0-b438-ddf1342ab654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zaxara, the Exemplary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d29569dd-6d79-412d-bc14-674cd1705260",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adriana, Captain of the Guard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fefe4d2-262d-4a45-8a75-c168a9846cfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, the Bloodflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1e3b82a7-ebef-4190-9f50-40b992ba89c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isperia, Supreme Judge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "2bd9d26e-984c-4cf8-8c46-447f9776668f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karametra, God of Harvests",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87f6aaba-ad2d-41ea-8d07-21c67d384aa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Locust God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5489d43c-2034-421d-80e8-96a7377795c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Melek, Izzet Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "395465b8-f5ed-4668-9e6a-82257150c52c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, the Firemind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "de71b145-6db9-490c-9e86-b441fcb107c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70288968-7bfd-44e2-a2b3-0b6639ef7e0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi, Eternities Crafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b46b4ee-263a-4a4b-8fbc-3ea6fa9ba56b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wort, the Raidmother",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62b8f8e9-a2b0-41c5-9fae-340f7caaeff9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wydwen, the Biting Gale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00b9ac91-51e4-4653-ac2a-da166a894f2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nikara, Lair Scavenger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b4fdcd5-5346-46a8-b1a4-84ddb74089e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brallin, Skyshark Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5e857aa-06b7-4bce-b56d-6f6be5cfc77b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cazur, Ruthless Stalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23736c5f-bd1c-4505-8639-5fb92cd74b21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akim, the Soaring Wind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80bc07d5-bdbb-4a6d-8958-0c172ea80245",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gavi, Nest Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf1ef8ec-d915-41f2-b087-3d6d82e3db85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma, Angel of Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e660d42-f5d3-452a-9662-74e18a1ae9e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina Kudro",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f990cd78-2165-446f-a116-ae55d7a0f00d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalamax, the Stormsire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "78f86da3-6caa-4507-882f-3d0476b79bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00111afb-26fe-487b-8d12-087cd8a8fe86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Master Tactician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "c20",
+    "setName" : "Commander 2020",
+    "variation" : false
+  }
+]

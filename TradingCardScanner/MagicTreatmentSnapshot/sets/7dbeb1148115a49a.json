@@ -1,0 +1,140 @@
+[
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "804458a2-5376-462d-a2cd-fa596750c0aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "4eea01e5-d3ea-4d05-8d17-cae7b982d882",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banishing Stroke",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "9e564a2c-e8f0-4ef2-bb1f-1d607dcb0b63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "916becd7-3be9-4525-83cf-3dd133816f69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "729cdea3-59ca-4b32-9a8a-9b0cdb4b3aaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Mastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "cf4f47a9-1c23-4d63-bb89-83c889615e50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonfire of the Damned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-03-17",
+    "setCode" : "mm3",
+    "setName" : "Modern Masters 2017",
+    "variation" : false
+  }
+]

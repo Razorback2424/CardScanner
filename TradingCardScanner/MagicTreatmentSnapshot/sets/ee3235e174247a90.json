@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "942f64bc-3d5f-484e-880e-74c84cdc1e51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kathril, Aspect Warper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "oc20",
+    "setName" : "Commander 2020 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2376fd1-26aa-4263-81b1-00daf21337fc",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Otrimi, the Ever-Playful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "oc20",
+    "setName" : "Commander 2020 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "018daf97-1cf3-4cc2-b797-ef3cd3a9a15f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gavi, Nest Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "oc20",
+    "setName" : "Commander 2020 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f08ec3bc-b5a4-408d-9a45-89fe61d372f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina Kudro",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "oc20",
+    "setName" : "Commander 2020 Oversized",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "979e237b-2b38-41c9-ab4d-3f3926dfdd82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalamax, the Stormsire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-17",
+    "setCode" : "oc20",
+    "setName" : "Commander 2020 Oversized",
+    "variation" : false
+  }
+]

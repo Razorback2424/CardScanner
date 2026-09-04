@@ -1,0 +1,761 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "02645651-cd55-4bd0-8a4d-fa257270a0e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hashaton, Scarab's Fist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f17e68fd-9c05-460d-96aa-dd0ab8b7af37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7546b37d-c83a-4632-bebf-cc46d114481f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Scarab God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b7e7eba5-8bd8-4c7d-8843-cae6c2ce0043",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherworks Marvel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba25bdf9-b6bf-4f4f-af37-8bfb84a74c97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bontu's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a471b306-4941-4e46-a0cb-d92895c16f8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Worldsoul Speaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f4b46b1f-0cfe-42cc-aac5-e6912b2f9fd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Chief Mechanic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "7efe6417-9445-40e5-8c37-0973d8645c79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "On Wings of Gold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6efec3e5-6cad-4982-9a95-d46136a835fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of the Crossing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "8b7e679d-c99e-49c7-91e6-e2b3d6b57482",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renewed Solidarity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4afc130b-09fb-44c7-a2b3-bce42838d4b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizened Mentor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "221aa549-ebbc-4ecb-b9ed-9bccea642680",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prophet of the Scarab",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b9e58bd-8263-4dfc-964d-10d8a62fdda2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhet-Tomb Mystic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Monarch of Ifnir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0713f2e0-31be-4cd9-818f-538757913d8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Aetherkite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9aeb44e0-2257-444a-b805-7e939ca5f6fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Worldsoul Speaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5fea0781-e933-47ef-9414-92c8652a7778",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, Radiant Creator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d813c2cc-6e31-4c3a-8b95-8f5434b2fd98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peema Trailblazer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1f36e04-3500-410b-a07c-28a280b5a0fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Aetherhood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "46635950-4199-441c-920c-eda8b8552932",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adaptive Omnitool",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f7628e13-9cf1-4bd4-9d01-e4961677dd12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherflux Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f38cec83-caae-4cfa-a7dd-12e13091c17d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetheric Amplifier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f87adc0a-813e-4afe-9e4e-c2d2202c3256",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stridehangar Automaton",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7f288449-e9a8-444e-9639-fbcb742d2409",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Accursed Duneyard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c0629894-0b72-4abe-9771-03becfdb241c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temmet, Naktamun's Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d5e247d3-8542-4e6c-b256-5ae216eeceb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "On Wings of Gold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "128deed2-b9bc-4065-95c9-ccd7b08f1230",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Ruins",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0d403ab1-56d1-44a6-a414-6cc7a114c62d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cast Out",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6453140c-6588-41d8-b43f-1858d70d9761",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Oketra",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9a72b230-dbb0-4d38-ba7a-fb0bd03b6c47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renewed Solidarity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "edf49825-c432-4eb3-97da-b92ae6b9fab8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Era of Innovation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dea200c8-6da5-4938-8b76-cc693e03de29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sai, Master Thopterist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d0adecc7-21fe-41b1-a0bd-58f98970e283",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Spy Network",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ccd2fc83-7fbe-45c4-a5f3-18a105ce6f09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreadhorde Invasion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "drc",
+    "setName" : "Aetherdrift Commander",
+    "variation" : false
+  }
+]

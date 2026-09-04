@@ -1,0 +1,1060 @@
+[
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "c044168d-cb08-493d-98c1-b66b6149fe5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reality Hemorrhage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "a1a644e0-96e5-4b73-873f-1132948cb21f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birthing Hulk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "5a0ff591-e4d9-4b62-ac9c-7962fd815226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruin in Their Wake",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "826a882e-c4bd-4132-b797-9e1aa2d0bce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "12bc5b4c-a809-43f0-8848-38812ce865c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stalking Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "f48b0613-127a-4338-aea4-ad0b8aa96d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vile Redeemer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0020a124-ba76-4d40-84e9-9803268d9f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "f0bb1a5c-0f59-4951-827f-fe9df968232d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Displacer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "3931db42-3773-4aae-b6eb-2209e7312f8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flayer Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "4a5bf575-6d09-4cb0-8fe0-8e49d2c39fd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindmelter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "6c2e37e2-a4bd-4f90-9191-3125784a3369",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Grafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3acbc14b-89e6-44ef-ae12-e2049adc06b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain's Claws",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : true,
+    "variationOf" : "521ee576-5a51-4353-af38-c461f05d66ce"
+  },
+  {
+    "collectorNumber" : "183a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cc070d3-4b83-4684-9caf-063e5c473a77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wastes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60682c00-c661-4a9d-8326-f3f014a04e3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wastes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "249a7be3-311e-4ce6-97dc-97242463ae23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abstruse Interference",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "4eb60957-0811-40c3-a92b-cce3e6a94745",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blinding Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "bbe4bb6f-bec6-49d2-99d7-e3750a0ea03f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivator Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "496a22cc-36dd-4d4d-b887-8c4733a29870",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deepfathom Skulker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0ea28dd5-57b0-4255-a3d9-1c190c446f20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dimensional Infiltrator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "85f9b63e-6ecc-4d85-9724-87b8176ae6a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravity Negator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "03ee2d7e-50ee-4f5a-b787-cf9669a892f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prophet of Distortion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "2dee6dca-9c7e-4347-bea7-7fecc69e5827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slip Through Space",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "46f9eeb2-22f6-4bdb-bbf8-f53774cc6226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Harvester",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "4bf13c5e-3968-48ad-ba08-99ba58873223",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Shatter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "50460cce-ee1c-4384-bb0c-d90616e0d2e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bearer of Silence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "e2b26769-4705-4b09-94b4-1063e67041d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dread Defiler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "996da623-1c34-4545-a800-648238ea91ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Depleter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "77899cb2-4d87-4c2d-99ae-1ae75bc5dc86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flaying Tendrils",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "f8585871-24a2-41d7-ae12-29aabfbc9ccc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Havoc Sower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "88c9d8c5-333b-4281-b923-b4a060927bbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inverter of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "a384cd5b-2c6c-4969-bb62-a017e2fc9794",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Shrieker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "d80665ae-fcb2-48fd-95be-8768293bcef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Translator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "24e30acf-b30f-4bb3-b80e-dc7e9559da51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oblivion Strike",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "162f3fb8-75b7-4cd7-9d6c-27dd76197aa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reaver Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "be57a5aa-44f1-483f-9274-aa68f5a2bf1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sifter of Skulls",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "eb00fa72-bcda-4081-9048-e13752da8d46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sky Scourer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "275b1185-49aa-45ae-8e2d-12aa469a7d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slaughter Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "ac497133-a44a-4acc-ba7e-8fc1fae7e226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unnatural Endurance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "ec9ed374-54ad-4b81-b071-0b4668feb282",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visions of Brutality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0c06d8ec-55ab-4be9-a470-77c79d643d1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witness the End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "82a42b28-3d1b-4432-b8c9-2d42e4d0e1c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consuming Sinkhole",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "62f3ec85-552d-4e28-939e-ab2c39e3e9c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Aggressor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "dfaa8b16-7c12-44e2-8ddb-17608d491c41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Obligator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "95d9c92d-8b1b-4adc-8015-d50e673b6321",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immobilizer Eldrazi",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "72765559-0a78-4aa3-827e-cb4612720991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Return",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "48669993-ad68-499e-8f2e-bc5c651b4b28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maw of Kozilek",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-01-22",
+    "setCode" : "ogw",
+    "setName" : "Oath of the Gatewatch",
+    "variation" : false
+  }
+]

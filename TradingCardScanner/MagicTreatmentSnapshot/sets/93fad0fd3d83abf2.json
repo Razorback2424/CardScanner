@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "119836fe-70e5-4000-81b7-21e410cc04ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-15",
+    "setCode" : "gn2",
+    "setName" : "Game Night 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee13d6f1-66bb-433d-9250-f18aa30fa4fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torgaar, Famine Incarnate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-15",
+    "setCode" : "gn2",
+    "setName" : "Game Night 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51967207-7a15-4017-95e1-8573be36681d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-15",
+    "setCode" : "gn2",
+    "setName" : "Game Night 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "49c1eefd-a050-4b12-999e-5c40934f989a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-15",
+    "setCode" : "gn2",
+    "setName" : "Game Night 2019",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "185★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ded41d44-8233-4fc5-b2c7-e9f263512c1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ryusei, the Falling Star",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-09-18",
+    "setCode" : "pchk",
+    "setName" : "Champions of Kamigawa Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73419af6-7df0-48d5-b6f4-e621c75a1acd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonescythe Sliver",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "pdp14",
+    "setName" : "Duels of the Planeswalkers 2014 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "743195b7-bfc6-4071-a713-cb0c0d54798d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ogre Battledriver",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "pdp14",
+    "setName" : "Duels of the Planeswalkers 2014 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38eb6807-caed-46fe-8c44-0071158537bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenging Ooze",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-01",
+    "setCode" : "pdp14",
+    "setName" : "Duels of the Planeswalkers 2014 Promos",
+    "variation" : false
+  }
+]

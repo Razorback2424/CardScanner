@@ -1,0 +1,2762 @@
+[
+  {
+    "collectorNumber" : "10a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3d502d4-4a96-47b3-ae26-8b2c9f36623d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Moneychanger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbf9194c-8e50-4f50-9a87-3b339a5bc279",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Moneychanger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf9521ae-6fac-4d86-9c60-adecaae5687d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Moneychanger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86bf4aaa-a9b1-4798-a96b-c3e35afb77f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9db3442-01cb-4db2-ac33-8eca6880c315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c461655-a05d-4eed-85b2-04d554f5ec50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db63ad7f-6dc4-4249-b360-46ec5569a5a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebd6e51e-f042-4673-a898-291607105829",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of Leitbur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb537b5a-d725-420d-bc15-0d54ba23331c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of Leitbur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1373dea4-3565-4612-8505-ab8fba3ddb67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of Leitbur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4686bbb9-517f-4cce-aa7a-5db41e22c02b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2813677-91cc-4c8b-a8ea-403fa776c9f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4af611e3-45d6-4aee-bf48-56598b14a242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6ffeab4-83b1-4414-ae72-e59a2354ea15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbb6c13f-6019-4ad5-9de6-07844c361b41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33536b0a-1cff-481f-b695-eadaf6897bf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18f1cc24-a5fc-43cc-b558-ac7901c48b81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cfd96cb-03d6-4845-8595-50bf17b35726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combat Medic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a324a98-31c2-470a-b792-96b6b098a58c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combat Medic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee9d1eac-3ac2-4881-a984-e40d87f60784",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combat Medic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f26c079-61ea-436d-89ae-2f1c6f863e91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combat Medic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "627ca588-917f-4768-a69d-3d93c1210390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9a9bdcf-543b-4140-b836-9e222a4a9233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb1cccdc-9c4d-4ef3-807b-278e6fd23230",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homarid Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1e96895-ef1d-44fa-b263-bce833fc3109",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merseine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c7fb804-65ba-477e-93e8-eea101c1521e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merseine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2dd197f8-ced0-461a-9672-2720a7b70803",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merseine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae7a9e9a-d1f8-44c5-9f79-a1201acfb5fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merseine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e820f3f-434e-4d09-91b9-0ebd6966b393",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tidal Flats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50e7d376-3e22-44aa-9c96-a3b8eb1568fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tidal Flats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "445c4767-6261-449c-bb57-713e2a2bb0bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tidal Flats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c107e82b-134a-4f2b-98c2-6537fae6a50d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a47beac4-161d-4f8e-9778-78293ff9b383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b3cc91d-6f87-4f2e-b3c7-8181d19a1f0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7eb50256-9113-4b03-bcef-9aea24be8493",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Soldiers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc85a68c-14d6-4447-a894-0e48d1662bc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Soldiers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8d1ceac-bb75-4c46-9ab4-1ef623ed3027",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Soldiers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99d22f83-1171-4b5c-8a72-956db26d7c60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Soldiers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a98384d1-8e7d-4c41-9f23-47bc2ae2ad6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armor Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c6120e6-ceb8-4eab-86b0-18d38ed97d8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armor Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18a91ed4-131e-455b-a3bd-0bd42aa754e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armor Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d653ca4-c21f-4594-b900-2526a912001b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armor Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c1d5d13-0160-48cb-8fac-dd86102569b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basal Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcf60db5-4f69-4db4-9dc2-1a6fbdec0429",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basal Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a86d9647-3a87-4620-aa07-26f996fc6fa3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basal Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6908e4c-f94d-4b0d-b9a5-64c04751f108",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basal Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb9273ea-9a41-42e3-8c9c-0d50b127a818",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hymn to Tourach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8601f082-7e43-44ef-97d0-dead272b7eb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hymn to Tourach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58e125c6-81dc-4907-aad2-2ccd1cb166f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hymn to Tourach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bc50e08-dd6f-4ea7-87f8-cce72bafb928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hymn to Tourach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5be87527-3b8f-4529-afdb-a61ad4e787e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Initiates of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03c7dc01-46d0-42be-a1a9-48f69c846d12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Initiates of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62982970-e8b8-4659-bcf0-21aab662d89d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Initiates of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0401bd23-9f81-40b7-a6c2-e3f9847d175c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farrel's Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e3aeee7-975c-419a-bfb3-45bb48ba6918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farrel's Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54252fd2-21a6-40d1-8515-697f18c78a06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farrel's Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "499a791f-ac4f-4a96-b59b-37043686a79a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindstab Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "781e4b62-3910-4ba1-9e72-e99de8523a94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindstab Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "923189c6-d407-4cc4-a062-2f09a4c7c1e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindstab Thrull",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "311d752a-ce8a-44cb-8aeb-1ed66705eb09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e19a4d41-e7b0-48b3-8e2e-9ac00f119ce2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "660ae99f-4e61-45fd-9436-855a38289c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e51f5d8-a7cc-4720-8af5-e002bcfd78a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60ffbb40-13c1-4d01-9421-95b2410d0d3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22c32774-5507-4a60-9ed2-2a570f6ff8e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Order of the Ebon Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc0cb8f6-6ba7-402c-9829-251f7443e871",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brassclaw Orcs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac9d0354-9ddd-4fe1-8174-9d3686ca564c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brassclaw Orcs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2c1e461-f74e-436c-a9df-aff197cf48e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brassclaw Orcs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50f0f4fe-2dd0-42c1-8f68-5d24a8a9d07d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brassclaw Orcs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fe77608-0b33-43f5-83fb-ae993ca1bf7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Soldier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea7e4c52-dfe1-4b15-a0d6-4f26c294426d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Soldier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "872c5601-f356-4873-adf9-9a39536e7d4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Soldier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b710c21-e9f5-4660-80f6-2104ec65f63f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Chirurgeon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "982115b2-e1e7-4b2f-8eb6-a1633477d4a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Chirurgeon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9740842-7955-4cf9-8f76-a426858360b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Chirurgeon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8837eaba-9602-4f63-9897-85583fcdcf51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Grenade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dee262da-3002-4c08-8043-4e40e1b46822",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Grenade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1befdfc7-a1e3-4a2a-ad68-7d0fee170f3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Grenade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a2c4e4b-e9a7-4180-927b-589514c21876",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin War Drums",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5988a3d2-748f-4642-9e33-293ddc568111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin War Drums",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2232386e-986d-41b5-8b70-e086264f3277",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin War Drums",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a0185f3-fbc0-44d7-b933-30627cda1bf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin War Drums",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd3890d1-563d-4519-ab8c-913031d71918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b931cfd-b952-416c-ab2c-271ecaee8e0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28e08767-7e92-4ff4-b0d8-196565fbc23c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1dbca765-8756-4e28-9faf-25714c9b8838",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc37db83-9efc-4d58-90c9-78eef9073ec2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "334004e6-bf8c-4a4e-a30c-1537a99819c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4990dd4b-2b18-4e4c-81d4-1cd8d746a7dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcish Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9387105d-46d0-4db0-8980-dd0fded15eef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Fortress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "091b5ed4-91f5-47c1-b1a1-5443f7346078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Fortress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "960b542f-cb24-4f74-92da-d31559d87c2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Fortress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c52743f0-5c5b-46b9-bbbd-67950d4c89e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Fortress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e00455ac-c7ce-4916-98ed-cca9354e3f22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51ff096c-487f-42f9-a394-a298503391da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "204c8aff-b103-4606-b86b-d794bc5dcde1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "689cd2ed-be81-4769-a8ec-287946301396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1faff88d-594e-473c-a2d1-cd60f51b2ee7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d414bf5a-2604-426c-8c68-5c1696557b57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4cda6d18-d4b1-4b8a-a72e-f90115adf4c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Night Soil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f25a497-46dc-47aa-8586-d514578a6d25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Night Soil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee3eb61b-698c-42b1-8a33-0ce7c3829e07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Night Soil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1691a9f4-4ea7-440f-9bdc-4214ab3c90f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spore Cloud",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c3070f8-6dae-4f22-b186-e2a3a9647cc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spore Cloud",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17fe098c-c9b5-4bba-92b5-5720d6919073",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spore Cloud",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4caaf31b-86a9-485b-8da7-d5b526ed1233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80f8f778-ae31-45cd-b27f-f93a07853ede",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cf2f3da-9101-439d-8caa-910ff40bfbb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01827286-b104-41c5-bac9-7c38414bc40e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f95d42d8-ba75-43bf-81b8-b02374f03e83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Infantry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0e4a9d2-ea43-46ac-8b8b-00496a478103",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Infantry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efac583d-a492-45ee-8c52-60a6422b2168",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Infantry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96b2a8d4-7c06-454c-9923-553294aada4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Infantry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16e61c00-3e94-4f6f-8515-65b430829e91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorn Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84283348-789b-4236-b406-7fc6338a867d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorn Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1537a338-3b68-4a41-bac6-554e8e530e46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorn Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e8f50be-1629-40eb-8916-019903d2e6a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorn Thallid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f04b8356-2384-4743-80dd-f15ca7ec65f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Javelineers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c70f8f50-866a-4889-b986-48636225638a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Javelineers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2be5ab7a-e7db-4c09-8df2-6fe55fa4a116",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icatian Javelineers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-11-01",
+    "setCode" : "fem",
+    "setName" : "Fallen Empires",
+    "variation" : false
+  }
+]

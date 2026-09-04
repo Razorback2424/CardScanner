@@ -1,0 +1,452 @@
+[
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "9e8c0009-787f-480b-84b6-bf297f1fb466",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Vance's Blasting Cannons // Spitfire Bastion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "b3b87bfc-f97f-4734-94f6-e3e2f335fc4d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "05e2a5e6-3aaa-4096-bdd0-fcc1afe5a36c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Legion's Landing // Adanto, the First Fort",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "02bb4b2a-3c9f-48ab-b2a5-ae31f06b82d9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Conqueror's Galleon // Conqueror's Foothold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "514d53be-6ade-4f73-a844-e9ae2dafd6ce",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Dowsing Dagger // Lost Vale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "d4d379b5-7f56-4a7d-a4ac-131fc3d579c6",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Primal Amulet // Primal Wellspring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "392af78e-34d5-4b1b-8b29-0e702271e4d7",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thaumatic Compass // Spires of Orazca",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "c0f9c733-0818-4a03-8f0c-a163d09e0fff",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Treasure Map // Treasure Cove",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3b274f6-833f-430f-ac1a-d1d1d5b03e71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Ingenious Mind-Mage",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3a26ba9-84b8-4f54-918c-f75d4cacad0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Castaway's Despair",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7344ffb-aada-4be1-bc82-2ed96e6cb5bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grasping Current",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9131361b-ec1e-4390-82c9-b9b9f77792a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace's Sentinel",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "740bb19c-0c91-4fc1-9b3c-be84425a3523",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Stream",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a5a6f7b-149d-46d3-9814-d38a302db17c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Huatli, Dinosaur Knight",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2d88e6c-4aa8-4175-9f5d-a4c0182cdf74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Huatli's Snubhorn",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a19440e2-855f-4f60-a443-b99500394611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Huatli's Spurring",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f06ac1f-0bae-4aaa-9ff4-28c806828c40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sun-Blessed Mount",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06da82de-fd37-4c8f-a37d-61da66db567e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Quarry",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "1a7e242e-bb48-4134-a1c2-6033713d658f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Search for Azcanta // Azcanta, the Sunken Ruin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "c4ac7570-e74e-4081-ac53-cf41e695b7eb",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Arguel's Blood Fast // Temple of Aclazotz",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-29",
+    "setCode" : "xln",
+    "setName" : "Ixalan",
+    "variation" : false
+  }
+]

@@ -1,0 +1,7457 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d470cfd-1964-4800-957c-f9625f2258ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brought Back",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d820fed7-fbe8-4175-834a-33b6742481ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bribery",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "d05c852c-09d2-40ad-afed-4c781fde4e72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirlwind Technique",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c1aab711-c113-458c-848e-9369c0149d61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azula, Ruthless Firebender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e1b9878-62b4-45eb-943e-0230a6e78764",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dai Li Censor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "b42b4b0e-39f6-4f93-a358-9bcec8d13b65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desperate Plea",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "77e548c9-8bed-40c3-bcdd-9d97a82c885d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Lord Ozai",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3455d55e-aef5-4eb1-bcd9-1ff9d1ab3698",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Occupation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fea1319c-7589-480d-a204-65ec68837e59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Salvagers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "686e3587-6f0a-4648-99e0-3dae9cdda3de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Fly",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0992a8a7-e992-4fbd-bafd-e28761d2f677",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lo and Li, Royal Advisors",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4760b87-b109-496a-98d1-353f67c265b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyla, Shirshu Sleuth",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3065a184-58f8-43d4-9d9f-ed0f266ec8c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clone",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "864f3e70-d56b-4419-8e1c-80a672f28a72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruthless Waterbender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "6fcab890-2ab0-4ab3-a8bb-884c836a253e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarring Memories",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar Roku, Firebender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6cf1c3d5-3fae-4a43-81c8-c823d2755b99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chong and Lily, Nomads",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54ec5233-6b27-4655-b68c-4c1aaf64d89b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deer-Dog",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1280d51a-f4a9-4021-b229-8d9af701318c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fang, Roku's Companion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c4c603c9-f2ed-419b-8704-6fe306f158fa",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Founding of Omashu",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "725bc6de-140e-4b28-a781-daf17c465a53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frantic Confrontation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2d75e36-0824-48db-86ff-ca163be27e2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Freedom Fighter Recruit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa261709-8966-4dee-b16b-f9e2a32ad84b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroh, Dragon of the West",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b7ea0b25-19e3-4d75-9daa-9110dce7e6fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clone Legion",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b36efbe2-3798-43e5-8640-f003c77440a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Longshot, Rebel Bowman",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "00cc4de5-f9b2-4a46-a410-b39446a9eaee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost in Memories",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4144eca9-13c0-41a7-810b-8f30813945d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moku, Meandering Drummer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "498b0bff-28f2-458f-844b-13814cfa8b14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overwhelming Victory",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "82c686f9-b403-4ab2-af5d-cf586e18ecf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Blaze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5aef6ece-929b-4636-b32e-58f91741b869",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smellerbee, Rebel Fighter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "253266de-0eeb-46c7-9912-145586661fc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Memories",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "496a4fa5-b3e5-4020-b432-6d353095aa33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko, Firebending Master",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3e6ff4d-bf7d-488f-a02f-f40e7f8761ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animal Attendant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "1897db0c-db6d-4018-bf2a-9221bb0d6e61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Art of Tea",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cb795f86-3721-4ae5-9893-49d7d9973f86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Negation",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e5505044-d181-4af7-bd24-1a703e58d400",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar Kyoshi, Earthbender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32d4a2b1-5f39-49a2-b067-e74d2dc31b30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bison Whistle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfb85545-22d0-4265-94e2-8805d2ccf0f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bosco, Just a Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "f29ba4cb-112a-4065-883b-94d1e154b83f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bumi's Feast Lecture",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fea0356-6684-4730-9eb4-0262856bc1f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Cabbage Merchant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "cfcd77b0-0081-4146-880f-71c51e78bfad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cracked Earth Technique",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ae4cebb7-927c-4958-974a-279924ec6d48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Crystal Coating",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2558ce86-ee30-4075-b991-bfb5f7513a5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Armor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a23d6283-c7a3-45a1-8c6b-cd806212d5e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elephant-Mandrill",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "95a3fda4-64d6-4440-a77c-b249edca7860",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hei Bai, Forest Guardian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "6e359c40-0175-48dd-9b4a-f416302210e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "052c27d2-1aa4-44be-b0eb-39f413a7205d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kyoshi Warrior Exemplars",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "98319aec-f95b-4343-beb9-7804551369f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master's Guidance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bea7b199-0b4f-4ae3-8432-7511de794b76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solid Ground",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8fe2bd89-a7cc-4e8e-98b4-69f196bd1024",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tale of Katara and Toph",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "704b3385-bd73-4479-9579-4d9e38711529",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tectonic Split",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "22d1b078-9175-45ab-8fbe-ed4af2abde1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toph, Earthbending Master",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50a22ad6-d2a4-48a6-91c9-147c946a60a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, A Lot to Learn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89e175a5-662c-4a27-88b2-d608f7f06ae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hook Swords",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1c3f58b-9323-44ea-93f0-64d5992c5674",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, Seeking Revenge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "def589e7-f84a-4a13-a65a-130a687bc124",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stand United",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "0ef9c823-3810-4e1f-8bb4-aba59e29c111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intruder Alarm",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "365fa3f6-a210-4342-9413-fcb7812ff4f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko, Seeking Honor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8b4bc34-cc8d-41d0-88ee-f40ec95cc0b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acrobatic Leap",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6dc0c976-26d2-40c9-a571-c370e9139d1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloudshift",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "45834bc6-be8d-4064-930d-efc73cf3c64d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duelist's Heritage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95d376eb-39e5-4215-97fc-6a1a86e453d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valorous Stance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5545882-6963-4729-b2c6-fb4bdc75ffcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3c3d9916-76c4-425a-a215-6226d0921f0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coastal Piracy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f28e706-c488-4525-ad8a-977a5fa77f80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ad14406-4504-4951-83f0-82c298964d6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dramatic Reversal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8c5e52d-57ae-464b-8860-7dd39ebfef64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frantic Search",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "fce23be6-787a-43bb-8bfd-c6672fad9105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Remora",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6fe6ccad-e303-48f9-9dfa-0db7c1878031",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bastion of Remembrance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6f0fcd5-232f-4e99-8cfc-ea0fe9c915a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Deal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "144d5261-ee05-4b7f-ba9d-68aefbdab48e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diresight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "771b9f25-76f8-4da9-b3ab-ee51f4ad32d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolt Bend",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5e23253-873d-4c0b-b446-ea2c21af11dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathartic Reunion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85d431c2-e4fa-426d-83cb-ecb782e7e87d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Confluence",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c06d88b3-d882-4c98-8f70-fed67b772386",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fists of Flame",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6edb20a3-31f5-4bf9-a5e3-943d8d5a1def",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Descendants' Path",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2555ec7b-5cc2-4ffd-9344-6368019feff9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Call",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29267b6b-e0d9-4514-8932-16bf8e6db3bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Many Partings",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "42543a13-c83f-4f94-b3f2-73c948c2b3ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosperity",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09af9bc0-1c73-4d16-8116-b76ad23c6b8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suspicious Bookcase",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "aff2d73b-cba9-4f76-97d7-8b6dd085e656",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, Airbending Master",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0d6d68fd-59a3-4893-b804-e08c48b8d104",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jet, Rebel Leader",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2c19acaa-29c2-4c73-a323-88051dba1bae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monk Gyatso",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a08b578d-cc45-421e-86cf-9e3c9066a726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka, Swordmaster",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "365e5205-ce45-4c97-8a06-6d06e4f8fd72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suki, Kyoshi Captain",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "53220651-7ee9-476d-ab2a-299ba0b3b34e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tale of Momo",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "83fdb879-945c-4b33-8c5a-acce7247e8c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baboon Spirit",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "201776a8-db41-4afe-a417-7e4d1d5d05d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Blue Spirit",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "d8649f3c-1b1f-412e-b9b4-f29d2400c0d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chakra Meditation",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bc372135-f664-41c3-b97c-88b05498f6fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakashima of a Thousand Faces",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "02d07692-9a18-434a-876f-7311349178c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, Waterbending Master",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bad24eac-4dd7-4f2a-b2b9-fed9ba523bcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tui and La, Moon and Ocean",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a071a829-b3dc-4229-9b09-0e96bd7a40dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wan Shi Tong, All-Knowing",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "6d895646-a677-44af-868f-6e5711cb3ae7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waterbender's Restoration",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5ebfcdf7-44a9-4b8c-afba-ad2d2d8edc24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azula, Ruthless Firebender",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "3e58decb-b5f8-4bbb-8054-3db3b2073466",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desperate Plea",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "83ab9db4-b2e1-406a-bc0b-26a700fddb81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Lord Ozai",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "4e68d1fb-0330-4427-9104-0eedc7cceec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Occupation",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c0688a03-05b6-472e-8559-f30169145bfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Salvagers",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7f092712-58eb-4168-8616-dc5f2239915a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lo and Li, Royal Advisors",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "d4296046-23bc-456c-b478-4da73836b843",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Standstill",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4e2ed002-abef-439f-b0ac-7f06d6843151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyla, Shirshu Sleuth",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3644d39d-16ea-419b-8602-83853478e623",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar Roku, Firebender",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2172e69c-3079-42d0-9bda-691571eb87fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chong and Lily, Nomads",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "11113a97-a632-4a96-acb9-9505e770bc0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fang, Roku's Companion",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a7b81898-e7d6-4a5d-aab7-9d79641d361a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroh, Dragon of the West",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "d005f6e3-ee7e-4076-a1df-1a76c1a5e779",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost in Memories",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "2751062e-ffe8-4e33-912c-5dfc334290e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overwhelming Victory",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "2149962b-1611-4841-8288-a168a6b4a977",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Blaze",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2f1cae39-6120-4630-83c6-9ededc96308c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smellerbee, Rebel Fighter",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f6c6b05f-a9dd-4b69-868f-bee224d40df9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Memories",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d98bed02-600c-4cb3-bff5-960d362861fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Magistrate",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "07ec5941-203a-4f6d-b5fa-3054050990ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a0a0547d-1da6-44cd-9652-e815c49c2f65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko, Firebending Master",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "30c055b8-a332-4c4b-86e3-86b8bf085e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar Kyoshi, Earthbender",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "33113622-b3b3-4edd-94cb-821575f1fa74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bison Whistle",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "65ffb473-0a11-44c2-9311-f39d69eef713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Cabbage Merchant",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "2f472af3-0449-45be-b7d5-f13848f345c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Armor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "485eef24-d27d-4d87-8cbd-ab59639d4351",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hei Bai, Forest Guardian",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "39e88a59-9aa5-40c6-8b27-275ec51aa21a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master's Guidance",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "5a7f5e2d-bf26-401c-8ca1-1772f1ef8a2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tale of Katara and Toph",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "9f49fb5b-bd3f-4319-9f1d-626e9d7c9e4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tectonic Split",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "91070e35-2e17-4045-a8ac-0056cb0a2b11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toph, Earthbending Master",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "42506388-0cde-413c-9fd3-b2a6f656ecfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visions of Beyond",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f369827d-e4cd-4bc7-8c5e-72882eff0908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, Air Nomad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "642e1b90-c240-44fe-82b2-7522026224ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang's Defense",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e16365a2-4969-4ad5-af95-9dd2d0499f06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aardvark Sloth",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8a347283-eb16-4339-945e-316a5ce9e2c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Allied Teamwork",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1c5ae0d3-26e4-4d10-85ae-0578cf90eead",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Appa, Aang's Companion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc2ec498-54eb-41a7-bdf2-8772430e177f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, Heroic Healer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a2acb28-c0e2-492b-a227-ef49e905e0fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kyoshi Warrior Guard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ce491a2-bb43-48fc-acc7-273bc7f418d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momo, Rambunctious Rascal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3e0f159-029d-4177-8f20-c96eca0a421c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sledding Otter-Penguin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "039cb105-f8f7-4d04-a137-34b13491ee9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka, Wolf Cove's Protector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5dbb0c4b-c5f1-4860-aa2c-8ee55a7564e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Sun's Zenith",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49ae7f36-4b37-415e-ab39-5fa1e3f2e3e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tundra Wall",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7dbeced9-d27d-476c-92d4-3c14d8a40458",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wolf Cove Villager",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c6a20a8-7869-4b5d-aa22-acf232cc2d41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deny Entry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccb61a51-cff6-4f88-ac17-f10852a27d06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flying Dolphin-Fish",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88745474-d8e7-407e-80df-02541ad1ab0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost in the Spirit World",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7569861-5b68-4265-bb45-3d54992bfe66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Terror of Serpent's Pass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a144e7f-e0f7-4346-a4e8-f4a358c3b4a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turtle-Seals",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "f8783863-699b-4362-a211-7db7ab8f36ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Water Whip",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0568f28f-e830-4a7a-91d3-43e78bb86c8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elephant-Rat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a20aaa6c-7032-43c1-9e7c-57cf8c8ecfd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Ambushers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "be16ae8f-e337-4a76-a0fb-8f5c6e3c52df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodchief Ascension",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a08c7c4-d20f-4c5b-a308-b8c84c9030a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Sentinels",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7f90eef-2393-4e44-9895-00489d3eaa92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilacorn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae735220-413d-4309-8e31-38ff27ead5ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lion Vulture",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3ec1b6e-2f63-4b84-a101-8764c3e6d0f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purple Pentapus",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91cbed11-3b5c-4e7a-9b13-125c1fe5f22f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Capital Guard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd61f469-5377-4bc1-a42b-dd66ca4ede1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Moose",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ba682a6-1045-4ed6-ae95-bd5af8bd7224",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Shot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e83ee667-7726-42e9-9483-6cfc6f9ce638",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Archers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58e59eba-3cf5-4ebe-8bc1-28568921650b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b6fcdc4c-547a-4df4-93c8-911fd400c837",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation's Conquest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "541785d2-e9c6-4434-94b5-e84ff6845a11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Tutor",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ee4bc92-1101-4652-be27-65450abebf00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroh, Firebending Instructor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2b84af1-b40b-476a-87b2-ee8e3a018171",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Komodo Rhino",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1126b572-1cac-44aa-8fec-e2c72a9fea47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loyal Fire Sage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6d9145b-cef7-4e39-8f62-0e5a6a1f08a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roku's Mastery",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1a95982-be16-465a-9c1b-1f4d875c0c40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warship Scout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f3fa493e-b58a-4b77-88e8-b8890eefb2b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zhao, the Seething Flame",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a2330fa-a1e1-41d9-bb7b-8aa9b03a0543",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko, Avatar Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efc6eea1-9872-47e5-a3bc-3c8c1b9705be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko's Offense",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f324a384-7380-4f6e-bbba-fac1f2a01b5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bumi, Eclectic Earthbender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f068ce9-f4c2-4d40-bfa3-7f21f6d3b0b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earthbending Student",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ea94d38-d99a-4668-adb4-5f60724ca484",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noxious Gearhulk",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05a50445-6d0f-423d-b27b-b2b0611f85d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eel-Hounds",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73f4c4b7-5c05-48a5-adb2-ca850df8cd03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frog-Squirrels",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24ca6ca8-e239-4fe5-8711-24098b74e2fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hippo-Cows",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "28494ff6-efb7-4d3b-a7b3-21425df80490",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Match the Odds",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7e6939a5-0890-4c2f-b517-7d16f6490e76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seismic Tutelage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97c41057-cf06-4f78-8c68-870fb763cfa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hog-Monkey Rampage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9deda16b-ce26-4228-9bc2-28b7358d3f7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanical Glider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2246c098-1071-4cc3-a60a-802406e2827b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feed the Swarm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ba7c131-68c6-4ab1-a192-0cfa77d85645",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Run Amok",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab9dbf0b-2c1d-463c-b675-ff711c282e56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explore",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9af44900-0afe-4409-8bad-0db4a915be92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blasphemous Act",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c382c6a-ec47-4b8d-8ad4-cfc935765742",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Bluff",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ba5e3b0-98df-40cc-96a3-0a87c3d39b99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Grove",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "202ae1e5-df13-4a6f-9202-6a2573809f73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Heath",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94f93e5f-dba0-4079-8e6a-dd5d6fe6afa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Isle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "528531e8-4574-4dd5-aa4e-d31ce0f4eb5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Moor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cdd47fc3-6ea7-4516-ad66-b73f545f8221",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, Air Nomad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0dbb9439-6a4c-482a-83e7-5d6aa80d0cbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang's Defense",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75cfa6e8-5a4d-4a10-bd99-d45df8775549",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aardvark Sloth",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf5b4b3b-fb88-48da-ac3f-6a423be9cd44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Appa, Aang's Companion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb0c34e3-5235-413c-a6b2-4a041a6b3da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, Heroic Healer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d3e4f572-e8dd-4440-887c-e9e28693ca42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diaochan, Artful Beauty",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6eebedac-4b53-4b4f-a96b-a5a804b90a83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momo, Rambunctious Rascal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "dca6553f-4ba0-416b-8c04-f1c455a7cfc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Redemption",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "878571d5-cc25-45a7-aab1-25f01c173c77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razor Rings",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dcdb397d-3f68-4ede-b28a-4fa5c6f934dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sledding Otter-Penguin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef442a4a-c58d-4b63-b751-9d3bd82fcc1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka, Wolf Cove's Protector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ce9ea15-6ec0-4044-a130-8e75f4d32ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tundra Wall",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "993652d5-b44b-4142-a081-427edb480dcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wolf Cove Villager",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a10d10-18d3-46e6-99db-43b24dcf2ae0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Capital Guard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71fb2595-b4b5-40b4-a3b6-236c0e2cdc83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Moose",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37599371-29e6-4fae-a236-6a566bfeeff7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Shot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c75ee954-9a94-4be2-965d-58979a560827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dockside Extortionist",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3682f6c9-3f24-478f-abed-2583ea686457",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "44bd7972-c32b-4c39-9be9-5f81918786b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation's Conquest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fd440b2c-e843-4760-a467-5f61f1d74314",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroh, Firebending Instructor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d81fb19f-32f5-46ec-8532-ca24128fb0dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Komodo Rhino",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "083f501f-13f4-415b-b46b-4a365007a19a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Run Amok",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f47fc407-5b7d-4c9d-90b4-3eb234f9f18b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warship Scout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddfb5e68-324a-45e1-b2b5-d62a1c9e554c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zhao, the Seething Flame",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90b5d4f1-273b-4293-8bc4-fcb29331e9da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko, Avatar Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3959cf4e-57a5-4355-9837-56f70b321874",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zuko's Offense",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1b854c2-493b-4129-9688-c9db1524ee94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "63918f55-e676-4695-b5cf-77bb8efa6ead",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fervor",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "344e6464-62a0-4766-b9cc-af719e3e211d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "430564c9-1cb7-4f46-8737-d5f78745846d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "137f41ee-e6a8-4e84-8d43-9e6fa269f31f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aef2ab8e-49de-443a-9236-97356aae2bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83ee7310-d5cc-4f1f-b0c9-f0bde22a695d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "068bbaea-874c-4f02-8188-9a15f3cd9cb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ca86e9b-93af-461a-b69d-799711afddb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9045a9a2-e63f-4a68-9f20-28a43518f71f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fb2afd8-7958-4864-81d4-210d91470aca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5e327d5-2e51-4fdc-a0c8-edd3dd77c058",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3a2f358d-93a9-4cd7-a846-3cc55042e4fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empty City Ruse",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2ea145d-3be2-4660-8cf2-0157c76ec9c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Humble Defector",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c62977b4-ffbd-43e5-9b36-2d3e6557b56b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51bb9dee-0246-41f7-bcc6-e402ebc2b701",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebb35754-99e3-47de-8df5-ee485b5a7b49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f05ea5f-891e-4a66-82db-3ffb17efd002",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3912c5c8-3b80-4e92-abc2-eb482e49e9b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0760068d-71c2-4b38-9f66-4454875de27e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Tutor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1c4d0743-0f3b-492e-82a5-725dc6d3b582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flawless Maneuver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ac4fc06d-50b8-455f-8d14-85c0c791c422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fierce Guardianship",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f3054d9f-7080-46dc-aa2f-804f8120c094",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystical Tutor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "33ace025-c949-482d-bb6a-b3ad13bc981c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Rollick",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "37afa6fb-cb57-4ba7-ab77-1a40ad14db5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insurrection",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fbc089cf-affb-4713-bd39-aa776d1805b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entomb",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c2cb5a93-d2f9-4df6-9488-c57b6f18ae2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deflecting Swat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3bce6015-a7df-43d4-849b-0f306d501658",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gamble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0a527dbe-4d9e-4fd3-a875-b9aabefe01fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscuring Haze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8d3569de-ff5e-44a2-94a2-86e994d2a0f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldly Tutor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "89ac0b50-8c64-46b0-b670-cd2321153502",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c1f93f78-645b-4f21-a80b-5542f3328111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Ring",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aff074f2-6ad9-4c0c-88e2-fc622772d2a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftfoot Boots",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6881d7c8-5bb7-4f8c-9f03-50fb1309d9c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6a0460f9-9097-4276-a55d-23c491c32bd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorwing Dragon",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "26f073a7-e4a7-4b2a-a768-f649fe337f2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rending Volley",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6466873b-c1a5-4614-9409-a448221e06f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Searing Blood",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd5d1ae1-2168-429e-a205-787b722f2637",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shattering Spree",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d5a5e01-bfe1-474a-82b7-4b4981c3b2f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Torrent",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "b2a3a642-3471-4d93-9f05-829f29a9cbf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warstorm Surge",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "832d9185-fa03-4e10-b612-e7916da8bb55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beastmaster Ascension",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e9211079-9499-4443-8cb9-4c2bb2849994",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lita, Mechanical Engineer",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "da25ea1d-2fa6-42ca-bd06-a2edeb300eb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elemental Bond",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5e861bb6-0841-4a84-9d65-1d45ea87e90d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Great Henge",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "006b8547-1427-4aa2-88e4-e82b0ff4bb6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartbeat of Spring",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6969b172-8c86-4c2e-95a6-7b23e6f2092f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c924fa52-a835-4259-8bfd-2cde60bdfcc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return of the Wildspeaker",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "e8c8a887-0e1c-48a0-9977-1f4b2e5748a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rites of Flourishing",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "769a8758-6638-45f6-b3a0-1f161f80983d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taunting Challenge",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "22ca9f67-0097-4ff9-9246-fce61eab13d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Sisay",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "278605d1-7e33-4949-9688-7a89571ce562",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eladamri's Call",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "4b3b0ca4-0ee2-461c-811f-ce51ea12366c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fevered Visions",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3d609e89-cbb0-4715-bfcc-d4cbf1c303f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Release to Memory",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e6dde9fc-def0-422f-94d0-e6d09101d543",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Join the Dance",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "25b26103-d7f4-43c4-976f-f061476b11bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, Cosmos Serpent",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ebcf9ad6-5c1c-4b12-9778-2b9338bf49aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys the Redeemed",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15564a92-7980-438e-b4cb-8ffb50fb6393",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cityscape Leveler",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3dd36ba1-4f96-415a-90ec-1d9e5e355eb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteorite",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e69297e4-17a1-4767-9a6a-0c0dc732d936",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sundial of the Infinite",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "09c224c7-418d-4b64-9d56-a87e4ff631ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b10e1e95-414b-446a-bc36-56f116abfa78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e9e69236-3a67-449f-8591-094ef78da6e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunbaked Canyon",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd632fa3-3a44-43ca-8810-d4e31c3a3774",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarnished Citadel",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e5619082-08a9-4b03-8df0-b167e4212095",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scout's Warning",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf5bc68e-8416-431d-8a5a-f9ebca24721a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treetop Village",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d95cd0be-5a70-4402-8e53-04151d6652e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valakut, the Molten Pinnacle",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e5ead59f-4c09-4b56-913e-4ff5d6d48ac2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Appa, the Vigilant",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8ba06a79-d3b7-4705-9c5e-becaea1dd9e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara's Reversal",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f25cc190-05e2-4aba-b214-46f687c07a10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fire Nation Turret",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b0a8ee49-7bb0-48e2-bc43-a2cfa0a7196c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swampbenders",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka's Charge",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d873c678-c8f2-40f0-ab03-a2fdf5187aea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earthshape",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4b50fe92-e596-4949-929b-54ae25a7992c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mai and Zuko",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f333ea01-124f-4125-87ab-609be40e774c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang and Katara",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aac6ecc6-e5d7-40a3-b689-f4ed2d5c78cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protection",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b15acc09-dd32-4e93-a788-7c0ae965a0c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toph, Greatest Earthbender",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d3b0800f-23c3-4aad-8b62-3ea3d4d5b591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka and Suki",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bfc80abe-c36e-4a96-82d5-4d4c1a793ae4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momo's Heist",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "55724dab-93c8-4a7f-89c2-13e94820635b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uncle's Musings",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de7a150b-1b0d-4928-a2cc-80a4b7412350",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, Airbending Master",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18e539c8-f0c5-4715-97a5-b060d996eef2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Air Nomad Student",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd9d91a8-7315-4355-af99-941f3cf7398c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Duke, Rebel Sentry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "119d4579-26e6-4985-b232-40d11d60fd96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspired Insurgent",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "79d4b68c-36b9-4597-83f8-a869c5cf4b93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jet, Rebel Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84332812-367a-4ac4-9be5-2adc57562c9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kindly Customer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "06221eef-465c-467f-9cb5-d59529bff56f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Dreams",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7785ddfe-f8ae-473a-8064-549884c5aabc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koala-Sheep",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e27ed185-eb2b-42dd-b48e-3c8d4456268b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monk Gyatso",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ee743f6-0c8b-4fbc-a0ef-0b9933b77617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pipsqueak, Rebel Strongarm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fcfb238-121c-46b8-a4a9-1b45b4dbb4a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka, Swordmaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "3489930a-208d-4bb2-b200-58a0dd4f6e81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka's Sword Training",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97f713ae-c70a-401c-ad10-323f1d7b8f47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suki, Kyoshi Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "334d02cb-3a9c-4f1b-b6da-5ac4b1bef471",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tale of Momo",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "d08fbd18-faee-4f87-b4d4-1f43b2d73e56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "That's Rough Buddy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10dc44c7-634f-4210-9c22-ce9e8860568b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toucan-Puffin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b5a7f24-63df-40fa-9200-c862544b0ffa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baboon Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e593b9b-a584-48cd-8b92-b65c3eee0b80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent of Treachery",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0d1f5b0-f842-40d5-ae51-015eefe68fa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Blue Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "98392aac-2c1c-4cff-ad14-0e2f51439012",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chakra Meditation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "332914f3-9c79-4f76-882e-f72e42681d21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dutiful Knowledge Seeker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c348122-37e0-443b-861d-ccf2837ce7a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, Waterbending Master",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Nightmares and Daydreams",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ebccc72-45d3-441c-9680-704f9f61ce67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Princess Yue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "edf0d06a-4eef-40cb-951c-74d7e0ffae13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tui and La, Moon and Ocean",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae943628-f7d2-4ad7-ba12-0e19520a1bb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unagi's Spray",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "777fcc21-2856-4181-8ecd-c272f9769e36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wan Shi Tong, All-Knowing",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "fe68e08e-8d84-4f87-b2e9-b552788d78e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waterbender's Restoration",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "tle",
+    "setName" : "Avatar: The Last Airbender Eternal",
+    "variation" : false
+  }
+]

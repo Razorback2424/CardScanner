@@ -1,0 +1,222 @@
+[
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "b96daf2a-9065-484b-a078-c6ee5a0281ed",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Vance's Blasting Cannons // Spitfire Bastion",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "4ca05921-d3bd-4c39-8b37-243658a2f23f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "af6a8b6f-344a-4a4f-8949-b3ab2465b74b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Legion's Landing // Adanto, the First Fort",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "5f233ff1-5a4a-47d3-b3d5-6a00a7a00732",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Conqueror's Galleon // Conqueror's Foothold",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "560c1129-b375-4bb7-9595-9ca92945e5bd",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Dowsing Dagger // Lost Vale",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "9235dfc1-19bf-4923-84f7-721018514866",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Primal Amulet // Primal Wellspring",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "e0123e46-77ab-400d-bac7-a0057e137fbb",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thaumatic Compass // Spires of Orazca",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "1f6213d9-c65d-48da-a501-279db5f31d6a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Treasure Map // Treasure Cove",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "1056ab38-416c-450b-9e99-1a3eefc39f32",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Search for Azcanta // Azcanta, the Sunken Ruin",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "2b31d323-a715-4085-a711-8f2a3f4d9942",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Arguel's Blood Fast // Temple of Aclazotz",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-11-24",
+    "setCode" : "pxtc",
+    "setName" : "XLN Treasure Chest",
+    "variation" : false
+  }
+]

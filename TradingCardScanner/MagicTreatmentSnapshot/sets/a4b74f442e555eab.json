@@ -1,0 +1,7529 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3b0a9cc0-bb6d-47f7-b0d5-3956c46a1b3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo Exemplar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9033cf27-d9e6-49b8-8ee1-c1f38c9680b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Junji, the Midnight Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "f7f4adf7-b871-417b-8904-7f024ca21486",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Life of Toshiro Umezawa // Memory of Toshiro",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Long Reach of Night // Animus of Night's Reach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "74f43827-2b9b-4fc9-a6e2-c682dfbf14f7",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Era of Enlightenment // Hand of Enlightenment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2893b070-a610-4273-beb2-7609a2da0499",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "4f0582b4-d951-4450-b158-4a34109e48cd",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Okiba Reckoner Raid // Nezumi Road Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "4d784409-df6d-45d4-8f8b-6e3fd57a8fde",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Fall of Lord Konda // Fragment of Konda",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abf42833-43d0-4b05-b499-d13b2c577ee8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatsunari, Toad Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "54613f38-ca91-4764-b1fe-60cd83707fb4",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tribute to Horobi // Echo of Death's Wail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4d83e837-fcd1-4833-9117-e6f1bb53caad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akki Ember-Keeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73b64c17-8a52-4d9d-a28b-7e0e945be059",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atsushi, the Blazing Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "0ab91962-ebad-46f6-9f90-7477c224d93d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Shared Purpose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "24c0d87b-0049-4beb-b9cb-6f813b7aa7dc",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "5b915e8d-b972-4ae1-a1c3-74d6623963c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Ancient Wars",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ca736c7-35a9-48c7-b5a9-69b2a6e33ad0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goro-Goro, Disciple of Ryusei",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ea5e61c-d903-410b-9acf-96a917ce05cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heiko Yamazaki, the General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d631e7da-bd71-424a-a349-9bce0fd16b1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golden-Tail Disciple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "28d92cad-45b0-479d-97fc-c175f3a3f259",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kumano Faces Kakkazan // Etching of Kumano",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "517392f6-d3fd-4c59-8317-2a3595ab7562",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Shattered States Era // Nameless Conqueror",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "e8a51d2a-1582-4bad-995c-e7fe9f810149",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Azusa's Many Journeys // Likeness of the Seeker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8b43bb9f-1b84-41cc-a4f9-5875ae6d207c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bamboo Grove Archer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "540ba70a-bea8-4512-83ba-92dab6d25b52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bearer of Memory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "1144014b-f13b-4397-97ed-a8de46371a2c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Boseiju Reaches Skyward // Branch of Boseiju",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "2534caaa-a793-415f-977f-1d0fac3642ab",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Dragon-Kami Reborn // Dragon-Kami's Egg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2dd0fef1-209f-4de5-a736-8f9bca2faa0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fang of Shigeki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "691016a1-8630-423c-9a57-061593d170fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Boundless Vigor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b4fbaee3-a10f-4b2d-b07e-d041a96a7e27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greater Tanuki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jugan Defends the Temple // Remnant of the Rising Star",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e66120a5-95a3-4d15-873c-cfba221a2299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jukai Preserver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef1e1dff-b559-441d-8df3-b6a418066aca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the West Tree",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8d2c4063-7322-4041-a870-b95598a03e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ao, the Dawn Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06b25752-26be-4189-bc8b-828db6f0e612",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kura, the Boundless Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "52a16623-7e6d-405b-95db-bf18aeea3f49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shigeki, Jukai Visionary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "512bc867-3a86-4da2-93f0-dd76d6a6f30d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tales of Master Seshiro // Seshiro's Living Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "4c0c6c2a-4352-4c65-b41d-2a722bbef6c5",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Teachings of the Kirin // Kirin-Touched Orochi",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d1682673-e947-44e2-b9c9-cbcb9a16892b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weaver of Harmony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f40bd797-4d12-4098-a1a8-d7e5b7b82ac9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossal Skyturtle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a2b50751-7f65-4321-86da-eef735bf8b67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gloomshrieker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56a0d43b-4d38-40a7-be6c-8324ab3bf773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greasefang, Okiba Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "8e910464-329a-4de1-930a-be85b1956676",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hidetsugu Consumes All // Vessel of the All-Consuming",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f25aff90-56fd-4f70-bb3b-cabf2900c391",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinata, Dawn-Crowned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a062a004-984e-4b62-960c-af7288f7a3e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isshin, Two Heavens as One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5366900b-2abf-4e5c-8507-f51aca9c7ce8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jukai Naturalist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "36052532-5028-43a8-9fc4-56221ec867fd",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Kami War // O-Kagachi Made Manifest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "314e97b5-cd43-4f5e-acdd-a107208e061c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotose, the Silent Spider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4400fd66-1a24-47fb-bc94-37e0aae0e610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naomi, Pillar of Order",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cbbfd21e-96f1-4e5b-8546-73bb5a887b98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kyodai, Soul of Kamigawa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37748b74-0eda-4b20-a08f-faa418adb9ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raiyuu, Storm's Edge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51d8f1fa-ca92-4e2e-91e8-195bdad82def",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risona, Asari Commander",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8887f26d-b097-4fbc-9c48-bdc656409a32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru Umezawa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0152575b-31b0-4142-9cc2-b87a81bd51a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satsuki, the Living Lore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34d92077-d7b2-4996-848f-fd4917e2fb42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eater of Virtue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39555a72-a57b-45ee-9222-ce3b9e8de126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light-Paws, Emperor's Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2135ac5a-187b-4dc9-8f82-34e8d1603416",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boseiju, Who Endures",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c375a022-5b57-496d-a802-e4ea8376e9e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo, Seat of the Empire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "486d7edc-d983-41f0-8b78-c99aecd72996",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Otawara, Soaring City",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa548dcd-c1dd-492d-a69f-c65dfeef0633",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokenzan, Crucible of Defiance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "499037cc-a577-41cb-8ca2-5e117945634f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Takenuma, Abandoned Mire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "74f12c23-5c15-4ae6-8f4d-c5e6c1878817",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Michiko's Reign of Truth // Portrait of Michiko",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "ca8fb179-7e81-4b20-8b81-ea1aa97afe58",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "7a76d8ee-28fc-49ac-951c-a4d29822f91e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "f0578f26-1396-4e1d-9986-8fc6c55aeb66",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "7132999f-6e2d-4689-8131-7b12076a348d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "c50b3d79-2361-4858-98b0-64d83c4f7f70",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "57ef531e-2a8f-4d40-b509-92e3a86b2257",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "03cd5953-37fc-4a8a-89f8-0b5dd8412dc9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "7d75969d-c932-4b4e-8135-61968228bc32",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "acc778ae-a2d0-493f-963d-e946bd7cacd9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "c8179106-e5d7-457a-9250-70df980b38ce",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71327818-2784-4fde-8e19-ef8677694a5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Emperor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abc079b5-291d-466e-9f1b-baaf1079637b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Betrayer of Flesh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e106e4cc-f3fc-41bf-ab1c-4ae7c1a0521c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito Shizuki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5898a9c4-c983-4807-af06-18111702ab59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo, Compleated Sage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8855ca31-842e-4962-a5f0-163a3f833784",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ce16028f-25d0-4817-b20e-8b390b80ef35",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Tamiyo, Compleated Sage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6c85917c-60ea-44d3-8483-fa639564e881",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo Exemplar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09cb553c-58c1-4cfd-b441-297b5f09b263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Norika Yamazaki, the Poet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "41e7420e-55d0-4f4b-84bb-e5b86616cbb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Subduer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "344df5c2-a963-42e3-b61b-1712f15e1eb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Norika Yamazaki, the Poet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "82f1ade5-06ff-41ab-9a68-bf901959b01f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Samurai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "267efff1-cbe6-40b0-959e-72b81cbda1d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seven-Tail Mentor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "91d6a843-a1b7-4862-a2bf-8f8f66788126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sky-Blessed Samurai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a32e2ad3-c5fb-4072-aabf-6cb9538db3ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunblade Samurai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b92aafa5-9a21-4564-8b33-dab414cd5dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Emperor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "95dbd59e-a2f0-4031-b6c6-1b59fb7cb067",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardians of Oboro",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "317bdf0d-df7d-4ca2-8131-060ba7cf2602",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezumi Bladeblesser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fa16ee8e-d33a-40e9-9956-e345f0511819",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akki Ronin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "862e9b05-209d-47d6-8692-ec0cb5f19e25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goro-Goro, Disciple of Ryusei",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c91040c0-f025-4843-8c0e-3ac1b76c8582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heiko Yamazaki, the General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "247c362c-bf21-4bca-89d4-54eb60806f10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peerless Samurai",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a69eec2f-eec0-491f-944c-ca944d9d320b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reinforced Ronin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "52af0f2d-de2e-4554-ae32-c88bc7ba7c71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Upriser Renegade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "54509524-92b9-41a3-8aba-a8955a7dfa1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heir of the Ancient Fang",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "164e663f-6a67-4a10-a737-33ea533a9316",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jukai Trainee",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "94158fdf-c794-4ce9-a04e-cb6922604d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asari Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1bf8b008-3a7c-4b6d-8c18-263a576f0d64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isshin, Two Heavens as One",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1026485e-3df5-4ac7-baa1-06bff537a506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raiyuu, Storm's Edge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2cd32b69-5e1e-4990-88ec-85b21056ceae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risona, Asari Commander",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "53d244d4-c2c4-4032-b249-794556d79429",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade-Blizzard Kitsune",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2f268152-304a-4db8-a3f9-dd9d0f3319a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Covert Technician",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "47bad5c1-5804-4fba-91d9-3a49951f6e06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Futurist Operative",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "75c43923-7280-4ccb-810b-e8c38dd8a26f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moon-Circuit Hacker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f5e2fdd4-b953-4e9a-b511-52199a34214e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonsnare Specialist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b1e666d9-d2ba-49a6-a2c7-cd2639bf4663",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosperous Thief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a48c2751-fd12-42f2-b8c1-eaf78c5e29eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Faced Shadow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "92f92eb2-84ef-4343-9a31-41479c61a26d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biting-Palm Ninja",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6d35bcc7-2280-4061-9a6c-e67038cfb114",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dokuchi Shadow-Walker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "a11a33ae-e7fa-4bd4-8cd8-3a3239a29bcc",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Restoration of Eiganjo // Architect of Restoration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f5103a49-806f-48de-ba44-e252bb6dd035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dokuchi Silencer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f66aaba3-4a28-4fcf-926a-34bbbf0dbeb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkrise Infiltrator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "357594c7-a9a6-468d-b262-e5f7d5e35f54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mukotai Ambusher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "74e4f390-c420-44ec-a703-9a9d3ca6ab2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9a64789a-748a-4630-949c-e1b045edd225",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezumi Prowler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a89b3345-d09c-46ec-b450-f52fbcac5233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatsunari, Toad Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8297592c-3036-434a-9dbb-5f0af804dd13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coiling Stalker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "94c8e2d5-2706-4137-bfdc-d65f1cd33bda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fang of Shigeki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b9017ff4-d63f-4dd2-9157-c93fe4866bef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kappa Tech-Wrecker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "77a144bb-df52-4d55-aecc-8c2ba644a942",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spring-Leaf Avenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ae6d5319-1cbb-41fb-83ed-97c9344e3073",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito Shizuki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bf89ee78-bcc9-419a-a400-e612b5a90f07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotose, the Silent Spider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c415762a-5b24-4dbb-9066-6e9be48874a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru Umezawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5d9a0771-072c-4b0c-afcb-15a6406473c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver-Fur Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "57900858-940f-4d62-8a2c-378e82f4b79c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Restoration of Eiganjo // Architect of Restoration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c0f54308-cbfb-484c-bb4d-efc04ef8d9a4",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Inventive Iteration // Living Breakthrough",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3d3a26bf-c3e3-40d0-8746-c135b3c4c7d1",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tribute to Horobi // Echo of Death's Wail",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0b696cd1-0d72-4df5-bacc-dc77e62f9a13",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2d77f095-c04e-4b7f-b1b1-2991a06134e8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Dragon-Kami Reborn // Dragon-Kami's Egg",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "29f05618-3c06-488e-80d8-3957be7f0a71",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jugan Defends the Temple // Remnant of the Rising Star",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d9587550-bb1e-40af-9569-0667f4439452",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Teachings of the Kirin // Kirin-Touched Orochi",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "887e6d1e-cb53-4964-ba0b-c15dffa5eb32",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hidetsugu Consumes All // Vessel of the All-Consuming",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fandfc",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cfcc7dd5-c6ac-4e66-b197-c010dcfdb397",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Kami War // O-Kagachi Made Manifest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "820390d7-fabb-4556-8d30-99f0a58b2da5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brilliant Restoration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9ace38c6-2cc8-4f72-8276-eb02aa6773e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloudsteel Kirin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "98c664bc-9585-47a7-9514-b3e30a4e1b59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farewell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c5c1acbf-5ef0-4677-b097-30db77d87310",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Justice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "76614523-e51a-44ff-83ad-5be9e322697a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light-Paws, Emperor's Voice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "308c8834-e06e-452a-b82e-cb2b8fe0c304",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lion Sash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a400cd7d-b004-4310-9787-bbec0fe36fd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Otherworldly Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c9c7ba6f-c58e-4347-92e4-51ae8f2d5a88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sky-Blessed Samurai",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "307380fe-7484-4513-8180-f10411ea7726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke the Winds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "01985566-275b-4bf0-8667-c81eb95ad70c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "633a8eac-82c7-4e02-bff5-1e1095b781ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Swirling Mist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "37163f66-393f-4cb7-9f55-307d3d4b5975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindlink Mech",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b8fb5ee3-97af-40c1-a8de-a2a62afd418d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Reality Chip",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "91c0467d-bc7b-4233-8ac1-adb9d88344fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tameshi, Reality Architect",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d0b71dd5-0bed-4c02-9f92-c52984e2bb78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Betrayer of Flesh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "46f5c2f4-1690-4392-80d6-d99148bc8b13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade of the Oni",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3981fc94-efb5-4256-8adb-4538515a085c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "62e4edbd-4a7c-435b-b7c0-f9cfdd3dff68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Despair",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5aa91a9e-2fe2-43bc-aa9c-cfb8a71829ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4703bba7-3248-410f-99a8-dffd629bab4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Wretched Sorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "53d7df77-dc10-4c88-a51e-43d6b86ef10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mukotai Soulripper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ce12642d-85b5-4b40-b1c0-2c08feae2f0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Transfer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a1d47e98-daae-42f7-9581-1269d57bd16e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Singularity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "12af2504-ff1c-4361-a428-be9d1d35899f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Calamity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f0cadc1b-3434-4c38-b414-0f5ab4ca52a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lizard Blades",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ecbd3545-f98e-404e-a283-0ce2d83e64bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Reckless Joy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "517f143d-986a-474e-be48-819d1f9f078c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ogre-Head Helm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "793c45e2-d0ce-4899-9f7f-5629bd6e01a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrap Welder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cc6a9bef-6910-4293-87b8-52abcef41566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Raiju",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e6c577bb-5e21-4a3e-b0a7-713a4ff7dce6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunblade Samurai",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "93f89fc5-fe77-490b-ba05-34ec0b362801",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke the Ancients",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "71f10049-8fd2-48f4-9319-d747546cf22d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kami of Transience",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b4a4aeaa-aff7-4299-8030-36eefd5acaf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the West Tree",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ed33009e-5686-4de9-9270-d1540ddceb8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Burgeoning Life",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "62c303e5-a0af-4e42-afcc-1d3a81c78e8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shigeki, Jukai Visionary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7e8c4b17-a804-4340-bb7e-5cd3183ecbef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weaver of Harmony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7a560ff4-446e-4dd0-87a6-145a27bdcdb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo Uprising",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9455cb27-89d3-4bb1-8af8-08c7712c2915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greasefang, Okiba Boss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4737d299-09ce-4012-b3e9-c93a09035d65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinata, Dawn-Crowned",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a0dd5813-8c6e-4fa3-b11d-e13f14ce8c4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satsuki, the Living Lore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "8ad44884-ae0d-40ae-87a9-bad043d4e9ad",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Befriending the Moths // Imperial Moth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ceaefe4b-9750-460a-9993-60a138df80a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit-Sister's Call",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f103cb00-29f7-41ad-8368-ed2cf1a408ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eater of Virtue",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "508b7411-09e5-4990-88ca-649321dd62b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechtitan Core",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4bf676a6-8ccb-4908-9e49-ccb4a319d588",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirror Box",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "30bf5955-67fe-4bbf-acd5-164bf087e7a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckoner Bankbuster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f0332502-bcba-42c0-9dfc-9ab873b1719a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgehacker Mech",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5d7d1c2d-d3be-4647-a260-15ce85e69eea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ao, the Dawn Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e500c22f-b16a-431b-8562-1508df7db27e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kyodai, Soul of Kamigawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "516dc285-f0f9-4a5c-a7b7-395c1821b42c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kairi, the Swirling Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "19c61476-2105-48f3-8f57-3d0322bdc92e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Junji, the Midnight Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ed997183-24b2-466f-b740-c414ef485a96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atsushi, the Blazing Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0986e1a1-749d-4f34-9cdf-b347f2041c5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kura, the Boundless Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0055ea30-20fb-4324-a632-8fed87628f05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boseiju, Who Endures",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7c31c48f-6275-4430-8dc9-05d70c332b7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo, Seat of the Empire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9e99599e-c594-42c6-b9e3-4dbb8e982f88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Otawara, Soaring City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "327333cc-2cc9-44ba-a0e6-d01329c416a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokenzan, Crucible of Defiance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7bc98705-77c2-47b6-b41c-3e41578700e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Takenuma, Abandoned Mire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3956b833-0b74-4890-bc67-4aed7df33af4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farewell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "22edc832-993b-432a-8435-8d8a72799122",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Emperor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "40dd7793-5a6d-4b5c-8924-b0aee73e31eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Betrayer of Flesh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2029be79-88d8-4d15-a7d7-f5b8d469ad54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade of the Oni",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3564486e-e19b-4a11-a587-ad3e040cd914",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "80ae9af1-58ea-49ad-8e57-8dcc53d2a959",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Singularity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "872f7bfb-8f0a-435a-b23c-c2f3bea46ed2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the West Tree",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b189f965-d66d-4b35-b42f-933bdea62562",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito Shizuki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "64a3d9fd-4023-4f64-b31c-8dab1eec8566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risona, Asari Commander",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2c178c8d-ef57-4a69-a72d-c6c6f1eda617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru Umezawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ffa7cbf8-64b2-428e-8991-d8454d724f9f",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "816eacac-a8b2-4d77-af3c-75f620ce3148",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Tamiyo, Compleated Sage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4826991d-c3c3-45ff-9dfc-4246a84b40e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "boosterfun",
+      "neonink"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c046b0b3-05f0-4468-817f-355e87552faf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "boosterfun",
+      "neonink"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "92da2c98-afe0-4e7a-9510-5a74cc2cdde4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "boosterfun",
+      "neonink"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "78c0b64b-cade-414d-b893-ac1b633c66d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "neonink",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0d726f3f-2920-4de4-b531-5c42006e85af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ao, the Dawn Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d801eea3-d549-458a-b099-730969bfcba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brilliant Restoration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ea33e1d-fa3b-4179-9f94-74bc35cdf088",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloudsteel Kirin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0050b693-7bad-4c0c-baca-0186d153ce2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farewell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "06a2079f-2a87-428f-aefc-f7c075a35598",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Justice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "438",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "967c446e-986a-4345-aeec-28f4cd8c801b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kyodai, Soul of Kamigawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e008fe9b-1913-4358-a411-5d3c175c60ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light-Paws, Emperor's Voice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "440",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "84f8ce4c-c6fc-408c-a216-33374bbfb08d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lion Sash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "441",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bbf453c-bded-4d39-bebf-fd240ec44287",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Otherworldly Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "442",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "070d6344-ee01-4e27-a513-467d8775a853",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Restoration of Eiganjo // Architect of Restoration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "443",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "2c3dd148-60d8-4ab3-b71f-b79f2272d78e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Inventive Iteration // Living Breakthrough",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "444",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7e8832ae-0f84-48f0-a8f2-0bf37c3a6551",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke the Winds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "729a8bdc-3246-482b-a0b7-1d071247d218",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c3e356fa-eeeb-44a0-a3ba-90f90a855d40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kairi, the Swirling Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a5e72c2-e229-43c9-9e5a-df4754732d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Swirling Mist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2d1e4d50-8ca7-4dc0-8181-aa51beafb218",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindlink Mech",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9797bb82-24f6-4dd5-8f5d-b3ea45bb65b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Reality Chip",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ea28d4c2-279e-4f73-a134-a47b7cc2fa9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tameshi, Reality Architect",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "451",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "00632c03-be00-4722-85b3-2ce31bba5cc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Faced Shadow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "98b1cd2e-cea3-41c6-9fd2-1b473d5f61a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biting-Palm Ninja",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "453",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4e9896df-0d5c-4b02-b584-345f4c7cd127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade of the Oni",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e9655d9c-d4fb-4ced-b841-543eb4d88d2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "359445e8-2f4a-4e73-9201-2c7a11d26666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Despair",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "52f0f499-35d7-4e04-a2fc-d6735f6087d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Junji, the Midnight Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "70647c5f-e2ce-43e0-8715-0648e206caf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Wretched Sorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "458",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e64d99c1-a6ad-4ab8-abb9-4845f7945f08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mukotai Soulripper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "459",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2a509120-d075-43cc-9422-35b2bf8183aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "460",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b35ce3d2-8e7b-412a-abde-9885ca4e7a64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Transfer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "461",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "52b9c95e-6691-4736-bfbd-0932458f03c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatsunari, Toad Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "462",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "d8f1b467-3cfe-4fab-bfd1-b7ac856d608c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tribute to Horobi // Echo of Death's Wail",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "463",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "756ccc1d-e43a-44d6-a722-3e209a164dc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atsushi, the Blazing Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "464",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a74a2f31-01e6-480b-a722-7a9c972e2a51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Explosive Singularity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "465",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "6dee0388-a78d-4b3c-a0c5-25655e14115e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "466",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d398246a-dc65-4096-b4b7-46ddff38372e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goro-Goro, Disciple of Ryusei",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "467",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "99ff8eec-5510-4c57-91c1-ec380fdd7f8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Calamity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "468",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9d20833a-ebdf-4daa-8220-ea95758d41b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lizard Blades",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "469",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "87ec97d1-3b8c-4441-b6bc-836be5f8a015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Reckless Joy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "470",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2eecab66-d600-49d5-8b5a-f70872375d8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ogre-Head Helm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "471",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "76866cc1-06a4-4d1d-bbec-724109fa6c93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrap Welder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "472",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d49d17cf-242b-4f44-8ea0-125d9d18139c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Raiju",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "473",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "f57cb819-1d76-4cbc-bbcd-45e52bd89e04",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Dragon-Kami Reborn // Dragon-Kami's Egg",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "474",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5564dc16-22f1-428a-8c49-ecc7de13d4a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke the Ancients",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "475",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "d9d59000-11e0-41ca-9626-9eae22627924",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jugan Defends the Temple // Remnant of the Rising Star",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "476",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1c5bfeaf-ed02-4bf3-a36a-58feda05d992",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kami of Transience",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "477",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a33e17d9-fb24-45ef-aba6-292009834dc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the West Tree",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "478",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d765ad05-069b-4224-80ed-2f9bdced2dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kura, the Boundless Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "479",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "36efdf01-9e6f-4963-887a-9018df56ced4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "March of Burgeoning Life",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "e4d52701-e0dc-474e-b08f-88147200d210",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Behold the Unspeakable // Vision of the Unspeakable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "480",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bdd634f0-2373-4747-8b16-92dbf279e1ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shigeki, Jukai Visionary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "209115ac-06ef-4d3f-9550-5e9eda081079",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spring-Leaf Avenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "af77b3e8-298e-4f85-8fc0-93ffa8c0dc6a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Teachings of the Kirin // Kirin-Touched Orochi",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "483",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "3009fad8-40cb-4421-9fa8-fd525c5f7189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weaver of Harmony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "484",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b33d6851-f110-46aa-a4ed-f657d2d2eceb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo Uprising",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "485",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "020a4094-e5d8-477b-930f-f7ab98dc9fb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greasefang, Okiba Boss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "486",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "b6a8ead0-df99-4a55-8f64-99cfc47baa9f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hidetsugu Consumes All // Vessel of the All-Consuming",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "466f98c4-c5a7-4fad-b183-a3fbd28cb66b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinata, Dawn-Crowned",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f26eeb39-77ab-4e60-8b10-1420e755c372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isshin, Two Heavens as One",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "fandfc"
+    ],
+    "id" : "68dfd0ee-64bf-425d-a847-c4a72f84d8aa",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Kami War // O-Kagachi Made Manifest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "dabc4c53-365e-412e-8ce4-a9e67d12c33f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotose, the Silent Spider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c89f16b7-fcfb-44a9-b05f-a77a157a9865",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raiyuu, Storm's Edge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ef5db6d6-c8b4-4c38-8b94-f455f148cf3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risona, Asari Commander",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "493",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "63fb4d0a-f979-42ed-a4aa-15c180e4f0be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru Umezawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "494",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "80aa5a9e-5152-4dc0-9a98-089a3d4d7dda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satsuki, the Living Lore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "495",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "79e7b4ab-bc2c-4dd0-9433-6266c86c1c84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit-Sister's Call",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "496",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "87a86f45-ba70-48b4-a2e9-8269ec22b991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eater of Virtue",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "497",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9430b849-cee9-4fda-84c1-0777db82fe58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechtitan Core",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "498",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b8354b07-8dac-44bb-871f-3c8f60a20d1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirror Box",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "499",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8c5d9a22-0111-40ba-8d9e-a36bd84a39c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckoner Bankbuster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "500",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "26ce02c6-0918-41a7-9286-7a0bdc0f166e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgehacker Mech",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "501",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2488a80b-6882-4b59-8232-f02f800204a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boseiju, Who Endures",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "502",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ecb53f59-d89b-481c-af98-75c11c30ee17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eiganjo, Seat of the Empire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "503",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "dbcdbf15-7578-465e-afa2-f65c01fb4802",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Otawara, Soaring City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "504",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "eca9f8ae-838f-4a9c-9341-38e39da68926",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokenzan, Crucible of Defiance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "505",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "13410bd5-acee-4cc9-90e3-dbcf8415bcaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Takenuma, Abandoned Mire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "506",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbe6d3be-67b9-45be-a5c8-4edf753a7fd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invoke Despair",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "507",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f7112729-908e-430d-8e0e-eb71a9043309",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satoru Umezawa",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "508",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "9ae5aecd-f1e3-4a1a-92a7-69235437102d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "509",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15a43b94-4425-47ab-9e9f-9287aa9a807e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enthusiastic Mechanaut",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "510",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "aa567185-e0f2-4fe1-82a8-57b7fb277ab9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jukai Naturalist",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "511",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c1eef728-8f2f-4b18-ae40-f14074ab6791",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver-Fur Master",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "512",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cb026a80-72ae-4969-b2e7-ed88ecc542a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secluded Courtyard",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "513",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8c395a69-b60d-4510-b04b-86b59ed2b158",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun",
+      "concept",
+      "setextension"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-03",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "514",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9a5ffb0d-1fc3-40da-ac1f-19465aa8412b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+      "boosterfun",
+      "concept",
+      "setextension",
+      "stepandcompleat"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-03",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "7ec1192c-25b8-4975-ae6c-86be28ac1840",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Lost Wisdom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "ea6d3242-8059-4203-aa06-58a6a3925eda",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Inventive Iteration // Living Breakthrough",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c57b4876-5387-4f73-b8e2-8e7bdca8b0bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jin-Gitaxias, Progress Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af7979d8-21f3-40ba-8a2e-7ebad210e48b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kairi, the Swirling Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "fandfc"
+    ],
+    "id" : "ee60a8e9-3201-4a7e-8aa4-2c5e1042c8a5",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "The Modern Age // Vector Glider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c6e466d1-943d-41e6-a47d-c9d951ca4262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moon-Circuit Hacker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d859de3a-0be1-4e66-b438-1c3d4ee756cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Reality Chip",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26594b52-3e9c-4cde-88df-1f4e9e16676e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tameshi, Reality Architect",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d80100c3-c81e-4084-8dfe-f8610637fd91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dockside Chef",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "45e1ff1e-916b-4455-84cb-4125a79d76de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Hidden Cruelty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f4142d3-f7ca-4613-a6e5-528cf1f22383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidetsugu, Devouring Chaos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0321b706-87b0-4bea-89d3-ec2e7252dc7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Ancestral Katana",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e2a8f60f-7cca-4528-b153-a8804e93626e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Eiganjo Exemplar",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-114",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a47b49c4-6adb-445b-b0f1-e0391c2f08cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-116",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b7d51c6-a9c8-47b8-b120-d72a1f2aa439",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Nezumi Prowler",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-131",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c780e37-91b1-4fe1-85c9-7007d91209d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Akki Ronin",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-156",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f6c21b4-a143-4fe5-a505-963e98f2fe2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Peerless Samurai",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6c23437-244f-4e6b-93b7-ce0321be154b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Imperial Subduer",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-215",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea1d684e-c4dd-481b-856e-8331d4f64be2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Asari Captain",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-232",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06f5ab0d-3280-42d3-bc7e-abb109bbe3c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Raiyuu, Storm's Edge",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-17",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-234",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b30c1fe-b3c0-48c7-a451-989eb3776d43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Satoru Umezawa",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-236",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa2d984f-1a5e-4ca7-b333-5fcca8a966e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Silver-Fur Master",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-242",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a93c43b-0604-47fa-ae4e-4f72d342acf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Circuit Mender",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-53",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "034c5631-fd61-47cb-88b6-aca036affc1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Futurist Operative",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-67",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "38f66d0c-5d03-449f-a056-b97e2ed6a3a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Moon-Circuit Hacker",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-73",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df5c4d9c-6c27-4d29-a6b8-df8905f810a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Prosperous Thief",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-86",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4df5e7d3-cd49-498e-b2e3-37db891edbbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Thousand-Faced Shadow",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-95",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73447b86-d5a4-4b62-9a21-84d284c9ae3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Dokuchi Silencer",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "neo",
+    "setName" : "Kamigawa: Neon Dynasty",
+    "variation" : false
+  }
+]

@@ -1,0 +1,2842 @@
+[
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe93ef82-51de-40ad-9b52-8f3fd11c144f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goddric, Cloaked Reveler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14b44833-0482-4b47-a594-4050bb87f1a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imodane, the Pyrohammer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d6c48f07-63b7-4a60-8da6-ce77405abf1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agatha of the Vile Cauldron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d51e6610-25b6-4d8e-92d7-c50a2ff844ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ash, Party Crasher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ecead4cd-47ae-4c42-b15c-1b29b5caba18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eriette of the Charmed Apple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a55c370-d396-4c73-8ee2-83dc4c124005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Goose Mother",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cfd365e-34d1-4224-b925-119000311934",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greta, Sweettooth Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae9231fd-053d-4b84-a7a8-86063465bc49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hylda of the Icy Crown",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b88a762d-19ed-451d-a3a9-b3e7eea40f67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Johann, Apprentice Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e6f925ab-ade7-4da8-a791-185e098d18f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neva, Stalked by Nightmares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63ce03ee-279b-4955-98e3-9ce1990f8b7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obyra, Dreaming Duelist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ee179ab-a15b-4bd6-b7f8-1e1abeeb31b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rowan, Scion of War",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffb5786b-6825-4ebf-a1e1-80011340adbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruby, Daring Tracker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "600bc36a-3ef0-459c-9a93-94ec45b8c3d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sharae of Numbing Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85050609-baf0-430a-ab33-83a6ea6d4741",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Armont, the Redeemer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62a6b452-c796-45c6-b4d1-0ae3d675e38e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talion, the Kindly Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1422d6db-fe5b-4a89-951a-fbd7985a29fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Totentanz, Swarm Piper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eadd2a1a-93a0-4257-897d-1aaee279449f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Troyan, Gutsy Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "162088ea-5f99-4244-9427-2fdfb2168fc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will, Scion of Peace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e635d461-254a-434e-8e5d-dea61dd8ca4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yenna, Redtooth Regent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f5acc0d-33a6-476f-95ca-a1ad788334dd",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Beluna Grandsquall // Seek Thrills",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ec5e2680-8b42-4571-ab45-4936aec51901",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, the Fae-Blooded // Birthright Boon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "019b51b0-e5c6-4208-922b-7736686dddcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agatha's Soul Cauldron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b61711f-8982-4ff0-86ba-01e0125cd705",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eriette's Tempting Apple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0d4a6c0-f00e-45a7-9c88-899460007020",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hylda's Crown of Winter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8051c5ec-54a6-45a8-8945-fb93c5feaa39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Irencrag",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7fbdba12-1369-41ae-b0e9-c405c0f0a2e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Ginger, the Meal Ender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "c9cd4d57-8c51-4fcf-8a9f-5d6a61c33e3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "bd4b4da4-83f6-4280-880b-b6033308f2a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "ee68f2cb-851b-4196-ac58-844d72628e6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "ecd6d8fb-780c-446c-a8bf-93386b22fe95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9622e597-dc7c-4198-9ce5-4df53bb0c96c",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Virtue of Loyalty // Ardenvale Fealty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "af969428-8dd2-47d6-bdbf-65eca632c3d4",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Horned Loch-Whale // Lagoon Breach",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7cc2173a-b7fb-4bd6-9c8e-73de91c6903a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Virtue of Knowledge // Vantress Visions",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ec5d0453-ef17-47f0-81d4-13941f1380d5",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Gumdrop Poisoner // Tempt with Treats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "337393e3-9081-4251-b4ca-afd7ce10dc99",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Virtue of Persistence // Locthwain Scorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ed585964-68ed-4889-8d20-678b43c46018",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Virtue of Courage // Embereth Blaze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1ee74605-63be-41cd-a6ba-1b33f8094ec9",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bramble Familiar // Fetch Quest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "684f8568-390f-426f-ba71-e4be5fdaceee",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Virtue of Strength // Garenbrig Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5ed9d78f-a556-435f-b95f-7317ae66e5e3",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Beluna Grandsquall // Seek Thrills",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "852d840c-c9b5-4486-b1f5-95ea88577fa0",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Cruel Somnophage // Can't Wake Up",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8a717d27-596d-4341-b592-4f9777f778e5",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Decadent Dragon // Expensive Taste",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f2848594-1718-43f2-8ccf-34a18a55e4b2",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Devouring Sugarmaw // Have for Dinner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c5a61619-f951-42ff-8246-c51ee5dc18c8",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Elusive Otter // Grove's Bounty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f54b25e1-193a-41fb-9d24-3147cb381dbe",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Heartflame Duelist // Heartflame Slash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e662dfa5-edf8-4e7b-8a29-86935e95ac35",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, the Fae-Blooded // Birthright Boon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2ab293c3-64cf-4d8a-909d-4cf73ffd828a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Mosswood Dreadknight // Dread Whispers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f2d517ad-6df7-4cf9-982f-763379724d24",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Pollen-Shield Hare // Hare Raising",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c6406eba-da58-4264-a213-20e22c1c3bec",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Questing Druid // Seek the Beast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3014de04-66ce-4641-b36f-6ff1cc1c116a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Scalding Viper // Steam Clean",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "38708b07-df7d-4ea4-b10e-ead7cd03d849",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Twining Twins // Swift Spiral",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd6f57de-21af-4c25-8a21-df3a75157939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok, Wicked Manipulator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "aa5b622a-66a6-4097-8478-e22854b9984d",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, the Fae-Blooded // Birthright Boon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "487a2cc0-ddbf-46b9-90ed-9455347724d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eriette of the Charmed Apple",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "844e29e9-e870-4433-ad63-0ff918a3e41a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rowan, Scion of War",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bb1f05ef-7607-4a63-a710-18d0061ec982",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talion, the Kindly Lord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0f25e3db-19ae-4f89-80ec-bf0ad561be39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will, Scion of Peace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "901796b2-c567-41e2-a87b-6147a966c9a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Bivouac",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0dcb97ff-9356-4be7-8991-091f950c0b63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Cottage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8034589b-3b57-49be-b0fd-a306f915d864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Fortress",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dc42bb4f-475e-4c76-bcbd-a9d8cf03117c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Spire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a710643a-b9dd-49bf-a375-d9986b05ed7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restless Vinestalk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "67c77d6f-de14-423c-bf55-0fb289171004",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Flitterfang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cd2b19f1-2f92-458d-a658-25481c57dea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of the Wild Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "92f5907a-2d70-46a9-b9f9-0ae7bcf35d48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expel the Interlopers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "08e06198-b96a-4b52-ba86-3df8278c0785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonshaker Cavalry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6e650b3f-30a7-4943-8829-055e8aa7b9cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regal Bunnicorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6973853c-2e95-4b5b-9008-4b06ffc8a078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellbook Vendor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4fc7d7d8-0965-4097-98ee-e89cfa05fd05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A Tale for the Ages",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "572eff52-c141-4587-857b-e71050899bdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Werefox Bodyguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dba9c281-a6e0-4af9-a217-e6aee7a38ff0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asinine Antics",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "abd423cc-7a86-4b15-b591-85940faa323e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extraordinary Journey",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a3f484b9-486f-4aff-8b23-d8e555b476d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farsight Ritual",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "49bf6c34-429b-4213-856b-e8189276f2db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ingenious Prodigy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5cb94d9f-d679-4eb2-97d4-b519d8a166b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sleep-Cursed Faerie",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b54e69e4-c6c9-4735-ab86-c437eba8d4e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talion's Messenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5df3d7fa-2b43-4b9e-85eb-ef96537942fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beseech the Mirror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "79220c46-01df-41c1-877e-577f9ce78593",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The End",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "edee2cc6-955c-43fb-b359-9d0e261c6925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lich-Knights' Conquest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "728520b3-fd90-46e4-ad51-3121a2557e86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter, Sewer King",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "77c78dde-4059-4e8d-9feb-f03653773787",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter's Blessing",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c342061c-6992-47d2-b862-db310d389b3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rankle's Prank",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3026523f-65a0-49a4-a46e-bb91a8988ea4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Specter of Mortality",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d527d48d-d6f7-4587-955e-de23b80ce0d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiteful Hexmage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "45ba866b-eda5-45c0-8878-235abadc0a3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tangled Colony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "51f94c92-cf88-4770-8ab8-874cd6634510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charming Scoundrel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fef34fc2-8d37-484d-9adf-e3bb70283f33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Food Fight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bb884762-5468-43be-870a-96328f8172c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goddric, Cloaked Reveler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "77bf3c05-4cbb-4525-9724-2d04cb2084f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imodane, the Pyrohammer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "640cabc6-f3a6-4992-acfc-1bed6bc5f05d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Battle Mouse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8d2d38fe-7fa5-4b29-b3e2-dd20d5afd127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Realm-Scorcher Hellkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "59cb9275-07f2-46b1-a64b-2971390a35de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redcap Gutter-Dweller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4a55780-cb3b-429a-b0a8-ac616f85582f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rotisserie Elemental",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "30c2f106-0df8-4d4f-a6ef-7946fe8e47c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Song of Totentanz",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "79593c3a-00d9-4d24-a49c-753520a1ce30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blossoming Tortoise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e7678157-e18e-45bd-a28e-7594a49bf2d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Archivist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "794c5066-724b-4f94-aa6e-7b0690dd706e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feral Encounter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f48f7bd4-c12d-48a7-b39f-36033636e5c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruff Triplets",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a8556d3c-9290-4600-afa5-5928d74e3c96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sentinel of Lost Lore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b742aa20-4b18-4296-9693-c2c5a8ba6c04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Debut",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "cd5f6c96-698d-4f5c-81ec-91176bd2e6e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agatha of the Vile Cauldron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3bf2ce6a-f2ee-42a4-a026-b1d0c18a3ed4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faunsbane Troll",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1024d5f1-69f4-4a09-ba83-6fcc249217fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Goose Mother",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "18f5f043-0b59-40ba-bdab-1706adf44075",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hylda of the Icy Crown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5d51232f-ee63-4929-adab-042101c97b23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Likeness Looter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a02f04f7-a345-4aa9-933c-1969f0cdd5c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yenna, Redtooth Regent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "dec5fc59-73d8-4735-88f1-3dbd1f15a546",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agatha's Soul Cauldron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8141f900-a87b-40ce-8439-02c000aafa30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hylda's Crown of Winter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "93c50432-28af-40e8-ae98-d4f33a5a936e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Irencrag",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "522e43f3-4f9a-4f40-a5f5-d84277172040",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Ginger, the Meal Ender",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "10ba4b10-5667-414c-a692-166a19b7d748",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lady of Laughter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4d1945f-6462-4ec3-a966-3a8dafc0f5d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faerie Slumber Party",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "58ee6723-9b90-4d39-9cbb-9d3765a4fcb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malevolent Witchkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cd8d687a-8935-4907-909f-4cadac6cdf67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ogre Chitterlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fb7b456e-e56d-45dd-88b3-1ac58a9bfb5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildwood Mentor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "73014a95-5251-4404-b3a3-037fb5ca3327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stroke of Midnight",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "87c81647-6586-4c9c-93fc-9d5ee40b377b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sleight of Hand",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "373f235b-ce93-48b0-8e36-71f5bc5efcc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faerie Dreamthief",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f603675e-84df-4dd2-b45b-47349341f64c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torch the Tower",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dca603dc-8a2d-484d-8b95-25dfa39369fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tanglespan Lookout",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89ffe314-b66b-48d8-b94d-36c8bb5861e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lich-Knights' Conquest",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bdaac375-57ce-432b-b718-b547367faec7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expel the Interlopers",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "729877be-4894-4ef5-9e60-de8a8fb2bdc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter, Sewer King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "woe",
+    "setName" : "Wilds of Eldraine",
+    "variation" : false
+  }
+]

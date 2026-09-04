@@ -1,0 +1,3924 @@
+[
+  {
+    "collectorNumber" : "103p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72bd6141-055a-4843-a764-927d73e2d895",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cori-Steel Cutter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77fd5b8e-55cb-48f6-8917-84db4efee20d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cori-Steel Cutter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4ea86de4-64d0-445f-b83a-f2c41d54462a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dracogenesis",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d4bd3e18-b3d7-42aa-87ff-6fd64a2614b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dracogenesis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90874dee-81ef-497d-9865-3960fe21581b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Hellkite",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7795ec6e-a066-4408-a692-63cb79205cb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmatic Hellkite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f99147f6-a364-4f2b-8db6-fa560425316c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Dragon Ascendant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37b386e8-e38a-4b39-bfec-c553be8f8055",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Dragon Ascendant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83f5909b-06eb-446a-8102-1421d4662ba4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth, Storm Slayer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38455aba-58d4-4f4c-96b8-fed5faad7ee7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth, Storm Slayer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7bcb227-f1ef-49d7-98e6-bac65f49c18b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stadium Headliner",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "229df6b9-bd1c-496f-86a0-772cc177b1eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stadium Headliner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54e4c8c7-19ae-498d-a4f0-f7601d4b8bc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormscale Scion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbb758c8-8953-4bbb-a26f-0c2ccd6b3551",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormscale Scion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e89720b-6a67-4a08-907e-0e55aecdf341",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tersa Lightshatter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39f07b5b-d764-4c88-920b-36b0ba1c62b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tersa Lightshatter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c70302dc-63a7-4642-8f1b-e6cd31fa5bdc",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bloomvine Regent // Claim Territory",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebe59e20-d72c-4aff-9106-26ed3f2a8a80",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bloomvine Regent // Claim Territory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d84ee114-fa8a-4758-a074-1db414272644",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Craterhoof Behemoth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78b2cba1-2719-42d6-92e9-54538611684b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Craterhoof Behemoth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5579a3ac-7fdb-4204-b44e-fe0174f78cfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herd Heirloom",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7e30b86-1288-4a1f-a1bd-9c0f4fc274f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herd Heirloom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a573c0e-9309-42cc-81d3-993d0860a2d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lasyd Prowler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ff05612-0997-4583-bad3-b9c9ba325b5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lasyd Prowler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4af4507a-3859-446a-9d3d-520e0d24ae85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nature's Rhythm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01680dd8-913d-47cd-8b43-099021582ded",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nature's Rhythm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6132c2bd-953c-4de5-9a4b-fa5a4553bd0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surrak, Elusive Hunter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88599965-5e21-4457-ad2d-c7659d4b0ee8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surrak, Elusive Hunter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76077beb-ce8e-4bee-8e75-0c20cb7aaaca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warden of the Grove",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a301f54f-ba65-4c67-8b3f-076ce72ee382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warden of the Grove",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "99b64c3f-a2ba-4bb1-96f6-9319cd3bce3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Out Assault",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "248bb994-f8d2-4179-8b9f-a7ebc3fd2c61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Out Assault",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5e65ac2c-948b-4875-a7fe-4918410e28d8",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Awaken the Honored Dead",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "98d5e3e8-3d93-441f-bfc0-739a9fec40a4",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Awaken the Honored Dead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d0eaa671-1629-4496-9f0c-83247eec35d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrensteppe Siege",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8757317c-9303-45c2-9971-58cd721c0a6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrensteppe Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5006a96e-718f-45c0-b8f0-1d2ad714511c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Betor, Kin to All",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b01599d3-d953-4377-a8ba-b491c35c1972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Betor, Kin to All",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "80357e48-b4f2-46ca-b334-760a19461eaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call the Spirit Dragons",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "105ec2a6-10a8-41ab-8896-8e6777ab2993",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call the Spirit Dragons",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25acbebb-8ab5-4538-99d7-94fc8dccc5bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death Begets Life",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e84023c7-4997-45ec-915d-5bb7a688fc75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death Begets Life",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "50e648a6-5f98-4ab8-96eb-9f788b32cb29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonback Assault",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f7d67da5-5b8e-4a12-b1e3-4d62a7239336",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonback Assault",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02c1072a-440b-4821-9479-511986c94330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eshki Dragonclaw",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5cf3d624-2e66-495c-8032-74e4481d0d51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eshki Dragonclaw",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8580ed67-3e37-49cf-a7e0-2639e93830db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fangkeeper's Familiar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a66606c-2669-4f0b-ac07-89bd683c1823",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fangkeeper's Familiar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f46a55a5-3a16-44ea-9ba8-6ec6e6143a1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felothar, Dawn of the Abzan",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09478378-c28b-4334-a0a1-157325ed8e5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felothar, Dawn of the Abzan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88b3429e-87a0-43f1-879c-49d1cfe908cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flamehold Grappler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98878956-bff5-4c73-a13c-1a3468e0f02e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flamehold Grappler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ae9cec73-9e2a-48c7-902f-acea78aee653",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frostcliff Siege",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "74e9e539-1ec6-4f8f-a854-65ca7cca9b96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frostcliff Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "83293ff4-0841-4f5e-8d59-1ae29a62c890",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glacierwood Siege",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9af44a35-dcc9-4c16-9c90-e7b1b5530f29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glacierwood Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b623baaf-9c33-4cc8-9c95-7c2946c45de9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hollowmurk Siege",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9147365e-03ec-4b08-9115-9e8bd0140925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hollowmurk Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdcf2801-0259-4638-a244-d40e141938dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inevitable Defeat",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5615e77f-f19e-4363-8e29-918124b966c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inevitable Defeat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c562a0d-2fd9-4b92-9854-0b72be64a5e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Revelation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "728e253c-3417-4142-8408-8981aab5411c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Revelation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "281172b9-15ce-4128-afe5-17cd47d87dc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, Eye of the Storms",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6484b08e-3e04-4e57-9270-48af08ba06ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, Eye of the Storms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0898e8b-41c5-4c82-942f-fc0fa9293080",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotis, the Fangkeeper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "edb84183-0fa4-4fa9-a87c-bc8fc8a862e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kotis, the Fangkeeper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "498a9807-3c34-406c-b50e-2e9a38460c18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotuslight Dancers",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9853974a-812d-48d9-9f70-029be386bb1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotuslight Dancers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93c45396-4df6-48b7-b326-4339b0377587",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mardu Siegebreaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e58777ee-e67d-4557-90fa-b8fc2c28c402",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mardu Siegebreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f17ab53-d325-4573-8227-6f2929af9f22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Jeskai Waymaster",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0340faad-f0e7-4c9e-b8c9-774369fb54ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Jeskai Waymaster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b104ba85-0ba5-4c6e-9fdd-7fab22c3faac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neriv, Heart of the Storm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f335588b-3001-47db-928d-7c308f788971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neriv, Heart of the Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5bc790a-fd7f-4094-85ce-2266e0008e01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "New Way Forward",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7302b66c-6a26-43be-bdfc-61417deebf55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "New Way Forward",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a85fb2d8-fc5f-4f9f-b811-2f3208a53808",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perennation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22465aee-fa11-47b7-812f-c0534bcedb0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perennation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8a865073-7c67-45cf-a0a8-4b04caa29c99",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Rediscover the Way",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3e01ae10-56c4-4edd-abc3-f208ca17f518",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Rediscover the Way",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b91cf2f4-e6e1-4c7a-bc6e-275e234b7cef",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Revival of the Ancestors",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "59f1c60e-5819-4d32-a321-607a3bdeab40",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Revival of the Ancestors",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "19890640-9e39-4a6a-8494-3f9449974c70",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Roar of Endless Song",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a228b275-d31f-4633-84d5-aa995ca6ce12",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Roar of Endless Song",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c27cf2a6-154e-4c5c-83c0-bc2bbf88165b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Severance Priest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50862c74-d572-49ef-adae-f56e0c14a407",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Severance Priest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da3459d1-9fbe-4696-bf1d-1914c1a23553",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shiko, Paragon of the Way",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a58726cd-443b-4de5-8cdd-a9bd22e95daa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shiko, Paragon of the Way",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb5ffe37-f5c7-4151-93cb-21323984e4c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Songcrafter Mage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d0f6b82-1aed-4887-813e-b1407d00d812",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Songcrafter Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41fb5cad-dc88-43a2-b528-d44bc93c8319",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Battlecrier",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1292af13-87dd-46d4-b49b-f27baae99e7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Battlecrier",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9e2b9e3-6671-433d-8b45-5a9bf8fc5807",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sage of the Skies",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88ba02ff-f2e7-4341-8e0f-e911ad255879",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sage of the Skies",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37f19b51-de84-4611-b529-2266536c47fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teval, Arbiter of Virtue",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1742789-1a0a-4fa8-a3d8-672df52ebe67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teval, Arbiter of Virtue",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "534d699a-6a78-4025-a22c-2135c1a50ccc",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Thunder of Unity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "552f1f2c-33b7-414e-aeed-7d0014d3aa0b",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Thunder of Unity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26f3a22c-a386-4397-b8ef-d3be04905b76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ureni, the Song Unending",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4742da0d-61c9-4246-9c94-f6a9d1c3a674",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ureni, the Song Unending",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b264f6ca-8a64-4f00-8d5b-47660b61716c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windcrag Siege",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e10fc4c5-7066-4d48-ae23-6c80a65ed0cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windcrag Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7f9e63e-a261-491b-b1ee-5da4f5c701b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yathan Roadwatcher",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3020874-39a0-4381-9a1f-0992f8bfa7d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yathan Roadwatcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3bdb3434-0952-4547-800f-b7b63a25c364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo, Thunder's Decree",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfb7d76b-e4e6-463f-8ff4-5c20e082ac9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo, Thunder's Decree",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6126a8f-5370-40ef-ae31-569ec907526d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonfire Blade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "941c5888-d706-40c8-b491-587861786fc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonfire Blade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "94a5615d-61ca-4541-9f84-4b59010274ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Jasper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "782bba2b-fc3b-4d8a-8fae-814ecbd25394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Jasper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "40a9270d-c5dd-45b8-863b-3a34f2d4717d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smile at Death",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0119806d-e39b-4630-85c9-9e263074e190",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smile at Death",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9aa63bba-16c5-4330-8afb-7bc4029b13a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cori Mountain Monastery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14b7728e-710c-4553-8d16-fb59d1d752ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cori Mountain Monastery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae28dc70-b7fe-4528-a099-3ced1e4d9e25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dalkovan Encampment",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1cf26613-4111-41a9-b445-7ee06dbc0dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dalkovan Encampment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25785fc0-0949-467c-9305-f4614567e601",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Arashin City",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cdfd84c-55dc-4eff-8ff9-a82e46eed831",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Arashin City",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8039d29b-2183-495b-b726-27c56b6e8e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kishla Village",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bdb0021-0035-49dc-b9f0-0d9926b9de24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kishla Village",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2d9a070-9acc-44a5-b8d0-66aea4723adb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maelstrom of the Spirit Dragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "836504f0-08ce-4db2-aa1c-261a51110fe5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maelstrom of the Spirit Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52f7e36c-87fb-4145-a5ca-6df7f55b3f1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mistrise Village",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a335e0d6-f474-43cf-a3fe-d74bbd719663",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mistrise Village",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6440247a-c48c-445b-a6d4-679bca2a178f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Unyielding Lineage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71197d52-0685-4f7d-bc1f-bcbab9eb61a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Unyielding Lineage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb11fc1c-9a07-455a-ba2b-bc1957d695c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "United Battlefront",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f90cc33a-894f-4317-b8c4-5ab3772172a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "United Battlefront",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f67aa6c-6dce-47f7-9a8e-b8970b3c121e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voice of Victory",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "233ce7c0-85bb-4875-8750-5f3287979201",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voice of Victory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4546536-0c72-4343-84e7-a087dedb079d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambling Stormshell",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "628da9c7-b186-47d1-af62-06be8c903bef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambling Stormshell",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2599b3fe-24ff-4abc-9a9f-7872ee588cc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonologist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7055076-de73-49be-9751-99433bcfe1f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonologist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "685d2b12-d45a-400b-b582-8b184a6eee13",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Marang River Regent // Coil and Catch",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c1bfbcb-3f33-4c5c-81f5-141664fd1da5",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Marang River Regent // Coil and Catch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8520f29-5cfc-4ebb-8943-49cda758965b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naga Fleshcrafter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65733fac-938a-4105-86da-3f59fafc33e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naga Fleshcrafter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4b1bd4c0-72f3-4305-9a2b-da63b4ebcca1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stillness in Motion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7654abba-4912-4d6e-9738-5ab11e922288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stillness in Motion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "defca2d7-a4ae-4724-b5eb-7cafc98e726c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clarion Conqueror",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8400052e-0ef0-4b16-8bf9-b34c10dfe6b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clarion Conqueror",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "760f8351-61ca-4b7a-a0f3-22b2aea4734e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Master Opportunist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab6153f5-6be1-433f-ab99-022455196afa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taigam, Master Opportunist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7196abb-75cf-445f-b0d2-eef24ec492fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winternight Stories",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c614ab0-887c-4203-a0ae-1602c70126de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winternight Stories",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0f8dccb-1178-44bd-8572-7da607057fb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avenger of the Fallen",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d533922-0bb3-491c-b94b-1bd74fbb7cf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avenger of the Fallen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afc7b965-8c46-4073-9839-18b2d90c75c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Qarsi Revenant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a99e8c07-fcf7-448c-b71c-5eb1c6005a96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Qarsi Revenant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e71ab9d7-7f39-4207-a9ec-620528a04d90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rot-Curse Rakshasa",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fa96f73-c2f1-495d-8f32-825f7e80349b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rot-Curse Rakshasa",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d6a17d7-53c3-43da-a274-34ba1ef9dcbb",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Scavenger Regent // Exude Toxin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb78e3ba-2095-490c-974f-b28696b45a59",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Scavenger Regent // Exude Toxin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "8bb2c3b3-c337-45b6-98f5-716dd4fdb02e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Sibsig Ceremony",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "c777ec65-2c3a-4353-9ac2-309ce66e7864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Sibsig Ceremony",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fa3b2a9-d8a1-4672-897a-d9b0bf10aeae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Regent of the Mire",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bb68fc92-ed65-4a3f-abc3-10fa03cbc77c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Regent of the Mire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1580519d-c44d-4404-a438-cb9e278abe5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinkhole Surveyor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8646927c-6de3-4d16-a6ef-1b8f2a7dc10b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinkhole Surveyor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "ptdm",
+    "setName" : "Tarkir: Dragonstorm Promos",
+    "variation" : false
+  }
+]

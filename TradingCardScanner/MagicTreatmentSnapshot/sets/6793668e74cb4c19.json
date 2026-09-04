@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1E05",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d087c754-df96-49de-87cd-d27d96d45ec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slith Firewalker",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1E06",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65195553-a7a0-414f-b945-25d93dc76395",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakura-Tribe Elder",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1E07",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e44c6aa-75ef-412a-94a7-d95d9d41b9cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soltari Priest",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1E08",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34b6c51a-673b-4bbc-8423-f49fc5a05270",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Anthem",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2E05",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a9bed5f-44e9-48f9-be50-2071b926121e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2E06",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48b07346-f271-441f-9327-fd519a88f628",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shard Phoenix",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2E07",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd0aef6e-39ba-4231-9d53-2619930f52b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirling Dervish",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2E08",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ede03a3-9999-4eb4-b9c6-b0c0f68164c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Champion",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pjse",
+    "setName" : "Junior Series Europe",
+    "variation" : false
+  }
+]

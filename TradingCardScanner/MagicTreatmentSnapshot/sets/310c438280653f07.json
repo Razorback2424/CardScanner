@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bde95f7b-ad81-4e49-8a15-f3ced162087f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leinore, Autumn Sovereign",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-09-24",
+    "setCode" : "omic",
+    "setName" : "Midnight Hunt Commander Display Commanders",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9424a460-0a10-41ac-a60c-7d94809293c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilhelt, the Rotcleaver",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-09-24",
+    "setCode" : "omic",
+    "setName" : "Midnight Hunt Commander Display Commanders",
+    "variation" : false
+  }
+]

@@ -1,0 +1,415 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47a88207-e15c-4d34-bd70-218e6afd15c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steward of Valeron",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f2a7042f-a6f0-4e77-86a2-5eb0d2587363",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-18",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37968c7c-3110-488d-9455-6c8ccf206a3b",
+    "language" : "de",
+    "layout" : "normal",
+    "name" : "Hylda of the Icy Crown",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-06",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e25d5e97-b936-494c-92ba-229ec7a0b45e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katara, the Fearless",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-07-24",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6a04430-5b46-4770-b380-878a28d6aa48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Behold the Sinister Six!",
+    "promoTypes" : [
+      "boosterfun",
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-29",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70cd1d3a-59b7-4c51-beab-bf63bb125610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unbreakable Formation",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-10-10",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1bc9137e-a1e0-4412-8034-8471ae308bc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tom, Bert, and William",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-07-30",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "45e65a77-6138-4572-9af9-1d66d0cb67ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirk, Enterprising Captain",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-07-23",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b8f735dd-c6a0-4560-8cd6-42451caf4ac7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Borg Queen, Perfection Manifest",
+    "promoTypes" : [
+      "convention",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cffc6114-aa99-4c56-80fc-92fb32639d13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kor Skyfisher",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-03-26",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abe7768f-5686-44d0-8698-694fb9a400f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodthrone Vampire",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-03-11",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9c30d1cf-b535-4356-aa57-dc792f68e535",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "White Orchid Phantom",
+    "promoTypes" : [
+      "convention",
+      "metal"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-04",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7e4b490-e435-41bd-9877-6bfed57874f0",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shepherd of the Lost",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2009-10-03",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2052095-99a5-4db1-b7ef-d13875f4da5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merfolk Mesmerist",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-04-06",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5b6195d2-1adf-42f8-80a5-7315311ee1ee",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ral, Monsoon Mage // Ral, Leyline Prodigy",
+    "promoTypes" : [
+      "convention",
+      "metal"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-10-04",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e761acf6-6618-44cc-8f65-1d7ad7e520fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Fury",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-03-22",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8785bf1f-c459-4332-9915-2c0e046ab3f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stealer of Secrets",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-11",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21c3a636-962f-46e0-9c9e-48523547acd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeronaut Tinkerer",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-01-23",
+    "setCode" : "purl",
+    "setName" : "URL/Convention Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "collectorNumber" : "J1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bc5376cb-82f6-43c7-bf8b-43515791e082",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Force of Negation",
+    "promoTypes" : [
+      "buyabox",
+      "ffviii",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "rfin",
+    "setName" : "Final Fantasy Regional Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "J2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8a5e5463-2451-48b7-a924-a81d2dd99671",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Arcane Denial",
+    "promoTypes" : [
+      "buyabox",
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "rfin",
+    "setName" : "Final Fantasy Regional Promos",
+    "variation" : false
+  }
+]

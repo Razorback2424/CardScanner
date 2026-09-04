@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34a37e52-8722-49d0-b7a4-08d8929c1a88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord's Servant",
+    "promoTypes" : [
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-08",
+    "setCode" : "pl24",
+    "setName" : "Year of the Dragon 2024",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4bfcde8-40fe-437d-8390-1ed8486c0d8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan Unbroken",
+    "promoTypes" : [
+      "standardshowdown"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-08",
+    "setCode" : "pl24",
+    "setName" : "Year of the Dragon 2024",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bbdd4bda-f91e-4ba2-8f06-6aa96c16acf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Korvold, Fae-Cursed King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-08",
+    "setCode" : "pl24",
+    "setName" : "Year of the Dragon 2024",
+    "variation" : false
+  }
+]

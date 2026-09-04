@@ -1,0 +1,370 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1eaccb5a-76f9-4250-9bf0-0baa2d905868",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abiding Grace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "adc3f475-562e-4904-8dca-051c17f6b647",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fury",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d27e717-8bda-44dc-90b9-a6f7029c7b93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "2099f819-d504-447a-a390-75267d8a7e55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strike It Rich",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "909bb097-1f7c-4d5b-be83-426d84e382c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unholy Heat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c069406b-a34b-4b9a-831c-641e9d02927e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cf04e55-b266-46cd-a79a-d87f5ceba469",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tireless Provisioner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2971a0e-ea25-4b83-8f87-0aa5683ad9fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Munitions Expert",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b5a916f-a6f2-4e89-b38f-7e5bc0c2e032",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esper Sentinel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbc46960-fdf1-4227-93b8-3fd778be896b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solitude",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b0c8057-bac5-4160-9b30-bfe0cfc37602",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dress Down",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c55901dc-3f5a-490d-8496-5b844530d410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hard Evidence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e565e8cd-3c8b-422c-8217-99d50e11908a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subtlety",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d7ddccd-75ea-4d72-9378-02b595b18c0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b419c3d8-0ea5-4a78-a647-b7e16c7f7ec5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sling-Gang Lieutenant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c75cc38d-aee6-44ab-be69-26491fb9b808",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon's Rage Channeler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "h2r",
+    "setName" : "Modern Horizons 2 Timeshifts",
+    "variation" : false
+  }
+]

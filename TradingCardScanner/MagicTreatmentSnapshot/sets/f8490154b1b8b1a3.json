@@ -1,0 +1,1337 @@
+[
+  {
+    "collectorNumber" : "101s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a83f6fe-1f73-400e-bd8c-60dd63e4e433",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Graveblade Marauder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3086d1f8-30f1-4aa8-89c7-ce6029ee5613",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kothophed, Soul Hoarder",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94bada96-bab8-49ab-a018-196390b309f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kothophed, Soul Hoarder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69923060-9015-41ea-91ad-f3252ba25c85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Languish",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76947376-7afd-4792-b0f7-c3bc0423ef2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Languish",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "33209977-45c6-4cd8-915e-1cc72966a7ce",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c31c0a6-989e-4761-a3cc-1f2b2b42f0db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of the Blood Rite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23e60446-324a-4a6a-ac75-d6d27d05a84d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abbot of Keral Keep",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "3936517e-fcbb-4dce-80b1-ea2778dfe9de",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6192e42f-6d58-438a-be25-878843e88bea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Ignition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "035ea998-1ae5-4e56-bdca-65d9a0fe387d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Embermaw Hellion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b89e3b9e-f92d-4bde-9b29-2547e44df38b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exquisite Firecraft",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d223b9f-f3fb-46cf-93e7-ddd21124f086",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon's Phalanx",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f843a368-9ea6-45b7-aab2-939e75ba453f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Piledriver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2eb6fc54-77e7-4e90-abc9-fd88581b57bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ea68b47-8a31-41a9-ae70-0a11f3ec3f56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd680805-5f82-4002-bacc-84e35f2d837c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scab-Clan Berserker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7efef088-e214-40dd-920d-039ff4770bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conclave Naturalists",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee9797ee-58a4-4d8d-8c67-aff2cd61c88d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwynen, Gilt-Leaf Daen",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c715b779-d993-443f-a9d0-45ea9908fd47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwynen, Gilt-Leaf Daen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b99b4d17-b8f6-42a7-99c6-faa0aee86218",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolutionary Leap",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b140eae-3c0b-4077-8855-48b240e058d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Revenge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f9a4d21-5c19-494a-a323-9aa84b8b734b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honored Hierarch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15b49493-2361-4d55-8356-67c61d154a15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Managorger Hydra",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "748670a5-4f0a-41e7-b077-e31f4be49b6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Managorger Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "8c40a7db-12f2-41bc-9025-d243208e8d70",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nissa, Vastwood Seer // Nissa, Sage Animist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98599d53-35f6-489f-8bce-9525615bcb20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hixus, Prison Warden",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88f176b5-5115-4a46-aea9-e4b936066753",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa's Revelation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a891032-1395-40bc-9994-78c1dde4faed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outland Colossus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f04d62a-cad2-4981-bdb8-a7ef3d2dabfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outland Colossus",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-02-01",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d685282-abeb-4697-9e8b-fa5dc7d139d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hixus, Prison Warden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74b3616d-4088-49fc-acfe-07a148eef388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the White Orchid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "3c52157c-aafa-4d6d-8d2d-3a471e6ee10c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kytheon, Hero of Akros // Gideon, Battle-Forged",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f39e0a2d-2f96-45c5-9c3c-508ed3dfe9af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Animist",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c9d2dd8-cdcf-4a89-ac5d-b00c13ce94ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kytheon's Irregulars",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da218c9a-e9a9-4911-9561-623c77afbb74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relic Seeker",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de02cea5-0304-4838-866a-e792ef548031",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relic Seeker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de44f156-ee4d-48e0-88ac-02a45257bcf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tragic Arrogance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a2f674c-6d7e-470b-9b4f-d37ce4c038d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vryn Wingmare",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "028ed496-6472-490b-8b1d-fe3c667fb7ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alhammarret, High Arbiter",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9120b615-dc31-4623-9cbd-d4cb99ae9f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alhammarret, High Arbiter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52485cdb-4498-4091-ad6e-d912471f146e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbinger of the Tides",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "a893bffb-1ced-49be-96a6-2ecfb98b60fb",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jace, Vryn's Prodigy // Jace, Telepath Unbound",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8930a602-3a1f-48a9-b083-feeb433f2761",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace's Sanctum",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e999c5cc-2999-4ae4-8cdb-b475f0a990ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzium Meddler",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19ffd1c3-4b58-43a3-90d1-6f46c062769b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzium Meddler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d07bc465-ef74-471f-9b33-12479ae12d3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulblade Djinn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed076b23-c5e1-4933-8d53-fb2e87c38583",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talent of the Telepath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "924d52cf-4ad8-43aa-ab4e-0e18838219a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Spy Network",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d68fee8-173f-43b5-92a3-37ecbc8b62df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willbreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7094e9d4-ba51-40d6-b95c-1970d3f89a66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Petition",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ccc9529-b25a-41a7-9d27-a952f3cbdf38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Petition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f561ed8a-fa0b-405a-9a07-9ee2f8434d72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Despoiler of Souls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1999fed-f13a-428a-82cc-ed4a1ef7ec7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilt-Leaf Winnower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "pori",
+    "setName" : "Magic Origins Promos",
+    "variation" : false
+  }
+]

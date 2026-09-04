@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39afcd77-e006-41a0-98ea-8be39d38a68c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Karox Bladewing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "tscd",
+    "setName" : "Starter Commander Deck Tokens",
+    "variation" : false
+  }
+]

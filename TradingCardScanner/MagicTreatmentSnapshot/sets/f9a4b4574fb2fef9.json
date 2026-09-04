@@ -1,0 +1,332 @@
+[
+  {
+    "collectorNumber" : "0",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3dcc7b5-c911-44c9-be5a-087298ddb492",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Magic Origins Checklist",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1ce74d5-ec65-44e8-b6c2-3f70b9fc3dbb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75fa5fab-1076-443b-ba27-46d10770883d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfa49655-6ce7-404b-ad12-33ec1cd7c0d3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "458e37b1-a849-41ae-b63c-3e09ffd814e4",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Jace, Telepath Unbound Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d75f984f-2e11-4f52-b3b0-dd9d94a2dd74",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Liliana, Defiant Necromancer Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a8123a6-7e7b-49fb-9ebc-19d8150852e8",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Chandra, Roaring Flame Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bc2969b-2176-4471-b316-9c80443866dd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Knight",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e33426f5-59bf-456c-8fff-0ca27eacdef9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14259948-5427-401f-b510-f5b705445e50",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Demon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5ccae95-95c2-4d11-aa68-5c80ecf90fd2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b21498f5-9098-4e50-b1d3-bd64cba1372a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0affd414-f774-48d1-af9e-bff74e58e1ca",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ashaya, the Awoken World",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7047838-ac9f-4ca1-9827-73d87098124f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bb75376-3b3c-4957-bf87-952f8cfc1da7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "tori",
+    "setName" : "Magic Origins Tokens",
+    "variation" : false
+  }
+]

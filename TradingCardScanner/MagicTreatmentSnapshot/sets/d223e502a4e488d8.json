@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0d59d90-0a4f-45f1-81ad-23a348a1a868",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orim's Chant",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "g08",
+    "setName" : "Judge Gift Cards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3af9ca89-d7b1-4533-8033-e9c805f39155",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind's Desire",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "g08",
+    "setName" : "Judge Gift Cards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7d77e0b-c918-4a16-94e2-e9f8cf709217",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "g08",
+    "setName" : "Judge Gift Cards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e754551e-a3cb-45f4-8106-a22dcf2c567a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Piledriver",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "g08",
+    "setName" : "Judge Gift Cards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44fe87ca-5707-4c6a-a1ab-e533eb0b381f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Wish",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "g08",
+    "setName" : "Judge Gift Cards 2008",
+    "variation" : false
+  }
+]

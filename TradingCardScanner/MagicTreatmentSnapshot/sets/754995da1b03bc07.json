@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e09165df-55bb-4a61-b8b7-c01430602938",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stoneforge Mystic",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c6b2642-4d17-4c0b-a3c3-b29d5ffdfbf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e534731d-2bc0-4af7-8143-96cc4b2d6438",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a46f073a-2d2a-46bc-b941-7f05f80b6736",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Beacon",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fda21404-b683-4aed-b606-cb4241e42c9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Confluence",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ab21006-7f61-49e0-8b6a-0397c5d4c3bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Seal",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c981e33-669e-4c1b-920f-8d4b2fb00bb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defense of the Heart",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1dd33e67-3bf5-41cf-a552-1db6a28b8561",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "j16",
+    "setName" : "Judge Gift Cards 2016",
+    "variation" : false
+  }
+]

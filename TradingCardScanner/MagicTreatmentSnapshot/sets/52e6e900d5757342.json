@@ -1,0 +1,161 @@
+[
+  {
+    "collectorNumber" : "1a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca66cd86-1574-4e6e-94de-a19d8d26836f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Protector",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efbffd56-92a1-4b17-8d53-e9f28b1872e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Philosopher",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0f83818-2c47-435c-ade3-302e4eabc2bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Avenger",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd60768a-c47f-4af5-bb33-c17777c7dd66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Warrior",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ef068ff-934c-4e4d-a4ae-e44f194b8dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Hunter",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c17db56-68ee-44c5-82c5-9ed9f03c5899",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Harvester",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a12f3e3-5708-4d14-a1ed-600232002266",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Slayer",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-27",
+    "setCode" : "thp1",
+    "setName" : "Theros Hero's Path",
+    "variation" : false
+  }
+]

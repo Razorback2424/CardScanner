@@ -1,0 +1,143 @@
+[
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a50a999-8b16-4f0f-ba30-61e7d1114f1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani's Summoner",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50e30e21-0bf7-4d10-b2cc-ed0c52b95955",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Breaking // Entering",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6966ecf0-6dab-4652-bf5b-6e766b8347d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maze's End",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4157fbc-76eb-457c-b952-06d3a68ab098",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19b4dc6c-940e-478c-b87f-b3939a30efbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Melek, Izzet Paragon",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4514a13f-5eee-49a8-876c-6b4befff4592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Render Silent",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-04-27",
+    "setCode" : "pdgm",
+    "setName" : "Dragon's Maze Promos",
+    "variation" : false
+  }
+]

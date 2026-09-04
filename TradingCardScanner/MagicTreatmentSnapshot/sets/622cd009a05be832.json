@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5cd9a145-86cc-4591-b64b-c003eaa926eb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ragavan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "tdmc",
+    "setName" : "Dominaria United Commander Tokens",
+    "variation" : false
+  }
+]

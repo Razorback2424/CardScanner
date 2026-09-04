@@ -1,0 +1,574 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1786cb3-6f38-4f10-b5f1-8feb20e3baaf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel of Sanctions",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56ea5f68-3818-43d3-9b7b-c344305a8423",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Sacred Cat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c2e835c-0f39-4fd1-a839-125bee0c9dbc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tah-Crop Skirmisher",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a6201e6-7dcd-40b1-97aa-fd9c860cea97",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Temmet, Vizier of Naktamun",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c770d91c-b7d1-44ef-922d-128cb3faef08",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Trueheart Duelist",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07ab720d-40fc-4315-bc8d-c7073cea588b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Unwavering Initiate",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39520c16-1f4b-4f15-aeb4-53c91e8ecfcc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vizier of Many Faces",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af0086cd-56b5-450e-818c-e54f45d1a104",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d1446ed-f114-421d-bb60-9aeb655e5adb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65844e72-aa84-483f-b07e-9e34e798aaec",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Drake",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "242c381e-df58-4365-a68c-add1127a83cc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98956e73-04e4-4d7f-bda5-cfa78eb71350",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Anointer Priest",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5bd6905-79be-4d2c-a343-f6e6a181b3e6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29b7ecd1-c70e-467c-a9ea-99c2668c3405",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1aea5e0b-dc4e-4055-9e13-1dfbc25a2f00",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hippo",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6aaa8539-8d21-4da1-8410-d4354078390f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Snake",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "366c01a7-6399-496b-a5a3-8be45475ce33",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbebd89c-0b29-44c7-bc99-53dd4b836520",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Gideon of the Trials Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "993b4bfd-c5c1-4d0e-b7ff-7615245f9df8",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Punchcard // Punchcard",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a3814e3-7ad2-4c87-8630-ab56e13b6ee9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Aven Initiate",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8f339c6-2c0d-4631-849b-44d4360b5131",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Aven Wind Guide",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3d97a02-9187-4dbc-a511-2a15ca840cda",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Glyph Keeper",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e534d68-a97f-4ae1-b202-31c7a5366b58",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Heart-Piercer Manticore",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7365ffff-b171-4275-9fdb-e622f8456858",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Honored Hydra",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "754eeff5-b495-4aa5-94ce-ff20216c952b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Labyrinth Guardian",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa5fedcd-e5d5-4250-b64e-a04772cb9025",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Oketra's Attendant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-28",
+    "setCode" : "takh",
+    "setName" : "Amonkhet Tokens",
+    "variation" : false
+  }
+]

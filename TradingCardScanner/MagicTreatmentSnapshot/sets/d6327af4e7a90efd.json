@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aea87800-6725-4399-b489-651637e1804a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Judgment",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46357985-9b59-4ad7-aa18-4c8c28fe8bb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brave the Elements",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37468ade-27b1-4128-9a62-1293ec2aab41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doom Blade",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41dc258e-701f-4f9d-b3fd-fa073e0324e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Hunt",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "974c599b-170e-4948-b741-47f61c769b6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Searing Blaze",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2edaeabb-3734-4252-84e7-510a8a694985",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Bladehold",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d51b82b-c3eb-457d-9556-882aa8028e8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glissa, the Traitor",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "p11",
+    "setName" : "Magic Player Rewards 2011",
+    "variation" : false
+  }
+]

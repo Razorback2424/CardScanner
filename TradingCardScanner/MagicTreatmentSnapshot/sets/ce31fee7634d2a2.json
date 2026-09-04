@@ -1,0 +1,2206 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "31e4b7a1-b377-49d2-a92e-4bcb0db35f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bello, Bard of the Brambles",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5899d4c5-e6b8-48e9-9044-b5b34a1284f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo, Field Researcher",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a1b46777-bf87-4cbd-9e85-ab0be33f0362",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bello, Bard of the Brambles",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e68bb0bf-2907-4413-bfe3-c5f1b40c2b93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazel of the Rootbloom",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5c75bab8-02d0-477c-bfb1-dace7cb33a1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ms. Bumbleflower",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6263bd74-3f44-4206-8d4d-f90c333b601d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zinnia, Valley's Voice",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5165b4fa-ce48-49c3-9cb3-dc6ece8c0f08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baird, Steward of Argive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb9666d0-2100-40e0-a065-165ccc5c0d28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jazal Goldmane",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "647e6b32-c755-4700-b151-6a174dbb2bd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26f0d639-9d7f-4a90-bbfd-f942bd59a89b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ada3dc9c-2f83-4f52-8776-ef23d45cc4eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60a9018a-24a9-4c25-89ca-4ac52a60fbf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bident of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21625c5c-7a9c-498d-afb6-ea57dea33fc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8dd1b0e5-b197-4e8a-a34f-e0b16a928fb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1269ca79-907e-4932-9e77-a9a5d2929060",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazel of the Rootbloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "6dda8d6b-fd31-4908-a953-20c180a33e56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72ab0422-eba0-4e1e-9626-ef31b836dcd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f2514c2-c0c7-44f3-ab9d-48b227f039db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esika's Chariot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef6a7dc0-35c2-4300-b0c5-28b04706291f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de8a64e5-9986-4692-b173-43475f4b5005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "08b5301b-9f3c-4fb2-a308-a47a16c08fc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grothama, All-Devouring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "258bfd1a-ec8d-453d-a957-814110e2dcaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ee1d489-0980-444e-8b07-107be791b76e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the East Tree",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c9de5df-b993-4799-b5a4-d9926da0b312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b261989-b34e-4bba-90f8-2adfda58c89b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toski, Bearer of Secrets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac47e057-86e0-4774-a3e9-b256ab317ba0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beledros Witherbloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d8d7ac51-450e-473e-93e1-3fa9b3b6e2d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grumgully, the Generous",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cce29404-abfd-4c2c-90e5-5e04c111aa2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwain, Itinerant Meddler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "69195842-c7ce-477b-a04f-06412aff382a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Explorer Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "898c66d5-d8e6-4a58-ba41-4650ba0e7262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of the Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "42bbedc1-6b83-46b4-8b3b-a4e05ce77d87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ms. Bumbleflower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "41e58eb8-e5b9-4ef6-be1f-00e28cebb998",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flubs, the Fool",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dfe36901-5841-4942-8b61-c273111f715e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zinnia, Valley's Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3d416ad5-cb37-44ac-aded-f45fecdcce6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arthur, Marigold Knight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8504e660-1a15-472d-8e5c-dee0c1d26c8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mr. Foxglove",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "185ac3b0-116e-4539-9615-123a6d68b035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Odd Acorn Gang",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "817ab66e-8e64-47db-832a-2cf9a28dbd17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildsear, Scouring Maw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e732176f-faff-4b0e-9a4a-12d6b011be82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jacked Rabbit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "832c3944-198f-49be-b82d-4690e1345e0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murmuration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f7969901-ec6d-4c25-8cc8-6a663e047c0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perch Protection",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fa25bc75-9bb6-46d9-8de4-a1c1400383f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steelburr Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d5380a89-c854-4170-8881-8f351a03b3cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempt with Bunnies",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b3603aa-58a2-41d4-a58f-2b3306876e35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arthur, Marigold Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "292158eb-cef0-4807-a38f-c5686064b95a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pollywog Prodigy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7c6c2f15-d137-4dbe-819e-28c295919145",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twenty-Toed Toad",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "95965b9a-9ab3-4dd4-b8de-65df9c62e797",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazel's Brewmaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dcfdb433-f4fb-4e3d-92b9-a7071d34a3dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insatiable Frugivore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7e6c666b-e31f-4fd6-ac12-d69de316cd47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonstone Eulogist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0ce5e24a-84e3-4ecb-924d-1a92b0da914a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard Massacre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "163c093e-9b6f-497d-a167-cfee1dbc5106",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agate Instigator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e115baf4-157a-479d-879b-e6d33fe0bae3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity of Cinders",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7110406b-72ac-4e59-aa9f-903510e352a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Assault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "383bde13-c24c-4c3c-bc10-72287aae74de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosperous Bandit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cba58beb-9524-46d4-ac63-119f19d9d44f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mr. Foxglove",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ac03445-6567-455a-9df1-7f76d533bdee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyreswipe Hawk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dfd3a839-8f73-4fa2-afd6-d5185fe14f4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodroot Apothecary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9df82a20-309e-4581-9f3f-e9ba9250747b",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Brightcap Badger // Fungus Frolic",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "11ce646e-26b0-4ef2-b019-92eef1964d33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Communal Brewing",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bbf9572d-6359-4570-833b-bf3bba4f6162",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evercoat Ursine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0ce616c9-af7f-4b81-bc94-dae14ffbf822",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rootcast Apprenticeship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e3b8bc97-054c-4f7e-8893-0205dabe23f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scurry of Squirrels",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "acf73032-96b6-4550-ad33-622932b394d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thickest in the Thicket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fc8dcf0e-5378-4b7f-b356-42ea23303539",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trailtracker Scout",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0da07361-5c92-4708-8314-ba0dce11daf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Octomancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "791d9ea0-c70a-47a6-b8a3-0f5d36a5c44d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Odd Acorn Gang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c9b99c09-3a67-41be-b1a3-9bbe47727365",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rapid Augmenter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "58655918-b34f-4c50-aef9-6a7b10c60aee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rolling Hamsphere",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3c50035a-9f68-438c-b4bf-427310b3971d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Squeak",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88c3afd5-2957-46b0-9544-5b864dbcc0f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, the Great Creator",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ca525a33-af35-4b81-80c6-08fa81dd10ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luminous Broodmoth",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbe639bb-5797-4bec-b55b-aed296337e92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, the Mind Sculptor",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a609f37f-4466-45eb-93b1-01b649f8a0a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Parter of Veils",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2e8a6a7e-7628-4cd8-ac5b-f3be93caaf81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ink-Eyes, Servant of Oni",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00e73c6f-bdbb-474b-9b24-44cb3fd5f751",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Dark Realms",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "073a04e9-7c18-469d-ac3b-941eb50a6f01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marrow-Gnawer",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48494ef9-5eb3-4b55-ad1d-b32bbed89ca5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildsear, Scouring Maw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "565438a2-3b2f-4bfa-9af0-69fbcbcef99d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ant Queen",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4c72e177-d95d-41df-91b3-4e489175b6aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birds of Paradise",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2bb8c103-37c3-4c5f-9b3f-48d8b2292783",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c9ab64c3-130e-4afc-9589-6d5654daeac7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Goose",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1dadea9c-1f50-4e5e-9fb0-ab20c707150f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Who Shakes the World",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7db8f11d-19c4-4b5b-8cb8-2ca86534ad2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squirrel Mob",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7204e5b5-fdd1-4831-8dfa-d4d02ccaaf4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baleful Strix",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5f538b4e-6ad4-4d30-8699-88bcbde8bf69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Derevi, Empyrial Tactician",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f74298f2-c9f7-4c5d-9fab-8fd8d6952059",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8acdce6e-ca27-4b4a-b4d9-a4ceed3bf0e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishai, Ojutai Dragonspeaker",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "941f5231-5620-45e5-9f00-a7f64f0385dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwain, Itinerant Meddler",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "013fdf2d-8fa5-4d84-9a4d-e39dbed1c31b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kykar, Wind's Fury",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a47d968-bba0-4277-b5d7-eb9e1acd7953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Time Raveler",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "97c67e86-5aa5-4136-a15c-c0c5704e2b94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, the Mind Sculptor",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ae319473-9594-4395-bd53-a7c91864b0e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Dark Realms",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "798d161f-230d-4115-8351-ec6e33ed1730",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f916e752-af10-4073-af6a-b137c0b4139a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Who Shakes the World",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f816d97-10f0-4d92-aa21-254754530554",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth, Sun's Champion",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3aa2926-050c-460d-b26d-e44a39258dcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Domri, Anarch of Bolas",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3874f322-9847-4a63-b7e1-718abbe1e0bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Cursed Huntsman",
+    "promoTypes" : [
+      "boosterfun",
+      "imagine"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blc",
+    "setName" : "Bloomburrow Commander",
+    "variation" : false
+  }
+]

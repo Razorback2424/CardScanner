@@ -1,0 +1,255 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "390dc916-2207-4a76-a886-13fe47496a4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "River Boa",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ef36c44-dda9-45e3-bd58-b336235731e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Rain",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82c547f6-31e3-4e0b-b548-a0e467ceaa84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Elves",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "552b3d29-2490-4129-ad57-bf1d3eec9da3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staunch Defenders",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24e1fbc9-a891-401a-99f6-0173ca7b45ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dcac27a2-69b2-4427-ba91-671c3d8496a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Longbow Archer",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "adb9c01f-626f-48b4-abfa-ede3972fcebc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Geyser",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a5f56ed-a3f6-4818-a53f-c88400c80658",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Warp",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8e54f25-6138-4de4-8322-f09d3b311eb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62a8cde9-e049-4a96-8183-a768a8f1c4ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbd5c87e-db03-49d2-b4c6-3794ddf40030",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prodigal Sorcerer",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "fnm",
+    "setName" : "Friday Night Magic 2000",
+    "variation" : false
+  }
+]

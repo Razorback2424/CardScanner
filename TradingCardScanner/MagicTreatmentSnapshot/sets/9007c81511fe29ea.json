@@ -1,0 +1,1097 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d06f729-990b-4c2c-ad2a-c17449117f75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Don't Move",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c40b25d7-73c9-4f30-a707-5afb08185a8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ellie and Alan, Paleontologists",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ae30b824-9586-413b-b925-ce6f915bf7e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Giganotosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5b67d302-ddaa-4627-adc8-86bb665f69ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Henry Wu, InGen Geneticist",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b4a0402e-e39b-4008-b654-189b4a5e03a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ian Malcolm, Chaotician",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "25e6ebfb-8f0b-44f0-a911-103ade41c6bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indominus Rex, Alpha",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3826e2af-c134-4dc1-98b5-574b1bda9a98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indoraptor, the Perfect Hybrid",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a85a1e4c-af02-4072-872f-956fa74f8aa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Owen Grady, Raptor Trainer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c3e8dd5a-d52d-481d-b48c-1392462beb33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Permission Denied",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2be38927-637b-4dce-b228-83ce4f50c4a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Tyrannosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "43aa5d97-7483-4f90-998d-70732a7ae1dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swooping Pteranodon",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6011e4b-a8a7-4cad-a276-c1022b45edc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cresting Mosasaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ceb287d3-cb8e-4ff2-8082-c0bd59c59b45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dino DNA",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6620b5f4-b1e5-4d1b-bbf2-c6ad9c8284c5",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76c343f5-6955-4ba2-a435-36d55182d1dd",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Island // Island",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "843b35ec-7b59-4a22-8fee-2e876a02306b",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Swamp // Swamp",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aae84079-b65b-4132-86fb-e82503bb6c7b",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e703632-5ed0-4509-a12b-594269f865f1",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Forest // Forest",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bffbe9ec-edbc-43ed-a3bf-60635e7e625c",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Command Tower // Command Tower",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ebcadd5b-bc0a-4a0b-b04f-7f49e50373b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Don't Move",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4de4a3a6-f50d-4fea-80a4-5615266189f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cresting Mosasaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cd062615-648f-4cc7-9373-520f3f6a90e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spitting Dilophosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f4f0c479-5fd1-45c2-af3f-15b6e5811b0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spitting Dilophosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "419ef4a1-20d2-4770-99a5-7673518d0b86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunting Velociraptor",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d095694-9016-4b1b-81d0-ffa1fc7662a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life Finds a Way",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e01e2ded-f3ed-41c2-b200-6573d2c15611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Order",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f197b176-8fa0-451b-a981-a7a942890296",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blue, Loyal Raptor",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "801b3fc9-722d-497a-a1ae-c3a158d5ca64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Compy Swarm",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a4c6aac8-2852-4948-9be1-b458f646f6c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ellie and Alan, Paleontologists",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "00d7d3e5-ae59-497b-a376-8a553f2020eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Giganotosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c4150d37-36f2-49ba-8830-0bfa1d4df6e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Henry Wu, InGen Geneticist",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "311b5a21-544c-4096-87cd-17e5a8c4b0fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ian Malcolm, Chaotician",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9113178d-7e2e-4248-a338-f3b5f0bad301",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indominus Rex, Alpha",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2c5c161-49c5-404d-bd8e-86e634222232",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunting Velociraptor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "194406d0-7065-4c28-9771-52c179ce4d94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indoraptor, the Perfect Hybrid",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d69d3be4-3ab2-426e-90a0-848acf7c2cdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Owen Grady, Raptor Trainer",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "678ad86d-6b2b-4e66-a535-9fc696cfa4ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Permission Denied",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "64d141ed-31ed-4d05-9338-8bb7ff05d382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Tyrannosaurus",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "33e9046c-6b87-429a-ac67-43b166469265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swooping Pteranodon",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f5f192d0-6265-41a7-8d95-4cbe48d1657f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dino DNA",
+    "promoTypes" : [
+      "boosterfun",
+      "embossed",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "72137cda-ab1b-4bb7-9190-66a954c36e1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life Finds a Way",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f571ef55-50dd-4624-aa42-fea5a0303033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Order",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6d84e2d4-38bf-4d46-99a6-37c2dda66b16",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Welcome to . . . // Jurassic Park",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0a764ec9-6a30-4df3-91b4-c64fd8e32fa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blue, Loyal Raptor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "800871ee-7394-4a31-98a7-4b92860208a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Compy Swarm",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "rex",
+    "setName" : "Jurassic World Collection",
+    "variation" : false
+  }
+]

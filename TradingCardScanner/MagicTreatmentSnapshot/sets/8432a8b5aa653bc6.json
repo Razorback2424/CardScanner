@@ -1,0 +1,4794 @@
+[
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ab8976d8-f77d-460f-82fa-d324cbd3d4b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Ruins",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "23165275-505c-4fe7-ad2e-4e522bdb014a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coppercoat Vanguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4c881938-da5d-4f2c-b62b-0cfbf29ae558",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deification",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "00d20243-0771-4dae-b225-4379de6be35a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harnessed Snubhorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "041111e8-3b0e-4337-a7d6-20cc455ea173",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metropolis Reformer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c214f916-2ec0-495c-82d5-438e321bf8e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Rupture",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b4e86e46-ba47-4ecd-8fac-7938b9947065",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0a8b57b9-54e8-4f5c-b53a-cd5fc2fb2a34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Filter Out",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "63ef89a1-b6fd-48db-bcb5-faac2fe9fe28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolarian Contempt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "9dbc432e-c35c-4f8c-bbdd-068eaa468378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "e4ec9b42-ab99-4c93-a52f-ccbe258b8954",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vesuvan Drifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0133c618-faab-4b40-8da0-fc91edf49785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara's Oathsworn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "1d18cfb3-5498-4d31-8276-8d7ec893d98f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blot Out",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6c781217-a678-4059-89ff-b5ec494dd367",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death-Rattle Oni",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "ae882b47-e51f-42bc-89ef-2772de097b88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Markov Baron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d3cb68f5-1e44-4d91-9ec0-d6d0559ee4a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Scavengers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c32bf755-6b7a-4324-b219-ba953354933b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Metalbrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8c9798fd-149b-4840-a1b1-b7c596940739",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan Warmonger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ee11cfe8-4f20-468c-80ca-6af23b23184d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plargg and Nassari",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "72c41c82-937e-483a-97bf-58a14401bf11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Handling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "29a82d30-b3ca-4bea-b055-00eee555567d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animist's Might",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "bdff8723-1bc5-486f-a061-4f3ce8679c52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Immersion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0ad606af-3ab5-4755-9690-540026c2edaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "18ad15af-cb84-43c1-9078-459b24c5d45d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Open the Way",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8664feec-ea45-4a94-b6b1-98dd2663a268",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Frillback",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "463fc067-9e8b-41a0-afa1-6be81861cfb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Upheaval",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fe9d717f-242f-4e70-9f6d-8885eac13cf4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Guided by Fate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4afb1105-d272-4727-929a-1716154e3e1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Campus Renovation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "cae13fac-af48-4e00-a483-e4bfc63e8af8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Rebirth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c1e1b8e6-5cfd-4cbe-860e-a59b47643c14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, New Benalia's Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "125e82b7-d9a8-44dc-9376-03705df0c4d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of the Victorious Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "38e5b20e-1a72-441b-9e4c-2e7a40f096ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gold-Forged Thopteryx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ef36c1e9-ef1c-457f-8e02-3d773f4a1e45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina, Dauntless General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bd78266c-cbeb-4fd2-a29c-6bb9d326f057",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Voice of Zhalfir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "763a3015-9b22-4d81-a8c9-08046d1e5aef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "87993488-e31d-4456-bf87-c5a0a81e5560",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Sovereign of the Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bc3c9437-a7e3-4098-992c-ffc929ee0e6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Forged in Fury",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "b1aaebb8-be81-4523-bcb8-fc86a2941c45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Resolve",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f311fc01-9b47-42b3-874b-2cb65a9e412c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Exile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "16d56cd5-f038-4653-987e-d1a5485ac86e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon's Legacy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "07f469c3-d50c-4066-8f46-75ce3c3f1616",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Supreme",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "82c9077d-fdbf-4087-85a5-1d59c2ba7678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Captive Kingpin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7aafbdf8-b1cd-4dbb-863c-0d44494eec2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Consul of Revival",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "efcff20d-4498-4c70-8167-c3621a293a72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebuild the City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d9808e72-4143-421f-a498-dbebbd598544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocco, Street Chef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3dafdd59-e22f-4f0d-aa09-77617402f04d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Vizier of Naktamun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4a21f8cf-5a0c-4a33-a2ed-b89b57bb4000",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "24d3d06c-8bbd-49e5-94ff-f0a9830d063e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Font of Blessings",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0e10e9f0-24fe-4d7c-b883-37319a9ef5b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar the Bellicose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f3dc3541-c398-4d43-b1c4-4d1e1e3e1ebf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Legacy Reforged",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "7d1064ec-ca4f-4498-b6c6-685276973009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Ruins",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "03ce1436-913c-453a-8c05-4ec5bcaac4b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deification",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5254b512-5ca5-4ce9-ad1d-8f90ab24f6c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metropolis Reformer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d62243fa-32ce-4015-8e8c-ec898d1ca1e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Rupture",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "12c08ba6-a8a6-4cf5-83a5-c087e3272f66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fb24d4b9-fa3c-4390-a4b9-3e4fdfdf72b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "352d71a7-2967-4006-9fe4-864868bcc642",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vesuvan Drifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f0250da3-908c-4ec6-94a5-3dd16c6b1985",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara's Oathsworn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "795222e3-1352-4adb-8a42-dde43d08e413",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Scavengers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6ea9f761-a113-40bb-9346-fa13075e1b9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Metalbrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aeb3069f-5f5a-4e11-8a63-46399eb85a95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Metalbrow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "160f048a-8813-454d-af84-1e53f33af9f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plargg and Nassari",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bc6765e4-0bbd-4711-b77e-b7628efcfb07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Immersion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7b3f0e26-7784-452d-acc8-9f7181e0f7d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "25f71273-4d96-4371-b6e0-98519449cdcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Open the Way",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "38c3a774-986d-4702-81c3-915138d3d718",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Frillback",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "581e61d0-95b2-433b-b835-86f00bfb840b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Guided by Fate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5e94685e-e8a0-46a5-83cf-41ccebed62cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, New Benalia's Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "42ee4e0e-1139-42c1-b014-242c306321e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina, Dauntless General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e053705f-df87-4f4c-8060-b43433b1d688",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Voice of Zhalfir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b1536bef-bc0c-437b-bb4a-335c4ec9fbf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "56444b2d-a842-4e2c-b29b-7e578a49b3e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Sovereign of the Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4891486a-9c35-4666-83b0-9fcb1da5d126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Forged in Fury",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0443321b-e999-4bdd-8d8e-65fbaa6cabb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Resolve",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8487e81a-bb02-4d5c-86bb-fe626fa91c27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Exile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7275cea3-01ba-41ea-9665-a07a57ecfe50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon's Legacy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c167658d-1ad0-4e78-ac99-dd2ad5265311",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Supreme",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7f613db0-3303-4d54-a060-1bd8b37a208f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Captive Kingpin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "413eedd5-ea42-4b6f-9282-3040e517d936",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Consul of Revival",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0b5b2e19-dc3d-43fd-9090-050fedf93663",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebuild the City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "421c2ed3-be60-4814-a82c-a0e3fbb97e63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocco, Street Chef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "179a0525-a142-46f6-9b5b-06a2fbb25556",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plargg and Nassari",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "30c3f755-d70d-46d7-80dd-428ca1a355c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Vizier of Naktamun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "18484227-b96a-40fb-9788-656d00705d80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5d9fcc42-1146-49c8-93c8-3a15063488c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Font of Blessings",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1d7c1a22-eb7a-454e-bcd2-80ba0dc46ffa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar the Bellicose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b04e6527-06f8-4783-93fc-8738673116c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Legacy Reforged",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0712155b-a3fb-4e7d-8600-36845d71aab6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Ruins",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c2899c19-d6bd-4399-a838-a21ed81ccc3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coppercoat Vanguard",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "bf4acba2-3aef-47bb-9bec-06408c3d1783",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deification",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9d81d771-67ab-4e05-97ca-e2deee1f2dce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harnessed Snubhorn",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "09c43285-a8f7-4fcc-be8c-115c04d3f657",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metropolis Reformer",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a3e907fe-3c02-4e23-b19f-a478a54f3397",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f23ebdda-e000-4333-9f2f-7d17e17a7cf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Filter Out",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "153dfc34-767e-4df2-a1dc-4361e94d65ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolarian Contempt",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "22299956-82c6-46dd-ac7d-b56146ab7ed8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "09b6a634-0a9c-4e96-84cc-16a6c70b669d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vesuvan Drifter",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "53aa3acf-aed9-4503-8b10-29661da4e307",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara's Oathsworn",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7aaefcbb-98d4-40b8-b51c-2d26f6945b6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blot Out",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f4f66c02-29dc-4798-8d88-76681215fb78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death-Rattle Oni",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "69b11a6b-239b-4a2c-84d5-4e44a5366184",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Markov Baron",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d4453891-a94e-4057-87a3-168e9ef6d6d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Scavengers",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a7d352a7-4575-4f92-9ded-53a23afbca5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Metalbrow",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "40366946-d9e7-4770-bca2-f6d1dcb73ff5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan Warmonger",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "485f7a00-18a3-4831-b005-e31b5bfb2922",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plargg and Nassari",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "677b021e-207c-42f8-9d53-1f58fe7fcd6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Handling",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cd065a13-00af-4a90-9cd2-304f3d12dd4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Frillback",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0e4f0663-0a32-43ca-863b-1ddd4171b325",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Upheaval",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a4699973-2910-46fb-97e2-07f7ef1b27ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Guided by Fate",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a8d12125-4fcf-4e1f-bc7b-90bf53357731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Campus Renovation",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "94bf0249-5853-47f3-96e4-f24e4e70c1ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Rebirth",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "12dc7b44-f4a1-4edb-9fde-aa26830200e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, New Benalia's Light",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2ac806b3-17d2-4671-b4ca-0a8b85482bdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of the Victorious Dead",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "30e14c1e-99d5-49e1-b9ce-92393c1d408f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gold-Forged Thopteryx",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b3d423ca-ccd5-4bf1-9d81-4b6d4ca025ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina, Dauntless General",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c01a0413-1cf6-4936-bec5-b1f5174b099f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4611fd39-a212-4d04-8c9e-d5d9c2bf3c7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Sovereign of the Deep",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "669271c6-27d3-40d3-8054-4555d38269f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Forged in Fury",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5b0d002e-4ab2-48bc-ba95-9dc1c90d210d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Resolve",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0a143471-c144-40b9-9fcf-5c6c9ad45dfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Exile",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "263a2fea-e6b6-48f1-bff8-e556dd1daae5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon's Legacy",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7554713b-825c-4c4a-9a44-9e76910a9bfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Supreme",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil",
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "248c76d3-b5cb-4582-be17-7cd1d0cb0f58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c8abcef7-31b0-4c17-9807-b26079fb6ed8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Captive Kingpin",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "613ed071-7672-44c4-bd19-66954ea0c83c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Consul of Revival",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3c919f25-a57b-4671-ba30-de98262f8d7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebuild the City",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dc25ce46-9d1a-4d5d-b35d-ea7abb8c5e5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocco, Street Chef",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "363a562f-95bc-45fa-961d-50d98ed7b401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Vizier of Naktamun",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4f8d075d-71b6-4f04-946e-e2abc9d374fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dedfd30b-24eb-4b2c-a1de-3f7e1f2a5cb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Font of Blessings",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "64972370-4b5d-4664-9a5f-c1df947024bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar the Bellicose",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f69c4055-786c-4afd-a3c5-095dbf85d178",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Ruins",
+    "promoTypes" : [
+      "boosterfun",
+      "halofoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8e93920-2331-494d-bd8c-8d1ee5d7ccee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Rupture",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b1aa34cf-51f8-4433-9e10-1c7e8f940962",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Voice of Zhalfir",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "0a707ab3-b9b5-422a-8b0f-e963d3ad6606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Guided by Fate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "039e43f2-cf3b-4c60-ac55-d2aafb20eb34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, New Benalia's Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c0c3860-1dab-4897-8f36-f9be263bba03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina, Dauntless General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fcb93216-885c-4ec5-8b88-6cd51f593c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Voice of Zhalfir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4569fb73-3555-4eb8-933a-130770dd56d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b599f53-614c-4b1f-9899-15d5d1e35879",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Sovereign of the Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90eb0859-d24e-4703-8930-1cd4ac1fb3b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Forged in Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "827ecc44-0b00-4515-8953-bc91fa03705a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ebd7ce4-550d-41ab-8559-97efb234a0a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon's Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da1ff886-d3c8-43e5-8bf0-ba4f0b259781",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Supreme",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddb68233-3683-41bd-9b6e-4f07a1b54244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Captive Kingpin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ae89461-4bce-4b49-b875-03afc2469fe7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Consul of Revival",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cdb53ce7-845c-4c62-98a9-4fc33c67a07b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocco, Street Chef",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0f3fdb0-47ad-4df6-a95c-a2c81aaf7af5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Vizier of Naktamun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6225f139-f6eb-4eb5-9776-159a599d8255",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cba71725-d6df-44d7-a93b-934573759711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Font of Blessings",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01a543f0-72fe-4a30-a4a0-356971c1c68a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar the Bellicose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4219b5ea-a252-4d76-a60a-9674340e8ed3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Legacy Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f5a932af-f5bb-452d-803a-b75bd3552b35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coppercoat Vanguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a4c18b82-ec70-4233-9717-f9d522b3d022",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deification",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c19d4ace-cf49-482d-8533-fa7a948b44e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harnessed Snubhorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2f76739e-03fb-401a-8444-ac7fd16f21ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metropolis Reformer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b259de7b-74d2-4ef4-94d3-4a0f14dbaa44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spark Rupture",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "59286512-1ec2-4d0a-aaa0-63a4a691bcda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1631c564-67de-4011-be2d-c7ee96a43cb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Filter Out",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "75ab028c-a560-4f8a-a063-2682daca799c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolarian Contempt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c6f673a7-961d-4ba3-bfc5-46107af46a61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "227d0d7d-544b-4736-914d-10d5d752eb42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "36fd77b6-59ed-431b-9ecf-d37e4f9c14ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vesuvan Drifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5c154811-2f4c-4f21-8ee1-f70557b8f423",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayara's Oathsworn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8f4f2e7f-3ce9-475e-b854-1560d5a9a8e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blot Out",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "791fe078-cc60-493b-9b61-37894e1eddd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death-Rattle Oni",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c79527ca-15f5-427a-9245-6b7f4230a8b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Markov Baron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e88cc697-3b79-421b-9b7f-37f9aeccda36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Scavengers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "59cd3a3a-f9f8-4d83-951f-d187f2bab0a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Metalbrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8d58c593-327c-4798-8bb8-811c831efb49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan Warmonger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bd4c2c09-1929-4850-b797-69b671916980",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plargg and Nassari",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "428f43d7-8979-466a-be73-8e073b0afdd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Handling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a7267a33-c9b2-485d-afbc-a27e4792abf4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animist's Might",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4437a7d7-d25c-412d-b739-a122e25e1449",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Immersion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3998ebe6-bbfd-4d9c-9741-2fe7484dc6e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1d7bb58c-304a-4fb4-9ae6-bc98126cca4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Open the Way",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7c3e0eb1-8b0c-4c6e-b394-6968d39fbd00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Frillback",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "577522b4-b3f6-43b6-92a4-4e8420ff3b12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Upheaval",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6ceddfa5-3a89-4ac4-8fd1-0c9918ffedc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Guided by Fate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a7d4a5b9-2594-413d-a0c1-32b09f54d9d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Campus Renovation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "896a7953-c8af-4a08-b31b-33fe65c14a2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Rebirth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "006eb5ef-ac0a-4e39-831c-4019512bce60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, New Benalia's Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5702d2f0-b576-438c-94b6-39afe2c70821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of the Victorious Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c6fd9efb-afec-426f-8333-a2797b8b603f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gold-Forged Thopteryx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "373475d5-42a7-42ad-a235-685c3d160f60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jirina, Dauntless General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "07fa8aaa-46e5-467b-a237-feae3b2f6ddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Voice of Zhalfir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "23dbb880-1cf8-41fa-84d8-41db8dde35f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "de5b27a6-caf8-4489-b949-d4d69841b9ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiora, Sovereign of the Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "96f2d1fe-e337-4a98-b861-094250068432",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri, Forged in Fury",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e86e510b-aa06-403b-a53b-49a4ad66f286",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nahiri's Resolve",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "93e244a5-85ae-413e-9c79-aa07103c7057",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Exile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ce21e701-bb96-4040-a7ea-a5e0c11eae9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon's Legacy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f21d999f-ea24-40d8-86ef-180627196749",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Supreme",
+    "promoTypes" : [
+      "boosterfun",
+      "ravnicacity"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "840a442f-a220-408f-b670-0c73e2ffa704",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Captive Kingpin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "28216a47-709f-41fc-834c-7e4c99c806f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar, Consul of Revival",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "07f7973b-a5b9-41e9-9382-e5107315faa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebuild the City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8102736a-220d-41d8-acea-79971d73db9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocco, Street Chef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "70c868b7-1600-449a-abd2-9836bce0e1f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Vizier of Naktamun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f2e688bd-7652-418f-84e6-18452295623a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Soul Aflame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "27c857c0-1cb4-4032-a72f-cf8d84171c9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Font of Blessings",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "de88aa7f-c6e6-49a0-a68d-87a2ab1741e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar the Bellicose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "47b1d426-db36-4a6d-9eb7-d093e0c0ee6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Legacy Reforged",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-12",
+    "setCode" : "mat",
+    "setName" : "March of the Machine: The Aftermath",
+    "variation" : false
+  }
+]

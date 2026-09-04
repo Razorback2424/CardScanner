@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "00a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4d03811-0a1e-40f1-9f0b-a5bced7cdceb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Blank Card",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1999-08-04",
+    "setCode" : "wc99",
+    "setName" : "World Championship Decks 1999",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "00b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1582329f-75ab-41c5-ade1-223a6786bf33",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Blank Card",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1999-08-04",
+    "setCode" : "wc99",
+    "setName" : "World Championship Decks 1999",
+    "variation" : false
+  }
+]

@@ -1,0 +1,94 @@
+[
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "183ef738-0559-49ca-85b4-e6836521f203",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of the Great Revel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-03-16",
+    "setCode" : "a25",
+    "setName" : "Masters 25",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8683a978-1bef-4b01-9361-56b1fc157d26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courser of Kruphix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-03-16",
+    "setCode" : "a25",
+    "setName" : "Masters 25",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ad98e518-4ec9-403e-a978-217244262c8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx-Fleece Ram",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-03-16",
+    "setCode" : "a25",
+    "setName" : "Masters 25",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5903aac6-171c-48b7-984a-f074c176d179",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bident of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-03-16",
+    "setCode" : "a25",
+    "setName" : "Masters 25",
+    "variation" : false
+  }
+]

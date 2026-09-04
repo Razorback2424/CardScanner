@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b825eb24-751c-438a-a058-e08a17a30894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Mine",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "g05",
+    "setName" : "Judge Gift Cards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eea5640f-2f6e-485d-bd4c-4c4f9a29afc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regrowth",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "g05",
+    "setName" : "Judge Gift Cards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a5b855b-f391-4963-a3d9-47880e084a7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Ring",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "g05",
+    "setName" : "Judge Gift Cards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "397d5e83-0634-4312-aa95-9f3cf928533c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "g05",
+    "setName" : "Judge Gift Cards 2005",
+    "variation" : false
+  }
+]

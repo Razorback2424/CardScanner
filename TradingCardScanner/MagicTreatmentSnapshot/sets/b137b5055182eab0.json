@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a2f582b-9119-4b52-878e-2c937f7f8541",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armageddon",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52ec6882-a92b-4ee0-b601-638994a65337",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balance",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd2de76c-e0da-417c-8892-364a01ac69f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Warp",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e24579cf-ff2c-4e01-b6d1-9d4efc9e2ca2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Negator",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c94e2b8-9fe6-41fd-bf43-ab7534abfd33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deranged Hermit",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d6159f4-f6b0-43e5-b464-39c6c3c530dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hermit Druid",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-01-01",
+    "setCode" : "g04",
+    "setName" : "Judge Gift Cards 2004",
+    "variation" : false
+  }
+]

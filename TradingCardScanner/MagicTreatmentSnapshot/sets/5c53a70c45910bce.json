@@ -1,0 +1,256 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3ff46e8-ed45-41f1-a200-8fa0cf0eda0b",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Norn's Annex",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-03-10",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff398b17-27c2-4bd0-9187-5c3bf13b04e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Chupacabra",
+    "promoTypes" : [
+      "openhouse",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b047c75d-0a0e-4fa0-87b6-a961e0fa51ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unclaimed Territory",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-01",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e10b721-7fb8-4d4b-b1ad-f9eef6e02250",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecrafter's Bestiary",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-01",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44e63c67-f7ae-4481-a27d-648fd4e98560",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Beast Within",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-25",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "297b09a4-0c09-4e99-b3b6-6136806526ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drown in the Loch",
+    "promoTypes" : [
+      "openhouse",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9d7e6fe-ed8b-442c-86f0-c84e9d333f62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-15",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96701694-eeff-42de-b1c7-84420ba0c198",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivate",
+    "promoTypes" : [
+      "bringafriend",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-01",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4af9f237-f338-4335-843b-d352c01b73e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ice Out",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ab85094-710e-4529-a69c-a678af5389a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyroblast",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fd4c1ff9-fbbc-4e72-b695-58876a43ec99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampant Growth",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-03",
+    "setCode" : "pw23",
+    "setName" : "Wizards Play Network 2023",
+    "variation" : false
+  }
+]

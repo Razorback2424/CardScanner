@@ -1,0 +1,139 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3178e55c-7e49-4621-906a-a66e5656e276",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arbor Elf",
+    "promoTypes" : [
+      "storechampionship",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "286db2ad-ee23-4aeb-99f8-6786611264bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collected Company",
+    "promoTypes" : [
+      "storechampionship",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2daa42ef-0981-4e4f-9916-b6a3d227943f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wurmcoil Engine",
+    "promoTypes" : [
+      "storechampionship",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e374f1a8-0b90-4f62-9af5-3bbb11a0fbc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "174e631f-f024-41fd-8660-7cc8708ee3a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Stone",
+    "promoTypes" : [
+      "bringafriend",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5de7e412-87b1-4c03-a074-f319a8c073ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conjurer's Closet",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "pw21",
+    "setName" : "Wizards Play Network 2021",
+    "variation" : false
+  }
+]

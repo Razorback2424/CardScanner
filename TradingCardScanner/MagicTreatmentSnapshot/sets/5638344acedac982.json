@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "5ae63280-c39a-4e1a-9407-1b4a82b23135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-08-21",
+    "setCode" : "v15",
+    "setName" : "From the Vault: Angels",
+    "variation" : false
+  }
+]

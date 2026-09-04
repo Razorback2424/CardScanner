@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb248ba0-2ee7-4994-be57-2bcc8df29680",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "t2xm",
+    "setName" : "Double Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7e7822b-f155-4f3f-b835-ec64f3a71307",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tuktuk the Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-07",
+    "setCode" : "t2xm",
+    "setName" : "Double Masters Tokens",
+    "variation" : false
+  }
+]

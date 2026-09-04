@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc944579-b6d8-40f7-8c46-146513960d61",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Pegasus",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b159b57d-bc52-4cef-ac7a-e364e40c3d03",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e7b5995-ee8b-40d1-b157-8df96c02cc5b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbd728ed-d5dc-44b3-9159-6c86cab3be0c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "281d2c14-2343-44c9-a589-7f4da37978a2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Sheep",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abf24a09-0a54-4e1d-a515-ed5ae99294be",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squirrel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-08-11",
+    "setCode" : "tugl",
+    "setName" : "Unglued Tokens",
+    "variation" : false
+  }
+]

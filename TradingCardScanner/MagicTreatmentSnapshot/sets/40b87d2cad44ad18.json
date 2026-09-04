@@ -1,0 +1,266 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "521a1843-e604-4954-be21-38b31867f670",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrolyze",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-03-18",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f78edb37-e36e-4761-8293-154744040d65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, the Siege Tower",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-10-27",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca687bef-3503-4020-a054-953152be7aad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bramblewood Paragon",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-03-29",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85985b9a-274a-49be-be46-6e32efcce9fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutavault",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-03-29",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1531face-701e-4b4b-af47-ddac71c93928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, the Firemind",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-03-18",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5211b39a-cbf3-4aec-861e-cf721da53c6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Guildmage",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-06-24",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "265c269e-1b5e-4e5f-873f-7733bd4142aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voidslime",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-06-24",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f5725dc-82a7-48b3-857e-7ccbf3726cbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Factory",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-10-21",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3e3374a-e2e3-4c81-aa4f-098b190bbf66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Avenger",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-10-21",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "64d02c9b-7362-4479-b26d-7de843bd2ac3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Knight",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-03-01",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1692ba5a-7ccd-4623-876d-a587d6491cec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Groundbreaker",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-03-01",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bffc964-b397-409c-8d3a-9f52107e09ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperious Perfect",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-10-27",
+    "setCode" : "pcmp",
+    "setName" : "Champs and States",
+    "variation" : false
+  }
+]

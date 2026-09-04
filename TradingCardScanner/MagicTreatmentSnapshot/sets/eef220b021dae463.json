@@ -1,0 +1,3356 @@
+[
+  {
+    "collectorNumber" : "103p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a87649e-d5f8-4e33-8fed-13615ebdac55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Tutor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d643a70d-2a30-4d3e-b441-58d342181685",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Tutor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbb4dd89-6e7f-4b94-9fa4-eeaa4362c099",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hooded Blightfang",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59da8989-5b65-4493-86a6-05a18ef2167b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hooded Blightfang",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2d1023a9-175c-4bbe-a2a9-8ebe06261ae5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Spiteful",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b44b109-db63-466c-899e-86a646434c08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Spiteful",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80d54beb-b6a7-45bc-b44a-689d195f758a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Waker of the Dead",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97822ea2-162f-4e7d-9042-5ac4c258275b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Waker of the Dead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a13215b4-b7c0-4919-b653-efd195e016bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Standard Bearer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f6367ab-f9a8-43ff-b9f0-056aac717424",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Standard Bearer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6533b6d6-0672-4794-8fdf-fa20c75b94ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Wurm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26eeb24a-4945-4017-a490-62df6f62cc00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Wurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17f70737-3d85-4ab2-87eb-7e04cea9cef1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necromentia",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1926fd48-902f-4537-816c-12251e58ab43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necromentia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebe1f2e3-2cdd-4db9-a8aa-e5006c14127c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peer into the Abyss",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc5b1db0-1328-4693-a480-c8783c5a60ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peer into the Abyss",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "127d6399-fd20-4bf6-b376-f18ee1ca348f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieves' Guild Enforcer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4c1841a-15c0-4d66-8ddf-f4fde909117a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieves' Guild Enforcer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a0eb995-b2aa-4915-a69e-d6995c91e589",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6598cf61-6b7e-4340-bdab-2b956c79e667",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2415707c-2b0a-4d4c-a9a0-2a6dca69589b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-10-01",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7a21fd4-eea7-4ec9-b21e-92a9270d2578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brash Taunter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17db47a2-5fee-4d29-a257-d6b1cd4829ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brash Taunter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a9b13c0-c0dd-43a7-8519-318a05bfb584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Heart of Fire",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50a160ae-b18c-4233-a213-4e6b9e3dd626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Heart of Fire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0118733f-ddea-4527-9acd-24a006b49aa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Incinerator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53e99879-2132-46de-a589-42990e59bf2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Incinerator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85f3eef1-01da-4614-8127-9da3c65a2eec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspicuous Snoop",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5955db79-e235-41a8-b287-918551923e6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspicuous Snoop",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fecea6ca-8308-4c17-ad91-adc75eb05ad2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Containment Priest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5fa28d7d-e1d7-4d05-b085-11c2af885bc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Containment Priest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3a345a7-f48f-4f06-98f5-601d191af4a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Vision",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0e788c0-7ddc-4518-b736-dbda4db9cdfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Vision",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92106426-20d2-4a38-adaa-a7bbd6d2effd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Emancipation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "196d649b-14f6-492b-98d0-6399bfd6860e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Emancipation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aeffdd9f-73d5-4782-bec3-4bb547c6cc6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8f5999f-5a83-4ff0-8206-3557bed9ff9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "440c4603-3654-40b0-97b9-8078cdd4168b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subira, Tulzidi Caravanner",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cef24c34-2565-4189-adb3-46e50ded061e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subira, Tulzidi Caravanner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06728070-b888-4a57-9248-2a9615a4cda0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of the Peaks",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1a872ab-dff4-4a94-80c1-580300c7bf04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of the Peaks",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4486dca4-a17f-44c2-81b6-ad94522a8335",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrify",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfdb1696-9dbe-4205-9632-715ad8ddb5ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrify",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "393b60c7-600a-4bbf-a888-05efe56b7de8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Salvo",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03925f24-bc82-41ad-8e60-aea0d3704e36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Salvo",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c5f016f9-88bd-4527-9f32-5cf270ec5b16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "765cff5e-73c7-4ba2-9dd4-bb9f53cf8680",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00694044-99c9-49f1-9e93-274d702a59f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elder Gargaroth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a29d86a4-6e5e-44cc-b016-935a3243949d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elder Gargaroth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfa678dc-8294-4a03-9d7e-1f7428085a5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feline Sovereign",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f35e097d-831c-4b4c-97fb-27a75898d713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feline Sovereign",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "439127e7-4eb4-4831-8220-3ecc5c01b58a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Unleashed",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47a469be-e43a-48cb-b216-bb39ade32acb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Unleashed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8787d23-30c6-4db0-b2d5-f8ead42261e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Harbinger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb3bf27f-f94e-4400-984c-dc02a2df60f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Harbinger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b35e310c-8104-4871-b5ca-07f1bea1e7d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8abb437-9adf-406a-a763-39295de187b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "897ba09d-ce73-467f-8633-3b72dbd7683f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0c553cc-32e0-4d15-9054-35f7227422a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b61676e-6911-4d34-bbaf-2a63ee83310d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Might",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cef5955c-49f7-4a9b-893c-db388e3da96b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Might",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89677176-80c2-4df0-a108-f0a1fa4febf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Spirit Dragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02c596b7-67d2-40dd-bb57-4a7640d88145",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Spirit Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba9b0e0b-1559-4c7c-9f18-68f8ad580c93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenging Ooze",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "161f35d8-cc08-4c64-bebb-ac776b70626a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenging Ooze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11e674c4-c967-4848-b949-796b8ab8b261",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sporeweb Weaver",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c8986d8-b465-422c-8b9b-2e1764efee11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sporeweb Weaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5155eca5-bade-41c2-b5bf-6b9c188852ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Anthem",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22a63314-263d-4568-9f2a-45f7480c3031",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Anthem",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26a11412-d2ff-4f6b-9763-3c1179e7bf14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niambi, Esteemed Speaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c60ec4f0-c304-4a98-9d67-28f881d1ad2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niambi, Esteemed Speaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bbb94426-4e89-4ae1-98f2-d3a66f18784b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heart of Keld",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06659985-c6eb-4281-8ff5-8bda7d252f44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heart of Keld",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9f8c3b0-efd6-4631-9090-205bfcb4e07d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of All",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb899b8c-210f-487d-9fa8-dc64c8f20475",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of All",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "062fcd2b-7f63-47bf-83ba-88e33d397a6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06bea508-4039-4aee-b61c-8f68ec405ef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a9833f2-6f97-4b0f-97fa-6b24ab05fa50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazemind Tome",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b95b2d9-9421-4d9a-a5ed-00f6221c16af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazemind Tome",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a236cd3c-a9b4-4b75-8e2e-c97d294b1bba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Simulacrum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60a16fa3-a4df-48f3-ab39-c6c16ae81e95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Simulacrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "242710ee-8821-48ec-bf68-71adc14a08fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Idol of Endurance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7bbaf25-fea1-42a4-a650-976481ef3d83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Idol of Endurance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85c25bcb-0b13-46df-9b51-e11f781476e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sparkhunter Masticore",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4da7ff3-604c-4c09-894a-24bd4cb0fa5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sparkhunter Masticore",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "423cf581-207f-4304-af84-d00788febb12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animal Sanctuary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6903483-6631-44e9-9160-afe8a79ae123",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animal Sanctuary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ddc0c14-1a98-45ea-b3a2-28c2257c6078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "703b340c-369a-43e6-8350-c73124c17b7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29b1fdfa-660b-4605-be08-606e8b81edb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Epiphany",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "435e63bc-8af9-4126-bf1c-beebf3869675",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Epiphany",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50dc68ae-b29c-45ab-8559-b59d3e84d78c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Malady",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0db8ac9-ecf0-4c4a-bc96-f939d7b87027",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Malady",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de17ccfe-5c32-4b4b-ac0c-21500c027dc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Mystery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "084b5170-b80b-46af-9879-f0bd2651e94b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Mystery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06505026-d3c1-41b9-a665-544351649402",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Silence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b92fc53-21e7-47e3-9f47-2f486821808e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Silence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0ff3b64-78f9-43b1-9859-da15e15250e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Triumph",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8754df28-363c-4651-81fe-ead10fa904fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Triumph",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c3103af4-df1b-4a47-86a7-40338d593f19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5ff48d31-d527-4127-b179-0507dbcf5f31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db53841f-5fae-412d-8b85-86b876d47e87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine Lives",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68806301-ef2f-4739-9478-88e7fc816385",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine Lives",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fdbbe153-6a6b-43f3-8485-01628d13b65d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pack Leader",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5b34c0b-9593-4cfa-80fb-f348a75b18c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pack Leader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65f9f9ff-5a28-497a-9126-24c0ae4c33a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runed Halo",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95b26297-f6a3-46b4-acf2-2953daa8966c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runed Halo",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50f606d1-d711-49d3-a4a7-3fe7db2520d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Speaker of the Heavens",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c7f5595-c30c-4666-ad80-d9393c5b3702",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Speaker of the Heavens",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89ca2e98-da62-4a56-9b6a-4866a594ead1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrin, Tolarian Archmage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed8c8afe-ceb1-4b0a-8b41-66e0092e5cc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrin, Tolarian Archmage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c92f0b48-9fcd-4a2e-8e40-891da7c120a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Discontinuity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ccb5831-0995-4a90-8d88-d75202901183",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Discontinuity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd8a95f1-7fd9-4a13-8eb5-6b61078ccda6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Pilferer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e73f9c16-2730-46ab-8e55-43cca565a96e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Pilferer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e6c90b1-ddf5-4c2b-8a3b-05aa1f6910d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pursued Whale",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91859855-aa5a-4460-8a5f-2b24e66b4d00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pursued Whale",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3fb73a3-ca87-45e2-bfee-177b54cccc61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "See the Truth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24bad175-0d22-476e-a2e8-c3b7173cad2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "See the Truth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dff036a9-08f3-41a3-8538-bba60f262e89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baneslayer Angel",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f383d7e-0d63-44f5-9af7-2b91cd7c28bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baneslayer Angel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95d9b9ce-3e8b-40b5-9bbf-363c8c957703",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shacklegeist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04dc4dda-1bc2-4ff7-8b66-b55be96db6e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shacklegeist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f60c5013-c7ad-4a3e-90a5-56583d827052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormwing Entity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98b1790e-195a-46c3-b7d6-f731722768b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormwing Entity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "761522b7-9678-4355-a929-6d958814685f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sublime Epiphany",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "373d12e3-b403-452e-8bab-3e2318b890dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sublime Epiphany",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35b27a41-b4c1-417c-a1c5-a72f2c38ed0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1a4367a-7495-45b7-b244-2fe0c9c04a66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09971b9a-f0b0-4fd1-8104-29de581ef93e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "79833a2d-a27b-4319-9fe4-d68293c295c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a7df405-5561-4adb-8dab-125bb1b01e4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri Ket",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e24b5948-7073-4604-a78b-fc1c527b64d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri Ket",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "746e4c16-e4c9-4623-b872-4438ca5d76ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Embrace",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9122aad-ffc4-476d-9311-978d506bc03b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Embrace",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "789e397f-2a81-44d8-917b-77da257b3db3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Lieutenant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7760d17-a159-470c-b14e-dc0572a981d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Lieutenant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "pm21",
+    "setName" : "Core Set 2021 Promos",
+    "variation" : false
+  }
+]

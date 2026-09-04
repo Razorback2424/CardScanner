@@ -1,0 +1,50 @@
+[
+  {
+    "collectorNumber" : "115a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "634b794d-05d9-4c1a-8d90-4f8dc42f9e0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lu Bu, Master-at-Arms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-04-29",
+    "setCode" : "pptk",
+    "setName" : "Portal Three Kingdoms Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35e56360-6104-48f3-a54d-ad2d4fab900e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lu Bu, Master-at-Arms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-04",
+    "setCode" : "pptk",
+    "setName" : "Portal Three Kingdoms Promos",
+    "variation" : false
+  }
+]

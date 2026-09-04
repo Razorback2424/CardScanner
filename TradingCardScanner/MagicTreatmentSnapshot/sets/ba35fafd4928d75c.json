@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3292ac2c-11cf-4fa1-aec5-5ce9a7ba2afb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intuition",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "g03",
+    "setName" : "Judge Gift Cards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70364605-5f20-40e1-b18b-dec6d3d4d3aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Argothian Enchantress",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "g03",
+    "setName" : "Judge Gift Cards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c63ea5de-ac48-4c91-a2c6-758a8594bbb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Death",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "g03",
+    "setName" : "Judge Gift Cards 2003",
+    "variation" : false
+  }
+]

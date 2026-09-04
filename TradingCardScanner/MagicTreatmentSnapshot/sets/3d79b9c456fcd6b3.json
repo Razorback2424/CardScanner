@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ec4eeb5-2f82-460c-8140-20587442d40b",
+    "language" : "ar",
+    "layout" : "normal",
+    "name" : "Stone-Tongue Basilisk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-09-22",
+    "setCode" : "pody",
+    "setName" : "Odyssey Promos",
+    "variation" : false
+  }
+]

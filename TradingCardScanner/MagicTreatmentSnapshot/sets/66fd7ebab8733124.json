@@ -1,0 +1,4422 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "674e08ef-5291-4465-99c0-7313698f7a93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma's Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6d9efae9-365d-46c8-be92-d4a3038f0414",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Requisition Raid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7a79190f-de60-4eb6-b925-594eb76ca8c3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "02c3c983-85d5-47b8-8043-5c996c773865",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Zombify",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d1ed5b20-94f6-455f-80a5-e4ed360167be",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Abrade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9cf2452d-17af-4bb2-8a52-348d6e5e08b9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Big Score",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3c100b73-ce54-4022-9d42-2277089c5032",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "39d337d2-d8c9-4e9a-9531-cfe4db769cb3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bulk Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8cfb73c4-b5ce-433d-9688-98956625c32d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Burst Lightning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4a0c9f23-8e8f-4e84-9551-cbca66d8f09b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "05af8b37-6588-42dc-a5e5-e81ccd0abb91",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Empty the Warrens",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fd142004-10bd-46d7-9ea6-87f2992c10c1",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jeska's Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cba93c84-3468-4c03-8198-87fb6c4b0968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return to the Ranks",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c4eb2c2c-ea5b-416d-be6e-ded50021e2e2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Monstrous Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "21b14fb0-aeeb-4c9f-9458-ef0e2b4b604e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pyretic Ritual",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "abe555c4-2da1-47c5-9910-cd07f4256938",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Return the Favor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "155f9008-2edb-4115-84e8-237257fc4a08",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Subterranean Tremors",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5709206b-1781-4601-abdf-265d8fc91bc4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f11665b3-00d6-4912-ac1a-06d6ed50a01c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Berserk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d62222aa-2f38-4692-b359-0c7cfc6416a9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "64490086-2e8b-4921-ab08-68960c47277c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8ae15f32-034c-4c10-b1b1-ba8ccec76f2c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Glimpse of Nature",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8ae6ecb2-d062-400d-b0ee-67b54746e7fc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Knockout Maneuver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ddf7fa6e-e38c-4f3d-8d8b-6ecbccdbb8f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winds of Abandon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cb23d19b-b17a-4f0f-b8d2-164aeb6a2819",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pick Your Poison",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8d7a631d-6354-4999-80fa-0d3008f7bc72",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Royal Treatment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "11347d20-2b14-41cb-a930-92e37fcd1b87",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shamanic Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b5ead982-87b1-41b6-9c71-7231fc21d06b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shared Roots",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9907e7de-62f1-4596-a242-d811f72e9f63",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Triumph of the Hordes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f538004e-23bc-4916-a246-365093c7fb82",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Veil of Summer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "400aa24b-870e-4a5a-8af0-060533d9cb18",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6913b32f-e0c0-4817-8e36-02325729f217",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Culling Ritual",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "08e88552-fd1a-48e8-8443-73390e1f3332",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Deflecting Palm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f3b0fbe8-6645-4e81-b8f9-5aacaa3325b1",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Expressive Iteration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f403af12-6114-4121-b421-3448e084864c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brain Freeze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "15f27332-8400-4730-8cfb-26a3b5eefb90",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Fracture",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "988b5c67-1521-4bff-aff5-b3536c20aa5c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Akroma's Will",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "35dd15a9-d330-4d79-9917-1329444d6598",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Angel's Grace",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "669c1805-c97a-40c8-ab36-df4e3dc88ca9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Armageddon",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f1fc0d82-b001-403a-9ca0-7c58bafed982",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Duty Beyond Death",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cf530c7e-2be4-4afc-983c-72be4b2e6d6e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Helping Hand",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4cc6e994-3e82-4869-9e62-f956f0d493e2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Hop to It",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "94ba4cdd-ae38-4d42-a11b-98482fc67280",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Prismatic Ending",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1c282a95-9396-4b99-8eb0-d2af55fa6828",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Repel Calamity",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c7fef194-e067-4f25-8b4a-0e37d35bb2c7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Reprieve",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7037f57a-ca89-41bd-bf7f-2f54593c0f48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclonic Rift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0aece8ee-8a7c-476f-bfee-be42adb7a84f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Requisition Raid",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ce926b04-ce59-49fe-bc33-cdfcb9714342",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Return to the Ranks",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2b9cc977-6cb0-4a69-adb6-212e4fd81c58",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Winds of Abandon",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a66d7e4c-f268-4596-b2ff-f215ec162cbc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Brain Freeze",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f779109e-331f-44ae-9dfb-e435a2bc6b7f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Cyclonic Rift",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "61968d99-6571-49ce-bcf1-2aaac3a10f45",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Daze",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0d9f7563-0c3e-4bfe-b61a-8e6a6d2411b4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Deduce",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cc5cf8b1-935c-4624-9ca8-635eee190dd7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Disdainful Stroke",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0f6e9e94-fcfc-4d2a-9751-347c743961d8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Flusterstorm",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b8a31dc0-8f4a-441f-bb8a-6ebfb22e5cfd",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9d9a5654-6795-4799-ae3b-5827bfdf7a97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b952b12c-5e28-4e42-b9c4-67527518b0a8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pongify",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "98763383-da03-4355-b227-ef77475537cc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Preordain",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b820a24b-acc9-4117-8e1b-74ab19002f77",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sleight of Hand",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d3820242-f519-49a0-8c00-cb492b5c93ac",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Spell Pierce",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "20460489-3e66-44da-8003-ca28b1f3831b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Stock Up",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "68f7db06-8a4c-4654-9209-6bc6c5d7f492",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ad Nauseam",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7bb7a9e7-8ed9-415e-abe2-f1e1a362d569",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bitter Triumph",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8470477f-166c-45e3-80ae-cc14ae85f2c9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Culling the Weak",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "93020a11-731d-413d-984c-f2ae217542c4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Dismember",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "446a6f55-8b25-45ff-95e2-c8ab33484551",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Feed the Swarm",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a6813cd2-7151-459a-a2f1-52808584de53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deduce",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b1cee39d-5de0-45df-a041-401613531eb4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Living End",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "93ef62f6-b5f3-4ad0-94db-4e4faa66a055",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Locust Spray",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "01812e27-4bb5-4e70-8c60-beb93dba4cb2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sheoldred's Edict",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "530c6da3-628b-4c7d-9839-086b8973744a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Smallpox",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c31a2c18-2d84-4079-baf3-6a8dfa65072e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Stargaze",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b6e09632-0bc5-4707-8966-d69a287dde83",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "dc51e36c-8b5e-4a01-a17e-1a3e62122223",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Zombify",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "75120201-e3bb-496f-84e2-5cab08f0b79e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Abrade",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8721dca7-9b24-4e66-a51f-7100988310e8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Big Score",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "75712beb-f8b9-4f77-8d57-5276a12149cf",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3a057032-6ece-4aa7-8e99-df2a07359b2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disdainful Stroke",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aebb91d9-0dd8-4e9b-99d2-1d86ba57d6d8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bulk Up",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6a588a86-56df-4dd3-bb16-e36d6a311e2b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Burst Lightning",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "30250852-4580-41b5-a617-d718ec0eba41",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9618ad79-bca0-47c7-85f5-e620a3ce6225",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Empty the Warrens",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5e80dfcb-ecd6-4d0d-adb6-cac38560ebf3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jeska's Will",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e89f3569-5467-4904-a28b-e95f5c93f45d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Monstrous Rage",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ce5f9a20-9254-4d76-9230-bc9b4983566b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pyretic Ritual",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a47aad8f-b418-475d-ace5-d1338cb89f56",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Return the Favor",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0ff35166-1bd9-43f8-88b7-4543a1881908",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Subterranean Tremors",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b568ab94-3186-4bf2-8f03-b9e174b57729",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ba8fa9db-f24f-46d4-add1-71b7f77636e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flusterstorm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a3c671da-27a6-43a1-8294-c14cea0e5140",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Berserk",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "00f97ece-f7c5-4ae9-b680-40f2cbbed22c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fe6060f5-d06c-4ff2-91e8-f1d836254fa6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f06d24b8-5305-4540-800c-9642c6354529",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Glimpse of Nature",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "be4673eb-f334-40a3-a47d-d7bc105ec5ba",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Knockout Maneuver",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7584e3e3-8786-408f-b3f5-9a9cdfe0f8a1",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pick Your Poison",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3fbfc4d2-a937-4b1d-9350-3dff04f2cf10",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Royal Treatment",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "12e2ee56-ff9c-4a16-8446-94735c05817a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shamanic Revelation",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8f815e07-0091-4eb4-ac62-1700dfebc56d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shared Roots",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c236853f-62fa-4bac-bdc0-295c8337fc2d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Triumph of the Hordes",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7a87f8bc-1b3e-4cb2-9343-5f008e942411",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "72e59908-e02e-4ff1-ac98-6f5d1ac9f579",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Veil of Summer",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "851367a6-ba83-4c91-b530-7402037c09bc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2a2743be-3033-4ecd-9890-49b8d772fbd4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Culling Ritual",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7454ab83-3af3-4ebb-b713-c73b77592cc2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Deflecting Palm",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "be9ab0f1-05fb-4012-ad95-2d32f10b8089",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Expressive Iteration",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f515ecc4-d378-4f68-8146-1ac32a641665",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Fracture",
+    "promoTypes" : [
+      "silverscroll"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "de0f22af-fb85-4178-8a35-ec3ff031f4df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel's Grace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5780936e-629d-4737-9005-651234f5426d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pongify",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8221b564-acf0-4d82-94f5-2ba1337ff5e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Preordain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c837c418-2fe9-4ce8-b76d-c37241579a93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sleight of Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "bc8f80e2-dd9d-4abc-b44c-fbef4d403e6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spell Pierce",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ad048b7c-588f-4c34-906f-4224f1aaaeb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stock Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "763fb195-6fd1-428a-b129-ec688f7b0066",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ad Nauseam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "db465858-0593-4850-8f1d-400fe230a18d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitter Triumph",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6c84aa77-bcb0-4a59-b94c-8cb9cbf6af76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Culling the Weak",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "94c131d2-6b55-456c-a30d-e5ffb6d5efd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dismember",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a041cfe3-a02d-41e2-aea3-76bc2bacc10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feed the Swarm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "41954132-2c71-4b3a-8893-20e0df68a848",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armageddon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "77cf5316-a0bf-4dbc-a388-01d6825c85b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b221e1e9-7b14-4444-ac1c-3d5174c711e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Locust Spray",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "dca66a1b-0acd-4b79-b5fe-16f2930f9c1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred's Edict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0f6f64b9-145c-4ed2-b90c-cbcf021b353d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smallpox",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5c9caa7b-0268-4606-a71d-82dff16e6418",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stargaze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "db68c546-aca8-45d0-bf45-15b951ce66e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "dfec5854-70c7-4e4b-9979-58775dd7a181",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zombify",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c5bb5307-e874-42c4-b85d-06b9f6c474c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abrade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c7b698a1-dff1-413f-ba4f-0298c686999a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Big Score",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "98a399fa-822d-4e8c-8be0-fa929c9bbd4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6f8f8183-d17a-41b8-b3b5-914f193fd964",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duty Beyond Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e86fcad5-8150-4a76-b27e-47a9f05745c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bulk Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f98b402a-ecdb-432f-a050-65945c8c415d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burst Lightning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6d4e121d-c46c-4028-9582-3bb9c1621cbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "622daabf-987d-4311-b3d3-b27d62cd5e6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empty the Warrens",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "aa1e5db0-4cd8-4d42-bde1-3e3d0041339f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeska's Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4b2e000b-a147-443b-9138-9ff2d16c0422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monstrous Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e4507ef5-0d30-42ca-b305-f99c6e10432b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyretic Ritual",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e968efff-635b-4780-9bbe-099e75a1841b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return the Favor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "02a20564-90af-4dbd-bf5c-debc49e4f391",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subterranean Tremors",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "914e582c-978f-46fd-b06b-1ff2c20e5506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "da5e29a8-a8fb-452b-9973-61ad613f9907",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helping Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0fe6e7d3-7e33-4e6b-91c8-47fd4ba3cb5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Berserk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d5d50e02-80c8-4b7d-9f51-7f1d79f9f263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "62652aa9-57e7-42a7-8f2f-62e9a6aefb16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7cb6fd05-0bd9-4f2f-b159-280aba98d3a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse of Nature",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "42d90959-b88c-4321-b2af-78ac7aab9909",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knockout Maneuver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a11f1013-d747-4cf2-bbf5-0bd68a949ddf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pick Your Poison",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "009bad41-5e96-4bb3-9f5e-66500fb8af29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Treatment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5dc1904b-b0e6-49e5-9ef3-7ea538db202b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shamanic Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3aeb1fe1-3ff3-466c-9eda-b8747702734c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shared Roots",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5a0bc9d4-d99d-48e1-aeca-d2e5b1c99a84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triumph of the Hordes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "16fabbbf-e35b-468c-9aea-09aa6a388dee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hop to It",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5724a4a3-dd66-4a66-af8b-5374119ecdfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veil of Summer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2b5cfc9b-90c0-4073-8584-8cf59d13fd60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2bcd7858-7ae6-4419-bc58-a5c133c97577",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Culling Ritual",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fa80a2e6-303f-4cd4-b719-cdc030a51181",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deflecting Palm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5697541f-a03f-48b9-a0fd-ee0cf5357660",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expressive Iteration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "34005b2e-6270-4ac3-9d35-021d916125ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fracture",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5f0c0b37-056f-4c49-b5d7-e25534117e17",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Akroma's Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "dcc07492-9eea-4aec-be42-a0adb9a5ff50",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Angel's Grace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cf980fc6-84ed-4c79-ba66-ecc6146a8085",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Armageddon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c841be3a-bcfe-4ce5-9580-26b56a675df7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Duty Beyond Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c30342a9-9d60-4440-90fc-8df47d558be7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Ending",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f8c32407-5a49-4eec-a3ce-cfe72797a9c9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Helping Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "dc7b153e-e036-42ef-8479-f9deebb6a2d6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Hop to It",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0ecd4e81-65a9-4ffc-98f3-a2c84d84b573",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Prismatic Ending",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f562d7c8-e9c2-49df-84f5-b59344774320",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Repel Calamity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d69ea723-fb66-4e6e-bf9f-6a457bfeec5f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Reprieve",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "46f1ecab-2e69-47cb-afe8-4d5bb51d3ebe",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Requisition Raid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a49a4ea6-4823-4d48-a411-f3763d60f865",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Return to the Ranks",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "58d879ad-8b06-4569-b3af-a280e60e4e8f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Winds of Abandon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3f77b203-8574-4a5f-91f1-b7caf3301739",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Brain Freeze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "65c6b4f4-2aef-4150-9a7f-70ca5f337766",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Cyclonic Rift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1c2cf02f-97f3-47f0-9382-c580f3033635",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Repel Calamity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d3c3964f-8449-4f5f-b24e-627511f2e6d8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Daze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5a8c7ae4-186b-45c5-a7b0-4b7eaf5b0f42",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Deduce",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "47927ea9-19b1-46e9-a501-12ac37715071",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Disdainful Stroke",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9df19f7c-2922-4d71-999a-818ae69045c3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Flusterstorm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "24bfbb10-409f-4885-b792-73958250a65d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "89d595e6-3629-4f9b-8f55-8a91ff1d6f36",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Pongify",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f40fc56b-84ae-4797-95bf-4bdd2bc5bf75",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Preordain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "11a91b7a-108e-43b6-a08d-56f824e807dd",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sleight of Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4b22792d-8113-4fc3-9b09-90988dc52feb",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Spell Pierce",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6ec11b1a-0b42-4ecb-8f0b-81d18bf5627f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Stock Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "426038f3-f21e-43a5-bea8-0cfd8658c009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reprieve",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "43842b53-4d63-45e7-8247-751a7f09fb35",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ad Nauseam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bbd32228-41dc-48d9-8394-d84b367097ae",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bitter Triumph",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a4db7d4c-eb99-41e3-bdf1-4ecd4b877f07",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Culling the Weak",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9382c445-bc7c-4c98-b9d8-477d77a4e523",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Dismember",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "712c609e-5989-4e38-898f-83e0a913c977",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Feed the Swarm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c26e52ad-ae75-446d-9f45-a42af5e23a60",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Living End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e779e783-e8e1-4e17-9e2f-35f0cb9b8e31",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Locust Spray",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9070d77d-4a41-4f22-9579-06a7db5a520e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sheoldred's Edict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "988f9e6f-4ba2-4f6f-8733-23ba838179ac",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Smallpox",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b62a8648-7f34-454d-b9e2-cc0d0d976c82",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Stargaze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "soa",
+    "setName" : "Secrets of Strixhaven Mystical Archive",
+    "variation" : false
+  }
+]

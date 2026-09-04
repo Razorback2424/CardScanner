@@ -1,0 +1,3091 @@
+[
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf3320ec-c4e8-405a-982d-e009c58c9e21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maha, Its Feathers Night",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29089810-d7fb-4abe-b729-bfabed6aed2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wick, the Whorled Mind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8659789c-6a2c-439f-a348-b9b1b06c55b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonhawk, Fate's Tempest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumra, Bellow of the Woods",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc310a26-b6a0-4e42-98ab-bdfd7b06cb63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beza, the Bounding Spring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "436d6a84-4cea-4ca7-94aa-9d08280652af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alania, Divergent Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00e93be2-e06b-4774-8ba5-ccf82a6da1d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baylen, the Haymaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c16eaec-924c-42f6-9fea-07edd7ed93b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Camellia, the Seedmiser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7028130c-c91d-4bf7-b0b0-450f71107d7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clement, the Worrywort",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0dee197d-c313-4364-b52c-f83d5f579bc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finneas, Ace Archer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "131ea976-289e-4f32-896d-27bbfd423ba9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gev, Scaled Scorch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffc70b2d-5a3a-49ea-97db-175a62248302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glarb, Calamity's Augur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40339715-22d0-4f99-822b-a00d9824f27a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helga, Skittish Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f09d7f4a-c947-4389-befa-1d547d0d1237",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hugs, Grisly Guardian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc6c9196-6d28-4cc2-9748-60e9632a502b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Infamous Cruelclaw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ebf68793-22a2-4a59-9d37-6791584edca1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kastral, the Windcrested",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be6627fd-729d-44f2-b6bf-5299f49d1e3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mabel, Heir to Cragflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b40e4658-fd68-46d0-9a89-25570a023d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muerra, Trash Tactician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6506277d-f031-4db5-9d16-bf2389094785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vren, the Relentless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b9ac7673-eae8-4c4b-889e-5025213a6151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ygra, Eater of All",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b7f99fd5-5298-4b27-923d-9d31203c931a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zoraline, Cosmos Caller",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56f88a48-cced-4a9d-8c19-e4f105f0d8a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Tree City",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ba10fbc2-193a-4516-a8dd-8b5f8b33a9de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season of the Burrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "61da9522-3844-4753-8122-d11ae2780a4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season of Weaving",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2a428d58-b376-489e-8224-17a41ef6e81b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season of Loss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e9d88763-35bd-472a-810e-02c795d0c873",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season of the Bold",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e99fa55-2594-434b-9396-95b8f661bd0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Season of Gathering",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0fc98b72-d268-4ce5-93b4-57c812a24eff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beza, the Bounding Spring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "df9da428-3af7-4027-b3f0-9138d953c37b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eluge, the Shoreless Sea",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bfd53428-56c3-4c99-828d-665e3c2d15a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maha, Its Feathers Night",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7bad7555-3e5d-4096-a671-184630d38113",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rottenmouth Viper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "de4ef78d-ba5e-415e-9684-816464c5611a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonhawk, Fate's Tempest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f1c414b4-3374-44e4-98b4-03193e701eb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunspine Lynx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3d99587a-7fb1-41fc-b7ea-1178f9625081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumra, Bellow of the Woods",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "97e0d6ca-eed9-4b57-a34a-0105c41b20b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ygra, Eater of All",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0cce7aec-f9b0-461b-8245-5286b741409d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawn's Truce",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4411204e-8387-4f1c-bfb3-1e3092d07937",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackdaw Savior",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f25e2bd6-c95b-422f-b6c2-d687c0745ecb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Salvation Swan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "29fe9b09-383a-4cf6-9e2c-bd00499e5eb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfall Invocation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d9f25130-678d-4338-8eb4-b20d2da5bc74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valley Questcaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "48062f31-167a-4f16-9453-7c41f026ca96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warren Warleader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7ea69966-8961-4447-bd39-70d3d8d48ede",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whiskervale Forerunner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f493ef3c-673b-4e70-b957-0ee7b6d38216",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azure Beastbinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9e407118-95b7-4e62-a4f0-dbd8b6b80830",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dour Port-Mage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d0bbfdc9-8d68-4b4e-ac68-ac165cdc168d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitsa, Otterball Elite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5ed827d1-a374-48b4-8b65-abec9044de85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mockingbird",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "5fb6618b-276b-4ce1-873f-eace471fafde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Portent of Calamity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "54ec3510-c168-4acc-aee8-65529d0f5ad7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundertrap Trainer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1c744764-3b54-49a0-aa68-1fb22d8162a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valley Floodcaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "640725a5-8251-4f7a-b1e3-481519c85b5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coiling Rebirth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fa16ec21-3eb1-4f4c-a74a-84408fd1dce6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruelclaw's Heist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8e9abfd1-59ba-46f4-ad1d-cf0e125dd4b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darkstar Augur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "6ef4532d-63ea-4a70-86b3-58327b7e9706",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Osteomancer Adept",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4278a127-5f3c-4948-88bd-2af4f6834a03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valley Rotcaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f43a9d17-2b19-4e17-9b7e-667bf2285950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wick, the Whorled Mind",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8fde5980-ad2c-4ddf-8244-f9688a6225f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emberheart Challenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "02134775-9c86-4f1a-af2e-5c1f531038fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Festival of Embers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fda3d3ef-c858-4707-9c3f-be1b775eb8c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hired Claw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "907a990c-6ee9-44e1-85f9-83b261507308",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Manifold Mouse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9cb5235d-46a2-4b04-97fc-b8eb0f1ba14a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormsplitter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f266f6da-93b0-4036-b7df-be5eac4e1135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valley Flamecaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "60d1e35e-f5c8-422d-83d2-839ab7766f25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "For the Common Good",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "004a67ce-60ef-4cc2-9f4d-f30e3029d80a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keen-Eyed Curator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f2ed58e4-b612-483e-9c0e-f1fbfaa5950c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mistbreath Elder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9afd22ab-64e7-4b85-804d-faccd4452487",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrapshooter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2dc164c8-62ca-4d59-ae1c-ef273fde9d10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tender Wildguide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "31330554-1824-436b-aee5-931a7b652ddf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valley Mightcaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f9dc7b8e-d381-49a0-a7f8-c8cd9acadc54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alania, Divergent Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "49ea9ca9-3dff-4d5d-92ec-3475234b4713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Camellia, the Seedmiser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d1a68d51-cd4e-4ee3-abc7-01435085aa26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clement, the Worrywort",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e77374ac-3456-48a3-a412-4474547d437c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finneas, Ace Archer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b6fab12e-0f81-4728-9a35-4dc896ba3744",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glarb, Calamity's Augur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "768ef947-85fc-4fb2-bda9-e0e446cd8886",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helga, Skittish Seer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "94b2be42-467d-4210-b9bf-4d09ee504a22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hugs, Grisly Guardian",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d7fc26a7-f47e-44d7-a42b-b5415fc86f8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Infamous Cruelclaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "75a84790-665b-4a23-a00f-84d1009e3d28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kastral, the Windcrested",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1696453f-a678-47ff-b583-53c2130b7d49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mabel, Heir to Cragflame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d96b0f9e-fa3b-4a40-acea-b6ecc584a79f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Tree City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "06008bcb-ce6b-482c-9253-f5b9b5e0718e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Tree City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8e1d8486-370a-49b6-9145-060814f38677",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Tree City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1cb16046-10bf-433a-acaf-7127c0954a1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Tree City",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a74dbdd-5baa-4896-80d4-1a9743410d4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral, Crackling Wit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b43b3c33-aa44-4001-87ff-695bf04f51be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumra, Bellow of the Woods",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8487cfce-2b73-4082-a1f2-dea263811516",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumra, Bellow of the Woods",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "34ace81d-823f-43d1-902e-345418cd8fd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alania, Divergent Storm",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0b511524-e628-41d4-b0dc-d98961d4e9e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baylen, the Haymaker",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "44f59ece-1ba5-422b-820d-e80c83f46290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Camellia, the Seedmiser",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "16dfe689-83d4-4dcb-810c-d618a39c5ab9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clement, the Worrywort",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f4d99aec-c114-4287-ab61-a34e5adab5ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Finneas, Ace Archer",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4ad70a0b-3845-4b92-9c15-985a3fe0e1f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gev, Scaled Scorch",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2f6d51dc-ca49-417c-8b5a-fcb5cd669c6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kastral, the Windcrested",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "cfbdaae3-acba-44e1-bdd6-9c7066143d33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mabel, Heir to Cragflame",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "26b4e695-5ec4-4821-8637-8df501ba0653",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muerra, Trash Tactician",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "af6c496c-c70e-46f0-b161-661620767de5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral, Crackling Wit",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "88ca7c86-92d8-4a24-81b1-9eb11392160d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vren, the Relentless",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "34690573-d8d6-471e-9878-cf5d931d9f55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zoraline, Cosmos Caller",
+    "promoTypes" : [
+      "boosterfun",
+      "raisedfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bbd5c86a-0991-4322-a0a2-48424c4be2af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Channeler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "12f3b75d-87d6-42dc-8096-41f5480b12fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitnap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e054e77f-94b9-4c43-94a4-75a7a5d1bd30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wishing Well",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "859e34b4-6762-465f-a5c7-24e42e112fbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iridescent Vinelasher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3aebd0f9-fa08-407f-b3d3-fb4b13b1ea97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Byway Barterer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "73a10a11-a21f-4e93-8771-8d971c158911",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hearthborn Battler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "56301392-3496-48d0-8d91-6b82e1164c98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fecund Greenshell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7fc5b558-4470-4bd7-9458-fbd275ded168",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pawpatch Recruit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "22ffe1ab-df93-4017-bb29-bb214c86d73a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thornvault Forager",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1f2efb27-c181-43f7-93fe-a8c4d286f8ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamdew Entrancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4396e4c7-660d-4055-bc94-4ccea95223b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lunar Convocation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0bda8a2e-6bf1-4d8c-b71b-bbc8d8130fff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dd04367b-59d8-4ee6-8b5a-abfb1373c226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fountainport",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "390c96b3-68da-4a42-89ab-d9ccc79ce0dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bria, Riptide Rogue",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6441abd3-320b-424a-9753-61e3581fe1a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Byrke, Long Ear of the Law",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "684614e3-5454-4e68-87da-a2027b6af6d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hop to It",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "00cb0b3c-a403-4212-93d3-3340c3f1e9db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shoreline Looter",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7a4bb137-2639-4158-a24b-93c8e4f4cc21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fell",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3c394081-0292-49f8-8a6f-213956754020",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wear Down",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e1e5a7a1-4ac5-4d9f-8d27-0877efca47f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormcatch Mentor",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e52caa08-34ae-4c74-83ad-008d17005576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundertrap Trainer",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "230b9aef-bd9c-4332-ace4-b5b065bac6d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Redeemer",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d171802-2604-45a5-a0f2-ab5afa1db5d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charmed Sleep",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7e7d174-eb7c-41ad-a241-cfbfdc71e3a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Spring",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52a258be-39e3-4689-b2d0-7c353ce7d574",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieving Otter",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6440439-7178-4a97-9e18-7fdef4b02678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flame Lash",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2cad902-ffd2-4bab-b114-b4b6df2ac6b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossification",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e70722d6-b4d5-45c2-9488-9a5eb0bdb9bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53a73200-b798-4bfd-a431-8b94e17b70be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rabid Bite",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f21b5fc1-7611-44ac-ad8d-1f0c6d4fc9a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Vengeance",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ecfa2cc9-e427-4104-bad7-b0294e392b1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blossoming Sands",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89e43510-c444-4b2e-b2a0-528dcc09c899",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftwater Cliffs",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f2bf6ba-cd1a-4382-9572-6dfbcf6ed0c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eluge, the Shoreless Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8ff751a-ec64-41d5-b22c-2a483ad9a9b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitsa, Otterball Elite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-138",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b24c3e9c-2aff-45fd-9c87-3ebd33bbe807",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Heartfire Hero",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-11",
+    "setCode" : "blb",
+    "setName" : "Bloomburrow",
+    "variation" : false
+  }
+]

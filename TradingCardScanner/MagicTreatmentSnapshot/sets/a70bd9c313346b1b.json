@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c0cdb0d-f720-4ed2-af08-ced9b54f6702",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Karox Bladewing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "tdom",
+    "setName" : "Dominaria Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,2359 @@
+[
+  {
+    "collectorNumber" : "104s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "021d0abf-7c1a-4081-9686-fba578120249",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jecht, Reluctant Guardian // Braska's Final Aeon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "529ae7c1-320d-4625-ad64-c87678d51354",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kain, Traitorous Dragoon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d75917b1-0ffb-4bff-b75f-973e26e172df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ninja's Blades",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b9be30cf-a49b-4358-836f-40441ee92519",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud, Midgar Mercenary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f31721a-8fd4-46ca-bef9-d24ad4663a58",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "13e0ad67-35a6-48f3-83cb-5ffd07daf717",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Primal Odin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4287bbc3-df6b-453f-8d60-a929be013f30",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Vincent Valentine // Galian Beast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6c6f6035-32e0-4ea2-b281-79c8e00708a0",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Zenos yae Galvus // Shinryu, Transcendent Rival",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "627a0899-e206-4dc0-bc07-6d04d63792df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zodiark, Umbral God",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "421d443c-bd4c-4768-b801-5241f6b2658b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "daceda7c-db1d-4847-9c80-13fdfe4d2135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Fire Crystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65290ee9-0fbe-49d5-af48-cfbcde82277f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firion, Wild Rose Warrior",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86f7e3b4-959c-4820-9a7b-e5d178d42931",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilgamesh, Master-at-Arms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87c9a2a6-b755-45a1-a785-792c7f179f18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nibelheim Aflame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14154d2c-911a-433c-8f09-bddd41a2f65e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raubahn, Bull of Ala Mhigo",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e0122f1-2d6b-423e-ac62-ffa4822632ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seifer Almasy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "59d7c696-0ffa-4327-9045-eaefefcf4fe0",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Brynhildr",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5bb06121-b390-4e3d-8822-4389570b0e15",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: G.F. Cerberus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "64634ded-8ff9-4f99-afa7-137fc307c0b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triple Triad",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c04ec8b-967e-4ad3-b11b-eebb09821d8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaan, Street Thief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "a245ebd2-606c-40dc-981b-d619b00d7a07",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "284b33d2-aefd-41dd-867f-9106a3f89698",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zell Dincht",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7976e5ae-f2c3-467e-a4d5-b6c609d8aa26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Adamantoise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d4ac428e-8819-475b-b7cf-41083e0448b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bartz and Boko",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "010549ae-1289-47ee-a69b-135094f32607",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Earth Crystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "87d03dd2-afb8-48c8-a0f6-90f282c05d92",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Esper Origins // Summon: Esper Maduin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "785640aa-047c-449f-8b25-e3ccc2ad06e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jumbo Cactuar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "610e4aad-f7d7-42af-81e3-408989f3f576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A Realm Reborn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d07ed4e3-8c45-4535-bb0b-3d3a6df673f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sazh Katzroy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5c0e08d1-ecec-4577-b16e-a8d8478472a0",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Bahamut",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1eb2a447-e18e-4318-898d-bc12fdd16172",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Titan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9b9c711-9525-4206-8582-d9f12cdaa876",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Summoner's Grimoire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "360102fd-59a0-43a2-bbed-cc5e3b592696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tifa Lockhart",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "157ca197-0e72-4f9c-9c65-d696232bc6f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "From Father to Son",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9eedb34d-9815-48d3-be1b-d08c0adb1448",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traveling Chocobo",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6663e103-3356-46d3-80a0-32e28d6dfc95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Absolute Virtue",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd4da0d3-29c0-4697-877a-a07e3dae3af6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balthier and Fran",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c3ffcf44-9cab-4ee0-a5db-4b6366e99863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Choco, Seeker of Paradise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5580fc6e-0192-4bd9-aace-ac2040fa729a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "effc26cf-3e80-4e67-a703-5c3579abc9f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golbez, Crystal Collector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "94a7d51d-76ab-4f19-885c-af337c057f81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hope Estheim",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f92b9318-68fb-40c5-88ab-a4139d1c5e42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jenova, Ancient Calamity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "f8613b13-fedd-45a9-bb47-0440a4a104e7",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Joshua, Phoenix's Dominant // Phoenix, Warden of Fire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42ad2762-092b-4064-8fc0-be55da1916f8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kefka, Court Mage // Kefka, Ruler of Ruin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bac7dbc9-3e3a-4933-98d1-4a0505c4b1da",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e575906-0f1e-4f24-aa0b-832fe1bb9613",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning, Army of One",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48ea4aa3-6514-4518-87d7-4a26ee4d3d3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noctis, Prince of Lucis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9b212fb-4666-40d5-bd81-ca4446561725",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Machinist's Arsenal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4cdc9ed5-afce-4d82-9b72-9c42f4031a7f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Serah Farron // Crystallized Serah",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7fbcb624-3521-44ec-8bf8-0c628c2a14c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sin, Spira's Punishment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "acbb8887-03f7-47b0-9ab0-b887d1c253bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squall, SeeD Mercenary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8952beec-fd8e-481c-aea7-e3105fb5bcc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tellah, Great Sage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "a33f6d61-ce5e-42b8-b407-10383cdae5b5",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Terra, Magical Adept // Esper Terra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b675f4f-e329-4110-828a-f4d3e1358e15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivi Ornitier",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe0c1b06-30f2-42bd-bdcb-169fb6bc0b3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Minstrel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ceec16c-f536-447c-b62a-24873475fcf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuna, Hope of Spira",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d77bcdaf-eef4-485a-bf45-40d56815b62e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aettir and Priwen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfa67320-b4cb-440b-b017-d7493ef8ad62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Buster Sword",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73c66867-8c4a-45dc-bbfd-53777bdc6c0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excalibur II",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b894358d-b024-4cf5-a09b-bac8cde72258",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genji Glove",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c84eb88-2e8e-490f-8628-61e8efb8524c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Masamune",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7797680e-c2f0-454a-813d-ea285b013d5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Regalia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "995b373a-721f-4a52-83e6-bd94144bcb35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minwu, White Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd08f30d-6bb8-45b9-a79c-81ff9578803e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e99c91c-7bcb-4405-8cd4-87290710f8c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clive's Hideaway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8badb69b-27df-4572-ba76-dde6c8ba0279",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moogles' Valor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5558304a-3d04-4549-b812-517667fc608a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Ishgard, the Holy See // Faith & Grief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50aa744e-61e8-44c9-817c-0dc6086d736f",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Jidoor, Aristocratic Capital // Overture",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b85e76c-6da8-46bc-b9ac-c89b72b5db00",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Lindblum, Industrial Regency // Mage Siege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7adec62-2093-4782-8d69-c5d60b561534",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Midgar, City of Mako // Reactor Raid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cf8d52a-d503-4285-a909-380c3c619f91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starting Town",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42788e7f-6db5-4a62-882d-0f8f74a94e32",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Zanarkand, Ancient Metropolis // Lasting Fayth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "67bd0d2c-2fcf-46e2-a303-52e37e086f5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultima, Origin of Oblivion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb059c1d-4fb5-4275-ae70-aec6b80b7535",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stiltzkin, Moogle Merchant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d9120fd0-f958-4ce3-82cd-0500d4549654",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Knights of Round",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1586fec8-08c5-4bd5-9167-cfae9ac8e2cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultima",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "395e13e2-1884-4aee-971d-00692b429a88",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4f461671-097a-4cd6-8114-4ec769e66904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wind Crystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89e3ef53-ccb6-4b8e-a512-c9debf87eecf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astrologian's Planisphere",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7bac30c-1401-4a3b-90ae-4ae1709a214a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aerith Gainsborough",
+    "promoTypes" : [
+      "datestamped",
+      "ffvii",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f85cda8-f333-4b73-8005-34df32d3ed73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edgar, King of Figaro",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "329abaf9-b428-4e63-9433-558b384ba698",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gogo, Master of Mimicry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "246c2602-a8fd-4e01-bf32-5a513ae3c056",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jill, Shiva's Dominant // Shiva, Warden of Ice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a948f96-fdd8-4f6c-a737-3d74b7daff71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Louisoix's Sacrifice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a27f9fd-d3d9-42c4-be59-9a5d9cfabf6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lunar Whale",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5cc0b50-5c09-4c74-b9dc-92bb95781e7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Matoya, Archon Elder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc6f3187-0563-4843-a914-525446324411",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memories Returning",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "22281ba1-d509-4039-83c7-d912a1ce5ac4",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Summon: Leviathan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "093948e5-3036-42b4-8682-37b298248916",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Water Crystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01eee1b7-286c-4df7-aeaf-ada01882e662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Y'shtola Rhul",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47af882d-2036-4b66-bff0-31b7b8b89749",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ardyn, the Usurper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "579a2f93-6447-4b02-bbf7-b09ef91bd709",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "776062ed-94df-4b2e-a84b-91756b4223bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Confidant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c90cb6f4-d5c7-41c2-91ae-9c864f240804",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Darkness Crystal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pfin",
+    "setName" : "Final Fantasy Promos",
+    "variation" : false
+  }
+]

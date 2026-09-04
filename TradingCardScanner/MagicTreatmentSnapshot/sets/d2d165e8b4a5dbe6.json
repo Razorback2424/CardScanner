@@ -1,0 +1,726 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "f0a3dc50-a5c4-4073-8fec-2f68544bc2a1",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "876d9732-9201-4327-8748-7c87ec55453f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Flamewar, Brash Veteran // Flamewar, Streetwise Operative",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "8e4a8db9-ef57-4ea0-952c-1e5d343fb5d9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "ac6ded62-7bf2-476f-ad8e-020da6327c6b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Megatron, Tyrant // Megatron, Destructive Force",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "f04ed2cc-aae1-400b-9cc5-5d4e3e3dd714",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Optimus Prime, Hero // Optimus Prime, Autobot Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "8733cd6f-37e1-4e3a-bb25-7a238f04657e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Soundwave, Sonic Spy // Soundwave, Superior Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "687695ad-d212-4da4-a326-ce9876afdda2",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "770dea30-cef4-476a-beec-7a7fa967d07b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "619e0c3a-14aa-43dc-bc55-dc97e3d7ccb4",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ratchet, Field Medic // Ratchet, Rescue Racer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "f4362cd5-5b6a-457f-8d73-71dff9f76335",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "3ea597a5-0057-4328-9f6e-a446cde91ece",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "c23a2d6b-43c2-4756-94c7-207cc344f0a7",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ratchet, Field Medic // Ratchet, Rescue Racer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "90fa398b-f2f7-474f-a840-244238a67c31",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Starscream, Power Hungry // Starscream, Seeker Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "a35108d8-f6c5-4474-9049-64fd7e3b1310",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Slicer, Hired Muscle // Slicer, High-Speed Antagonist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "5aacffa9-ee64-4451-9519-10c5f3e5aa86",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Blaster, Combat DJ // Blaster, Morale Booster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "e703b74f-9105-42b3-b38c-8f38da840f0c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "292e1d00-435e-404b-b10e-0fae965651e9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Flamewar, Brash Veteran // Flamewar, Streetwise Operative",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "67a29ad8-2cca-4dab-ac71-d3b0b2489d79",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "19385c88-9af3-4931-8dfc-6e51a5c5f816",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Megatron, Tyrant // Megatron, Destructive Force",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "8fc5a3d7-4d5f-4e02-9d00-b9cf5e5cd269",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Optimus Prime, Hero // Optimus Prime, Autobot Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "3c24f9cb-2451-4651-826b-a1cd645af502",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Soundwave, Sonic Spy // Soundwave, Superior Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "inverted",
+      "legendary",
+      "shatteredglass"
+    ],
+    "id" : "73ac68c0-0830-4343-863b-adde0f1b8b61",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "6bf61883-2343-4a9f-9a34-99326a8827ad",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "d20738d2-a159-4e3e-be7a-561a121bd447",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "8234ea77-9ed6-4f3e-acc2-f52fb7003ed2",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Starscream, Power Hungry // Starscream, Seeker Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "9d9a9350-4734-4cc1-986d-467e6715199f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Slicer, Hired Muscle // Slicer, High-Speed Antagonist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "21462db4-7739-4853-845f-0c2aa38fd2a6",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Arcee, Sharpshooter // Arcee, Acrobatic Coupe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "b2f8d457-ca4d-4b7d-83ed-17c2ba11ec0e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Blaster, Combat DJ // Blaster, Morale Booster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "convertdfc",
+      "legendary"
+    ],
+    "id" : "2d3bb50a-2892-4e28-aa70-ab8d0fcdcc73",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bot",
+    "setName" : "Transformers",
+    "variation" : false
+  }
+]

@@ -1,0 +1,310 @@
+[
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae0b109c-eaf3-49ab-a61c-853e8ca239fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Cadian, Knight Owl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1572109-df70-4335-aac2-1670fe99be54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alexander Clamilton",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8fc7a61-226c-426a-9b99-21d87aca2f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Johnny, Combo Player",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "616a3755-f08c-4b8f-954b-7e3f3a8fa71f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Richard Garfield, Ph.D.",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aadf253a-eca6-405d-8216-a362854b4ae1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Topsy Turvy",
+    "promoTypes" : [
+      "upsidedown"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9c37a83-3d5e-4019-b180-88e2bc106dd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acornelia, Fashionable Filcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "a784dde5-cfce-464f-a134-8894ba3faf5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast from the Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "440c3e8b-d9c6-46cd-9f39-86db077fb89d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frankie Peanuts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d57a6d9d-f0e9-4c5a-bacf-7a6c30d65b08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stet, Draconic Proofreader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e2f42b1a-5404-496a-b6e4-98794a4d8bee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pippa, Duchess of Dice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1e21568-5474-4406-ad54-9e9330e5ff5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgeon General Commander",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3fa57822-8bca-4cdd-916f-261dae494228",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timmy, Power Gamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f267de8-2849-4abd-834e-11bbd82dccf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krark's Other Thumb",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aaee15d7-db3d-4aa2-ab04-b883ff41d12a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Look at Me, I'm R&D",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-02-29",
+    "setCode" : "und",
+    "setName" : "Unsanctioned",
+    "variation" : false
+  }
+]

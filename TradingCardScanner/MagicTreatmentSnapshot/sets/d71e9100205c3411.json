@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be7552ac-4546-492d-8d11-d6678a04b9c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magma Jet",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1170ee2d-ab25-4c7f-a910-cc01471a2cab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Browbeat",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49577949-b721-40e1-9190-643c5e01b2b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oblivion Ring",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a976356e-eef3-4f61-8896-5de3bec26c54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakura-Tribe Elder",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd437677-8b07-4fa2-8691-fc65684f0efc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myr Enforcer",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c14ca74-fc08-46ea-926f-82d987f6798e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitchen Finks",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31665dc9-d0af-4c63-b170-039f1afbdee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merrow Reejerey",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ac85851-7330-4829-9e75-240f3bae6ca9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wren's Run Vanquisher",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48cbc1ad-23ad-4666-b178-060ee602fc6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mulldrifter",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50b28eca-631b-4421-a72b-d66f89729f78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murderous Redcap",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "342408be-4280-4c91-b431-ffa02d317aff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Greaves",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a4b5585-78c2-45e7-a6d4-d0203117a163",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watchwolf",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "f09",
+    "setName" : "Friday Night Magic 2009",
+    "variation" : false
+  }
+]

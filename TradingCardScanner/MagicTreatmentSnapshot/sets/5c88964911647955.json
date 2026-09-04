@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "103†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d56cca55-1ea7-4a11-8c5d-3d84c9af862f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fountain of Youth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-08-01",
+    "setCode" : "drk",
+    "setName" : "The Dark",
+    "variation" : true,
+    "variationOf" : "2b60eb23-cb9a-4203-86fb-60e47dbd870b"
+  },
+  {
+    "collectorNumber" : "107†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf27955f-015b-4d86-99b9-4c4f6fe2fa73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runesword",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-08-01",
+    "setCode" : "drk",
+    "setName" : "The Dark",
+    "variation" : true,
+    "variationOf" : "741dbcf2-3372-45a8-b66f-d2ae12b4aac6"
+  },
+  {
+    "collectorNumber" : "77†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7705328-4b5d-4383-9abe-75fca9c32c09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Touch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-08-01",
+    "setCode" : "drk",
+    "setName" : "The Dark",
+    "variation" : true,
+    "variationOf" : "0e1ae3d6-6d96-4db6-bbc4-cee91bae6cf7"
+  }
+]

@@ -1,0 +1,469 @@
+[
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "9f25e1cf-eeb4-458d-8fb2-b3a2f86bdd54",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "b0d6caf0-4fa8-4ec5-b7f4-1307474d1b13",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "ff0063da-ab6b-499d-8e87-8b34d46f0372",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nissa, Vastwood Seer // Nissa, Sage Animist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "58c39df6-b237-40d1-bdcb-2fe5d05392a9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kytheon, Hero of Akros // Gideon, Battle-Forged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29edd82c-8d47-4417-85fb-c38a02d7e0fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegis Angel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "562f1a7b-149d-42ba-aaea-345ccae7227c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Verdict",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8af7956d-f811-49d3-bef7-07f294dcea3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eagle of the Watch",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d740a59f-0a46-4ad2-90a7-ac8c4d753a38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "236fbb72-3aea-4737-bf90-bd4d4e80b527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Into the Void",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1035c7d3-2a5b-4404-93cf-e46abd716a10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mahamoti Djinn",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04e57fc1-1633-447f-ae32-ad7da25a4177",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weave Fate",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fd4b0f6-fc67-48aa-9f17-21a79bd0c3d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flesh to Dust",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9df7f95a-0629-4568-9f0a-9074daa0d743",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Rot",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "192bb40a-3ecd-41eb-acee-819f3138875a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8926224e-aeae-4e5d-b33f-5bfd5d3766c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir Vampire",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8980efa5-bd21-4980-91a7-5e66528b1011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Hellhound",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6fd9b74-8e5b-4c57-bb4f-4a7222183c44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa8bee44-410b-46a9-be40-03f000cad9a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plummet",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "500c1ede-8f4a-4009-8057-c65411550487",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prized Unicorn",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "652db782-cf79-4626-9eb2-ad214cb39c86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terra Stomper",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "originpwdfc"
+    ],
+    "id" : "02d6d693-f1f3-4317-bcc0-c21fa8490d38",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jace, Vryn's Prodigy // Jace, Telepath Unbound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-07-17",
+    "setCode" : "ori",
+    "setName" : "Magic Origins",
+    "variation" : false
+  }
+]

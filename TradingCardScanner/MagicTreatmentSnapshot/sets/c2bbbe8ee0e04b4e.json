@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05e8f775-02bd-46dc-a618-07a9a127fa69",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-30",
+    "setCode" : "tmd1",
+    "setName" : "Modern Event Deck 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e16c19f-ef44-4ebc-aa1d-f95646ae312b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-30",
+    "setCode" : "tmd1",
+    "setName" : "Modern Event Deck 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfe197cf-6f36-424e-a544-cbe7a56f8a32",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Myr",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-30",
+    "setCode" : "tmd1",
+    "setName" : "Modern Event Deck 2014 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8360fc12-57c0-4701-8e19-0878ed5abb4f",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Elspeth, Knight-Errant Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-30",
+    "setCode" : "tmd1",
+    "setName" : "Modern Event Deck 2014 Tokens",
+    "variation" : false
+  }
+]

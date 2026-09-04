@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20f22bef-e00f-461b-a75b-c5ad49865044",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dinosaur",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "trex",
+    "setName" : "Jurassic World Collection Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e28240d-3306-42d7-aa7a-0af0a07f345d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "trex",
+    "setName" : "Jurassic World Collection Tokens",
+    "variation" : false
+  }
+]

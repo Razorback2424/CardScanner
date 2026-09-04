@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "885a4ac8-67ee-437c-9133-687be93ea117",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwain, Itinerant Meddler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "pl23",
+    "setName" : "Year of the Rabbit 2023",
+    "variation" : false
+  }
+]

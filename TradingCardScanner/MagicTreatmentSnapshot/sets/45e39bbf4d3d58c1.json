@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d705f8aa-d653-44ee-8516-031f0359c9eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sis",
+    "setName" : "Shadows of the Past",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f01a8af1-b893-4503-93c1-b4d18c8ae0b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Griselbrand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sis",
+    "setName" : "Shadows of the Past",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42eac2d9-3f41-47f9-a3ae-7cfdcd4c945c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geist of Saint Traft",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sis",
+    "setName" : "Shadows of the Past",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35a641eb-215e-4c94-a22d-a13a8a2cd55b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Host of Herons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-03-21",
+    "setCode" : "sis",
+    "setName" : "Shadows of the Past",
+    "variation" : false
+  }
+]

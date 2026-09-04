@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb2360f1-e868-410a-9f91-59e15c99de79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-09-04",
+    "setCode" : "pwos",
+    "setName" : "Wizards of the Coast Online Store",
+    "variation" : false
+  }
+]

@@ -1,0 +1,291 @@
+[
+  {
+    "collectorNumber" : "101†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac4ba0db-4276-45aa-91ed-52f6ffbc6ad3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrangle",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : true,
+    "variationOf" : "5ea93a49-5a7c-4d15-8548-a57c9460e0f0"
+  },
+  {
+    "collectorNumber" : "14†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ccd6864-1404-43c2-aa59-ccc8b3529a62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnfeather Eagle",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : true,
+    "variationOf" : "f7113ddc-cb3c-46da-a6c7-2567bd0affa9"
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "791fdd9a-0ab6-4db9-84f9-859d2d862518",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Valiant Protector",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ef9708e-bfe4-4d24-8304-1618daa1c3ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Roar",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bebef1c-2f03-4e0a-b3ba-861546ebf8a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani's Comrade",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7026c374-0776-403b-86fd-5092677fd5c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani's Aid",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ea97c40-310e-4774-ae56-d4c0500a6189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tranquil Expanse",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7c6614c-cc2b-4e5b-9c0d-ce8e4b2d8ea7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Master of Metal",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d71efa6-5de8-476f-86ce-0790956e574f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret's Betrayal",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d19751aa-823e-4a0f-a004-dee333b34327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pendulum of Patterns",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7eacfeec-a341-45bc-bf95-e3df0094505a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret's Simulacrum",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09dd7aab-c0ac-4566-bf99-c49931eeea2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Submerged Boneyard",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0b97fa0-4c5b-4211-9c8d-99197dc20636",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alley Strangler",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "aer",
+    "setName" : "Aether Revolt",
+    "variation" : true,
+    "variationOf" : "a131d558-5f6b-448b-a378-1882e2d02bd2"
+  }
+]

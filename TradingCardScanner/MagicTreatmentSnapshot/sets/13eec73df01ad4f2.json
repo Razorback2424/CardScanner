@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "7b76dafa-46ed-4b22-908a-8932505d4f4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-10-15",
+    "setCode" : "q06",
+    "setName" : "Pioneer Challenger Decks 2021",
+    "variation" : false
+  }
+]

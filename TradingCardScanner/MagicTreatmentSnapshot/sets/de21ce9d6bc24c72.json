@@ -1,0 +1,6781 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "560384fe-7be0-4b93-a515-2fe687ab2492",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anti-Venom, Horrifying Healer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3ce33422-5dba-4a42-8375-dd8ccc692a7b",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Peter Parker // Amazing Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bb7c3ae2-6b01-4472-8bd1-9a7456401ddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezekiel Sims, Spider-Totem",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63fab399-00db-4398-922e-c3ca3356731a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grow Extra Arms",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65e97c06-55a6-4841-be0f-055c015df90a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guy in the Chair",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cec575f6-43c9-41c6-a996-bb806bf82185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kapow!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86c415d8-1d2d-4339-955b-0f2aebeb3c95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven's Cats",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d0c18ffe-a2b9-40df-a6b4-a9381e6dc467",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Kraven's Last Hunt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6add5d2a-950e-4bee-9850-e68f5f6d6142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lizard, Connors's Curse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58b5b49c-ddd6-4d1b-9b61-6e02d8fc55ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurking Lizards",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f8b4d9b-208a-4673-a617-5e3edd069c33",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Miles Morales // Ultimate Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1ec41d4-0180-42f7-9c54-f3c39b4ffb8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pictures of Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b3f8d221-081f-49f5-a501-07e5eb21a840",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rent Is Due",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a5381e7-ddda-47e7-886d-812250ffb745",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Professional Wrestler",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radioactive Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "609ac18c-ec58-4fa7-bbee-3912a69d0ec6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandman, Shifting Scoundrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90b9504d-d23d-402f-8b16-1964ebd8f6b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scout the City",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41f18f42-b86b-4a12-9f0d-76b761571195",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Ham, Peter Porker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e19929bc-cbe1-4970-952d-8e9d0193ddce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Brooklyn Visionary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b6e0bea-f126-4adb-8808-901950a77c7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Rex, Daring Dino",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1183262e-1f02-46b3-8cfa-fe30e0016c11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiders-Man, Heroic Horde",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68f985c7-7765-46c3-ad31-edae3abb9fbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strength of Will",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3fe8a5b-4166-46cc-b910-71cd1a19ae1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supportive Parents",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb0fd7bd-10d0-4d29-af88-387d1e07f3b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Police Captain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3c587b0-66b9-46bf-90ee-a6163c006c9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrific Team-Up",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "97a2a1ab-57ec-4210-9412-765ae4f02db0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall Crawl",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3b3c609e-f7c9-4fe5-84d9-4f4c76020a4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web of Life and Destiny",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b02bfa0e-f761-45e1-b35c-f44ff7c5d0e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Araña, Heart of the Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9658fdab-9702-4e13-bc53-01a25a2ed41a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biorganic Carapace",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "930befba-6068-493e-baa2-e9371cd99e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carnage, Crimson Chaos",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5fbce72f-e9a1-4d9f-b9b3-24dbafeef841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cheering Crowd",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f82f4013-7308-4917-9042-19a5909f2134",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "76e1d361-18a1-4dec-a203-f83bf0014e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doctor Octopus, Master Planner",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43790471-6ec8-4c1d-b6d3-74c6cdf8ce43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gallant Citizen",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf0d4116-acee-4d9a-985c-396d10e03838",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver Sable, Mercenary Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "218ef931-46f5-4a4d-9f26-898a1ff8f70f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Green Goblin, Revenant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0ab07d6-b7c3-4129-9aef-cfdcfabec4b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackal, Genius Geneticist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af7c63e1-eccc-40a2-ba14-ce0d2a6123fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven, Proud Predator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afdab464-3674-449b-be01-1cbd21fced23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven the Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "178345f7-8ccd-4e47-80f4-5bd31bab6655",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Jane Watson",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c9cb13d-55ff-4e26-aa49-755f8bcebc11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mister Negative",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0e3b660-d391-454b-ba57-bff4ddcf27b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mob Lookout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b978d0e2-f5a7-4ade-befc-11b406e84477",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morbius the Living Vampire",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bd31953a-7259-44e3-a94f-013bda68006d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prowler, Clawed Thief",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a268ad73-9a1f-47d9-9a85-a4669a769c3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pumpkin Bombardment",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "32bff506-efc0-42ef-8286-ed939bf853d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b8ac400-1e98-49fc-94be-00386d15f2ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhino, Barreling Brute",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f668817c-1cab-44c5-b6a8-95113e480d5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhino's Rampage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee771581-f867-48d7-9ddb-897a1ffcdf0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarlet Spider, Ben Reilly",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cb00060-8cc5-42dc-bcbf-affd9e59f8fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarlet Spider, Kaine",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01f1900e-b10f-47dd-8b3d-6913fa661186",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shriek, Treblemaker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "588dc8d9-6ce0-4bd7-afbd-84bb251fdcb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silk, Web Weaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5cbb580-cd02-4c60-acb7-b7ed1f1fce59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyward Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c47c1d83-e76d-4939-9ed6-05a9e709dea1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "SP//dr, Piloted by Peni",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99223677-b8a5-48f1-8009-e8475eada7db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider Manifestation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1f3196a-fe48-446f-ab07-00c66b7816c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Girl, Legacy Hero",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "836b4246-f1f2-4495-8664-650dda70ed4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Tactics",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a72c7e7-34f5-4cb0-9959-35516e398e49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man 2099",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65b8af30-559b-43a9-8526-62c28c378339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man India",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc9b2a76-3cce-4fd0-a4ef-932747cb11b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Woman, Stunning Savior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09081740-1180-48ea-b50b-e016d9c3828a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spot, Living Portal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b54d4a5-634f-4ae3-b592-0dc527f60d56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sun-Spider, Nimble Webber",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ad4adc3e-ec41-4406-8ff2-59ba8067cf4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Superior Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a21c0ff-b51a-4946-9737-7872a7eef97b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Symbiote Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e82d3f71-8404-40e7-b7fa-35713d1b384e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultimate Green Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e29281be-e722-4149-93a0-6dd3f0f64253",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vulture, Scheming Scavenger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "741f5373-b51a-421a-9a74-326f0575c99b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web-Warriors",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "897418bc-df8c-4c97-b6bf-7c9133a8a577",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Web-Slinger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5f46ed93-de6d-4180-9018-26ee07f75464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wraith, Vicious Vigilante",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f927f72-fc9b-444f-9e0e-78a5e8e7bcaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bagel and Schmear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fed9547c-9d0d-4e62-9639-887ed09231a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock's Tentacles",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7675e91f-dba7-4e64-a7ff-1dd56665a4cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eerie Gravestone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ee3b883-e9f5-426f-a2ea-96fe9ff3aba9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hot Dog Cart",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87a8e112-e72f-413f-88a3-e7ce72c2ec53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Interdimensional Web Watch",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8da5f34e-7f40-406a-88d2-bb1e3ed25200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Spider, Stark Upgrade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26833b64-2e6d-4977-9a6e-6fe73c54d671",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Brain, Mechanical Marvel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c6d9ecc-2dd1-471a-8678-a2461b1084fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanical Mobster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15717af0-30cd-4417-947a-c27cca06d93a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "News Helicopter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6beb4548-1fab-4b9e-bf24-f7b9aadecc87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-UK",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2495f477-b88c-4938-a86a-f72c3c861188",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Passenger Ferry",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47875dff-c046-4cb0-b1e3-f926cbe25b59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peter Parker's Camera",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6c39232-72cc-4363-83d0-b5873f14f231",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocket-Powered Goblin Glider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24df824a-c1d6-4f09-b866-313b31fec5fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Bot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f12664c0-d7cd-4acb-87db-cfa3c85f32a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Mobile",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac37ca6f-a6ee-4dfb-949f-2562f98d09d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Slayer, Hatred Honed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "436527ec-5af4-4b6d-a5a0-d21fc466a625",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Suit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f2c74f5-1cfe-4918-a86b-0d58ac8b7469",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steel Wrecking Ball",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96f869f7-db88-4580-82b7-8749a55e525c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subway Train",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "669bbcb1-0981-40e7-905e-b94e74bc4861",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daily Bugle Building",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "babbf53d-3e10-4110-8725-91f766c8cdad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starling, Aerial Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5fb426a-5618-4dd4-9c51-0cc847be8c1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multiversal Passage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4329f94a-9110-4f07-b4a6-f1ccae97ccc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ominous Asylum",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e609d6e-9e37-45d2-87de-8c76675f7cec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oscorp Industries",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "855f59a5-17a8-4aca-8a4d-f98111eba14c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Mansion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23190d7e-5165-49bd-b307-bf81877d228d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinister Hideout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "467df77a-a99c-4cfd-9af4-502eaa2eb2e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suburban Sanctuary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2752f21c-f535-4772-a8b3-e97e1339e9c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "University Campus",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2581f320-8238-413d-ab04-d5535da55630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urban Retreat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c110fa1-2320-4652-b282-ed064a9ec9a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vibrant Cityscape",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "1164f7ec-7b2f-4cc9-90bb-7eaaa331b4cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6eea2718-93d2-4d83-9b5d-eb943a0f1d11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sudden Strike",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d59cb0b5-fd4f-4dde-a69f-7ca6aa12b89f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "5cb03b18-d74c-4c89-9539-3549d2e8ff5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "b044630d-50e7-431b-8e91-bd53e967f594",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "7b6c2532-be5a-4f1f-893c-36bcda2a699d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94e88862-d53d-49b6-8aa5-95f07507c6e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14fcdc57-12e2-429b-8916-4df752e462d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7150a6e-240f-4628-acdc-153d404370ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc5004db-8db3-4506-bb01-f41be7968824",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4fec728-8e3f-427d-81ab-e06114910223",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e8c1aace-e8fe-45ee-bc40-225409ff8657",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "SP//dr, Piloted by Peni",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c1f871a-bd85-402e-b474-1deb64c18a52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arachne, Psionic Weaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2dac88e-1204-4640-94ce-e1aff434ea06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thwip!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b6c129a7-59d3-499e-8279-f374266150be",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Miles Morales // Ultimate Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "020426f0-ca38-4b0e-aa20-6fe12dc34853",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Ham, Peter Porker",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9126dfa0-b681-44c7-9ae1-7926df8a2767",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Gwen Stacy // Ghost-Spider",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "bd672045-fe36-4a03-abf7-9c81f4100bba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web-Warriors",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d9a8b9a4-c9d9-4e9f-80b0-23de71a7423b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man Noir",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b680a089-5cf0-494a-98e8-23d28315f572",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man 2099",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted"
+    ],
+    "id" : "db88b6b6-7907-4c40-b712-4fa1456d8ad0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multiversal Passage",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8807635d-b5f2-4f08-af5e-5792867eb60b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Punk",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "97fcf5a5-54e1-43f3-95e3-edc6215bf973",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Peter Parker // Amazing Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4ab0cb80-4330-408b-bc03-ef96dd34177e",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Gwen Stacy // Ghost-Spider",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1ab7c1e6-54af-4002-8a81-23a1ccafa3ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web Up",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "47cebb95-3a25-4e9e-ad9c-034e0cd5bfd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Punk",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b73db1c4-64d1-4d09-852a-7d0d299e5529",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Miles Morales // Ultimate Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a0efb06d-7b91-4d64-98b2-244d56a44ecb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radioactive Spider",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "95da1818-7589-44d8-8bba-16ba3ef7b24e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Araña, Heart of the Spider",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6d477a72-d4ad-4230-aee8-2bd78e448bb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarlet Spider, Ben Reilly",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f6ff59e4-c7b7-4fdc-a49e-2d7aab859474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silk, Web Weaver",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3b4e11a7-b48b-4fd8-9395-7a9bc655439a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man 2099",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "89e046ae-f27a-484f-986c-61c86e754c92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Symbiote Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "634e0542-066b-4fb5-a130-fa94a019f712",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Origin of Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "903b133f-fd72-4173-9dfe-3dcc411a0b92",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Clone Saga",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0ca1108-6d99-4dc2-96ab-7728d65b0c06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web-Shooters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f35d0be0-19e3-417e-aabf-fbed1aefd73c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Norman Osborn // Green Goblin",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "62b76152-4017-487e-81ef-008084e5dcd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Behold the Sinister Six!",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "aae8c437-b172-44cd-98e8-d0ab9fae54c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Cat, Cunning Thief",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "aa32b689-9c5c-4c6c-b5be-0e036e9a3223",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Death of Gwen Stacy",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1a172a40-7758-43ca-861b-8375a94d329e",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Eddie Brock // Venom, Lethal Protector",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cdba10bb-7766-45a9-ab2d-7d62309cefea",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Maximum Carnage",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "eae0bf5a-d5b1-4d87-af8e-e7dd512dfb4a",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Kraven's Last Hunt",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "67a7cbe7-cf78-4a3f-86c3-00d5ab93361e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carnage, Crimson Chaos",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7e6e16f4-9448-4161-8e88-fc7734c2668d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doctor Octopus, Master Planner",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2e5e3a7c-ebb9-483f-9482-636c28f539e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Jane Watson",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b0eda7c-e44d-4d9b-9042-4a1eb8c4ed4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Pack Squad",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4d502370-a5d9-41b6-a1d3-fa9626b4fc8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Woman, Stunning Savior",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6891b71d-c7af-4e55-afb4-72ab6887d290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spot, Living Portal",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "98912aae-4e42-4434-b979-9c85f09f8d6d",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Peter Parker // Amazing Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4d174223-b7d5-4c71-8a3d-8c878a5b45b7",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Eddie Brock // Venom, Lethal Protector",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d938ceec-c45b-482c-8841-c97098697cc8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Miles Morales // Ultimate Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6e9491af-6e93-46b8-b98c-96a2cc621454",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ee9d4bf3-a53e-4940-b25b-e927f06df736",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "59bdb4a0-0f2d-4018-ad74-3970a5cd71ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "49852fa3-272c-4ca4-b0dc-0b80f2982fd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cae418f9-e001-4580-b743-74d134b06aa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f717c096-e161-426e-a8d7-c93b117e16b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "With Great Power . . .",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2362fb6d-161d-479b-b1f4-909360ba5d84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "011b71a9-c06d-4fd6-8543-ad21f4759473",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c3df372-09d5-42fb-9357-3f97745e07c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Soul Stone",
+    "promoTypes" : [
+      "boosterfun",
+      "cosmicfoil",
+      "headliner",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f9d80efc-e829-4257-83e8-f37b0b68de57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Soul Stone",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "451f215d-b451-42d7-a277-631b6ad8098f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anti-Venom, Horrifying Healer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f3b2924f-fad0-4bff-ab99-091b1c234297",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arachne, Psionic Weaver",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "2e7c80af-4841-4e5f-a3c9-8448b63b3788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Friendly Neighborhood",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "c60530c0-4ce1-434f-9140-c50370d418b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rent Is Due",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "fb266506-5ea8-45c2-8740-4a71fb7e5133",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "With Great Power . . .",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3d9847a8-ae5d-4f24-8605-609f0c1a11bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hide on the Ceiling",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a2f6d84-3d83-4f48-9906-11f681171930",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amazing Acrobatics",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0a1265db-ff16-4751-9301-78d29b271cda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydro-Man, Fluid Felon",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "72341b76-c3bb-4c39-80d9-f4747d139375",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impostor Syndrome",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "13c85292-7dc8-4824-8e7f-189ab9420af8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lady Octopus, Inspired Inventor",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "be0cd0c9-9d43-47d1-9836-24e8d5917f65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterio, Master of Illusion",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "426b3c04-4d4b-4f75-984f-89eecf8f09f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Sense",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5569baf4-0cc9-46da-80cb-2cac5452f460",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent Venom",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "431f3f3b-42a7-4161-946b-c9bbf7bd5535",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenom, Remorseless",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2c5efc7d-7b09-4487-85cb-58867e06b12d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morlun, Devourer of Spiders",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "c69e751f-5eee-48d7-9e0f-ddbcca96491e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parker Luck",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6f7d7311-2248-4841-960a-8c93497e3de1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wrath",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a194f930-c99f-4915-8a62-e20ab2b4ad1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beetle, Legacy Criminal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "40466912-0d20-42ff-8232-807bf947030b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electro, Assaulting Battery",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c81a2ecf-837c-44a9-81d4-476763f89107",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "J. Jonah Jameson",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "e96068e3-4c79-4c59-8821-053f21db42c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of the Goblin",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "5e85512d-0b46-48f9-a391-6ae6a1b7fb55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Verse",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d75ccaee-e5ca-423f-a235-c0e989cbf76f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinneret and Spiderling",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fef697cd-7bc7-4c1f-87cd-2921c48bc02a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lizard, Connors's Curse",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "496864ab-bdba-4cfe-aa7b-b58d2954cf75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandman, Shifting Scoundrel",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "084f283e-88a0-4b7a-9e63-908caeb70f04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strength of Will",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "1672374a-585d-4a26-b04f-a129c4da8b0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web of Life and Destiny",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bd4c0aa-f431-423e-8f95-2796a0f05594",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biorganic Carapace",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "43892ce7-f63a-4294-922b-8f879f684033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chameleon, Master of Disguise",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "44f436ca-0ae8-4c35-871b-4bd2732e5a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cheering Crowd",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "61b28030-6d05-429e-a4eb-fceead3f7b18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "185bf150-e032-47af-aafc-3b4b69f0bad4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackal, Genius Geneticist",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "82f977d1-2209-4378-9b79-edb2c338f544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven the Hunter",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e713824a-b5df-4a05-81ad-a426c5eae1ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mister Negative",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "895a6b80-a5c6-400d-931c-589bfa684b39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Superior Spider-Man",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5e96fe19-9671-48b0-92fc-c46224c433c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultimate Green Goblin",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eab4f4f1-3e4e-403e-8264-b3e73ee8259a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock's Tentacles",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "740cde32-57e6-4633-98e9-724c505eb008",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Interdimensional Web Watch",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "517aeeb2-454f-4de8-b7f7-870010e80ae8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Spider, Stark Upgrade",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "976432b3-bc17-4edb-86d6-00fd1baf9670",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Clone Saga",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "47c82856-d657-4315-9433-0754a68444eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peter Parker's Camera",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9fb3e089-17f0-4066-9ab2-c23b7b2a6ee7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocket-Powered Goblin Glider",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "be2154a1-38c2-46b2-bd6f-3d7e509070b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oscorp Industries",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a2b59a26-114a-489c-b898-f71949ca4c7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urban Retreat",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d123d19e-fb13-4c1c-b765-8c4f1fef453a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Sense",
+    "promoTypes" : [
+      "buyabox",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3173112e-8975-4bba-84b7-6ba27503dc82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radioactive Spider",
+    "promoTypes" : [
+      "bundle",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a5b191f5-f01b-4d6c-8363-19591c61e6cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenom, Remorseless",
+    "promoTypes" : [
+      "bundle",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de16ad65-c8c3-48c0-9d13-5af91b4e6f01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock, Sinister Scientist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ad96343b-baac-428c-8270-fcffbbbe9fb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aunt May",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a383c442-3f4a-4115-97e4-23f0eb88465b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock's Henchmen",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebadcd4a-f58f-4328-a765-0ea8d8028417",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flying Octobot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7977e448-01fa-4fa5-a275-0d6a1357b35c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hide on the Ceiling",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e53115a4-8959-40fa-b763-931504a1c5a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydro-Man, Fluid Felon",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "08da9f92-0e25-4f39-aaa4-d8974af81a41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impostor Syndrome",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c5f360b-f9a0-46e0-9e8b-58e5b4b0389e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lady Octopus, Inspired Inventor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a16ca3fc-3cdf-4333-93e0-524afafe367b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Madame Web, Clairvoyant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "facbd96f-c088-4377-b740-5e0fe99102bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterio, Master of Illusion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79aa0a78-80a2-44be-8a79-92bcba9c040f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterio's Phantasm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5c53af9-7150-4e78-8771-2de7980aa307",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Norman Osborn // Green Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56d67fb4-5b23-432c-9ffb-39545035c117",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "City Pigeon",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a800ffb4-0c48-41eb-b221-cf1d855131d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oscorp Research Team",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d0e92939-6d86-44b4-8a43-1963e97a2bb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Robotics Mastery",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5b61b9d-31a2-4e09-9612-4980bf8de708",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "School Daze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37a31d84-e87b-406e-9249-fae1b5e23e72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Identity",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "210ae606-12a4-453b-bfb4-73ca9c22b8b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Byte, Web Warden",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "72dbab11-96ed-43db-8b59-ceca47c8cd22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man No More",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4499a25b-f4a5-4f2c-9ebd-bc68c7840b39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Sense",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be9d5985-0a39-4ee3-80de-30d17d08f404",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstable Experiment",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccc05deb-ad8d-4fae-a7a4-2b2a118fc696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whoosh!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5f80d82-d64c-466f-8874-9cfb00469f02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent Venom",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc641f4a-ddbe-4f7d-bb55-eabf11f8b7fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Costume Closet",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b898ccb7-758e-4f11-95e0-b412721d8bf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alien Symbiosis",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1919bfec-1906-4178-ad32-d4589842e563",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Behold the Sinister Six!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ed36ada-22c8-4e40-86c5-c116a0bee1c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Cat, Cunning Thief",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f5872df-e692-44aa-b18d-22447f5f274c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Common Crook",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "690f1f31-f8c5-4336-9ec9-72ff761e3adc",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Death of Gwen Stacy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f3455651-e643-445e-9489-51e4e24fca4c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Eddie Brock // Venom, Lethal Protector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "46b6cc5d-7a37-4e8b-a1a5-9a573056610c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenom, Remorseless",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f0252819-4eda-457d-9688-b08b83b1edc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inner Demons Gangsters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fba9c76c-1432-4554-88bd-3f5e8709a963",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merciless Enforcers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1beb2eb9-90b5-43ba-8b04-cfce7dcb744b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morlun, Devourer of Spiders",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "530dbeb0-b0cd-473e-a43e-7b23c88650a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daily Bugle Reporters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e375bcf0-7fcb-4fe4-a7e8-a4cbf9b23e3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parker Luck",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c45a5df-048e-4b73-89c6-5cdaa330319e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prison Break",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f8aa705-6177-42e9-95cb-e7f880c186e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risky Research",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7795e17-6717-464c-9ae3-20da52ba005a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandman's Quicksand",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf407e08-b27f-42ba-b824-75846a80e238",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scorpion, Seething Striker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fb03437-32cf-4c97-bf91-ea8b2ad3f964",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scorpion's Sting",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1982f910-a9bd-4e94-a187-84381b22aacc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Soul Stone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc64366c-2691-48cd-bb4b-a4b088c6f16b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man Noir",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67a8bf52-7562-4cdd-b970-106717a0aad6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spot's Portal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb83d54e-6641-4929-99ad-c0ba5b610902",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm, Being of Bees",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44cf372b-f668-45e9-981e-4533295dcc74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flash Thompson, Spider-Fan",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "313189ef-fe6e-4511-9386-920a88a49a88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tombstone, Career Criminal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab3d51a4-40f0-4606-b5f9-2686c12fd54b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom, Evil Unleashed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6330f3e9-e031-4d55-b5d8-536c16bba063",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venomized Cat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01d276cd-e4ad-488f-8447-004aefad1ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom's Hunger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d78e36fd-5817-4c4a-8880-dabe6dd4ba81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wrath",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "938730fa-496f-4871-80ec-3e9843ecb219",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angry Rabble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d672cfad-e656-47f8-bf93-64f262aff33e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electro, Assaulting Battery",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25fe063f-35e4-4fca-9889-06834a8ef9b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electro's Bolt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0f1597f-1dc7-465e-8fcb-0afe61bcca46",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Gwen Stacy // Ghost-Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4148d7e8-6371-468c-858b-35254995409a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroes' Hangout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "17a18e2f-221f-4fc2-8dab-25bf12fb8756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Friendly Neighborhood",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50716fe3-7a19-431e-8758-984fc48d714e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobgoblin, Mantled Marauder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ee905d6-b647-4eb1-a8d9-89add9bafc31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "J. Jonah Jameson",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6aa0dc1f-6c83-4ac9-b4f2-428e0e0bbf88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Masked Meower",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7d72d867-6ed2-4900-a8ae-9d86f581ce32",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Maximum Carnage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f469d621-25d0-4d8e-909f-47dac0b9c5b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Man, Inferno Incarnate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8519598f-ab7f-49b0-90cc-c0b6422ebdf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Goblinoids",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38120361-153f-414e-8a45-f86bb2e35a17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Romantic Rendezvous",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "854b6898-c480-435b-8952-a077c7977cec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of the Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "760b41a1-c087-4b11-b8a0-fb01d8a4c0c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b2c0d9a-364a-4823-aa4c-fe473d4463f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shocker, Unshakable",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a10a7da7-d9cb-495a-9c9f-205d355c390d",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Origin of Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3bc04fa7-6265-4549-91f6-eebdcd67398a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Gwen, Free Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9132e45-4ddb-4565-ac45-86f1ecc6230d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Islanders",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bd41879-fcd4-4211-9b98-47e7cdba5399",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Punk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f8779eb2-1210-430d-8d42-3077053441ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Verse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a27834b7-e763-48ac-845e-ed49f2fa6c6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinneret and Spiderling",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "485ceacb-fa76-4517-8466-c3c6bf6bcd6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stegron the Dinosaur Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28e7bf86-5791-4412-8184-fa63fb292be4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Superior Foes of Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a80d3ed9-5e81-41b7-bb74-ab86cba841c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taxi Driver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f452dac-bf22-4010-8a10-3c1cfa7d4df6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wisecrack",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad2cab87-691d-44fe-ab2f-33760b1feb0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damage Control Crew",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "spm",
+    "setName" : "Marvel's Spider-Man",
+    "variation" : false
+  }
+]

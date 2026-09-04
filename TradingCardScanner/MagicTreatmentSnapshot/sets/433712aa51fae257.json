@@ -1,0 +1,94 @@
+[
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6eb3278a-1a23-4e0a-b541-0c37b2bc3f3c",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Soul Burn",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-10-02",
+    "setCode" : "inv",
+    "setName" : "Invasion",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "301c4e8e-0468-4e16-9be5-7feb7999226f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Burn",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-10-02",
+    "setCode" : "inv",
+    "setName" : "Invasion",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6819c2f5-29a2-46d2-af36-c22b64338807",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Urborg Skeleton",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-10-02",
+    "setCode" : "inv",
+    "setName" : "Invasion",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "467e9486-1604-4fa2-ab1f-be0d7a036798",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Skeleton",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-10-02",
+    "setCode" : "inv",
+    "setName" : "Invasion",
+    "variation" : false
+  }
+]

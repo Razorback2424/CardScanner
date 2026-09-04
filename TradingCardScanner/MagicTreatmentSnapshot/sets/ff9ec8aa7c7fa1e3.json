@@ -1,0 +1,507 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78c43047-87f6-4382-874e-02e9628647bd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aae7bdfe-fe14-4a18-b2b0-16e9175a0441",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65ff5544-bdf8-43a3-a74d-4a2b7d79245a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bc2a0ab-7f64-4f82-b6db-d84194b5d417",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8a004f0-b216-41cc-904f-91eea562d485",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5d0801a-9565-419f-bb0b-23547c9dd59d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62c4a6f6-6425-4c0c-b35a-880fcab42aad",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Junk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76cde21f-2f01-4560-972b-7ecd6740d6de",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Robot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efaadec8-5bf7-4b53-b83e-33d17dc0ed74",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf0d0741-028f-481b-8982-55f36304c343",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d74d012-66ca-4a0c-9e90-e31e96730d4d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "546bda77-e3a8-4f2a-ba9c-94fb0b9ff183",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Knight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad073c87-42f2-45f0-9613-2cdbd0abf719",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wasteland Survival Guide",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a794202-875f-4397-a8de-9722c8d78448",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Energy Reserve",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0886657d-afb0-4f1f-9af7-960724793077",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Radiation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "737741e7-b2b2-4c41-ab7c-4eeaf9f37b71",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af191656-5e62-440f-b63a-705cfed314e7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a263a442-8ca6-4c69-a841-4a590ff2e729",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd66f10d-6fc4-4510-818c-96d29b425052",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Alien",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba45bc9c-8257-43f8-9ba1-116b9fea90f4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie Mutant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02789d01-f939-4515-a6e4-db6aff36f893",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Settlement",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f90bb066-79fd-48cd-ab5a-eaed71139b4e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squirrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-03-08",
+    "setCode" : "tpip",
+    "setName" : "Fallout Tokens",
+    "variation" : false
+  }
+]

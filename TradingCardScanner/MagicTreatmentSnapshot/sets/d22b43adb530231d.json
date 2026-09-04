@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "042a1907-0f97-4891-b39f-4c884e7524da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev, Crew of Two",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-03-04",
+    "setCode" : "ydft",
+    "setName" : "Alchemy: Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f49fbd95-16bb-4426-ac98-6d900417dfc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mitotic Ultimus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-03-04",
+    "setCode" : "ydft",
+    "setName" : "Alchemy: Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3fc822f-5870-4dc4-a932-5c69a5cb2add",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arius, Flyby Trawler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-03-04",
+    "setCode" : "ydft",
+    "setName" : "Alchemy: Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cfffa520-9cf6-479f-a123-53499aebd6c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sala, Deck Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-03-04",
+    "setCode" : "ydft",
+    "setName" : "Alchemy: Aetherdrift",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c766a094-4230-466e-b141-894e389585d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tsagan, Raider Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-03-04",
+    "setCode" : "ydft",
+    "setName" : "Alchemy: Aetherdrift",
+    "variation" : false
+  }
+]

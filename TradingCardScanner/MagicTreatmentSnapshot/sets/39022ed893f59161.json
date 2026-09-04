@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ca42619-2f85-4bdd-acb8-a299a384b1c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-02-17",
+    "setCode" : "pl26",
+    "setName" : "Year of the Horse 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68c98a4a-d4fa-47ed-9e80-a41fe841ef4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity, Galloping Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-02-17",
+    "setCode" : "pl26",
+    "setName" : "Year of the Horse 2026",
+    "variation" : false
+  }
+]

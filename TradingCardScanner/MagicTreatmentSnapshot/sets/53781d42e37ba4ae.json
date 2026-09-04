@@ -1,0 +1,1058 @@
+[
+  {
+    "collectorNumber" : "108",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eac42a57-c5bd-46e3-af2e-a5a23183c365",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Undead Vizier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "138d9772-74ad-45f8-8769-b1f4b0c8029f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasigur, the Golden Fang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "69c0ade8-3bdc-4cc6-868b-1a5cf9de70ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "95838355-d41c-4382-8a32-51be10160ea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whip of Erebos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "cc54fabe-ed0b-41ad-89f2-8de20610d2af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Return",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be12f431-7aa5-4df4-a8ed-f491b4d892b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Chandra",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8562d6b-25af-4d6b-9eb8-6ab08fa12dd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4aafa8c8-fd24-468c-9d87-f23301ef804f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo Bellstriker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f74f7e0-38d7-4e18-bbda-5d4a69724dc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "332f7ad3-33b0-4b03-9c86-73917f8db29a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nissa, Vastwood Seer // Nissa, Sage Animist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c34cea7e-6647-4695-bfbe-8975ab630087",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Nissa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed6daf80-cbbd-4789-aa15-649574aaf189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polukranos, World Eater",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b68181a6-fe98-4afc-a124-fd4766aeab66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anax and Cymede",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "fcfb168b-86df-4e60-aee3-5e9976158edb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Catacomb Sifter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fee6d76b-347d-4803-9d7e-de57796c9e4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Atarka",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abc586cc-0450-4532-b2e4-8b5a0626287c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc505af0-d641-4d1b-bfa7-ab3b56291281",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Kolaghan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b344aff4-06e5-4a33-a0be-4d73c1af90bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Ojutai",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ace34943-05c7-468c-84d2-d2ef512e6ecb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Silumgar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e963eeb-3cdc-4b54-8b82-bf849f0da72f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kytheon, Hero of Akros // Gideon, Battle-Forged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "117c7d8f-80c2-43e9-8e06-b62e32a359ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Medomai the Ageless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffaca459-eae8-41bf-9f61-00899b611995",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruric Thar, the Unbowed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b9231958-cfe7-461b-9ce7-a5225657b205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Linvala, the Preserver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97b40941-d43d-487d-a418-6ada2ec24b5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod, God of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c270e464-cb9a-41c3-bb02-6009d352824b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa, God of the Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e9b9d9e-5f2c-4ef7-824f-3726fb145be1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos, God of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "967a4bb8-53ea-4d31-ab52-f4b9c00171b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros, God of the Forge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbfde2de-d361-4b43-8bd8-033c989f6d50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea, God of the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54c9c1b7-a41c-4253-98fd-e0bdf9f206fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Athreos, God of Passage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d752e42-6d56-4de0-879a-2b6b9e2b2cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ephara, God of the Polis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c4d5ce5-f384-472b-852a-ddfa3b34fb5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroas, God of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93a80619-84e5-4263-8b4c-0d8c79aa6fc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karametra, God of Harvests",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72295cf1-e8bb-4ec6-8153-503c12d10881",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keranos, God of Storms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0507906-c75d-48ca-994f-a03f56ff3e9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kruphix, God of Horizons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bbfa871-eebe-4d04-92dd-834b2bf79855",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogis, God of Slaughter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bcaa988-7485-461b-a3ae-764e1f4531df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pharika, God of Affliction",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0949643b-f0a3-46b5-9a2b-957cbcb0cfef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phenax, God of Deception",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e905fb4-7b6b-4030-b991-905150f65400",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos, God of Revels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8e60cdc-6480-4e0a-b45b-24585707c5a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Gideon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0864d868-8cc2-47ea-a8f6-ab5210f9fccc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Jace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc40bbd8-5624-4f76-ad25-78f997bce7cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Liliana",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "c47e83be-e5f4-479f-a7ab-60f1d0ef9be9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crumble to Dust",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0c6de7f2-fcc2-4a08-b49c-b50bb195a252",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brood Monitor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62fbc0cf-6e58-4974-8cf2-3a5d0b6471b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Chain Veil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "8619f6e5-057c-4252-b491-ce9577628ed7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Shatter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9c62295-4891-4877-a03d-8e0460684841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bident of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9d36f53-582c-4d8b-aa8e-e62a1d0e5f00",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Jace, Vryn's Prodigy // Jace, Telepath Unbound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1760e5f-d5f4-485f-b0ff-34e6a0c7a707",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-10",
+    "setCode" : "pio",
+    "setName" : "Pioneer Masters",
+    "variation" : false
+  }
+]

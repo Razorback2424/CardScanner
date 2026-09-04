@@ -1,0 +1,3449 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "46b394fc-a99c-44e7-9226-da0699167541",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Environmental Sciences",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "98739789-80b5-4224-a2e4-09e00654aa9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Illuminate History",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "55c99486-ae64-4293-81fb-a4b02e8fcae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Start from Scratch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "8be52d88-f430-4437-a0d3-590c2947c838",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basic Conjuration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "0dcca120-b72e-4007-98e1-cb22e7b9a705",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Containment Breach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c204b7ca-0904-40fa-b20c-92400fae20b8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Blex, Vexing Pest // Search for Blex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba09360a-067e-48a5-bdc5-a19fd066a785",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Extus, Oriq Overlord // Awaken the Blood Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d7148d24-373e-4485-860b-c3429c2337f2",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Jadzi, Oracle of Arcavios // Journey to the Oracle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b45dc40-6827-46a7-a9b7-802be698d053",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Kianne, Dean of Substance // Imbraham, Dean of Theory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e4e0f81-f92b-4a3a-bb29-adcc3de211b4",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Mila, Crafty Companion // Lukka, Wayward Bonder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5bd9b5cf-f018-48af-a081-995ce8ecc539",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Plargg, Dean of Chaos // Augusta, Dean of Order",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "938cee8f-ac2c-49a5-9ff7-1367d0edfabe",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Shaile, Dean of Radiance // Embrose, Dean of Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8cfd0887-0c83-4b33-a85e-8b8ec5bf758d",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Uvilda, Dean of Perfection // Nassari, Dean of Expression",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65008352-bc7e-40b2-a832-b46813e5dc4c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Valentin, Dean of the Vein // Lisette, Dean of the Root",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93f786a2-a7b7-4f9e-92e8-9a6a11efe290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beledros Witherbloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9cd2b567-0cf7-4441-b3ce-e31141dd91c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina, Soul Steeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "ea51991c-1589-4c62-965b-5ae8d233520b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elemental Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "cc3f1f7e-eb19-49c1-a1ee-93b85ac8815c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractal Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06c9158c-064b-4d12-b860-d2c1450d1897",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galazeth Prismari",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bd8deecf-eded-418b-ac4c-5c3e8f54e86d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hofri Ghostforge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "04a8a5b8-9743-4d1a-89e9-61bdf180b2e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkling Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23ef4f09-2aa1-4a03-b2e2-66d1522f1e46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Killian, Ink Duelist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "c5642b9d-0daa-4e6b-ad48-f88dd37d6574",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expanded Anatomy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b3d521f-31cd-4bd2-b6b6-771c79252789",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mavinda, Students' Advocate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "6267e19a-a777-4767-8433-86b6624362b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pest Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06c55ef1-8e62-4d43-bd4c-b2c3c5203338",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quintorius, Field Historian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "acb8f24d-8d1d-48aa-a534-238e969a474c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rootha, Mercurial Artist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab701909-83d6-4d39-9a84-e6a9b2cb38d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadrix Silverquill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "74be6236-4095-419c-9927-fbd874df21f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3bd62ee4-e654-44ba-a650-889782cc9ac3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tanazir Quandrix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "04ea9067-ad50-4c43-ae4d-3f66890cd898",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Velomachus Lorehold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "7bfc408e-34d6-4e94-8678-4cc229cbc6f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reduce to Memory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ca14c17-dc72-4f68-92f2-14a6c4019f4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, Quandrix Prodigy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea476ee1-67d9-4dd8-a5ac-f68a155eb18b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Codie, Vociferous Codex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2ad8536-15f6-42c1-8521-dc37feee8e67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Professor Onyx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34332dc9-d81c-4b16-bf59-2c75eaa05c21",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Mila, Crafty Companion // Lukka, Wayward Bonder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cca8cf1-27f8-408d-b4bc-1d4090837f8a",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Rowan, Scholar of Sparks // Will, Scholar of Frost",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fed5f87d-3bca-44fc-a1ea-fc01e36ba092",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kasmina, Enigma Sage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "23468e63-2e7a-4e3b-970c-cb57b067d6c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadrix Silverquill",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "265b9185-9033-4e57-a312-adcc91903aec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galazeth Prismari",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e34dd2ef-a52d-48b6-becc-825f0e78eb75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beledros Witherbloom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b7151c4b-4d42-44c1-a6f4-8be29ace1df3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Velomachus Lorehold",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a5c7241c-c053-440b-b91c-f7298080d626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tanazir Quandrix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "109b3d46-8f46-4ddf-b4bb-53b0dfd1ab37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mascot Exhibition",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "63bd0484-4089-4d33-aa8b-3730791061c3",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Wandering Archaic // Explore the Vastlands",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "903b4384-95b5-44ae-bec5-15b383777b41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academic Probation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "354a4740-7a11-4157-bfd7-1249980aa323",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastating Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "25608957-fe71-4ed7-9c55-fb7f2fcf103e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elite Spellbinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ca307662-9454-4edb-ab64-13c6b41fb864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonin Lightscribe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e32e0bb1-073f-4583-ad9c-1dc0c7eb8ef8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mavinda, Students' Advocate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "121f61c8-2ddc-47bb-a8a1-b7e0b5cac156",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Semester's End",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "584a3d18-0360-48aa-87d2-51e9078b00f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sparring Regimen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "833ffc46-bbfe-47b3-96ad-ff5fe14405cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strict Proctor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "da5e6937-800c-4870-b234-f2907a55ce31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage Emeritus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2d9f0734-7bdf-4d06-b1ac-15919fb7bce3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream Strix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "18b4f3c5-4129-4e4b-98b9-91d2ca33ab7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ingenious Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9dc26b17-fff6-4bd1-8fb6-736ba7babac7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multiple Choice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "1c2c8894-fb24-4356-a71e-2cb924dd4cf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teachings of the Archaics",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "b0bc4682-bcaf-4f51-be0b-9f2851a16e3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Introduction to Annihilation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c142a00b-ba0a-49a2-879f-ed46c4f81b64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempted by the Oriq",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fcefe86f-9998-4259-bf71-2b2ed1d6bf50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baleful Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9786ce79-3cb1-4ac7-9f85-1f7c0e1acff7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Callous Bloodmage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "9975e3c0-cd32-4658-9802-3749a1a475aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confront the Past",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fd30d87e-552d-4b30-9123-2047e4e381a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oriq Loremage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4802149c-b7f0-40d5-a312-df8cc920e7d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poet's Quill",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "075bfaa8-3d54-4934-aaf6-72be43a87324",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sedgemoor Witch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "52d3509c-8d67-4c5e-83bf-1a67f87589b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy Theorist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d1c038e6-2346-4544-bea1-b64098f63f23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackle with Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "854ddfc9-1ecd-45e1-b9aa-3390a2e3776f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconic Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5bdcfde9-1c0a-49fc-8996-37a24a2379e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Efreet Flamepainter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c8cf5c70-25e8-489a-9cab-ce45eab191ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fervent Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "1caa9c12-ac06-458e-bf03-21dd1b3ed986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Illuminate History",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a81c6751-b97e-4935-a18f-fb97ee9e8a68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Retriever Phoenix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9ee50e9b-7414-4a4e-8c12-5b8c4043f4b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Accomplished Alchemist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "lesson"
+    ],
+    "id" : "4f222fdb-eddd-4179-b779-a45171bfb010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basic Conjuration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a87d007f-9dee-4525-8298-04c317c52c96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonsguard Elite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e76ba861-beb0-4cd2-8e06-626f587f6f44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ecological Appreciation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7771e5a4-cc4b-43fb-8a44-9382de73fa0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exponential Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "831607fb-92ba-46d2-85a8-0aa7023e3e30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnarled Professor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e99b2e32-5272-4f66-b05e-a9d32d9e9f8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b120e3c2-21b1-43e3-b685-9cf62bd7aa07",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Augmenter Pugilist // Echoing Equation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "930d3b70-7e8e-4a39-b60d-7d14196912e0",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Blex, Vexing Pest // Search for Blex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "786156ce-544c-4aa4-8381-756042d0bcda",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Extus, Oriq Overlord // Awaken the Blood Avatar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8c917201-4691-4f31-a8e4-ca0192d5ff71",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Flamescroll Celebrant // Revel in Silence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b0a96416-9ee5-4202-a99f-e09db8794567",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Jadzi, Oracle of Arcavios // Journey to the Oracle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1d96ade2-fb2a-420e-a14f-e96c47f903ce",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Kianne, Dean of Substance // Imbraham, Dean of Theory",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f1ebfe27-d5a4-4fc9-8049-fcebe65dd592",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Pestilent Cauldron // Restorative Burst",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e92c8175-50be-412e-b42e-9fe92aa8d4f1",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Plargg, Dean of Chaos // Augusta, Dean of Order",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5b09d444-a687-4712-b193-265148748aaf",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Selfless Glyphweaver // Deadly Vanity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c18ebfe1-f953-4aa3-933e-eee58fc4a0dd",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Shaile, Dean of Radiance // Embrose, Dean of Shadow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "77e7417d-36b9-4a47-b6d2-aa589711a5ba",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Torrent Sculptor // Flamethrower Sonata",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "298a4109-4f8d-449c-b13d-e678c1113b90",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Uvilda, Dean of Perfection // Nassari, Dean of Expression",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "297696bb-0610-45fb-92d3-5b7d9a7da290",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Valentin, Dean of the Vein // Lisette, Dean of the Root",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ecc2a3aa-bc1b-4a57-915c-36c35ae9d92a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade Historian",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bdafd5bf-573d-4d3b-94ff-c39834a92d39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blot Out the Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6ecda818-2729-436c-bde0-c893ca8be7a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body of Research",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1ba72e51-ca69-48d4-96dc-df9519468c01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Culling Ritual",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1f198c49-9192-4b7f-bbc6-9f01395836f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Culmination of Studies",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b6a595a8-20f3-49e9-82ca-18923958f21b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daemogoth Titan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "235079f1-2226-4a6d-9682-ae932e67d660",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Major",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bb164ab-ee63-4025-9d72-6db71b99bdd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dramatic Finale",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "34b6e53f-f605-430e-9455-b3653cbd8e1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elemental Expressionist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ce7b626d-8536-4c57-b075-8320fcf1cdec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harness Infinity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "76b530c0-86ac-4054-8067-e08764438aaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hofri Ghostforge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d1b7df16-e01d-4053-88d3-db78ed26bfe1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lorehold Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "82f15bee-c4fa-4ad4-acaf-bb8023ebd6f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magma Opus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "14a7a615-d187-45bd-8f65-3458d896ce5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Manifestation Sage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8ffb6717-93f5-4774-9cc3-29b883b144b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismari Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b362583b-f5d7-45cf-add1-71e790547203",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quandrix Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f74eea36-f7b6-4586-a16c-cd20ab89ab54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Scrollwielder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dd5ce6dd-5994-4e85-9479-fa924c8ab42b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rushed Rebirth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bbde59f8-dadd-4b5f-a55c-69317af7c2b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverquill Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "01ae964b-a3dd-4747-a229-d0b4e112179e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverquill Silencer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ee7441bf-8783-48b9-b828-31c071e97847",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vanishing Verse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "91cae78b-75a4-4c0e-92c3-f24379a23271",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venerable Warsinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0f04535d-a6b7-4d91-918d-fccc1adfcaf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witherbloom Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e7d7e96e-5d35-41dc-9a8a-2049e2e56350",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Codie, Vociferous Codex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0795abd9-7294-4f8a-8491-0fe39ae6e273",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strixhaven Stadium",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "de969f0a-23df-408e-9f92-4b909caf73d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Biblioplex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ae79f483-88c5-461c-a7c5-6b898317b1e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frostboil Snarl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "58115f3f-1157-4efd-94d8-3a1a71bd6816",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Furycalm Snarl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f3a1a974-8275-4878-9863-9466569aac00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Oracles",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8e68589e-d71f-4a2b-9a97-b768e81aefa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necroblossom Snarl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7ba00634-b62c-4a95-941d-775fc4c9e3a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shineshadow Snarl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aa184596-3a3c-43fe-8e20-b09ab100cd00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vineglimmer Snarl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f213fb1e-f159-4088-8b0e-f10771e4b095",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonsguard Elite",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2f7218a-511a-4ca8-899d-ae78a935f7a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archmage Emeritus",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4033ffe6-3e81-440f-bde7-0cf267a54b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fracture",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93e5c7e8-e6bf-4186-8140-d1171fbb8552",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expressive Iteration",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0ddfc5f7-911b-4159-8540-530d642d0e7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortality Spear",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "101f135f-1404-4333-946e-62d3aa919a62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rip Apart",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "36b05c98-7799-4104-a0d0-3632bd5b8846",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decisive Denial",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "7820923e-bad2-4d6a-92b3-97b9737d2ca9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Introduction to Prophecy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "adcbe115-5482-4e5a-95bb-8ccbb01d3547",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mercurial Transformation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "2047592c-739c-41dd-b3e8-31ae1c7688ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mascot Exhibition",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "967148b1-2bb6-4bc0-95e6-c45fcf99afd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teachings of the Archaics",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "e1951763-be97-400c-aa95-6b101f47bddf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confront the Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "05521edf-f47f-4e7a-aec5-cdc4ae7368c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academic Probation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "lesson"
+    ],
+    "id" : "5e1b68a4-fb8d-4b59-b049-73505296f775",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrotic Fumes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-04-23",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-117",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2952a34c-b0c0-4e1c-9a00-c74c7e6b7d32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Tome Shredder",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27b19a46-f4e9-4a08-b118-a62a93901c1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Dueling Coach",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-156",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6168bf9a-8a2e-46a5-ba87-7f88a4edc526",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "A-Rowan, Scholar of Sparks // A-Will, Scholar of Frost",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-202",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f53e674b-5d48-4734-beeb-2a3deeb935e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Maelstrom Muse",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-240",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "957117fe-ddc9-4c5d-bff8-f74602a24dd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Tanazir Quandrix",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-258",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd8acc65-c7e0-4ba5-b956-af0679ffb830",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Spell Satchel",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-04-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-46",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf572a77-bd21-48e3-9640-3f17a5416ab1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Mentor's Guidance",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-56",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2409aee-3a80-4533-80bc-9383624c285d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Symmetry Sage",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-04-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-88",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4ea2dad-f276-47b8-912c-267a832f1d36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Tenured Inkcaster",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-92",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79b12c44-9537-4863-a678-c982e8714a5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Ardent Dustspeaker",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "stx",
+    "setName" : "Strixhaven: School of Mages",
+    "variation" : false
+  }
+]

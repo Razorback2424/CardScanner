@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98531409-da0e-47cc-8727-5e0ca5734887",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balduvian Horde",
+    "promoTypes" : [
+      "datestamped",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-08-04",
+    "setCode" : "pwor",
+    "setName" : "World Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79da06af-8f75-4094-ba8a-ab082b339f8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crucible of Worlds",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-02-14",
+    "setCode" : "pwor",
+    "setName" : "World Championship Promos",
+    "variation" : false
+  }
+]

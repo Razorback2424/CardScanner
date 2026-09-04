@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b70b374-94b6-48d5-a1d7-04d012049c22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ball Lightning",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "g01",
+    "setName" : "Judge Gift Cards 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5dd34ceb-2659-44fe-b11d-b6b71dcfef02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Druids",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "g01",
+    "setName" : "Judge Gift Cards 2001",
+    "variation" : false
+  }
+]

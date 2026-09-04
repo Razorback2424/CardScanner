@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3ac85d2-186b-46f9-853e-6ee23210540a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Collector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-05-17",
+    "setCode" : "pscg",
+    "setName" : "Scourge Promos",
+    "variation" : false
+  }
+]

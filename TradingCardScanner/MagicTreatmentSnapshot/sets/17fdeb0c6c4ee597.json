@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98f687bb-157c-4e98-b39b-2dce7f145fa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elite Inquisitor",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-09-24",
+    "setCode" : "pisd",
+    "setName" : "Innistrad Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6dd2f9e-16c2-4d25-98c4-0017ccd42228",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devil's Play",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-09-24",
+    "setCode" : "pisd",
+    "setName" : "Innistrad Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "685b0777-b4e1-4c85-ad35-524024cb3a71",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Mayor of Avabruck // Howlpack Alpha",
+    "promoTypes" : [
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-09-24",
+    "setCode" : "pisd",
+    "setName" : "Innistrad Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "340b660c-9aa1-4bd2-8c6f-d9af7fee5f4a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ludevic's Test Subject // Ludevic's Abomination",
+    "promoTypes" : [
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-09-24",
+    "setCode" : "pisd",
+    "setName" : "Innistrad Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9cf8ad2-de95-417c-8808-83e60df9c007",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diregraf Ghoul",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2011-09-24",
+    "setCode" : "pisd",
+    "setName" : "Innistrad Promos",
+    "variation" : false
+  }
+]

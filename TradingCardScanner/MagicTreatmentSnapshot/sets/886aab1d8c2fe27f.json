@@ -1,0 +1,140 @@
+[
+  {
+    "collectorNumber" : "118★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abfeac83-84ef-41ab-b6ee-cc2bab6aa06d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xathrid Gorgon",
+    "promoTypes" : [
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-07-12",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1476d42e-6cf8-4612-ae75-b3044d1eebbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmaquake",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-07-12",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177★",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de33a403-c77f-4020-9a7d-d31d8a75ae3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mwonvuli Beast Tracker",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-07-12",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5be0ec9b-17ea-4503-b9c2-67a3ca2a2b13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Nin",
+    "promoTypes" : [
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-07-12",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49da045a-f91b-4130-9ae7-bfbabefe352f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathedral of War",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-07-12",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13517c52-76fd-469e-a2c5-d2779e9dc298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamletback Goliath",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-08-01",
+    "setCode" : "pm13",
+    "setName" : "Magic 2013 Promos",
+    "variation" : false
+  }
+]

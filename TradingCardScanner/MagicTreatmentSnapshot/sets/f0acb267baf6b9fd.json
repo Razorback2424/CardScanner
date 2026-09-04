@@ -1,0 +1,288 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "526607e9-1907-4639-b944-8ee152c81bfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Command",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b69f36e0-c681-40b3-ae1e-6251648f6285",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feral Hydra",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-10-03",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b539a9de-037a-4b7a-80a5-0514680af095",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b0a9a66-ada7-4fee-92c6-78d3e25599fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Baloths",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2009-10-02",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "407858c8-316d-47a7-8234-c490a0bc87a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flame Javelin",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bc08c9c-b18a-4df1-92f0-f1f35a834399",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unmake",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1ea60ba-11ac-4112-92af-db0aa420dd8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nameless Inversion",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "675440ff-9701-4310-a4ad-8502b9cb73ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Remove Soul",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a1b4c07-588a-444f-9677-3eb1493b5394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blightning",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d8fb98e-bc3c-478b-9921-765c2fa741ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellbreaker Behemoth",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-04-30",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "594d7178-4acd-4be0-9e22-2d046c5cebd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampant Growth",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "226e5187-d285-4547-869d-761fdbee6f1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Negate",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfd77920-7dbb-4673-9317-095ce9483878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "p09",
+    "setName" : "Magic Player Rewards 2009",
+    "variation" : false
+  }
+]

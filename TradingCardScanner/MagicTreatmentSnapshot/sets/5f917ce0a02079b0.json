@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aaeb36b3-0d12-4326-a81f-06a66f6164e1",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "wmkm",
+    "setName" : "MKM Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00b75290-4d07-4c97-bf3e-3db9c4026b08",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "wmkm",
+    "setName" : "MKM Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8178c17-826a-44ec-be5c-7c859d7634f4",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "wmkm",
+    "setName" : "MKM Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ca2f44c-fdc9-475e-bac5-56392ad01854",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "wmkm",
+    "setName" : "MKM Japanese Promo Tokens",
+    "variation" : false
+  }
+]

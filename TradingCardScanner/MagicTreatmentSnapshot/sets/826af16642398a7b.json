@@ -1,0 +1,411 @@
+[
+  {
+    "collectorNumber" : "2007",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f97addf-6cd6-42c1-81e8-c9857fe4167e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eternal Dragon",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-10-20",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2008",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08eaeb6b-e21d-4e40-ae8a-265be03fe7d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirari's Wake",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2009",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39bfa133-81cd-4254-883d-bf7f3f23e903",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treva, the Renewer",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "605974f0-6a76-4eb6-b611-6155529ba17d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar of Woe",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2011",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0dd3245-b4d0-43ce-9c98-c3c5bc1767a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani Goldmane",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-02-10",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2015",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16a5f644-771f-4c31-a595-0881003e7676",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Veil",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2016",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "befab3d3-87ce-4b55-a6c9-51db8dd41f71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snapcaster Mage",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e8b085d-f66e-47e8-bc77-a551f1136ee8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2018",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e178309d-8639-4db6-955e-45f69a0aded2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Hierarch",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "211b1279-0f37-47a9-8eb5-db91159d0cf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcbound Ravager",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38806839-c820-4a19-a92c-70f6f21d2aea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Command",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17fca517-aafa-49d2-98a4-fa7dea14d116",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Vial",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-12-31",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff51dade-d015-44f2-bfe7-862e511a08e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lava Spike",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-31",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2c1a061-149b-4b56-ae3c-2be7b31eaa13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Hero of Dominaria",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-03-31",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "76cc445b-ccd4-4c93-8c7c-fa6582567111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos, Shrine to Nyx",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-31",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "570ca3e8-1563-4cef-8559-776982a78838",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud, Midgar Mercenary",
+    "promoTypes" : [
+      "ffvii",
+      "tourney",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-20",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f020aa2f-cc1b-4bb4-bf05-4050ea935d66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aerith Gainsborough",
+    "promoTypes" : [
+      "ffvii",
+      "tourney",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-12",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a43bc73a-3566-4be5-a210-9a6a5eac1913",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksilver, Brash Blur",
+    "promoTypes" : [
+      "tourney",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-07-17",
+    "setCode" : "ppro",
+    "setName" : "Pro Tour Promos",
+    "variation" : false
+  }
+]

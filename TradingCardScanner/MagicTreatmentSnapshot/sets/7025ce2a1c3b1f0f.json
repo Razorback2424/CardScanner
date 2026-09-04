@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96c36884-df5e-435d-9473-65da550535fb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Griffin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-09-02",
+    "setCode" : "tddh",
+    "setName" : "Duel Decks: Ajani vs. Nicol Bolas Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fb8f4f1-6372-41ea-802c-4b952a78a08b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-09-02",
+    "setCode" : "tddh",
+    "setName" : "Duel Decks: Ajani vs. Nicol Bolas Tokens",
+    "variation" : false
+  }
+]

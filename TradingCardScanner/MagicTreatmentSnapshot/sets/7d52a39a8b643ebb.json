@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0661166a-7d6c-4cba-8190-8d3eedf7f58c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Giant Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-02-01",
+    "setCode" : "tmor",
+    "setName" : "Morningtide Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1666cae8-8750-4091-8e45-259e76268db9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Faerie Rogue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-02-01",
+    "setCode" : "tmor",
+    "setName" : "Morningtide Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55c82ec9-692e-48eb-9337-c350fe815a3e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treefolk Shaman",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-02-01",
+    "setCode" : "tmor",
+    "setName" : "Morningtide Tokens",
+    "variation" : false
+  }
+]

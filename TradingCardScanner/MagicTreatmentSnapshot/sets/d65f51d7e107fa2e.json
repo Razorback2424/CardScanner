@@ -1,0 +1,91 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "698fed00-1acd-42cf-969a-e2dce90356e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ha6",
+    "setName" : "Historic Anthology 6",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "015f8c38-5d0e-4bdb-a705-24313dcece99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Night of Souls' Betrayal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ha6",
+    "setName" : "Historic Anthology 6",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44efb0b8-f6a7-4b56-a2f8-8899d01a71d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laelia, the Blade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ha6",
+    "setName" : "Historic Anthology 6",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "95fee9d9-7c78-4a75-80e0-3c4ddd321a48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go-Shintai of Life's Origin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ha6",
+    "setName" : "Historic Anthology 6",
+    "variation" : false
+  }
+]

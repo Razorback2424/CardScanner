@@ -1,0 +1,1014 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b56dc1ed-3810-4b1e-b6ad-d1ab07d47b4c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Aang",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a9e5b26-e078-4923-b021-520a01a9ee03",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Adaptive",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1cc9f08-e924-4a18-bae8-0d252a7925fd",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Adept",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e86d7efa-2159-4021-9f3b-0eb644a0a7b8",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Katara",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f90831d9-4805-49b1-ad3c-d9467dc728d5",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Lessons",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96064005-4ba8-4355-90e8-6040101f2aa4",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Librarian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d75fe114-2d1f-4bff-8e5f-20375a600e16",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Soaring",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "395e0d40-19f5-4355-9e6c-88265fdef197",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc51bc07-71cb-415c-bbe3-6dfdf0966d95",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Underwater",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "658881ba-6b89-4d3e-897a-cc5b87612d0f",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Wise",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7526d863-d775-46d6-ba91-068a1730403f",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Azula",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fdd555c-2380-41c1-beac-1ef2bf852d6c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Airbending",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9f29a3d-ddd5-4bab-959b-1ff257bff72b",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Bad Advice",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5982969b-c0c1-4afa-b8d3-ece7f6925062",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Bounty Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55e7ae38-0503-4c8f-a83d-51d7725cf4be",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Hunting",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f1b7372-0c94-4007-a43d-8cad45b2e3e7",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Nightmares",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8954094d-67b0-4049-8693-15059de7e280",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Ozai",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6eb164c4-1953-40a6-9b73-30b849bcd4c8",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Reinforced",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d385b45-f732-4112-8b18-1163a08b319e",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Relentless",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa10aa36-f7fa-48b2-8d1f-987ec7decbdc",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Siege Engines",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24e8f2fe-2af0-43f0-ab8f-665daefb33a6",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Fire Nation",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe59d912-d2e2-46ed-a047-31bb72e9cdf8",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Firebending",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e7df8d0-98b2-49c4-b1ad-809dcd2d6453",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Alliance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9417d50-bbfe-4569-b80a-49b3a843631c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Iroh",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1caec83-ee18-4742-a443-383484ee725c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Musicians",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37309a1b-0203-4b32-9292-8ceb81ad2d9e",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Powerful",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3fee51d6-95d0-42cc-baf8-46d6d32224fb",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Rebelling",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79dfa409-3443-4ac2-b63d-ddfa1141da64",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Roku",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bcf6475a-e3fb-49a7-a9b1-f7638b1c4cf5",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Sparky Sparky",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97610fa5-4f5d-4395-88bb-8d4c775cebc1",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Zuko",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0398f98b-6b28-46d6-b99d-07c0ee0c318c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "At the Zoo",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8bdf3f2-42f1-4d79-9d13-2ed02430cb45",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Bumi",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48502576-56cd-4937-9cc5-ed97d9c5cae7",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Cabbages",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79ec05d2-2775-4d80-bb11-4949177b5510",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Freedom Fighters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2ddcd98-5937-4881-93f3-505b543a6cf4",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Earth Kingdom",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a584b8b2-ee2c-44eb-94de-b8dc44c59a30",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Earth Rumble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47203141-5fe3-4b8a-9108-54163ec18a64",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Earthbending",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a35801a-6e08-437c-9c1e-afcac6ba31d8",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Kyoshi",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "009c607c-2f43-4f0e-95ba-3a15359c5b3e",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Learning",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97901694-aca4-46cd-90ea-03ffe20cea59",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Toph",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6f9274b-cb43-461d-bc1e-a7f804e9b875",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Shrines",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92b5db1f-8521-4a68-8f3e-3731334eb0e2",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Gliding",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19f0a1d3-c75c-434f-931a-d890fe396da1",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Hei Bai",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0815f6ce-8123-4b1e-9a53-a33500789142",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Insurgent",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9734305d-4e9b-4874-8225-ec32e8358180",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Swordmaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d23f8276-66d6-4114-bdfa-a3e8891b9e0c",
+    "language" : "en",
+    "layout" : "front_card",
+    "name" : "Warriors",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "jtla",
+    "setName" : "Avatar: The Last Airbender Jumpstart Front Cards",
+    "variation" : false
+  }
+]

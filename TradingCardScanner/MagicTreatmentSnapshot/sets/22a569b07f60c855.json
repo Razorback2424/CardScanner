@@ -1,0 +1,421 @@
+[
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bb53920-2511-4467-b287-79b562d3c24c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mycoid Shepherd",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a7dcba8-416e-4908-8969-bf5511a117e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naya Sojourners",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e45e4c8f-bb6c-471d-b14f-cc90869f341a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa's Chosen",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-10-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01967a0c-bd2c-4dba-9c62-e6f955c017e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emeria Angel",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-10-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "099718e6-9896-4d5e-8edb-3bc9a15c81ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hada Freeblade",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-02-28",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28f11e26-6904-4add-99ed-db306598bd3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalastria Highborn",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-02-28",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c7eeca0-a4cf-455f-888c-57571cf3555d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staggershock",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b5e6882-4c37-4c47-92c4-4083c66e9019",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathless Angel",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "050eb421-a446-4d84-b331-a267b02dc9f5",
+    "language" : "es",
+    "layout" : "normal",
+    "name" : "Fling",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-07-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : true,
+    "variationOf" : "303195f3-07ac-4eed-ab27-bf7c4b5378a3"
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e348e20-f0bd-482f-b7de-475fa05753a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Specter",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-07-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f8060a3-ba74-404c-9050-0e9f7128209f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mitotic Slime",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-07-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4669327f-268f-43c2-ad57-555a02baa6a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memnite",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2010-10-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd03c292-821f-41fd-b582-db71b40b9804",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempered Steel",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-10-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c97874a8-e048-4433-8831-54dc67980902",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasure Mage",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2011-02-28",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd88131a-2811-4a1f-bb9a-c82e12c1493b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Sun's Zenith",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-02-28",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e05862a2-dd14-4607-a0db-ae0533551cb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Urabrask",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2011-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea58b15c-8648-42f9-a7ec-25b17697bb8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myr Superion",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-05-31",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8af30f24-0b2a-4d18-a8d2-2edc2687bdf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormblood Berserker",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2011-07-30",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "678c11d1-567e-4153-b828-a4f18fc7bd58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dungrove Elder",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-07-30",
+    "setCode" : "dci",
+    "setName" : "DCI Promos",
+    "variation" : false
+  }
+]

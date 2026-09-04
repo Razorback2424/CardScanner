@@ -1,0 +1,3789 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "324b5234-ffbf-4801-a475-8f693679ae2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clachan Festival",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f51adf8-8234-4dae-aedf-7633310d5111",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Grub, Storied Matriarch // Grub, Notorious Auntie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "9985c554-8338-46b1-ac36-526d2eb61570",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mornsong Aria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d7faefe-9c0d-45b6-8ea4-5fa666762a2c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ashling, Rekindled // Ashling, Rimebound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2d9d5ca-7e15-437a-bdfc-5972b42148fe",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1ec084cc-997d-4079-b445-8f701ec3c277",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9c4a95ac-072f-4219-80a0-1ce71f1b8411",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lasting Tarfire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "231e46b6-b91a-4582-8894-e7de1c50213f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evershrike's Gift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "21157461-5435-4879-80a9-100afc5bbf4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meek Attack",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "739e5ab5-d562-407a-906e-c5c5173ad325",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilt-Leaf's Embrace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a730b254-ff7c-4f89-a559-b44ad7fd6c6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morcant's Eyes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "295d828b-b2e7-41c7-afbc-5fb5f4eb242c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pitiless Fists",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bb7490f2-1425-495f-b7d4-2f1e0df7490e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Undercurrents",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3199bea9-fef7-45fe-8777-2103d84a9347",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sapling Nursery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c122719c-f0d1-4170-a0d1-d62172df1d21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shimmerwilds Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2094f9b6-ce84-47d9-8819-81db14ba483f",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b6e35fd5-de7e-40a8-a23c-00d07fd1ac56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinbinding",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf708169-a307-494b-b8d8-baae53b2e2f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abigale, Eloquent First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "013cefb7-a059-45c2-81b0-187f35aac4a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bre of Clan Stoutarm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "568aa70a-6765-486a-bd37-5d38b16c46de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, Besieged by Time",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfe7b8bf-c150-4be0-aef4-e8bb6f09787a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Perfect Morcant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c11cb0eb-819e-4905-ad95-e43618d3c81e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirol, Attentive First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "127a30a6-c25a-448a-a242-dc04f273a854",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lluwen, Imperfect Naturalist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c50f5408-5b5c-41dc-807e-136233403a09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maralen, Fae Ascendant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0bab5da5-72a7-4340-9b53-492ab14a9f71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raiding Schemes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a5a40c16-7a5c-4ad1-be53-6b1b1be2affe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liminal Hold",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11215561-bbcd-4564-a2e4-a1d77d177a1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanar, Innovative First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6cb0f825-b75b-4f2a-803c-08142ca07e76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tam, Mindful First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3c2d68d-690b-41e7-99ed-2d20c7e0a9b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chronicle of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b5734a2c-0e8f-4087-97ee-51e26cfbf62d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Outland Chaperone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "887002ae-794b-427c-9f98-e909b22313d9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ec3c80c4-4935-455c-a14f-a0532b6a41a8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "48d43194-cbcb-472f-b1c8-b97e347b654c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "62b5ab41-7a85-49aa-8669-8a09a09d02fa",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0f836c3b-d1fb-4b3b-9c14-cc9052be3a94",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Grub, Storied Matriarch // Grub, Notorious Auntie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7110cae6-b0ed-4495-9f36-751ce25c9538",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ashling, Rekindled // Ashling, Rimebound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4086c9a8-f9bf-4359-a67a-9f7b45528ccf",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f7604799-1d32-4c6c-92c6-0d1b274a1115",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Catharsis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0a1c101b-3fad-421c-a081-69e75db95c46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deceit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9f53e76d-3038-41f7-b050-bb9d7c7d2ea3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emptiness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ea49c01f-3f32-4c66-893c-56931e0e8981",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vibrance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "280eb666-e918-4640-9c43-19bc71af06b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wistfulness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8700c0ce-2a71-4bc8-a14c-685b5d188b54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adept Watershaper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aef1f79b-c536-4bf3-ab71-0a812c4c0728",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curious Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "c6ef5697-35ef-4603-92b9-ed1993f5d401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinbinding",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bf7ab51b-301e-48fe-b1e8-0c33d057e7de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinscaer Sentry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d0de86f5-4dd5-415f-ba9a-6321986fc9e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morningtide's Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "69f6248e-d8d0-40eb-a89e-bc3017327711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slumbering Walker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "29c2c66e-a3d3-4993-82cc-adf8f6877204",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disruptor of Currents",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7ecc95a7-51c8-45a1-bebf-9dfa053f7403",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flitterwing Nuisance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8b8996a5-4d22-42d3-a706-44c258c938e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glen Elendra Guardian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8375ad0c-5d8d-47f6-bd04-ffd59fa9c0be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glen Elendra's Answer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "539a7e8f-97a9-4aa2-957b-0cc30de797bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loch Mare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "02a9adde-1604-46c1-b481-fa0a73c72bd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorform",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ee7486fc-844d-4515-9028-8d53ba396a61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunderflock",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "58aa273f-9ec7-4024-b30e-e75fa404de72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterbloom Bearer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fea91416-2836-447f-ad07-8b96ba727cbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnhand Dissident",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d81ca098-2dca-48a2-876d-06e89c2b1d1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gloom Ripper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4366c1d7-d5b7-4f63-94fa-9d0e5edd9a73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonshadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8a6c2e99-2d4c-455a-a394-55ff32a95142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taster of Wares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "40e615a7-93a9-4753-a96c-a18237ab240b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twilight Diviner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b5e1905d-4fd8-4923-8612-75678aa3f212",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goliath Daydreamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "68618675-3e00-4b07-b1da-0e4be5700a1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hexing Squelcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0eee01c8-6588-407c-9e19-97699e43e713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaleaper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "7d6a0d52-08af-45d1-9c4c-3d694c40b372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meek Attack",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a7072412-4aa2-40ef-a267-bd717551a42b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys, the Evermore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9377b69c-9677-4865-a0c4-af0bfd7ebfd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scuzzback Scrounger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c79d97c0-76aa-439c-b47d-dc4b00ffda96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Immolation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "65825a3c-a442-476d-b594-e61d6104dffa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinerock Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9c87e3f0-4305-4b07-a92b-b61430e80e97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurora Awakener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "46aa1d12-ee23-4b0f-b574-7f1a625ca279",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloom Tender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7028368a-5711-416c-b5d9-874ef373335d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristlebane Battler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e9777cbc-064c-4c11-9a43-8d44f7e8e403",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Reunion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8d10a060-5abd-4982-996c-a8fc420e44ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutable Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "ff984cb9-cd72-47a4-adce-2521c025679b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sapling Nursery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ddc88ce9-716c-4328-95ec-f1c336d04c33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spry and Mighty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "201c73b6-368f-4dac-b034-49c6aa6408ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashling's Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a942f56d-69ee-4151-baae-9a718ff6e7b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boggart Cursecrafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "70b67bc1-0535-48bb-9f5c-4f43ddeb16cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brigid's Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0fe0730e-a549-427d-99be-68d6fded5ac5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deepchannel Duelist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9f0a1644-58bb-4826-9832-0ffc372fac1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, Besieged by Time",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "343a04c9-ebf8-41d9-9ebf-9d17da5ad605",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eclipsed Boggart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "57708ef7-ef10-49c4-8cf7-7055cf7280a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eclipsed Elf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6271b82d-5922-4de0-b763-129908ece6ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eclipsed Flamekin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e40d5d7c-4176-4faa-9701-933307eebb26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eclipsed Kithkin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "45d96555-4976-49d1-b529-09cc7ca37cd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eclipsed Merrow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "54a38e72-b308-410f-b182-454c935e2242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grub's Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c157b97e-905e-4c68-b6ae-9c43caa7c6e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morcant's Loyalist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a2cb17e2-982e-4914-ab09-6edcf2546509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sygg's Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fea71783-1ac5-483b-8a91-1ba45af4ea3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thoughtweft Lieutenant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aefed846-e367-4940-842f-b504c71d0a53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trystan's Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a422ae59-abb6-423d-8400-670196560920",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twinflame Travelers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "44407660-79ed-442d-a215-d388c27c5130",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chronicle of Victory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "19cba6be-7291-4788-9241-87dad3b68363",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Hallowed Fountain // Hallowed Fountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "eb96c335-9ed3-4f7d-b07a-185ff4044976",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Steam Vents // Steam Vents",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "28d37803-d3f9-4806-9a0b-79362a517a7a",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Blood Crypt // Blood Crypt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "307fdde3-43f6-4d80-884a-4a85314ab8e4",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Overgrown Tomb // Overgrown Tomb",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec75b840-420d-4512-a74a-d70f19be0085",
+    "language" : "en",
+    "layout" : "reversible_card",
+    "name" : "Temple Garden // Temple Garden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "895e7a6e-cd10-4a00-bfec-30e6330e193c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterbloom Bearer",
+    "promoTypes" : [
+      "doublerainbow",
+      "headliner",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8a91a96d-843c-4ec6-8078-89f87c5ce85a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champion of the Clachan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c3bef4e2-d5f4-4e95-a212-d8e02bef99f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys, the Evermore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6e434b0d-d438-432c-9684-5d3edf30790a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winnowing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cbb067b0-1bb6-467c-b361-2c9ed6bd3a22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champions of the Shoal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "42465c20-16f8-46a2-96fe-b52a9eac3df9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonized Crescendo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "23d41fc1-5b74-4ab5-9b14-43aaf3a7d125",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rimefire Torque",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f99ccd3b-07f7-47c2-8de9-6aa5251d7a76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodline Bidding",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e7a12664-a930-4159-8311-19862488fb05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiral into Solitude",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3aeaeb01-eab1-4bc6-bd58-c00a7e41a8ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champion of the Weird",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "05a553f3-3ff4-4601-bbf6-2f8b5ca6aaca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mornsong Aria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "874a32a5-0a9b-4225-a877-bb6e74cd6c5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champion of the Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "7250001d-a170-4b23-8290-6fdad48b4ac8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d8adeb65-f6f4-4d21-bca7-71fe8ef71f3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "End-Blaze Epiphany",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e35eb02-d541-45fe-9de7-a3c6599a9b0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champions of the Perfect",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1444f39f-042b-4bb3-8307-6b8878198086",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Formidable Speaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ee08e321-6011-4545-920f-5b35180e896b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Safewright",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c8d85a84-42a2-47d1-8fc2-1a081fd6bd2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abigale, Eloquent First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0f5f63df-f401-4c13-a105-e831fd841e80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bre of Clan Stoutarm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c0c2b1a7-d03e-4266-9bae-f2deebd714af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deepway Navigator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "be97b021-0844-4bac-8d17-c96b4920744e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream Harvest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eb1dc48d-81c4-4ecb-b5b3-d75b198f61db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Figure of Fable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fdb4192b-73ae-41e9-a3b7-a20c69350b79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Perfect Morcant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a77c3a75-4880-4b86-ab1e-92f045abc484",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirol, Attentive First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "57289725-5ad2-46dd-a7f9-a78db67022e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lluwen, Imperfect Naturalist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4b1ace1f-84ec-499d-8a52-c0ad26a70d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maralen, Fae Ascendant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "0e04140a-11a1-4f4a-965a-5c3c6569595a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raiding Schemes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "31075628-a238-4ed5-b126-16ef5c23d364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanar, Innovative First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ec1b5c33-2025-4d01-9b51-433a40a105ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow Urchin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ca89fb7a-5575-4875-80d3-6a05f78ea65e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tam, Mindful First-Year",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "00b44e41-828b-4da4-b625-92943b8989ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrormind Crown",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9003e4f9-273f-4754-beaa-cd770c674a2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winnowing",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a7c5b57c-f6da-4de0-9645-42e30c25ca32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glen Elendra Guardian",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "31764ac0-6acb-496f-bb44-d556235bb47e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonized Crescendo",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "aca1b882-0fe9-4022-98e4-bae528b2a1e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodline Bidding",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "485a801c-0e10-4943-8456-852aacb24d9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonshadow",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "72bd8ce5-795a-4503-b92c-a4a39f0bd4db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Inferno",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "530aa72f-0a77-443b-9ad9-cce8d91b8657",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meek Attack",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "933f0eb4-7c8a-44c9-b91b-f3ff35081d1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinerock Tyrant",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0b5f1455-8124-408f-9ca5-9b281ec1708f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloom Tender",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "28ab33be-cbfc-46eb-a5fc-9c770e1051d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Safewright",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1384b7c7-81fe-4444-89a2-94c9de51df6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winnowing",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "af008f52-d83d-455a-b217-7e40a8849a99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glen Elendra Guardian",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7b200330-6463-4ce0-828e-5e1a4f074478",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonized Crescendo",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cc187974-f1e7-4fb4-9c81-51cd6b395974",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodline Bidding",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "deb91ea3-f355-4aa2-a029-908cecc55fc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonshadow",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2ada6e6f-77bd-49cb-8aa7-933acc02a0f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Inferno",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ed87df86-3a71-444b-a7a0-8221b1627610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meek Attack",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "10808193-6ddc-4d53-a3fa-32d7ba80a04f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinerock Tyrant",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "52c440f6-95f7-473a-8b81-0e423492f205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloom Tender",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9a7a526e-b5cc-4a44-9a2c-722603343b21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Safewright",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "08ed333b-358a-4e44-954e-562ecf5666b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Personify",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3841d32f-4e41-409a-b1ec-3db9390d61a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silvergill Mentor",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3d47b1f2-da4a-42c4-992e-e0bfdd1a3e2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron-Shield Elf",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0a13f8e0-8b23-4553-ad76-9e52f8d4c63c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sear",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6044d540-70ff-4ce3-9a26-4164e7543baa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Virulent Emissary",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "df94f428-f097-42cb-be03-3046e6867344",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinbinding",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2dbd1ec1-2b66-4fcc-84cb-9d35afcec921",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonized Crescendo",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9af9a907-fd2e-4ae0-ac7b-529074b79a14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aquitect's Defenses",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "382b83c0-bbbc-4db8-bc04-cfea79aed1b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blossombind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a2908ed1-517e-4f1a-94e5-b06fb033c1a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lofty Dreams",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "076c0ac1-722e-49ef-b815-ace210069972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noggle the Mind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb7d5bbb-4f68-4e38-8bb0-a95af21b24c8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70adc870-f0db-4d4b-863b-673c2c258751",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "aaeb9c9c-0f15-49dc-ae6d-2a958680f327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boggart Mischief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "ecl",
+    "setName" : "Lorwyn Eclipsed",
+    "variation" : false
+  }
+]

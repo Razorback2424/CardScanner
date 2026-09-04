@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7720870-b6cc-4833-930d-6da05b36d17a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "giftbox",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-10-20",
+    "setCode" : "g17",
+    "setName" : "2017 Gift Pack",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8326b99f-9ccd-401e-aef9-9473303d10a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "giftbox",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-10-20",
+    "setCode" : "g17",
+    "setName" : "2017 Gift Pack",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75384818-7003-4a9a-9da8-9b2455d98a4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "giftbox",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-10-20",
+    "setCode" : "g17",
+    "setName" : "2017 Gift Pack",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a1636d7-2c04-4dfa-8501-0bd9771e3ddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "giftbox",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-10-20",
+    "setCode" : "g17",
+    "setName" : "2017 Gift Pack",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "049528b8-f922-4671-931d-9b37640d5a07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "giftbox",
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-10-20",
+    "setCode" : "g17",
+    "setName" : "2017 Gift Pack",
+    "variation" : false
+  }
+]

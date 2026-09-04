@@ -1,0 +1,408 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "719f172b-f9ad-4960-af66-757eb54147f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atarka, World Render",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8b43b68-ee35-4704-9a0f-1df4a42d3791",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drakuseth, Maw of Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b986e9e1-7233-4817-855c-68b7249d00f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "359be9e6-0770-43e3-853c-95e5317e9d30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verix Bladewing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e8510a1e-62ca-462c-b036-d1312729f27d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara, Soul of the Accord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cc7a4cb5-5010-48db-9564-7ca41d58b864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df111928-8f05-460c-989b-6cfc5cf5cd0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek the Merciless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2f146425-749c-47f1-ae79-1c6cb113f425",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kangee, Sky Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1cb8ba0-484e-433b-8d1a-2b0966f92a0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maja, Bretagard Protector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1706e61-1804-410b-b82f-8e862555fe1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani Discordant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e84372fe-90a8-4910-a768-c13c7069c978",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vela the Night-Clad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1faa0cd-3556-4664-90d3-76ae5c736f5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimoire of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4d8fd87c-caf7-402e-b543-e35ba3007bcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa and Geralf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33777ebf-bc27-4e87-bdd6-69dfc979b91f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sephara, Sky's Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "de3278de-a045-4290-b05f-3b19e7055091",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isperia, Supreme Judge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a024104-3d51-438e-9e72-a2e727450b7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bident of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "19e4d494-e8b3-4ae2-93e3-70c65ab90f15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kardur, Doomscourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b7f57cc-3ce3-48fe-85aa-22df749f57e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Josu Vess, Lich Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "scd",
+    "setName" : "Starter Commander Decks",
+    "variation" : false
+  }
+]

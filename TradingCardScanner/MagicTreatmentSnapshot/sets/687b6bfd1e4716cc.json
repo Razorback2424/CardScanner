@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68c1142a-58c1-4a8e-808b-d47a45abb76b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Baloth",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "g07",
+    "setName" : "Judge Gift Cards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c40e77eb-4363-4fd6-9f38-877d42e0f48c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cunning Wish",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "g07",
+    "setName" : "Judge Gift Cards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75d4f6fc-c5cd-416c-aafd-19c2f2c0cd51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth's Will",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "g07",
+    "setName" : "Judge Gift Cards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c2d88dd-813a-4cd5-9a6a-ca6f80564078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vindicate",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "g07",
+    "setName" : "Judge Gift Cards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3fd8bea-9fb2-4c28-b757-5b1dce091994",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decree of Justice",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "g07",
+    "setName" : "Judge Gift Cards 2007",
+    "variation" : false
+  }
+]

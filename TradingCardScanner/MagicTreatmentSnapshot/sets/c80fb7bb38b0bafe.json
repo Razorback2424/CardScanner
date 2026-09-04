@@ -1,0 +1,50 @@
+[
+  {
+    "collectorNumber" : "160a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acef8c94-469b-4a76-b507-25b51f2501ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brothers Yamazaki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2004-10-01",
+    "setCode" : "chk",
+    "setName" : "Champions of Kamigawa",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d854a02-661c-4071-9a92-a97a3ad607b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brothers Yamazaki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2004-10-01",
+    "setCode" : "chk",
+    "setName" : "Champions of Kamigawa",
+    "variation" : false
+  }
+]

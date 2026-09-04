@@ -1,0 +1,2181 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ff57c8b-173e-4a72-a0a0-1ad2d5cc6e5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48255f10-ea0e-42a3-bbfb-efa773f0cb08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starling, Aerial Ally",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36320a3a-e771-4763-b147-f328724cf36c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Rex, Daring Dino",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29f7f242-57fa-4714-84fa-3e65c7101985",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiders-Man, Heroic Horde",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7feb1493-b73e-4ee3-968e-d69806360952",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Miles Morales // Ultimate Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6361ffac-ad30-4b6a-aea2-c804ad51c773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lizard, Connors's Curse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf2b3695-f5f3-4b17-bde3-90ec0c6b9e5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezekiel Sims, Spider-Totem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c37e8b36-00bc-4fc0-89e1-dfd8a3188465",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall Crawl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62531cc3-c218-41f0-a3a2-beb42185baaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandman, Shifting Scoundrel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117†",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfcd2602-6722-420e-a5e2-49cc046ccd5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supportive Parents",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : true,
+    "variationOf" : "09bda521-5d2d-4a61-a533-06361e91e4cb"
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1c95ee4-b60d-4868-b7e3-204849a8f544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Ham, Peter Porker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a6927378-fee5-49c7-a607-c8084d7d077c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver Sable, Mercenary Leader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "13025ff4-7dd5-4fc4-806f-d237a7b3bc32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web of Life and Destiny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8e34d252-c96d-4f75-bf56-2a9b1e62c002",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Kraven's Last Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb4fc620-2c48-46d9-9046-157285e820a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Brooklyn Visionary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "458cd7a1-7437-493b-b7b7-42ef489e77df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silk, Web Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b851b3f4-0f88-44ce-bd75-b4cf083967f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man India",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a6d9b8d6-1e97-4e9c-b0c4-3b71734134a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarlet Spider, Ben Reilly",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f0210ec-36eb-4138-a6a2-4c5c67bf5ce6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven the Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7717ba8-c225-40ad-bd2e-282d0f43cdaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prowler, Clawed Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "487c104e-ab0d-4310-973c-a3661d6dabe2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sun-Spider, Nimble Webber",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1eb20949-de39-4da8-903b-c5d7cd786342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shriek, Treblemaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "566eca5c-fbc3-4ac8-9b20-4c15b0101abd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary Jane Watson",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1332480-4986-421f-9a31-1d597d597c65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carnage, Crimson Chaos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "69a6759f-45c8-434b-a18d-2b92221914dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraven, Proud Predator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c6753c36-4aab-4608-b2e2-c7b0519cb0c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jackal, Genius Geneticist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f41cc164-e799-492b-a155-43b218042189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Araña, Heart of the Spider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ebc534ac-c33b-4059-9d11-82645f8fead1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Girl, Legacy Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1bb9f52a-8edc-4ca5-bc63-ac6f93874219",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Origin of Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f193a36-d452-4503-937c-90fb55a99ab4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Superior Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5f5a13ff-8763-4923-a610-8cfd08bc8d2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scarlet Spider, Kaine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c10d6ea8-f670-41c9-8aa0-66df5fd69f34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "SP//dr, Piloted by Peni",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbf1ea21-2e90-4792-b399-111ff70a9d06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Woman, Stunning Savior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a2d4e77-f22f-4664-bd97-98840a5e94aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wraith, Vicious Vigilante",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7772b146-80ff-4906-84e4-69c704fa6f4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doctor Octopus, Master Planner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54044eb2-ff97-49e3-a123-b707241e513d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Green Goblin, Revenant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b4f1026e-ea10-401a-bceb-2a7eedcd83b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Web Up",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dce39404-b2d5-41e1-84e8-8da3657c278c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Spot, Living Portal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1392de20-9ed9-4852-ad13-a56c51c8a247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vulture, Scheming Scavenger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9905b88b-4b4d-4a14-8032-7f23d4517d8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultimate Green Goblin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2996f07-9dbc-444f-aaae-710866da2b4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aba6def8-b2db-4083-a496-45afc7d803c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Symbiote Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63aa6c28-5b8a-4ef3-80ff-e62d34538ed0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morbius the Living Vampire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc6a2e6c-7096-4466-90ab-828290f098cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man 2099",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "198352f7-dd8d-4dce-b985-3917078bd0f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mister Negative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d9b096d-8813-44a0-835e-fddb61c576b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhino, Barreling Brute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "74b2cb69-7f02-4a48-ac5f-bdcced99c59c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Brain, Mechanical Marvel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0229a5a9-eb7f-4eba-8b1e-f2271e312d4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Spider, Stark Upgrade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8874e6e-400f-48ff-a9da-6bce557bde78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Slayer, Hatred Honed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "10e0dff7-8923-4e47-bf28-c6d0af78ce24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Friendly Neighborhood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "488f94ef-c9ba-4a96-8abe-99c9a855c5c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-UK",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ec821c3-3e5c-4af8-a6ef-e2e77aa8668c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Peter Parker // Amazing Spider-Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84285f17-dbf3-49f6-a61e-2f779cb3e798",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anti-Venom, Horrifying Healer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6512f8c1-96bb-4a33-b20f-dd09f6eec5dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arachne, Psionic Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83a9e039-f168-40f2-9122-cf6e535e9bb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aunt May",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8680fbe9-b231-4334-bca7-7fff7a7b10f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beetle, Legacy Criminal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa7d8ca7-5db9-4a22-a921-18dd7c56cf2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Byte, Web Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de404b0f-9ba3-4e26-9230-20ce1dbf063b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydro-Man, Fluid Felon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "167f2d2e-d5c3-4bf8-83aa-33998e45a69f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flash Thompson, Spider-Fan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da13a060-36ee-41e9-bab1-af8ddcc893b8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Norman Osborn // Green Goblin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "07171df9-8998-4d56-a59c-eb3cb9240f53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man No More",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "eeef16f4-5bf4-4eea-9891-84b87d1d396c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impostor Syndrome",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "78cd4dde-7e2d-4fcd-a207-a80911755f3f",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Clone Saga",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d264eb63-e883-413a-ba01-99ed257d086f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lady Octopus, Inspired Inventor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85ca58c0-bf3a-49fe-848c-adb1449c29bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Madame Web, Clairvoyant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15782c61-8310-4fc2-846c-5a00fd302d0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doc Ock, Sinister Scientist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "138dcee4-9163-4f78-ae87-87f9b7c1c6fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "With Great Power . . .",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b9be8e17-7304-4df9-bdeb-8f31c604056c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Robotics Mastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "12469736-a917-4b6a-973f-bf8380bd3e40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chameleon, Master of Disguise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffca39eb-f611-46b1-9d6b-a5c90c722fb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterio, Master of Illusion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c2cbebab-ea84-4a38-8d1e-6e7fc7d0655d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alien Symbiosis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2e4d38dc-d670-4c10-906f-988e4102f5f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parker Luck",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fcd9da8a-e36f-4ae1-9a5d-b72ad9c27397",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenom, Remorseless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6db83692-1c33-4e61-b8ec-dc030bf2c963",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Death of Gwen Stacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f0b6b31-c3e1-49bb-bc59-ce6414cde878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man Noir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d70c0e56-4f97-486a-8345-0cc6c51e3e36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rent Is Due",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "18091791-5089-483f-9446-c2684c5da03e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morlun, Devourer of Spiders",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "079d9bfa-f039-47a9-9b6e-41879028d2da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tombstone, Career Criminal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d62cf4f8-36a2-4d9f-9d52-53ea18a52760",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent Venom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ac4c44a-d74b-47f3-91d9-bffc3cc4eaae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scorpion, Seething Striker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a54f47cd-d897-4da4-be67-aa8eb71bdac5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Soul Stone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "add0aa73-232a-4d4f-9e04-4cd2a6ff05bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venom, Evil Unleashed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42a3589f-f09e-4298-b1ae-7165de65bfb8",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Eddie Brock // Venom, Lethal Protector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1898ea58-a4ef-4ec0-a88a-22ee14b030ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm, Being of Bees",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e92c1e20-8ab9-425c-bd1a-469e4f091b7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Cat, Cunning Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c3fd31e5-0faa-493f-aa50-08307a0c0139",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Verse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b12f23c-54b2-4b28-8434-c3f509a204d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electro, Assaulting Battery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4c5097b-204f-4dd1-b2f7-81555c408dd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobgoblin, Mantled Marauder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70d0edde-c5a5-406f-8933-bdda1abb5c05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Man, Inferno Incarnate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb8acf92-22c2-462f-af2d-bc07217e83a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shocker, Unshakable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1ac4300-5589-4a21-af20-87b58ddae09b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stegron the Dinosaur Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "774d48ab-181b-4190-9956-67706bea9b27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Punk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d8d0a8fd-57ec-4812-8c40-82380a3eb8d5",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Maximum Carnage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "380ab614-e46d-476b-bce9-fd2a8c074906",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "J. Jonah Jameson",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a301083a-9130-4384-a355-efe7050871ca",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Gwen Stacy // Ghost-Spider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19e761e8-7542-44e9-9c6f-65a806153501",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Web-Slinger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cd68f368-6b6c-4c1e-a971-11e549e029c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of the Goblin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32b086a3-1a5a-4765-918e-06a11770079d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinneret and Spiderling",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d643a81f-2b6b-430b-9123-3df43072fa5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Gwen, Free Spirit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-23",
+    "setCode" : "om1",
+    "setName" : "Through the Omenpaths",
+    "variation" : false
+  }
+]

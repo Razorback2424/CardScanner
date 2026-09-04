@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31557515-5b2e-45d2-8ca5-0562d064578b",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bfd4347-7307-47a7-ab38-b92498e859c4",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Samurai",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "308614cf-d278-4edf-b02c-b37579e63118",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Phyrexian Mite",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2edc7304-9094-46b1-8aad-295a76cf95b3",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Phyrexian Goblin",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68ddbabd-24ad-4a12-a757-beed6a956a36",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc377b42-7bd3-407a-98ec-40ff5606a883",
+    "language" : "ja",
+    "layout" : "token",
+    "name" : "Samurai",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-27",
+    "setCode" : "wone",
+    "setName" : "ONE Japanese Promo Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "collectorNumber" : "178★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aac9448c-c802-476a-87ef-e1d745fd862a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Baloths",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2009-10-02",
+    "setCode" : "pzen",
+    "setName" : "Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3312a53-871b-4e0c-994c-21a247c5fe7b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Oran-Rief, the Vastwood",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-01-01",
+    "setCode" : "pzen",
+    "setName" : "Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61859afa-9578-4179-8c2b-9c54e880f339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valakut, the Molten Pinnacle",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-10-02",
+    "setCode" : "pzen",
+    "setName" : "Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ba873f7-a7a4-44aa-84a6-44501424dc7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Judgment",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-10-02",
+    "setCode" : "pzen",
+    "setName" : "Zendikar Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e093b461-49c4-4fff-bc1b-cab3f05d9615",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terra Stomper",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-06-01",
+    "setCode" : "pzen",
+    "setName" : "Zendikar Promos",
+    "variation" : false
+  }
+]

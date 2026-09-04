@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa3fc5bf-f20c-47d3-8bbe-4c1c774074fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primordial Hydra",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pdp13",
+    "setName" : "Duels of the Planeswalkers 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bfcfb4e-1d1a-49b2-810c-cdcde29a3bcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Avatar",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pdp13",
+    "setName" : "Duels of the Planeswalkers 2013 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3787d5c3-44dc-4d80-83dd-b1eb072baa82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampire Nocturnus",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "pdp13",
+    "setName" : "Duels of the Planeswalkers 2013 Promos",
+    "variation" : false
+  }
+]

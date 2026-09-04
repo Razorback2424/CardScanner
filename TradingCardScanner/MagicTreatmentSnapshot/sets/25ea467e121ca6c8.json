@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acd51eed-bd5a-417a-811d-fbd1c08a3715",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-12-05",
+    "setCode" : "tevg",
+    "setName" : "Duel Decks Anthology: Elves vs. Goblins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "209af8af-7c40-4e87-8a4e-926c7ea76fb1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-12-05",
+    "setCode" : "tevg",
+    "setName" : "Duel Decks Anthology: Elves vs. Goblins Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff1df646-52f5-4292-9fd5-5b8393f63931",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-12-05",
+    "setCode" : "tevg",
+    "setName" : "Duel Decks Anthology: Elves vs. Goblins Tokens",
+    "variation" : false
+  }
+]

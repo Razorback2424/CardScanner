@@ -1,0 +1,508 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b3d7795-3fc3-4b78-bdf4-0a79981f1eee",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e49c80ac-5c90-4fd2-ad40-cc77af160f64",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Monk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2de43b03-9ac5-4292-ab29-2dc6210ef3d9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1dbbdb0f-57a4-4b85-ba5c-1383f0efb3af",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b1b8ff0-0b1e-4a55-a937-fde7ec15c41a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ballistic Boulder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82016bc3-8905-454a-b4aa-b9eac69d42c4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33648889-2715-40f0-81fa-b6571d0bb0c9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c9669e6-e093-4f88-9699-a1a32793bfa9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98bdb578-e81e-40f9-9c06-b2867158baef",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8db9a248-d380-48e9-850c-38b2907332c1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db202f04-61e7-4e12-848e-6c1761956a58",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f361ecd-045d-43a3-bb1b-83c23f070ff8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fb7cf0b-48d1-4a35-be63-a331987400de",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0e54f01-1301-481f-ace0-87966b5135f0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee9ffe19-fea7-4dcc-a673-26be06d2f1be",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f59eba51-458a-40e0-b754-999f91d5d839",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f842c52a-04b6-4625-ba58-45b043ada340",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cae9c13e-fda2-4591-bd52-888d12194e4d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f9ab0ca-fe08-4d90-9c54-3137620647cb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b52bae4c-3831-442a-a944-b1f3548dbd39",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01439983-8394-4a0c-9e9e-92a3f1927fe3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cddc0746-6d3e-441f-866f-28587bf54801",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "ttla",
+    "setName" : "Avatar: The Last Airbender Tokens",
+    "variation" : false
+  }
+]

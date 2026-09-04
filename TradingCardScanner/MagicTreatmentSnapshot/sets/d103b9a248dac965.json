@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5111a9a3-a92d-4677-8974-20800256dd4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feral Throwback",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-25",
+    "setCode" : "plgn",
+    "setName" : "Legions Promos",
+    "variation" : false
+  }
+]

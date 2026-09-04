@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af7c2def-d20d-4670-8950-7042e9380844",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squirrel",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "657fa00d-ddb5-49e6-a01e-82038cccfe30",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3dc13cf6-665a-4d92-836f-b2e10ca08ecd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fc04b19-e636-4868-8224-a5da75ea01c8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56c0fa29-fbcb-41fe-94ab-a39b1154c99b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b953ca2-5be4-4c6a-a0fd-b53219ca6341",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "pr2",
+    "setName" : "Magic Player Rewards 2002",
+    "variation" : false
+  }
+]

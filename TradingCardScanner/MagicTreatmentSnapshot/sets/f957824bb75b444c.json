@@ -1,0 +1,183 @@
+[
+  {
+    "collectorNumber" : "0",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b75073d6-bd99-4d70-b335-72df71636617",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Enhancement Stickers",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d10db7e-e680-496a-8845-3bdfb176a989",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spear of the General",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb470a9e-ec5c-42f4-a128-9a813d883f14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloak of the Philosopher",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26326918-56f7-4dd1-90cc-3e3230672637",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lash of the Tyrant",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6ba72d5-b57e-4c79-a868-e114c07288c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Axe of the Warmonger",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "249f009a-07da-41e6-909c-64e17208ed2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bow of the Hunter",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80c9f81c-a6d7-4ffd-b2c8-01ef025b272f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Destined",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a6eba2c-a980-4a2b-b103-bd91bc5889d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Champion",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-05-02",
+    "setCode" : "thp3",
+    "setName" : "Journey into Nyx Hero's Path",
+    "variation" : false
+  }
+]

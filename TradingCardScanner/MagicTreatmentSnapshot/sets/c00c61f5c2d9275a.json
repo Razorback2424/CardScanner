@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bed09edf-c4b2-48fd-89c7-b5664fdbcd58",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "10e",
+    "setName" : "Tenth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139★s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fed5ae55-0dae-46e1-ab77-a50b7f5baee4",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "10e",
+    "setName" : "Tenth Edition",
+    "variation" : false
+  }
+]

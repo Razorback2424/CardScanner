@@ -1,0 +1,2222 @@
+[
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35a311e7-9bce-484b-af41-570697aabbb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrodominance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4246003-e1c5-4ad2-8035-9bcb727c0d2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nethergoyf",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a18b861b-1c6e-4415-9373-4440906a57dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ripples of Undeath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d11c8ece-0330-4f5c-9a27-e81434f7c01f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shilgengar, Sire of Famine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d2c238c4-5012-4934-8ed4-48166883824d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, the Broken Reality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ce1df32-37c8-45d3-8da1-b8d0d80d5d52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warren Soultrader",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55ad90d3-d2f0-4606-bd96-1878d7317d06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warren Soultrader",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "271ef715-861c-4dad-93b2-160e29131c49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Revolt",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "10661bc7-fe73-4595-b294-21379196f26a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashling, Flame Dancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ee6c975f-0629-482a-8041-c8e059cc6a68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Detective's Phoenix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "1fa5e693-2719-415e-add1-cd89c4bc919c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Linebreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5edc2617-7d04-425d-a2ca-4a4c696e4b63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flare of Duplication",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f90973d1-9d4b-4c39-940c-406cd7fb33a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a753c5c-9271-4a10-9fdc-4849ce4fb412",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8effa88d-eabf-4ee3-91c0-05e3d0bb8530",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Party Thrasher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1357d73-9886-4666-b402-fada7dd8d4bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Powerbalance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06b82c29-62bb-447b-a36a-d205627ed4f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nulldrifter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "151eeadc-2cff-47db-8cd3-48f1005534cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wheel of Potential",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c341e592-5545-4d28-b65f-2c91a0516712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birthing Ritual",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0d465d4-4c58-499d-8555-bcb25c48f4ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eladamri, Korvecdal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b955975e-c7c4-4374-9d9e-aec82460832a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fanatic of Rhonas",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39538c47-eb5b-4bdf-848a-b58f91da35a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fanatic of Rhonas",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd6bb827-481c-4878-80f1-7644347120aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flare of Cultivation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4209e00-2cd6-49a4-afc2-902e3b353bf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Defiler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e107144e-133b-4c76-b7e1-91bd0f3cbaac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Prayers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9e37440-ac69-46d2-beea-655a209feb6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Six",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b9ba1f1-584d-4c40-85b4-3292d793e33a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Six",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "ebbd6efa-24d3-49f1-a92d-2b83765fde75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sowing Mycospawn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0ad198cb-32e5-4e3e-9581-d764ca6a8983",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Springheart Nantuko",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f5b2afc5-16f6-4fed-90de-6ca0051392e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Springheart Nantuko",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "35b34d0d-9484-4531-81ff-1f2ed897e422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thief of Existence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "e5153f6f-e6dc-4aac-a9a2-172aa957166c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abstruse Appropriation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe60347c-2ef7-4515-a4b8-00ef74801fe8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arna Kennerüd, Skycaptain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4988f0fb-2f3e-4ec6-afea-b02894230d95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genku, Future Shaper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc18794c-5648-4d8f-a262-d85bb168864e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imskir Iron-Eater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b262a509-dc48-4da5-a1ad-379e4ad33a81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invert Polarity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e253b3de-b190-452a-942a-bda727a42d9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kudo, King Among Bears",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "acd7ca2d-08fc-42de-94e1-f4c7358f5a10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadu, Winged Wisdom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90187077-083b-4226-9b97-52d5548513bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Necrobloom",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "66f40264-0d28-4222-9a85-9e9e9f811c12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Necrobloom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba8331fc-aa90-4978-b4ab-20ab685f7fa3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phlage, Titan of Fire's Fury",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "258fc919-225a-4c26-a9db-59187cc7d8f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psychic Frog",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d090ea5-c01b-4f3a-bb5c-7478e8fdb86d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psychic Frog",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc55a52f-ec0a-4c17-9d29-65b2b82b927e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rosheen, Roaring Prophet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a98ebbe3-74a4-4ae6-90b5-63c85ea6102e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wight of the Reliquary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d74a48b-9c0d-4a22-bdda-468911fe72ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disruptor Flute",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d302eb7-15eb-497e-87dc-70ac8762b869",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Argent Dais",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c309cd5f-1de5-4689-a7f0-0e9f468585ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter Moon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62f528be-f279-4568-8e03-5de7281fc7f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archway of Innovation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86cbcf48-0410-4eb5-b617-4f72da2f9da1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arena of Glory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbe1eccc-02b4-4dd1-b0c6-3f24f7e2ed7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodstained Mire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b817ec56-51cb-42b0-a46b-914a6d4b5582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flooded Strand",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "913e0213-a9dd-4042-9002-5ff9e0e7b5dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monumental Henge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12ecf069-25bf-484e-a92e-a46a41a86536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polluted Delta",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "160444a5-e10f-4de2-b2c6-f2952490b324",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shifting Woodland",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d978a3c6-94cd-4260-8fd4-91855cbf3129",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spymaster's Vault",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6579cb87-70fe-43ff-8a1a-f7fb89da6aaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin's Labyrinth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db2df285-9808-4043-9fe9-828a4bc1fe4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin's Labyrinth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "903e4a26-b49c-45af-b291-37935808295c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windswept Heath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7d96c81-cec3-40de-b4c1-c2287d1f5cb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wooded Foothills",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "047f196b-a9d1-4cd3-b665-3b304cc59767",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ajani, Nacatl Pariah // Ajani, Nacatl Avenger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de7f58e4-c7f8-459e-8901-fedfefc957fa",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42353f71-9c79-4105-a117-c12b3f4ac895",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Sorin of House Markov // Sorin, Ravenous Neonate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e96867e-f127-44cc-8f48-3d32878185de",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ral, Monsoon Mage // Ral, Leyline Prodigy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60d0e035-72bf-40fb-b0fb-7bd2733e4c30",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Grist, Voracious Larva // Grist, the Plague Swarm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "782190b2-6539-4fcb-bfe0-0beb160e84d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flare of Fortitude",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea1694c4-33b5-4505-a74b-5a2ffcba0600",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Incubator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce1523f1-dcba-491c-90ea-92a34fabbdc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guide of Souls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "998d2321-955b-4453-980c-725d1cabf785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devourer of Destiny",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "637ed5bb-9ea3-4f63-b6aa-9528048673c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ocelot Pride",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2343ea9c-9901-4162-8002-c1108826a75b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ocelot Pride",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df275d30-677a-45ae-ba34-d99a5e098281",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pearl-Ear, Imperial Advisor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c39859ab-dd74-47e3-8aca-306d1555537b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phelia, Exuberant Shepherd",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0cd78907-a14d-44e4-b578-1b2eb1398589",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "White Orchid Phantom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7efc6b27-8dd9-4208-b290-20fcb02cea54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of the Skies",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "35d0fade-372a-4a02-b649-52966abc6e89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoes of Eternity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebf7119e-9b77-4a76-90b6-7b56dfb6adfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoes of Eternity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72389187-ce0e-42b2-85f3-43a1308118be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amphibian Downpour",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea6c88c8-9d41-4f5d-ad89-5da0f06fd7a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamtide Whale",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7e4f73b-2a55-42c1-9cdc-6423dd0d5950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flare of Denial",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0cedea49-9640-4ccf-b817-829fd7806c0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbinger of the Seas",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "234f13ee-5e69-40d6-9eb4-ced75480ca7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the World Anew",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae3a1f86-810c-4c35-a62d-3bf9339a5685",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of the Second Sun",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28f1889d-b345-4d20-9e0c-3b926f977bfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strix Serenade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef32f8e4-76ca-4edf-a77b-4c49c63123c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strix Serenade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0a80141e-fe03-469d-b057-23ee6aa54923",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin's Binding",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff775584-0ce1-4d65-bc8d-5967fe417733",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volatile Stormdrake",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab73e637-547b-400d-9d30-c5c736e9d898",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chthonian Nightmare",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41007710-f3b1-4879-8a09-b79fa40085b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crabomination",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6db879dc-0e9f-448c-bda4-d6c77ae5477f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herigast, Erupting Nullkite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1478025d-1194-4910-bf3d-cc8c79f9ee64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emperor of Bones",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebeb9bcb-fc20-4c3e-88b7-ab3a6ba2db41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flare of Malice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "pmh3",
+    "setName" : "Modern Horizons 3 Promos",
+    "variation" : false
+  }
+]

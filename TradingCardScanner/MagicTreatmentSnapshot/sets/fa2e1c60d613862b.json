@@ -1,0 +1,91 @@
+[
+  {
+    "collectorNumber" : "16",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11b8f8f8-d24f-4ea5-b6b7-ad257fb03fc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obzedat, Ghost Council",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-07-18",
+    "setCode" : "ea3",
+    "setName" : "Explorer Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7e3fed02-d09b-4bd6-a3d9-048a8df48f66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-07-18",
+    "setCode" : "ea3",
+    "setName" : "Explorer Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "5d7f8ef3-212b-4671-8489-e24f1659450b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos, God of Revels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-07-18",
+    "setCode" : "ea3",
+    "setName" : "Explorer Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8836abc9-e110-4ad5-be5d-183be28c6353",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Blossoms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-07-18",
+    "setCode" : "ea3",
+    "setName" : "Explorer Anthology 3",
+    "variation" : false
+  }
+]

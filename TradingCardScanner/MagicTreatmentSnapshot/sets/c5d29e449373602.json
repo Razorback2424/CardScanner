@@ -1,0 +1,2726 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe675f03-cbb5-4177-b7d7-64a30260ee2a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Archangel Avacyn // Avacyn, the Purifier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c178227f-3b66-45f7-9838-dff70f1f2003",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghoulish Procession",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4069e510-f3f3-4668-9f13-3546fa9bc7c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Griselbrand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c50fdb09-e06c-463c-87dd-3c46f4db889a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartless Summoning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "370412b1-85ec-42a9-90fe-c35a6249e149",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Invasion of Innistrad // Deluge of the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "70d0540f-93c6-4af5-ab2d-65e6c03001c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Meathook Massacre",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "607d82bd-13b1-499a-9005-0381e716013a",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Chittering Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "647f5c2f-3ced-4397-a366-6f0e57582566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bound by Moonsilver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3354807e-bea0-4903-8010-06618af4c700",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triskaidekaphobia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Bruna, the Fading Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2c01ef93-f41a-406f-91fc-f015b6014575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Mist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "389c7393-a10d-48c0-8b64-73faa8f7d3d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burning Vengeance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7e926e19-553c-470a-afde-358541af5caa",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Brisela, Voice of Nightmares",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddad5b2a-0575-4b44-9fbc-107ee4d10f24",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Hanweir, the Writhing Township",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ffa1da29-08bd-431c-ae99-525a071dba23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathar's Call",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3c1854c9-11df-406d-b751-302b6f3a08fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mass Hysteria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "1c3509c6-2ae7-45be-8ac9-4d14d69db32f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reforge the Soul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5296e353-2efc-4d72-a877-7957eff630b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathars' Crusade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "faaf031f-2c77-4248-8a29-f47e64773cfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stensia Masquerade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d15adc93-1a71-453b-8277-4a525a9cbc7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abundant Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0a4e707f-b760-434d-ba97-a0fe651f3f6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptolith Rite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c0dc4c08-ed18-454b-b061-8901c253005c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howlpack Resurgence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "514df7e7-3050-41ce-bd44-f215bbcfd1c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faith Unbroken",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8a3997f1-5b02-4ca5-a390-fedb5874b575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulvenwald Mysteries",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "08fa38c0-353c-4f6a-b87e-3f6366af44d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unnatural Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a577ba08-0aa8-45be-aa83-d5078770127c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edgar Markov",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bce9bf8d-4d22-4967-bd9e-27fe444ef3f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisa and Geralf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c65d38ac-91a3-4407-8517-d8edeefbc89b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c257fe6-1038-4167-ae78-90309974b925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grimgrin, Corpse-Born",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "04506bad-3856-4184-8dda-941ded60f41a",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Gisela, the Broken Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "106b6b43-1881-417b-97f5-f5b050eb98fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liesa, Forgotten Archangel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "561d616c-df11-4144-acec-f9fe47efa5c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olivia Voldaren",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f7a6f6d-dfe3-40d3-90dc-58baa8924baf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Host of Herons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a01e7a3f-9654-4f72-8adc-20dad0b5d14e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gryff's Boon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8566528-ba96-4425-8831-b5d6197da9ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torens, Fist of the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c3aae385-4307-4574-9284-c52787dca5fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helvault",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9602f893-38ad-4a24-be2a-c11c9b6aaf7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fbc6091-a161-45b0-9932-543b569caaee",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Westvale Abbey // Ormendahl, Profane Prince",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "716d82a1-fb5d-4607-b1fa-e8e9edd4dd77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intangible Virtue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "12e4f93c-6daf-458e-aa5a-26844c54bfdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ebb5601-9ecd-4643-bcc7-e5663a471773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restoration Angel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8521750a-95c1-4bed-817e-96dae01c2c38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Heretic Cathar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4b03e3d4-aa62-428b-9f99-3ed93506defa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thraben Inspector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c325e79a-a80c-48e1-a6eb-dddd8b340bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vanquish the Horde",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2d2a6bfd-8ab8-4f78-93d2-6249141ee27b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hullbreaker Horror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "27a15b64-ea6a-4234-b26c-9dd3bdc14b98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laboratory Maniac",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "926a2447-84f6-4cb8-b840-a7433000a1f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mausoleum Wanderer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "1a2b9c41-6bf7-4892-bef8-dec5f8a8df46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rooftop Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "miracle"
+    ],
+    "id" : "eb7a6fc7-f692-41c5-8d36-08fd3b076a34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Mastery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "80b4fd13-710c-4fb3-a897-48e62aeb7cfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Collective Brutality",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "cc7aad0c-2143-47f6-b838-9ad1c27d2b33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartless Summoning",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8092b454-4c74-439b-9c74-5d90b29c4e9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lunarch Mantle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f1168f11-759d-4125-800f-f18816da025c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infernal Grasp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "25a6e1bb-c751-447c-be69-e03692568678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abrade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ac1a0411-8feb-44e9-be5a-1a6be77f480b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedlam Reveler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ed1b6be2-b0bf-4fc7-b0ab-1e49c4bec87f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vexing Devil",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "78d6c026-c7ea-48e9-8125-19d55d407642",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zealous Conscripts",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "f1e2c03d-8f20-4633-a166-d6dce57cd7a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abundant Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "c9accff6-ed4c-484e-ad2c-f8056f0d35e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptolith Rite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "59b80d42-5d7c-4ca0-9d54-55430b15593e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivator Colossus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15e58f65-8f34-40b8-9bf9-529064f94d4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tireless Tracker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5e1108d8-6dd5-4275-956d-4a787af16d0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Young Wolf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c4b3ef86-4c05-4d31-b035-7bc172fe73a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spell Queller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83e4e358-d639-4581-8c31-597f6d7fa57f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conjurer's Closet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8442dc20-68a2-4669-87da-076026bcff83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sorin, Imperious Bloodlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8fc0e32a-552a-4208-a8ca-2cd3bdd70989",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Duskwatch Recruiter // Krallenhorde Howler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "49825631-2498-41fe-a1df-f152ec05d1a8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Arlinn Kord // Arlinn, Embraced by the Moon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "86da891f-08d0-459c-9d20-358032c6411a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huntmaster of the Fells // Ravager of the Fells",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1bcda0fd-0def-41ef-932a-85e83acce99d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Artist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b8a289a6-a310-48c2-8162-792d6d3c4fa9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Bloodline Keeper // Lord of Lineage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "089b6e6f-c178-4612-866f-da9cbc01b442",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edgar Markov",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "35f8d43a-a62a-433a-afd3-a3b16ba7cb10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauntless Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "35398a2d-398b-4100-aac0-d411e8f0f714",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gryff's Boon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "dc5bf14c-e287-47aa-a5aa-1ac543bb922f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rally the Peasants",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "29306076-b48b-4dd5-959f-12e7a38b3800",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cackling Counterpart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "b49c5c76-3098-427b-87c1-b90d17a0909e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forbidden Alchemy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1db600b2-9b8b-4c21-8d8b-8033ec680a35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "1ce12fd8-1977-4cae-aeb5-c56e68373228",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Deluge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "83f8b420-d04d-44f7-baaa-b7298c4c073d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Retrieval",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "39abced0-7c82-4db2-9ff2-92f7689e4055",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Departure",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "bdeaa858-14b4-4f51-902f-c8d50b9c46fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Think Twice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "723d39c7-a296-4c85-94b3-1f0b3aa20bf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crawl from the Cellar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "af50a9a4-a03e-4217-abcc-07c0e5e0f5ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravecrawler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "db15f7e6-a4fa-4dd5-b072-37fc213c99d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunted Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "a4aeabdf-b429-465c-8858-91aa526cdf2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sever the Bloodline",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "217201eb-3340-4aa2-8d38-5d9ff2997b39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seize the Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d4b68ba9-a4e7-4de0-ae44-260f6c518033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bramble Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "5ac28be3-d8a6-40ba-b84c-a3aa220446d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider Spawning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "c50f4dd3-8f90-4402-be4e-a773aa472481",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Travel Preparations",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "08d0eae1-05c8-4fa7-a82e-8096119b7aab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "572e5519-86df-4fba-951a-3c0616d20838",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galvanic Iteration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "7fed20c5-e325-4185-a7f1-ca27658201fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Join the Dance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c062937f-d519-4206-99b0-cbea01b85a0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Heretic Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "dc2f8bd7-1cc7-4678-9ef7-58f14996bdf8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Lunarch Veteran // Luminous Phantom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "78b50d49-e507-4431-b932-5a1e65b50494",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Twinblade Geist // Twinblade Invocation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "67c5003c-7ba8-4810-9134-af457c780a74",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Covetous Castaway // Ghostly Castigator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "88bc8cdf-adfa-4a11-a8c0-484bc03edc65",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Twinblade Geist // Twinblade Invocation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "55251b3d-b408-4612-b53d-c90ef26ea57d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Promised End",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "79d70eaa-33fe-4fcc-947f-f6c44c97b14f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn, Angel of Hope",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "483",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "3ebdc35c-019d-41d9-aff7-b317246aefb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathars' Crusade",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "484",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c3d3a437-c587-4c73-955f-dd80157233f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captivating Vampire",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "485",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9bc860fe-af9e-44d8-82e6-da0a24466378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Griselbrand",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "486",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "996e6444-66b7-4d92-85f2-4c44d58186fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Meathook Massacre",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c41bf79b-563e-4254-86e9-0917c8fb9586",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Through the Breach",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0458d66b-02f4-4a39-b905-b2951633a338",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hermit Druid",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b0a2f99c-3ea9-4fea-8524-389959cab4d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b1b5c178-55d1-4b24-97f1-93e1a844693e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olivia Voldaren",
+    "promoTypes" : [
+      "boosterfun",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e70bfc25-3c0c-4574-b504-1d1f73e9e790",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edgar Markov",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "headliner",
+      "poster",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21ebcdf1-20a3-4e6b-aa16-672333e4f969",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadeye Navigator",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71911392-42b0-4b6d-baf7-918a4bd3b924",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Promised End",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4e6f365d-c5c4-4fd6-94cb-833b89239d73",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Wedding Announcement // Wedding Festivity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0d150547-09f5-45ce-a825-89944b066bd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0e568af8-9ddf-4efd-92ec-74a54b811c03",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Lantern Bearer // Lanterns' Lift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6385509a-6814-4039-83fb-1fa5a7439696",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necroduality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "31146f03-cb5e-4f33-aad7-ce970b914d90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rooftop Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3ae07900-e07e-47d3-b8a1-f69cec94864b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spontaneous Mutation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "0f46a800-b443-461d-87e0-5587249a42d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Mastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "inr",
+    "setName" : "Innistrad Remastered",
+    "variation" : false
+  }
+]

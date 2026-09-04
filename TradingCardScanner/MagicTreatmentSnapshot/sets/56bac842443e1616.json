@@ -1,0 +1,255 @@
+[
+  {
+    "collectorNumber" : "141s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73d28603-b116-4948-a46f-b95ae9118d9e",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Ashes to Ashes",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe305196-fd9d-4f92-a37c-6c4fe5abad1f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Bog Wraith",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c4a92a3-4df5-4d83-b015-59859e6bccc8",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Initiates of the Ebon Hand",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba90042a-a5e9-4c3f-a08a-c24e5606110b",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Mindstab Thrull",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "892150a2-0a0b-4ac5-afb5-6434d6f42396",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Necrite",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e4aaab5-a202-4905-839b-ebf39b910082",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Game of Chaos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : true,
+    "variationOf" : "95b44933-6b0b-426a-97d4-7a7cf6ad1d65"
+  },
+  {
+    "collectorNumber" : "243†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc2850e8-f135-4a51-905b-ae30b83913a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : true,
+    "variationOf" : "68d04a75-647f-400f-b0dc-c4544f7db2d4"
+  },
+  {
+    "collectorNumber" : "244†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "346eef90-35c3-4153-a64a-55f4d7b232e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ironclaw Curse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : true,
+    "variationOf" : "6ed35d03-80fd-421d-a8be-6708a5570a85"
+  },
+  {
+    "collectorNumber" : "250†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ffef6ac8-a42c-4025-b4ef-3f772129b8f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Manabarbs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : true,
+    "variationOf" : "f55a2d1d-0964-44a9-9f32-09804f2c7445"
+  },
+  {
+    "collectorNumber" : "267†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b97e7318-f916-4556-9f89-dda7914359c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : true,
+    "variationOf" : "64b05edd-4128-4150-9457-8aff895bd0b7"
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fffc0bfd-8e64-44bf-ae0a-5d2ee54c58df",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Boomerang",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-03-24",
+    "setCode" : "5ed",
+    "setName" : "Fifth Edition",
+    "variation" : false
+  }
+]

@@ -1,0 +1,347 @@
+[
+  {
+    "collectorNumber" : "68076",
+    "digital" : true,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "649256e0-22ed-4a04-b770-47c18bd9de05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-11",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70651",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1ed95a7-23b7-4384-8395-5649c9a2fec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuriko, the Tiger's Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70655",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4fab15ca-954e-4b55-a0d7-94367f01a61b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea's Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70661",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9278b339-8700-4b25-8c89-8f3888a73290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyrus, Waker of Corpses",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70671",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d98a29c-2d51-4204-9296-d3f2bbc9d28d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thantis, the Warweaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70687",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8891e521-8c96-4fed-8c20-1db44c1ad3cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, Urza's Apprentice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70691",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87a66020-f670-4650-86c0-56ac6c7dfca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuvasa the Sunlit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70699",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "530bddd1-80b0-403a-b3ab-40ace802c565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kestia, the Cultivator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70709",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c7c646f-8295-4ced-a262-dd76ce5c0456",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70715",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06f632e1-2eb8-4a13-9b0f-c5f4aac5b9c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70719",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ecc38c2-ebe8-4394-a049-77d4233f60a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xantcha, Sleeper Agent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70741",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f0c9fbe-0307-44f7-8b67-f436cb6e378c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varina, Lich Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70743",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "1b95f579-aa5f-44a7-b23a-9fefdc10260e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70747",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "870fc68d-f61b-4c05-8ddb-077415c7dda7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yennett, Cryptic Sovereign",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70759",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da2d8ab2-1f5f-4923-a09c-4081d97d3951",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varchild, Betrayer of Kjeldor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-06",
+    "setCode" : "pz2",
+    "setName" : "Treasure Chest",
+    "variation" : false
+  }
+]

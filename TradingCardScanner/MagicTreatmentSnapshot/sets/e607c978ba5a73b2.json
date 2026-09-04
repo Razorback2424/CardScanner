@@ -1,0 +1,1244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43256d36-862f-424e-b479-77f66c7a9af1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ugin, Eye of the Storms // Ugin, Eye of the Storms",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f06e6da-b7ea-4546-a3b2-94d8352d9bd1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abzan Devotee // Abzan Devotee",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5908f7b4-cc4b-4625-a1d4-6e099f317025",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Desperate Measures // Desperate Measures",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ed2ed89-ca84-4e27-a12d-3a68bc0ac881",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Qarsi Revenant // Qarsi Revenant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27b0c7d8-69af-4358-8193-31077e90632a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rot-Curse Rakshasa // Rot-Curse Rakshasa",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c92e211-3b23-4b9d-a4e9-fa37166367c8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sidisi, Regent of the Mire // Sidisi, Regent of the Mire",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32f0bebf-6f08-47b8-8dc2-e2dd5cd280c5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Devoted Duelist // Devoted Duelist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1667a63-2d47-49bc-9ff2-8a3bd5284cac",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Equilibrium Adept // Equilibrium Adept",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "057b56e9-c2a2-4c6b-ae30-9e938c3bf9d0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Stormscale Scion // Stormscale Scion",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71bacd38-6a42-4fa2-8e2f-0238c570097b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sarkhan's Resolve // Sarkhan's Resolve",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bd75238-f046-4b29-a0ca-fab7997d56cf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Snakeskin Veil // Snakeskin Veil",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de6d160a-7b3b-4029-959d-f5024108be23",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Descendant of Storms // Descendant of Storms",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d21bf1e5-491e-4894-9280-44da9f6e4beb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Auroral Procession // Auroral Procession",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f72d287e-a711-4fef-bcd6-59f1aecd4b22",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Call the Spirit Dragons // Call the Spirit Dragons",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c89238dc-53ff-43e7-9180-78f1c98e8866",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonback Assault // Dragonback Assault",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a32e5d07-73ed-4075-9005-a612e4fd2a29",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Eshki Dragonclaw // Eshki Dragonclaw",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03aa760c-5162-4355-bc0f-51a73b6e489c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Flamehold Grappler // Flamehold Grappler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd30ce94-bba5-4864-997d-b2007e1357ea",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Neriv, Heart of the Storm // Neriv, Heart of the Storm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e123429-125b-4f03-85dd-e52e91a173f4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Teval, Arbiter of Virtue // Teval, Arbiter of Virtue",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91e81f3a-6901-42dc-9c87-55419941101e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Whirlwing Stormbrood // Whirlwing Stormbrood",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c718437e-113e-4ca4-9365-05f3f2e25e3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mox Jasper // Mox Jasper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ae312e8-a90d-4044-a7b3-b821f1ba09eb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rugged Highlands // Rugged Highlands",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af1ea178-9af5-4e03-b10a-c4e81e754e66",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonback Lancer // Dragonback Lancer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16894d27-bfff-46d5-a81a-5b4b085acde1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "840dd097-ef0c-477e-ac43-a602da43e574",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26dd7020-8e0d-4e12-8a81-3d03e3f154f7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Forest // Forest",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d690df8b-340d-40f3-be6b-e59b2d3f20b9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Roiling Dragonstorm // Roiling Dragonstorm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8113179-12c8-44b0-89a1-137e7742df67",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Magmatic Hellkite // Magmatic Hellkite",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84fc8ac7-0a86-4d5a-bf88-49f71da05b6a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Stormshriek Feral // Stormshriek Feral",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0cba3e94-b945-44b9-b22d-dc2d8ac56776",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kheru Goldkeeper // Kheru Goldkeeper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37111b33-a774-48e8-9195-7f2b3e217e37",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shiko, Paragon of the Way // Shiko, Paragon of the Way",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40504b49-63e4-44ed-a9a0-7479afcb53df",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Teval, Arbiter of Virtue // Teval, Arbiter of Virtue",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b87bb1db-2ce2-4663-ace9-ecd65af47d8a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Twinmaw Stormbrood // Twinmaw Stormbrood",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d20ff717-f2e1-4b48-adc7-525fcf764e68",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Smile at Death // Smile at Death",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bfe3ba6-da83-4c60-9fe4-6cd0e77015f6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonfire Blade // Dragonfire Blade",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96f7a3c8-ff47-4d82-b1e3-bef11e251590",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mox Jasper // Mox Jasper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "538fd7d7-7abb-4dde-9ab4-34ca4367f528",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Maelstrom of the Spirit Dragon // Maelstrom of the Spirit Dragon",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ee38ff2-1b54-40c0-b250-41c45f63e234",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "All-Out Assault // All-Out Assault",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db087dbc-0e36-42a5-9f81-4810004c8ddc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Narset, Jeskai Waymaster // Narset, Jeskai Waymaster",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bb74a4c-05bf-47df-ac7d-2e67f2d13312",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scavenger Regent // Scavenger Regent",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "812535e7-169f-4090-9fa3-d9b25f576322",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bloomvine Regent // Bloomvine Regent",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de6808f1-6f9d-4d72-abba-171fe213ebb3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ugin, Eye of the Storms // Ugin, Eye of the Storms",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f2d834f-0904-4fbf-b9c8-085fd3697e26",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ugin, Eye of the Storms // Ugin, Eye of the Storms",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ad6fc6f-c6f5-4343-949f-b7470bfb5255",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Elspeth, Storm Slayer // Elspeth, Storm Slayer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5ebba53-7b8f-41ec-a38d-07c326c9e94a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "United Battlefront // United Battlefront",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afdf9d52-ef25-443b-9eea-9e496714ae17",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "All-Out Assault // All-Out Assault",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc745de1-a426-4747-9aea-7da8ab8ed25f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ureni of the Unwritten // Ureni of the Unwritten",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a637a04-ef97-4751-990c-2273ba392157",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aligned Heart // Aligned Heart",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2c24039-522b-4f52-8d18-bf5de43b1137",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jaws of Defeat // Jaws of Defeat",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf781156-7a5a-466a-b089-4ba4de55ac7e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Will of the Jeskai // Will of the Jeskai",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8d67382-2837-411b-9405-e7cedc5dcb72",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragonologist // Dragonologist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea84592c-81cf-4cd7-8077-b35872921b7a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Humbling Elder // Humbling Elder",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b18fc8b-0587-40e9-aa57-8b85ec5b2f61",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sibsig Appraiser // Sibsig Appraiser",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2da3e012-7016-4be3-b87e-90e89ea94bb5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unending Whisper // Unending Whisper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "atdm",
+    "setName" : "Tarkir: Dragonstorm Art Series",
+    "variation" : false
+  }
+]

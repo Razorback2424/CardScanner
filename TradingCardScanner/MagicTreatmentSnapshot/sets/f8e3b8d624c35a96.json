@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "2026-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "dafe97ae-3ad0-456b-97c8-48feb24898c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheltered by Ghosts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-15",
+    "setCode" : "pjsc",
+    "setName" : "Japan Standard Cup",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f69504a4-8caf-40c7-b998-1558a00444fc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "First Mate Ragavan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "tmom",
+    "setName" : "March of the Machine Tokens",
+    "variation" : false
+  }
+]

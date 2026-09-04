@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ce5b167-df7a-499e-8dcc-7aec2e28b382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Mana",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-12-04",
+    "setCode" : "cc1",
+    "setName" : "Commander Collection: Green",
+    "variation" : false
+  }
+]

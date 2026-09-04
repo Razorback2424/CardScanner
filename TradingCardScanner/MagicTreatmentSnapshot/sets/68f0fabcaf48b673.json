@@ -1,0 +1,122 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5278fa71-0ede-40b7-9f56-5bee6ed0557a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pmps07",
+    "setName" : "Magic Premiere Shop 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75884fdb-0d6c-4b2a-8081-99aac4ccb21a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pmps07",
+    "setName" : "Magic Premiere Shop 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d18998b-94b8-47e6-a21a-112e0a989a5a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pmps07",
+    "setName" : "Magic Premiere Shop 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d87ab438-30b6-445b-af2d-36412cdd852a",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pmps07",
+    "setName" : "Magic Premiere Shop 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a152fb5-6805-453b-9de8-3ebdbe99e332",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "pmps07",
+    "setName" : "Magic Premiere Shop 2007",
+    "variation" : false
+  }
+]

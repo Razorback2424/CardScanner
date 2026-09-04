@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "3db39e3b-fad4-4c9b-911f-69883ac7e0e1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Icy Manalith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "tkhm",
+    "setName" : "Kaldheim Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "b3ce1236-ec2f-4cd1-9701-ba6ead74c220",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Replicated Ring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "tkhm",
+    "setName" : "Kaldheim Tokens",
+    "variation" : false
+  }
+]

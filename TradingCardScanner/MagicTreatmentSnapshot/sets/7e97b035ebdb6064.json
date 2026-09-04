@@ -1,0 +1,186 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "de8a1c0e-23fc-4d27-925f-cc560548ccba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace Beleren",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6582b980-3e4b-422a-9a6c-1927ae966d7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blue Elemental Blast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3cd19bdf-64f1-4c59-920b-1165f3551928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "16b0b5e6-ac30-417b-938a-31cda2f697f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "024f73a3-4a01-4cfc-957a-8023ba642f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gifts Ungiven",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7dd7dd7c-872d-44b6-8ce6-0b05c6f98e69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystical Tutor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9850fbe9-68d2-4952-b48d-4737cef34f4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Negate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e207a353-bf66-41c3-ab52-b858e57776f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Threads of Disloyalty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-15",
+    "setCode" : "ss1",
+    "setName" : "Signature Spellbook: Jace",
+    "variation" : false
+  }
+]

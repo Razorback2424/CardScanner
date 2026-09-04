@@ -1,0 +1,2002 @@
+[
+  {
+    "collectorNumber" : "102p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b4b145b-1034-4cc5-95ac-85469e926332",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tragedy Feaster",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a34d134e-dbee-4e47-8104-de15315fea1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Withering Curse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6459a6df-8622-40e8-ab69-3782b763d163",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Choreographed Sparks",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "699c0207-901e-4fe9-b22d-1f6cb994a1f2",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Emeritus of Conflict // Lightning Bolt",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "facd7d37-4903-47de-855f-a4e0bae340e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flashback",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba1c767c-0556-4026-826b-2933bef713a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Improvisation Capstone",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04f58460-79bd-4632-b921-9c8927976aca",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Maelstrom Artisan // Rocket Volley",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6259c7ff-4725-44d1-a003-6be583300b25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magmablood Archaic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "032e452b-859d-40ec-8b54-fb3e7b535415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten-Core Maestro",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f7b6a8d-98cc-44a7-8699-1e184a4051e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steal the Show",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "589a4f39-fdd7-43f1-9521-608ec27bd926",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Emeritus of Truce // Swords to Plowshares",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e3c7a04-f6df-4e2b-88e5-6d6a87ec294a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambitious Augmenter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bd98db89-72be-43fd-bfbc-c67e98f54a62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Comforting Counsel",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bd4e61f-07d5-4123-b485-1caf7dae4643",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Emeritus of Abundance // Regrowth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a1d12c2-6eff-482d-abc2-859009e33da4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Germination Practicum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa718734-4e2f-4b88-abf9-46a061c6a4bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Engineering",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a77c3277-a985-46b4-8036-2780a4ce16f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erode",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8a90fa3-6ce4-4ee6-a739-a0b401d3ea70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slumbering Trudge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a96e337e-a914-4a86-89e4-a231b2868571",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Vastlands Scavenger // Bind to Life",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1cf5878-afb5-4eaf-9fd0-3f9062183968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildgrowth Archaic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e147bf7a-ffbe-4ea8-9c3d-0ca02a4cdea5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Applied Geometry",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ce8e39b-64e3-42df-bac2-231abbe6ad75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ark of Hunger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b78578d3-0e15-4c34-8b03-07190c802ac2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aziza, Mage Tower Captain",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cbe62dde-0616-4d20-a7fd-bc1b070d580b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Berta, Wise Extrapolator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eba4bbeb-6d3b-48b2-b6c5-6f776877726b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blech, Loafing Pest",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d3c7f91-4a24-4c22-a0d6-04865b3ef627",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cauldron of Essence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90241041-2f61-4850-8829-ec419b27993a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colorstorm Stallion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db2657ad-1ecd-442f-8a9d-4021cfb877e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conciliator's Duelist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2840bef-f0e0-47ef-9b69-9ef0ba0e8455",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dina's Guidance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc1c3151-28d2-401a-8e43-a6ad7eebe719",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fix What's Broken",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abda602d-5a45-4f16-ab24-79db6b3facbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geometer's Arthropod",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "435ef3d4-ff49-4218-9735-7241b5e843d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Academic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8613f27f-fc9e-4efc-93f9-3dc644e6b692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Dawning Archaic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8daf116f-0c2f-49f4-8c34-224b7d4171fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lorehold, the Historian",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c0f2ade-0ae7-481b-86e7-d62cd11bcff5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind into Matter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e02637b-a3a3-44cf-9cd4-f6ad045479a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moment of Reckoning",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed35d22c-fe80-4adc-b317-bf20c5ac48fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nita, Forum Conciliator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12933c12-d23c-4ba9-ab62-dc8cf82dc736",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Informed Inkwright",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4ee3b5e-28fa-41e2-9d3e-f3485cc384bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismari, the Inspiration",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63770dc3-c3a3-4820-a919-bc58a67d288c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Professor Dellian Fel",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "586eed0f-a373-465a-b6b8-e78f369e7903",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quandrix, the Proof",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b64f41bc-0161-4c75-a8fa-7168d3259fed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resonating Lute",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca70c59a-e91d-4ffc-9249-06c945cb8b33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverquill, the Disputant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3602d84-8b30-4ff2-a447-f8616bdb1f91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splatter Technique",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3215517a-4fe7-4da9-b549-04dffa769f40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suspend Aggression",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4b0dbef-154a-40f0-9645-bdc195de9261",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traumatic Critique",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24d7bf56-d547-4ca3-a1e1-900252a9fef9",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Joined Researchers // Secret Rendezvous",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60bc47ff-db7c-405e-92bc-ef14f7e9739c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vicious Rivalry",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c26f591-0cd3-4212-9f9b-8b0d21c5ae7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witherbloom, the Balancer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "080fa2f7-7acb-44f4-8fb7-161b770b7244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zaffai and the Tempests",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c81381d5-64fc-42b7-beba-b0e2484b89a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathcap Glade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e300540-85d5-4391-8139-2f260415e4e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamroot Cascade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "375b837d-3bd2-45ca-940f-a05ef84b52ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Hall of the Biblioplex",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb91afab-0540-42c5-bb27-2a401d7aabca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petrified Hamlet",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db5125b3-f085-4762-ae1c-f50f4cf08111",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Practiced Offense",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b340277-c5d2-4312-bcda-8ed1a28737ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shattered Sanctum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26e53f39-f119-461e-8214-9ceea0bf5483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormcarved Coast",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d3d4504-28c8-42b4-b161-bbc2fdac0d09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sundown Pass",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "048a44ee-8568-4b6a-867b-15a882b3aa34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restoration Seminar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b203ad5d-d8b7-49e6-81ca-fbbbe3fa8722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Hopesinger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0a9f624-88b6-446e-9eef-e7f2a1177596",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echocasting Symposium",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84a8965c-0217-426b-8795-48c67eab4ab1",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Emeritus of Ideation // Ancestral Recall",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5894400-a7e3-4ab8-b34c-efbf795b1a44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exhibition Tidecaller",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab9d650b-0d83-45ac-9699-48fedf8b9b4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Together as One",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bf58206-b7b6-45e7-b99a-9de1c58c5c96",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Harmonized Trio // Brainstorm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63008d1f-aaa6-4183-9952-5e86f5246408",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Jadzi, Steward of Fate // Oracle's Gift",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14099438-a75f-49b9-9f7c-40025191d1f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Sculpt",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb82fa95-e2a7-412b-8dbe-051223160233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mathemagics",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fac9f7fa-d265-48a1-ad00-ddcfe0ad4f31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pensive Professor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0788c44e-82c7-44e6-8964-6b5008c5c357",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Skycoach Conductor // All Aboard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcf3d810-a0a6-4ae2-95cd-dc0bdcd3b934",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wisdom of Ages",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "900a94ab-5193-4884-8dcc-2735c6a44bbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decorum Dissertation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "785d75b7-2054-47d0-8135-96ba6b4e9b78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Antiquities on the Loose",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc27b7a7-e9ad-4305-a6e1-863f028030eb",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Emeritus of Woe // Demonic Tutor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f423c4ef-a8b5-4bec-9f8d-e54d5bb72c2e",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Grave Researcher // Reanimate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc5955a7-6263-4465-a278-74f931e71645",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moseo, Vein's New Dean",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bd8796f-1c77-4792-8b7c-e77acbded2cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Postmortem Professor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a55eb26f-11c0-47fb-827f-96d73e7b7925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pox Plague",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c941595-00f1-4455-8a70-b973846c789e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral Zarek, Guest Lecturer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7056690-d83c-4bee-bd36-d2c6649259da",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Scheming Silvertongue // Sign in Blood",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "psos",
+    "setName" : "Secrets of Strixhaven Promos",
+    "variation" : false
+  }
+]

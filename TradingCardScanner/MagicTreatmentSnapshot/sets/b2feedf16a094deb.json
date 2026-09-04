@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7006549-62b4-4bca-8690-195debb04ae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Opal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "aa2",
+    "setName" : "Arena Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "223941b7-156c-4717-a0d6-b0a150e091ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Control Magic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "aa2",
+    "setName" : "Arena Anthology 2",
+    "variation" : false
+  }
+]

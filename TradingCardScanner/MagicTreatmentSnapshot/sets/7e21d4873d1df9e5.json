@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f5c3863-c876-48a8-9bc8-be20cd61074c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "pcsp",
+    "setName" : "Coldsnap Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "471e6542-45d4-4974-85d0-5e0a8881e622",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Allosaurus Rider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-07-08",
+    "setCode" : "pcsp",
+    "setName" : "Coldsnap Promos",
+    "variation" : false
+  }
+]

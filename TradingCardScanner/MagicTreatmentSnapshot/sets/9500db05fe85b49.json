@@ -1,0 +1,1897 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "648c15d1-a2a2-4f59-9b0a-5448be3e990f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaust, Eyes of the Glade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1a32b7c-9f26-4504-9f8d-379164d69346",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9241a72e-cb88-4cea-a2f4-ff10af461437",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a81f0b5-5116-4946-89fc-18479bf85305",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma, Angel of Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a18fdaf9-964d-45e9-bd40-a8fc745ddd1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "721df547-d777-4247-b130-a4e247445b04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "767c5831-2195-4efa-802d-2ea2e6dabb5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, the Eternal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "188f9016-275f-4060-8b11-9cdeef3759bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8050afb7-3c16-4456-aa34-4cc999fac7f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saryth, the Viper's Fang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e82e61d1-488d-4627-a54c-d8496a967814",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toski, Bearer of Secrets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "552ddba8-e1e3-44d8-b341-441c2b4cd937",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b9c11061-bb34-4904-b9f1-ea106b517bbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adrix and Nev, Twincasters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0526277f-538b-42d0-8c75-c390f599b94e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anya, Merciless Angel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "690acbbf-5e92-4323-b939-31bdb07f9905",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirko, Obsessive Theorist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1499a4b-1af1-4913-8e26-57d0707264db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chulane, Teller of Tales",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e390f8e-1dd5-4383-83f5-45f20f18d410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esix, Fractal Bloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "900b8908-ba51-472e-ab7a-43bd07f90577",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gisela, Blade of Goldnight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2f23d6f-f2c8-4022-9f46-ba7fda00ef99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, Cosmos Serpent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "662758ee-f7c8-4cba-b67b-48ac80c3b5ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, the Multifarious",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e786423d-3a49-4318-ac77-791918bcafcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Cryptozoologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "28c1b84a-a21b-4df1-9fc9-5b387fb56810",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Explorer Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c551a94-9895-486a-a39a-6bf2f8939b35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Kondo of Jamuraa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15cfec15-95b5-47d6-9714-ff920ce97932",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kher Keep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae9ccfec-05c6-469e-b1dd-dfbafa1e927f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morska, Undersea Sleuth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d78e07c1-bf94-4aac-8c8e-ef7337f926c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duskana, the Rage Mother",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2f83cd63-92a1-441f-8642-a9f376ae1d2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feather, Radiant Arbiter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "be1b0e8e-0a5e-4028-9bc5-8fd96f427479",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaust, Eyes of the Glade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d2f0500e-4e3d-448c-9bd2-fa4d48f27043",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marvo, Deep Operative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1663adf8-9a17-4690-9a61-f4658c1f0320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirko, Obsessive Theorist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "87a9e169-0556-4354-bf9d-76f6a5188118",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morska, Undersea Sleuth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bc3e8132-676f-4597-b3c7-1d84b8561f24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nelly Borca, Impulsive Accuser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "42b37a6b-9753-4e37-a617-42e15797351f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sophia, Dogged Detective",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9daf962d-f48d-4c93-98d1-ec32d3c758a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armed with Proof",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "614b7037-2166-454f-ae7b-2e0fa41e0a06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immortal Obligation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f588e0a8-a09d-4d31-8904-3706f4f5760a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merchant of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0817dac6-3eb4-4802-87dd-46604d09e640",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Otherworldly Escort",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "22b41049-9165-4c28-96d0-b48cf63b4d9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redemption Arc",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fc28a9e8-1a82-4dcc-abcc-feb9d1c4d47e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serene Sleuth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0dd4d070-38cf-4517-8152-84c9fcf2c984",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trouble in Pairs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "69edb35e-6e87-4529-a449-6f635f24466a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "True Identity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4d802c0d-da4d-407d-808d-f891b12bcef8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unexplained Absence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b2504921-d303-4141-b366-5cca2fe77f28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veiled Ascension",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "588ebe61-4697-4ef7-8800-3e88e168bb4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Copy Catchers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9bf37b66-1f00-4887-924d-35afdea72e83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Detective of the Month",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bda2277-68f3-4201-80c6-3ff6077e9e38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final-Word Phantom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "387f3f54-d26c-4b2c-ab8b-8bdba0b11b1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Follow the Bodies",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bce10ad-5b6b-4347-9786-51b177366046",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tangletrove Kelp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f325ec76-bdfa-40c3-92ca-8f3a90bfc6ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watcher of Hours",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6d3d112f-3249-4117-924d-c2347155f52a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charnel Serenade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8ce43e1a-04a8-48fc-a9c0-4dbb0aaf1a7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eye of Duskmantle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dc8f50a0-d5a2-46c1-8f09-4c43f174dca7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foreboding Steamboat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ee424409-b1bf-4de2-ada6-47b9199cd572",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unshakable Tail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "04193a0a-8ebc-4c8d-9eb6-661a373485f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boltbender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "725c2765-c7e3-48cc-8cbe-6fba611b216b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Havoc Eater",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "95b38896-4568-4764-af81-74d932ac500f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hot Pursuit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cb265357-4201-4c80-aa05-a01657175364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mob Verdict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c55eefab-98d0-4e5e-a8e7-dde73b4961c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prisoner's Dilemma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "299028df-9dac-43c3-a11d-b5f076101ced",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Showstopping Surprise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bf55e49b-4186-4d36-b1f0-4c7715be0f63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tesak, Judith's Hellhound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1c1d66b4-2e40-41fd-afc8-901835108931",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Experiment Twelve",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "32e2a1e7-0f26-4f5e-8206-928c2bf12f12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Innocuous Researcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0d36eeb4-7c11-4c55-848a-182351e5e3eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "On the Trail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ee752da2-46c6-47a3-b1f1-21f66bd61b82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Printlifter Ooze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7cd3d4da-aeed-4f3f-89aa-63b20ce79f7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterpoint",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bb45c3c1-7e1d-433a-b20b-3b95e96b6d45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knowledge Is Power",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "69198458-ecf0-461b-a5c5-a46f00dd02ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Take the Bait",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d2082e00-30a1-4f3c-a743-d1eb6f6ff9fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Panoptic Projektor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "72f50c22-4e5e-4ece-9fde-622c5069a2f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ransom Note",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6c164a41-5a55-4b9e-8b6a-6f262aaac64b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ransom Note",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8219bae9-4581-4ff1-b495-aac050fcf1cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ransom Note",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "05f9437a-50c2-415f-afa9-39f64f3aa3da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ransom Note",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e563c13-7204-4cda-9b62-d46931fabcef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tesak, Judith's Hellhound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ef59aa9-f5e1-413a-869b-d287db95efd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nelly Borca, Impulsive Accuser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4dfc99a6-2acb-4163-9c8a-45834f935303",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaust, Eyes of the Glade",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31fa9d47-43d6-44b5-ab86-fc94a83eac26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duskana, the Rage Mother",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "043c7b0e-2f7b-4936-88fe-84d8022ffb51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirko, Obsessive Theorist",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d6e8a859-92bf-452e-bcc2-3975bf1d6217",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morska, Undersea Sleuth",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6f0bc5dd-107a-417d-8664-ddea41307962",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nelly Borca, Impulsive Accuser",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90645549-20f1-4fe9-8363-7f67c20fa3b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bennie Bracks, Zoologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50875c99-c5c3-41dd-a0f9-08c98edfebc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darien, King of Kjeldor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d763695b-c184-409d-962d-5aaf39a6264e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feather, Radiant Arbiter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8fdb30c1-0551-48b7-8bcb-d7e0dbb6690a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marvo, Deep Operative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e83a0ef-4fea-45ba-86c0-130d6687f7fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df653cf9-5a99-4f81-adb4-c155a9a63226",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sophia, Dogged Detective",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54bf48d4-e350-4ca7-87da-ce04fefd4610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alandra, Sky Dreamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "mkc",
+    "setName" : "Murders at Karlov Manor Commander",
+    "variation" : false
+  }
+]

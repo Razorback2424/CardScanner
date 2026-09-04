@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "360aed08-19b0-4506-9efb-5b540c29b0e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soltari Priest",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d599d209-d6b8-4ed6-81c6-b65f29048a00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spike Feeder",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1a2c84b-53f2-48fd-9602-301b18e2813d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogg Fanatic",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fde7e02b-7025-42d1-85d4-bd03f71c6c27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "White Knight",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95daade6-f252-4b17-851c-221327710866",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Albino Troll",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c707e5b-c510-4aaa-a6f1-4ad244087ab3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dissipate",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d49d78b6-2bc7-4f1f-9448-c26f9ce00272",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Knight",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "698375da-df97-47d3-a525-0a778427e054",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall of Blossoms",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efff4a1c-ad9f-4afd-9800-3cf63e9ee3ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fireslinger",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40f1117c-5bd6-42de-b8df-366c8a4b6d06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drain Life",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c325b30-c769-41e0-839b-2407e3273bfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aura of Silence",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "267738fd-234f-47a4-bc3c-35872b7e2cb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forbid",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "f02",
+    "setName" : "Friday Night Magic 2002",
+    "variation" : false
+  }
+]

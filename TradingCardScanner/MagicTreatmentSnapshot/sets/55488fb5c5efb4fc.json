@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6175fea-1de4-4d82-b86c-3c3140a3c286",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystical Dispute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-07",
+    "setCode" : "pr23",
+    "setName" : "Regional Championship Qualifiers 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e8c8039f-dad5-4ca9-a2ab-e4189a36fbdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snapcaster Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-05-20",
+    "setCode" : "pr23",
+    "setName" : "Regional Championship Qualifiers 2023",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dcc8c8e7-385d-485c-bcdf-95af113a433a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thing in the Ice // Awoken Horror",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-07",
+    "setCode" : "pr23",
+    "setName" : "Regional Championship Qualifiers 2023",
+    "variation" : false
+  }
+]

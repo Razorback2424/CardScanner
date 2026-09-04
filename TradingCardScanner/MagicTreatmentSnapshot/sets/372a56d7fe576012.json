@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "677a1d9d-86fd-49db-9573-8cd2cbc1a096",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2e8077e-4400-4923-afe6-6ff5a51b5e91",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Djinn Monk",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4de662d-374d-4dd7-908f-bcde7bdc5ae9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "533c41ab-d9ee-4817-a982-41d4da6fa9ad",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie Horror",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ee0725f-8562-49c2-83fa-11a702e5c78d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e55d42ad-63b1-4468-8da0-c245db4d0ae3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f29231c-dd21-4a45-a1f0-464d338128ed",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Morph",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a70dfe0-874c-473a-a26e-1f88a842df41",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Narset Transcendent Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "tdtk",
+    "setName" : "Dragons of Tarkir Tokens",
+    "variation" : false
+  }
+]

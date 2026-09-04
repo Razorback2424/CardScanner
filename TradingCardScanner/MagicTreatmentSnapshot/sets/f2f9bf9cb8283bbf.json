@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc883e4e-e5f5-4823-ac2a-9ff8b7772926",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zamriel, Seraph of Steel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2743136b-3610-4c43-8ed7-a00b1f58a874",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maeve, Insidious Singer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42679318-e5c4-4aa4-8097-97552defc8bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vogar, Necropolis Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e1ca513-2151-4daa-b442-c52c7838a863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nogi, Draco-Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2c3e33c-8893-436e-ab3a-f8c2ae8b2527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imaryll, Elfhame Elite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1022bb8a-5cf1-4da9-9751-f20111be9288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vilis, Broker of Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0c44510f-03f6-4a26-a034-f7117700f6fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drakuseth, Maw of Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd8eca21-218c-408d-bfd5-e1f776a51278",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-10-14",
+    "setCode" : "gn3",
+    "setName" : "Game Night: Free-for-All",
+    "variation" : false
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7a52f20-4567-4a69-9d27-73dbb71bf3d9",
+    "language" : "ru",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-09-24",
+    "setCode" : "p9ed",
+    "setName" : "Ninth Edition Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4638a30d-48e9-42cb-bf5f-001b4259391c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Nature",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-07-29",
+    "setCode" : "p9ed",
+    "setName" : "Ninth Edition Promos",
+    "variation" : false
+  }
+]

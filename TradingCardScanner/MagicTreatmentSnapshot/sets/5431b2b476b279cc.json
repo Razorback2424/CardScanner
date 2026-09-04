@@ -1,0 +1,486 @@
+[
+  {
+    "collectorNumber" : "120",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1fae3264-ff83-423e-915b-2f48d775b306",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razaketh, the Foulblooded",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93442802-dfc2-42f7-9eb2-810e4f5b6285",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret the Fervent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "246239f2-dfa4-4a2a-8252-baf6ed8b87ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, the Eternal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64b785af-44fb-41db-a00e-539a65f01af6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhonas the Indomitable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b43ba233-30c4-4b18-8489-4df76551aa73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hapatra, Vizier of Poisons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e0b820b-1f20-4e2e-ba75-af6d30621dc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Locust God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc64efb4-46ea-4caf-b864-3e38ca6369d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, the Worthy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14cbb69e-92da-4370-8cd9-b8278e7ee1f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samut, Voice of Dissent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70d1af08-f4e6-4030-8ebe-30d9d706b114",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Scarab God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26280503-e30f-403a-a6ff-2dcb3ca866d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Scorpion God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1024c07a-8764-4a78-8f82-1b1dd943e06f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temmet, Vizier of Naktamun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "18c1fcb8-1b50-4fc0-a3e1-34a748652a60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bontu's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e6a94f2b-5b18-4e7e-b47f-185e6a8a40b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oketra the True",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37222065-7180-4134-b74c-d5f563c55363",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9820f6bf-7bd8-4e4d-b9af-f0690c00f606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kefnet's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f86bc112-4744-4310-a3a8-df5c6c9421b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oketra's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddc9e04a-8410-40f0-b24b-aa3b529b3502",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhonas's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c47b08c-7182-4315-8ad1-8ecad048a0df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Throne of the God-Pharaoh",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4b80710-0057-4b7e-aa50-4d4d67dfbae2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regal Caracal",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6c5235a8-578a-48be-9967-79b42bcc8388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kefnet the Mindful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53d56953-cac5-4bd4-bec9-d442d70d7e96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unesh, Criosphinx Sovereign",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34fab289-9ef7-49ca-b5c8-0ade254bda28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bontu the Glorified",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "akr",
+    "setName" : "Amonkhet Remastered",
+    "variation" : false
+  }
+]

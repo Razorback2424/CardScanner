@@ -1,0 +1,255 @@
+[
+  {
+    "collectorNumber" : "10a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "754bf4f3-e8d7-4c17-bd2f-0721c2365dc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52ce85a5-1a3e-41a6-8a2c-ac9f78286af3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea906830-c03e-46a7-8ac8-c0ca8a25a8fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b4812c4-58ad-4215-8a3e-e731a42e156a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dec3287a-ae3d-4844-b918-8d031064c63d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19bef0f3-68a0-47ed-adcd-2adadc3ebe23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fe2d362-fac3-4635-8231-a9b12583d6c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d17e93f8-d531-4e4c-8567-3153eb9f4960",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Encroaching Wastes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a05eb4e-dbea-4d41-939f-b9d92b56f56a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c9b68ae-78aa-49c9-b126-b7b5e2b5b427",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6066f195-385f-4c51-8090-3989fd692078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-14",
+    "setCode" : "ana",
+    "setName" : "Arena New Player Experience",
+    "variation" : false
+  }
+]

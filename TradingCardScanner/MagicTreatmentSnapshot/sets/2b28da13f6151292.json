@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd5cd362-34f9-445f-85e1-9f6694f0f90a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "tdka",
+    "setName" : "Dark Ascension Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d6abdaa-7be5-48a1-acc9-b3cba4c10619",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vampire",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "tdka",
+    "setName" : "Dark Ascension Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "327ddaaf-b6a7-4c80-9b38-5ab68181b3d6",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Sorin, Lord of Innistrad Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "tdka",
+    "setName" : "Dark Ascension Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "825c61e7-bf33-45ea-af78-97ab3bc96753",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dark Ascension Checklist",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "tdka",
+    "setName" : "Dark Ascension Tokens",
+    "variation" : false
+  }
+]

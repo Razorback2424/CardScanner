@@ -1,0 +1,4138 @@
+[
+  {
+    "collectorNumber" : "105p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "226990f1-f153-40a4-ac4a-066d7a57278a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Negotiations",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fdb78b8-ed8a-4c50-a6cb-22e6d97dac04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Negotiations",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5774064b-c0c9-4420-8e41-f76d5e2ff574",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misery's Shadow",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1ff968d-065b-4b11-a231-5d339dd9e38a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misery's Shadow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b596f57-1bfa-4878-82e0-067e85c0b3c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Reconstruction",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de95b80f-c520-4e2d-8afb-03d789cefa69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Reconstruction",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee7443ee-8da5-4e03-9a9a-a7f04bb4f7df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Quandary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82a77811-6e71-4e10-9ae9-1c1cfb8ec17b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Quandary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "431024b1-c1da-49c4-bc43-7a1b283676b6",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Phyrexian Fleshgorger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a66b963d-1a01-46b4-bd68-8081489341ac",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Phyrexian Fleshgorger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5a2d814-acc6-4b3a-94f8-5a2702dccf3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razorlash Transmogrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6119e1d8-041a-40be-9df0-750357cfea5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razorlash Transmogrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ff9ac64-4219-4053-85a2-aefafdaa2377",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrant's Crown",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52004d76-39de-478f-a4cb-82f3704f87bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrant's Crown",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60cb6f8d-7e80-4123-9259-98bfbf5c17f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4c22260-d60b-4eea-8664-00ff3f28b4a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71d515a3-4d94-47a8-bac2-4cfc6904077b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0762ed45-b00b-438d-b497-47ba06d20877",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3ae5d5e-167a-4165-8a3f-37665750635d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconic Destiny",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d57eb08d-3587-4042-8e9a-0ec6fc93fcb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconic Destiny",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fab7249-b5af-492a-b885-31cdb544446e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon, Ronom Excavator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21d04292-3ff6-4e15-aacb-15fca67e9de0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon, Ronom Excavator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "572923e3-da60-4407-9a6e-d281d7be3d0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanized Warfare",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52072831-4956-4b6b-a6d1-b088bbe5befe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanized Warfare",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de21be9c-57e6-4079-9f48-56d546f7e481",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdd95919-aea6-437e-b758-d497c698e08d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9bf8777-12d2-4a82-a6df-52dab15be915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Over the Top",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da3d884c-3baa-4682-91f0-c267043a1897",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Over the Top",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddce1016-9468-43c3-af01-3f8a1eac19f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrant of Kher Ridges",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14e47242-7aed-47c4-8224-1c021f737903",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrant of Kher Ridges",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15d9dbe6-ac2f-4992-951f-6c37e9271e3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visions of Phyrexia",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "205a9731-f2ec-4180-9212-c8bcf522ba3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visions of Phyrexia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163bs",
+    "collectorNumberSuffix" : "bs",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75544351-dbb0-46d3-bddd-627c40753e8d",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Mishra, Lost to Phyrexia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "534b042b-1b86-4fc9-be3c-0d0f8c46d881",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Phyrexian Dragon Engine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20c76db5-4d24-4eb5-b356-f544b6866008",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Skitterbeam Battalion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "733ec128-4f64-4ba0-9cd7-89c15418dcbb",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Skitterbeam Battalion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23508f42-aba6-4c74-9a41-5ccd1e9b1c87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58279317-ec3e-4938-8ddd-ce34352b2f14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8eea4aa-e538-42d8-a3f2-b21d17e61654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fade from History",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3052eb74-496d-41eb-ace6-84a4ace4d7da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fade from History",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7fec3fbc-31d5-4ed3-ac2c-c26c12218b37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fauna Shaman",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d28f2bf5-13c4-4c0d-8ccd-66ef7a523821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fauna Shaman",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0973b7af-1d4a-459b-85ce-b42b926ade15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenna, Eyes of Gaea",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b6b2b60-0006-462d-b168-12a8b7a856a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenna, Eyes of Gaea",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbd149db-6d8e-4db5-80d8-682f270ba2ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myrel, Shield of Argive",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4b533e5-0c21-49b2-9eea-d986af1c845f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myrel, Shield of Argive",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8c1ecfe-400e-474d-a454-8ef1d98abbf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teething Wurmlet",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a497eeb-b6fd-450a-a702-c96e2a00bde2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teething Wurmlet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9815e4d-729d-4cfe-ab54-12c58bc3099e",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Titania, Voice of Gaea",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a158c1c7-5a03-42b8-ba94-92b11af3d89e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31a46777-afb5-4209-9fbb-898625cba01d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4cd0a49-e6c3-4ca1-bdea-aeed39e6da6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perennial Behemoth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75077bef-f312-4777-9508-4f01c22a3069",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perennial Behemoth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bd6895c-9f61-4a35-be99-45fd58c7edb3",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Rootwire Amalgam",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ead0bbe2-5262-437c-8e27-fd6a25f49a2e",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Rootwire Amalgam",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06d2e6f1-5065-4bb2-be9f-37f6e92a3b2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simian Simulacrum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69a2e28e-4819-415c-a067-21998a19c8c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simian Simulacrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bcdfdb4-bb57-4b2d-9eef-01db3572054b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbloom Ritualist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16ac3e9f-60fa-401f-a5a0-0e966eab83a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbloom Ritualist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60aab685-c28f-4a40-8f6a-05223a374335",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hajar, Loyal Bodyguard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "928c621d-4b47-44cd-b4af-1e3ccae0334c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hajar, Loyal Bodyguard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f32e46df-b2f1-4422-8d48-623341905c09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbin, Vanguard Aviator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ec853cf3-1c7f-4936-ba45-6a78329e8586",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbin, Vanguard Aviator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9ef0326-b78b-47b2-9215-4316e4f86dab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legions to Ashes",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0414b6e8-06c6-4471-abcc-afc4bdf5164b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legions to Ashes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e55f2cf-418c-4956-945e-aaa211971135",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Mishra, Claimed by Gix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93bb6376-88c8-4f0b-8688-c5eaa2b6aa6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra, Tamer of Mak Fawa",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "989c4327-28ef-4d6c-a07a-9381234d0c75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra, Tamer of Mak Fawa",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "423e6a89-e936-4361-90c4-44321555d5bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Kayla bin-Kroog",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "409e0125-013d-42d9-af34-0cbb77751c2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Kayla bin-Kroog",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "846c5d5b-af62-4e57-83b2-980f18e27b87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, Filigree Master",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5d99078-3e95-46b3-96f6-aed418d30b8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, Filigree Master",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cfbfd9a-db8e-4162-8205-d72e750805f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarinth Greatwurm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d238398-11e5-4764-9951-8fc2e14013da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarinth Greatwurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "272cdc19-7194-461e-8b40-c8e9945ad2db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, the Toymaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b269cf6-e555-45a1-a79a-955c987b3cea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, the Toymaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2675620b-6876-4329-a599-f70a912f2e75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia, Dig Site Mentor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "761e0b46-3715-4f2f-9658-6ccb2f9c3fed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia, Dig Site Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "600259ab-2bb7-4e09-b957-b07dbd37a521",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Urza, Lord Protector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc18f56c-271b-4fac-9bd8-2391cbecf54a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Prince of Kroog",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61c59ee9-b39f-4602-b1dc-ab0d177c0ae0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Prince of Kroog",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2fcab47-de55-43ab-b874-444543a3e417",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladecoil Serpent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25e460a7-49ee-4f49-8590-1235342a9da7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladecoil Serpent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "361a77b9-0576-4d70-8085-fd2e85dc30fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clay Champion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "485390cc-da73-4fd8-bba9-31b1a9924fac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clay Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6517be9-bc51-49fa-a242-7b835cc6e80c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cityscape Leveler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "448639b9-e018-4b5b-bbc0-cfd170a117d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cityscape Leveler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f182aa71-7609-49b5-9fe6-be74ef156205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liberator, Urza's Battlethopter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc82464c-123f-4492-bea6-90fd0e9e47fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liberator, Urza's Battlethopter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238bs",
+    "collectorNumberSuffix" : "bs",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e44b30f-aed6-47af-8b6c-0669c644e46f",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Urza, Planeswalker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc8cfad0-78e8-4a8b-b8cb-cd4a5eeade24",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "The Mightstone and Weakstone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bc1dbbf-73a7-4f79-b499-4668c853d958",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Portal to Phyrexia",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11387e41-df7e-4d25-89cc-7ec5d4ea3c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Portal to Phyrexia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86f785a4-8f2f-4a1c-99a1-094d389eeeee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stasis Coffin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "250a9460-a916-4c80-8d75-33bdeed8d7d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stasis Coffin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8aecbea-dda5-4c2c-899d-2f3b7a316ca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stone Brain",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bea7a247-abaa-41d3-b7ef-5bec1b5ff509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stone Brain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6738b5a-899f-4bf5-b293-721f64fe3986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Spider",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "842aa8d8-1c72-419a-ae92-1a1635dd45e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Spider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256bs",
+    "collectorNumberSuffix" : "bs",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "171eb68a-bce4-4518-a4d4-9ec90e92aa0b",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Titania, Gaea Incarnate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79a840ed-91cf-45ea-bad2-757856e88544",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Argoth, Sanctum of Nature",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60293b53-c5aa-4ad6-98ef-e70ec1cd9ade",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battlefield Forge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5896c174-4cb2-406a-8b9f-cecea287de9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battlefield Forge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9376380-8661-4ac6-bd7a-f5d3606f678a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5e743ab-d5fc-43eb-a77d-7f59cec9b46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf96218e-006d-4ae3-aa61-7ef8b561f8a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brushland",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e3109ec-12c6-404d-9580-37615f8a506f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brushland",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41525fb0-bab6-4ac6-a418-78825464b97b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Veteran",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50aacc2d-edd3-47c5-9239-9f28b400d868",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Veteran",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea2fe0f4-2556-45d4-bf0d-809d2a45b668",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortified Beachhead",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4400f20b-9280-426d-a432-512d8d7016ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortified Beachhead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91b784bf-8af1-47e5-9446-546282b7511f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Tagsin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6490f77f-c463-49a2-82f0-5960d8b7c78f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Tagsin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a354548-d9ec-4486-8a41-bf568ff08c4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Wastes",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "660cf964-ae3d-46c1-932f-b65d91643776",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Wastes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0aa43289-c8a4-45d9-b461-255f89200879",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Foundry",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83a87e83-9cc1-4190-8e29-e79d9a4c6d17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Foundry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "338d42e1-c149-4624-b701-25f2eb1721a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground River",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a60adde8-846a-452f-9b8a-66312bf83647",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground River",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dccae4b9-6970-4c36-9c69-5ab60f34fc30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Partition",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ce4150b-e370-432e-a255-730fb026037c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Partition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ff5902d-c140-42e9-b426-767f82559846",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia's Welcome",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f5b204e-3070-428b-8ef7-2069af18f98d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia's Welcome",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4f99a7d-7446-4389-88a7-b884ff8f4fe1",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Autonomous Assembler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6e664bc-7088-43ec-816f-449c37a81b44",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Autonomous Assembler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3953297-65af-4b8f-b373-94343e5e9fb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Platoon Dispenser",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ad58609-5594-46b2-905a-d744288a8c61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Platoon Dispenser",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34a89318-edc8-462d-977c-d480c3ca6ba3",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Steel Seraph",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c365c74-e61c-4b6e-8262-fc58f60d23b4",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Steel Seraph",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "013f03fa-4b49-4709-8f6b-415af3e6dd09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Sylex",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36cdaf19-d162-4994-852f-f961530a19c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Sylex",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0f4c05d-9712-4372-8e94-d142d6ae4c25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drafna, Founder of Lat-Nam",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "18f4ad7a-9d37-4c26-9d77-3483d5e67bea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drafna, Founder of Lat-Nam",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11435891-1775-4ae7-8cc2-77279c812299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl, Master Wizard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d514b48-1ee7-4ad1-b8bc-60cc1a3de9f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl, Master Wizard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb832fbd-c50d-4c90-ab55-109425126c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl's Final Meditation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff46867d-6ed4-43f5-8de6-af720a80eafe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl's Final Meditation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2e5c6c7-5ed8-4cf3-8382-7a5dfc2ad16d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One with the Multiverse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee976902-0c6e-4f87-a421-c56f1b28ff03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One with the Multiverse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52fb8ee0-f41e-4d83-b451-89b6aec8de4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skystrike Officer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "741be1cf-f99d-487b-aca8-93b15ef064fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skystrike Officer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1f53d7e-d88b-44c6-b2e8-fee1dab2d4da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Temporal Pilgrim",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72cb727e-462b-4d9e-8ffd-fe5a83adcc60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Temporal Pilgrim",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "317244bf-db04-46db-a7a5-11d0a92d4414",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efc1827e-93cc-49fa-9c34-79ba4a492a6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c094ce7-683c-4ef5-8ac3-c930386da78f",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Arcane Proxy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b9b1f6c-2c72-4cbb-ac96-20b486e20ea5",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Arcane Proxy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ab1ad48-d40b-4351-900d-a8893ee690b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge Engine",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65f51753-3f22-4f24-a979-96a0c9e5fadb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge Engine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f6f0c62-4801-4165-984b-17f068de0148",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Temporal Anchor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "084123b5-c60a-4ebd-ad47-5f9eb10fa171",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Temporal Anchor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6806ad36-cc2f-490a-ab86-bfb394ce4d40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terisian Mindbreaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eaec56e5-d6c6-4972-a9f0-041a8e9d17af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terisian Mindbreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6846783f-493a-41cf-9aa5-c56eccd18c63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashnod, Flesh Mechanist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bbdfd1a-b16b-46b3-8a3e-642b5e5ae68f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashnod, Flesh Mechanist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10ef1c00-7ead-4ebb-9e64-1b29d8f088b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Intent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4128b02b-204f-4677-9277-9d42bcbf7bf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Intent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c497ffc-f2c2-42f5-a560-4fd1239399fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In the Trenches",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b0257be-7de8-4c30-86f2-ac1e0f915855",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In the Trenches",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2d19ec6-2c0d-4807-9255-feb61181c531",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Handoff",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6237ee9-66e6-4a56-9aa3-02ece754b12e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Handoff",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "425ae9d7-f198-4ace-9a2c-ebc8845a71ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d71d72c2-f91f-4adf-9c38-20fc559b9689",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf097638-4350-4850-af72-c90fb060e671",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f27f5f2-389e-4197-b505-ad7259f795a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e64e61e6-2dbe-472b-a221-d54f284b96b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gixian Puppeteer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb4d8481-9825-4472-a522-8ce979e4c603",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gixian Puppeteer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2fb03d1-78c2-4b0c-a57b-0640ca9fe37d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Command",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "392e7ac5-eadd-4d0a-b65f-36f6e20518b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "pbro",
+    "setName" : "The Brothers' War Promos",
+    "variation" : false
+  }
+]

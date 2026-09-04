@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "280†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "025dfd44-f611-42e3-9e22-f630599f0591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Twister",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1996-10-08",
+    "setCode" : "mir",
+    "setName" : "Mirage",
+    "variation" : true,
+    "variationOf" : "eb73313b-d39a-46ab-abfc-76f94a75dfca"
+  },
+  {
+    "collectorNumber" : "87†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2bea2ea-04d3-4835-843a-ebbed0ef5831",
+    "language" : "es",
+    "layout" : "normal",
+    "name" : "Reality Ripple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1996-10-08",
+    "setCode" : "mir",
+    "setName" : "Mirage",
+    "variation" : true,
+    "variationOf" : "1da31569-91c0-41d5-8696-92e12ff2bae2"
+  }
+]

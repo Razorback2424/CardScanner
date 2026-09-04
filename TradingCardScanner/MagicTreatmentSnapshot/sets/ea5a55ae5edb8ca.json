@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "062043de-a199-408d-8d77-09531ad38b16",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "l12",
+    "setName" : "League Tokens 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf9acfe1-de7a-48fe-aed3-28a72db6d1c0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Knight",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "l12",
+    "setName" : "League Tokens 2012",
+    "variation" : false
+  }
+]

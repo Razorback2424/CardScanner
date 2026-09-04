@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "T1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b10441dd-9029-4f95-9566-d3771ebd36bd",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Mowu // Mowu",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-06-22",
+    "setCode" : "gs1",
+    "setName" : "Global Series Jiang Yanggu & Mu Yanling",
+    "variation" : false
+  }
+]

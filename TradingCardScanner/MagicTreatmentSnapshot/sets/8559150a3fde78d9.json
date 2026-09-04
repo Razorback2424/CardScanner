@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10c5810f-83f6-43bf-8ece-047be42d7d58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of God",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c986d9d6-d274-4ba9-8695-bc7c2f8e8fed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Condemn",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a36a42b0-8216-4c99-a85f-22a520f31fd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortify",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a380513-9eea-4ff9-bcc8-7a6b53c642c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psionic Blast",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd3e0bb9-5a68-4164-9968-366299fca8ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Edict",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07494030-c1a3-4135-be88-9f7ba68f814b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disenchant",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be7ef1c2-a75e-47ef-8181-cb7933ac09d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recollect",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-01",
+    "setCode" : "p07",
+    "setName" : "Magic Player Rewards 2007",
+    "variation" : false
+  }
+]

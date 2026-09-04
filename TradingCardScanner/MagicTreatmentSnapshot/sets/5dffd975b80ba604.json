@@ -1,0 +1,266 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df5d894f-ead3-4077-94a0-765b1159a34a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf7acfaa-0fb7-4f2b-8607-3bfa877f8682",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Edict",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a67a595c-50fb-42c8-a15e-6ee40239ca23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b09be15-1674-4ce7-a3fb-acf572cc25bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Blessing",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87f53a8f-a86d-47ad-ae5c-89b3135a34a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Mold",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c20fe46c-f358-4974-adfb-86193c4857c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "710876cc-5e09-4d0f-aafc-dc8b6f020d91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dismiss",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c35b5aa9-0d84-45df-99da-21535f9d45c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84ba156e-09f4-415e-a7a2-95ba5d52f4a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fling",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "793bfd55-e7ff-46cd-ad29-7997c9fd521a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4d278c1-8610-435d-8cfa-dd268a74eb63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empyrial Armor",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "115cfb4f-06d2-42c4-b94b-d0cbe44e2f8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pal01",
+    "setName" : "Arena League 2001",
+    "variation" : false
+  }
+]

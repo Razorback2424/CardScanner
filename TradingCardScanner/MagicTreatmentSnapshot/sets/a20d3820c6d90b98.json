@@ -1,0 +1,866 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcde6a95-37f1-4bb4-9cea-5b65dbc9c76a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "ffiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7758a0b-9e85-4b4a-bf1c-ffcc6761dbad",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Knight",
+    "promoTypes" : [
+      "ffvii",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "295b78dc-b26d-4e92-8f75-916566c4db14",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Moogle",
+    "promoTypes" : [
+      "ffvi",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2b4e93b-6b27-4dd3-a6dd-a75d6fab14dc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Robot Warrior",
+    "promoTypes" : [
+      "ffvi",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddcf50c2-24f5-46b4-bfe9-c636bb51bae5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Horror",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "187fe54c-7d0c-4225-9d46-3affbead897d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wizard",
+    "promoTypes" : [
+      "ffix",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e27f28ec-d5e7-4415-96cc-b666cdecae08",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wizard",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fbc471d-5948-47fc-b7cc-81cc13a4cd15",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "ffvi",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8632216a-33c3-4d16-bf25-42e41af53986",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "ffii",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3c84944-23b8-40d7-9b25-c746b08b4dc4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Frog",
+    "promoTypes" : [
+      "ffix",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54347961-0a41-4f62-b47e-2afa0ca07b21",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angelo",
+    "promoTypes" : [
+      "ffviii",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0657ce1-bf75-4007-ac1b-0623eb263357",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19faca08-0eef-4da4-ab6f-c3aed63ac77b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Darkstar",
+    "promoTypes" : [
+      "ffvii",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe592a5c-5e6e-40ed-8818-f4651bcf2fe8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4853f6f5-476d-4109-a1c6-f98f4d332db3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "ffxv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab0cda01-10b5-4a1b-b2bb-ad8bb296590f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "ffi",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03165625-1cb9-4e7b-85be-df400adc4487",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Sephiroth, One-Winged Angel Emblem",
+    "promoTypes" : [
+      "ffvii",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81c9d442-d7d5-4911-b0b9-c3206faeab1d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "ffiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00686381-e0a5-4cd3-8812-3b4aaefa31fa",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80b24e51-bf2b-4aac-a415-e04eb0738a8b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cb73e63-efee-44b4-9257-881b83d704a0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9558c28a-5200-47f8-b4a7-58ceb6960f4d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3308e4bf-950f-4b83-969a-2a95f077552f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f53d44de-7535-4af1-a184-f457b38eefe2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0752d81-a6d1-47fb-8e21-eb2c91d5b607",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bf4e156-0f17-427b-b581-b71fdf02896f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17fa0c1f-6737-487c-9101-0bec2e586795",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20a709d5-4be5-487b-bfba-4b1821f2ebd3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Moogle",
+    "promoTypes" : [
+      "ffvi",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04ae24bf-0b24-4996-afae-7bf9f9d7471c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wizard",
+    "promoTypes" : [
+      "ffxiv",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5f4f810-f95a-41ac-9c3b-47254c03e766",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "ffi",
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a257329e-28b9-4ab6-ae05-f6ce0070cb35",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5619d240-3832-477b-ad30-8d310c90f555",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c39b8112-6a5c-4080-a884-2b4d6e5276ef",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c82c74c1-fb73-4d4d-808e-2f4d7b97c97d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7fc68b53-e23d-4762-aa53-e634e856be47",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d132d9b-00dd-4ab9-b195-1857f3cee37b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hero",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "tfin",
+    "setName" : "Final Fantasy Tokens",
+    "variation" : false
+  }
+]

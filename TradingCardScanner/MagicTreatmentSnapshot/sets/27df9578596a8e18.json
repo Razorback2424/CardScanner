@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "469e18c7-d023-4293-85e4-1aaf336f5d8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahid, Djinn of the Lamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-16",
+    "setCode" : "gnt",
+    "setName" : "Game Night",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2a93747-720a-4ddf-8325-36db78e0a584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-16",
+    "setCode" : "gnt",
+    "setName" : "Game Night",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d24b200-5cab-406a-a0e6-71a4d33b26fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhonas's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-11-16",
+    "setCode" : "gnt",
+    "setName" : "Game Night",
+    "variation" : false
+  }
+]

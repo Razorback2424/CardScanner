@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c848b20e-a99c-445e-bf27-45a8e65a50d2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-09-03",
+    "setCode" : "tddf",
+    "setName" : "Duel Decks: Elspeth vs. Tezzeret Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,443 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2885d54c-9fb2-4f01-8937-54f8ac1ce5bc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "beginnerbox"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26c478f7-b426-4055-8d06-e5782226c826",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Scion of the Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e29a360b-11fd-42ba-82ba-de8f7e136c20",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "beginnerbox",
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5d4dd3b-0a5f-4d2c-aa6b-3c47e71e8c39",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70f8a1de-cd4c-4afa-bf03-0245d375d42e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "beginnerbox",
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "315c45f4-7bc9-45d5-bbf5-2533cf80af60",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf Warrior",
+    "promoTypes" : [
+      "beginnerbox",
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59c2cbd7-79bb-4d93-b2b6-5d3abe88a012",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21210145-8edd-41f5-9a64-9f0b5be79864",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "beginnerbox"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc586e46-b7d0-4c84-8678-3542cd390de1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86701490-17ac-4253-810d-6cfd7a46594c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "322ef76e-e0f0-48d7-a6ad-5d4c1c9ccb2e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat Beast",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d8da5b2-7e02-494b-8686-c5845286d0b9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dog",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06af3d5a-7b38-42f6-822f-da4e04a7f265",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7384238b-cffb-4946-96de-dc6b7a37b979",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rat",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01e437a1-6d74-4006-8598-06284444c837",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Phyrexian Goblin",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca697323-bdc8-4fa0-a0ba-c2dd4deff68c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21bd6fb3-f60c-49cc-8854-6a20a1e1d9c7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d093322e-a717-4e2d-8199-fa560792bcf6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1c0556e-ba3c-4a8e-b704-8eaa7c4dba1c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Faerie",
+    "promoTypes" : [
+      "beginnerbox",
+      "startercollection"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "tfdn",
+    "setName" : "Foundations Tokens",
+    "variation" : false
+  }
+]

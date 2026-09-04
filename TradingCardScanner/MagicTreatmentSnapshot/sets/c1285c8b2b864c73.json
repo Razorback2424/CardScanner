@@ -1,0 +1,3322 @@
+[
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b540c7c6-5b9e-4606-ac84-e583a62a3647",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yidaro, Wandering Monster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c35ca79-eb72-427a-a8ed-404b2214389a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kogla, the Titan Ape",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9f07625-fbd8-4581-8568-eb3cfb2a4c1e",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Brokkos, Apex of Forever",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fecbf0a3-ebe1-43b6-a720-462ba19002eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chevill, Bane of Monsters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c3227ae-0c72-478a-a6dd-661aaf718038",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Kudro of Drannith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9fc99c81-d112-4811-9bba-77a14d904692",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Illuna, Apex of Wishes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63cda4a0-0dff-4edb-ae67-a2b7e2971350",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinnan, Bonder Prodigy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ca6eb5a-8bc9-4091-bcfb-b207f0afd188",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Nethroi, Apex of Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5f03c944-1929-4cb2-a373-d57eefa29ed1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rielle, the Everwise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51fdeeb7-9868-4fc2-9c53-806244cd5488",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Snapdax, Apex of the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed7b0256-d342-4523-9516-6a007bf51825",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Vadrok, Apex of Thunder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5dd13a6c-23d3-44ce-a628-cb1c19d777c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winota, Joiner of Forces",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "97eb1804-6fd8-4917-af36-87fdfce39d3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "1d52e527-3835-4350-8c01-0f2d5d623b9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "d4ebed0b-8060-4a7b-a060-5cfcd2172b16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "a90ee952-de7a-420f-993c-a38db89bc8ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "5ad36fb2-c44e-4085-ba0d-54277841ad3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "fb1189c9-7842-466e-8238-1e02677d8494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "451507de-9c42-43ee-b9ba-1f69e9aa29d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "75ac31e0-ac70-4ee6-b2b1-cc445ffa1da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "275426c4-c14e-47d0-a9d4-24da7f6f6911",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "legendary"
+    ],
+    "id" : "1bd8e61c-2ee8-4243-a848-7008810db8a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9341ed06-53db-4604-b60a-3ea9129afbc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ozolith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9a0639a0-c898-4a07-975c-a02bdd53175b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zilortha, Strength Incarnate",
+    "promoTypes" : [
+      "buyabox",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275y",
+    "collectorNumberSuffix" : "y",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1c48ddf5-c2da-4fbc-95f2-8a3f2f5737ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zilortha, Strength Incarnate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-01-01",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : true,
+    "variationOf" : "9a0639a0-c898-4a07-975c-a02bdd53175b"
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a8f74c3-c552-4331-a47c-e8155841bb27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukka, Coppercoat Outcast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e7ce2ee-2ebc-4336-a9f3-02380ea9784b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien, Monsters' Advocate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91ac6589-75ee-4fbf-8056-1860c1482592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset of the Ancient Way",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "17398d7f-baf3-4605-aced-21582a81c73a",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Cubwarden",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "208084f5-35d4-4042-bdc6-dc2bf14c9990",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Huntmaster Liger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3d63b878-4d0d-444c-9db2-05cf5dd3fa8c",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Majestic Auricorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "044dae1f-a767-49f8-b4e2-85161f2685d5",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Vulpikeet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "01cda84f-7bd8-4166-b496-a04a4baa9b62",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Archipelagore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2d1828b1-a6eb-4346-b405-7642e34b3e71",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Dreamtail Heron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "54428228-83a0-440f-afe9-573c9d8640cc",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Pouncing Shoreshark",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "bd6986a8-e258-46f0-88a9-8f84732f359e",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Sea-Dasher Octopus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fecae13c-fbbf-4199-a1dc-0e14263ed887",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Cavern Whisperer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "dbd157ee-d17e-402c-a97d-206445dcf864",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Chittering Harvester",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "bef6998d-bda7-4847-b3d6-30e1596bf730",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Dirge Bat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ada6588b-3efc-4464-ae83-11586eb54775",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Insatiable Hemophage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3db7d906-1794-40eb-9d73-1f2a4db3a13f",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Cloudpiercer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7fe3c735-d091-4a32-8d10-38a7f23e5c65",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Everquill Phoenix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e6373fe1-c834-419e-8a0b-590fb5dc555e",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Porcuparrot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f7b41cfa-b22e-4d34-bfe9-68c9d8740704",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Auspicious Starrix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d75546a5-81fd-41c1-a081-d8980f6bd60a",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Gemrazer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "980dcb8f-fc04-49d2-9859-830ca3d12af6",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Glowstone Recluse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1e31f56d-bf75-4e14-94de-5c77193abf3a",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Migratory Greathorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2e0232c0-0867-4217-8e5d-b3454c0c8dab",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Boneyard Lurker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5ec4dfeb-d2a8-4b34-8605-75a79c706fe0",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Brokkos, Apex of Forever",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5c974c68-1a9f-457a-8bcb-265d29fee8e4",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Illuna, Apex of Wishes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "e938fac3-544a-4f27-9726-a67153392031",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Lore Drakkis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a776f88b-65f5-4cac-8207-c7e6b976d206",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Necropanther",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ba04c102-e4c1-43a8-9c2f-d1f3c9bf5edf",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Nethroi, Apex of Death",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f5ac98e5-a22c-41b5-94a9-b37b5aeb124f",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Parcelbeast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "cdb8801b-6cfd-4ada-b6cc-bac09117f4d5",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Regal Leosaur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ceffd13b-8039-44ed-bd7f-68d46476dbe7",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Snapdax, Apex of the Hunt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2fe88a45-a420-4998-b242-b475c6b5b0bc",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Trumpeting Gnarr",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "658b75a1-c12c-4904-8a65-4eb75d1d32f7",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Vadrok, Apex of Thunder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9bf2b208-79c6-4c4c-bf66-871352ed600f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indatha Triome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f5b5b9bb-ee9f-4a52-bd74-fd2759c8e3d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ketria Triome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c303a627-cce3-4045-81f8-fe7427e0a941",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raugrin Triome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d21ef9e6-e2dd-4e0a-a36c-e07034ac4ba3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savai Triome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f809f970-25a7-4c34-b98f-1cb08012080d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zagoth Triome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "adaf8f6a-9559-4b47-8e67-2c4c3d6d8c60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Magistrate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f2ab4e55-7c55-4480-83df-c9d9fd4df65a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavabrink Venturer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0535c823-f6e9-4a2f-8adf-f69b6f0fea1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luminous Broodmoth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0a12b361-ed36-4a89-a973-1e4c7fb56fa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythos of Snapdax",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "edf1cdf3-2543-4b91-b6a8-ac0d04a9c045",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythos of Illuna",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5dfd8d35-3f73-4181-80a3-d4d69badcc47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shark Typhoon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5c5ee3a2-c683-4657-98c8-daebaa7819f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voracious Greatshark",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3cb788cd-a6ab-44a9-adcf-13bdfc3be2e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extinction Event",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e8ee8cfc-5d76-4e30-8b53-6ac6c9637d5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunted Nightmare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4cfb70ec-c9c8-4359-b2d4-e116bf5ad669",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythos of Nethroi",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ce59b5b6-97d8-4678-9381-2800667fdb41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythos of Vadrok",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "84b94e1d-f328-4e4c-b112-45d6c6f98376",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unpredictable Cyclone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9679442a-ecd4-4220-aae4-01b95dc18486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yidaro, Wandering Monster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9111b3dc-63da-45c7-bbe6-42a443ac2015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossification",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a1a5905f-4d53-4f7e-8af8-3d802978ec03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kogla, the Titan Ape",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d7e3e1ed-eeb6-4d7e-ab50-0b0f104606b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mythos of Brokkos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1f90d92a-2297-4a52-80cb-10b56943b828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chevill, Bane of Monsters",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7b6c4e70-81fb-42b9-9725-4d5206520037",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death's Oasis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fdbe5a6f-82a2-4c6b-a69d-3a07917e15c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eerie Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "400d79b0-102a-406c-8369-8d024b18c4e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emergent Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bd9438c0-080b-4541-bfb7-6214be694584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frondland Felidar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e6eb6b97-8b87-4565-940a-01a7fd79a989",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Kudro of Drannith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3d51e3a2-c188-4212-8cc0-ef2d4722cb84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c4e96967-d694-4c26-8e10-d904e1e64c09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspired Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "532746e2-f822-4920-ab31-94e0c8baaa84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinnan, Bonder Prodigy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6b4a7b3-9eb3-4f96-b151-8b1c4c85118b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Labyrinth Raptor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dbd7462d-0dfb-4f3f-96c4-43c281f0beb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Offspring's Revenge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "39e1effa-92a6-4e8c-9cd6-fc57ae7b3cbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quartzwood Crasher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6cbe5ae7-5c50-476f-9022-cfb61ced107b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rielle, the Everwise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8aa531e0-a3e5-4b40-a824-354ed7a13fd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruinous Ultimatum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "32b08d66-4168-433d-9655-08f64b72e2cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skycat Sovereign",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d2a641ad-4268-46c4-a5fb-c1515e52d648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slitherwisp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7e98d2e6-8247-4915-928b-25d6e2efc908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Song of Creation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "894502fb-1ec7-4520-90e5-5f97de1c9151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titans' Nest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b6c48195-074a-4236-a82d-603b5dd1aa66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whirlwind of Thought",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "750c7d63-b07d-456d-95ca-d3c3f346715e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winota, Joiner of Forces",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "653e706a-5506-4efd-a86b-2a25bb66a2ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiend Artisan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0d59bf12-f898-40ad-a8a9-2f31f733cf15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d5592378-f9e7-4c50-8425-2105744aa85c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jegantha, the Wellspring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fe646123-c399-4ead-96a9-f7b46215f9d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaheera, the Orphanguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1206f4fc-6ebf-4205-90d3-1cb3a9caaa82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keruga, the Macrosage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2c89beb2-3467-4be0-a066-919f54331942",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurrus of the Dream-Den",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "12c01a00-2128-4b6c-874f-a206eca3a756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lutri, the Spellchaser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9c8cf901-1452-4664-be10-0bacc5bef83a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obosh, the Preypiercer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "10576f29-1ab8-4157-b5a0-8ad94a1ff634",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umori, the Collector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "77b05368-1661-42de-9319-bbe987d27327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yorion, Sky Nomad",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ff7301bd-05db-436b-8a49-5840c4cb9995",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zirda, the Dawnwaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8e5b4c21-342f-4b46-86bb-8e8f38659f82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystalline Giant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ed3b5f52-ce33-4e67-aca0-6d417fe7f5fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ozolith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b7a26d0b-cf19-4c3e-bc81-6ffdc21757fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonders' Enclave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6faa8a7b-d886-4005-950d-bad589b6e03a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colossification",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d0b6981-0fd4-4f58-bba4-a7efd4c633d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flourishing Fox",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "928b0234-fc62-4ab8-b257-3fddcc52376b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartless Act",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ae39803e-e67a-4d1b-a3fe-2e255d502656",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forbidden Friendship",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "363428be-0f89-4de5-a804-93172da4d99f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Migration Path",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7172db88-2208-47c4-8226-bc094fd04a9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sprite Dragon",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c5f741e3-82d8-4842-8054-25e20a10dddd",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Huntmaster Liger",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4d393cc4-0e6b-44fe-a74a-822c52678ec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luminous Broodmoth",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd60a4f8-cb75-42e9-8a33-347e0f4bb458",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pollywog Symbiote",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1ca7065e-88c1-44bb-ac68-e6e1df9e0726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Beckoner",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373A",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29ae88c2-1f9b-4515-9f2e-78e1dc5468b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Beckoner",
+    "promoTypes" : [
+      "boosterfun",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : true,
+    "variationOf" : "1ca7065e-88c1-44bb-ac68-e6e1df9e0726"
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "96e93bf3-94e8-408c-94ba-e83796077548",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Everquill Phoenix",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8bb6b4c7-4f18-4bea-b927-916c7bb987ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yidaro, Wandering Monster",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c811c0d4-e2fc-45eb-8a76-b89c38a95536",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Gemrazer",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b4817b86-d55a-4334-82ee-603f8c4b3e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titanoth Rex",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4cf6ca85-0ef5-4104-b0e6-1137c4975579",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Brokkos, Apex of Forever",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bfb1fba6-8eb3-4338-9249-cec888c892dc",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Illuna, Apex of Wishes",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b9ebe73b-29d7-4a07-b7dc-a885dad61a88",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Nethroi, Apex of Death",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "673d14b1-e93a-4594-b2c9-792696adb991",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Snapdax, Apex of the Hunt",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "94d3b231-d15d-4186-826c-452009cd5c5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sprite Dragon",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d3346674-43cf-4006-b829-bf824560f413",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Vadrok, Apex of Thunder",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "companion",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "206739b3-9b6a-4855-a2c3-721879bdbfb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyruda, Doom of Depths",
+    "promoTypes" : [
+      "boosterfun",
+      "boxtopper",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f333b41d-e42c-4b12-be08-742eefb4e401",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mysterious Egg",
+    "promoTypes" : [
+      "boosterfun",
+      "godzillaseries"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fdb53dbd-b35f-414a-9f99-d340ef9398dc",
+    "language" : "ja",
+    "layout" : "mutate",
+    "name" : "Dirge Bat",
+    "promoTypes" : [
+      "boosterfun",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b0c2de2f-bb56-4713-861a-34523b331e26",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crystalline Giant",
+    "promoTypes" : [
+      "boosterfun",
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-04-24",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-216",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6bf6e906-9305-4003-b040-1dfecca590c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Winota, Joiner of Forces",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "iko",
+    "setName" : "Ikoria: Lair of Behemoths",
+    "variation" : false
+  }
+]

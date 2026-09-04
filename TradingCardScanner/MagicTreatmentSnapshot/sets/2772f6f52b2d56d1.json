@@ -1,0 +1,314 @@
+[
+  {
+    "collectorNumber" : "107†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60d002f9-ae69-4e07-943f-95036f083dea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brazen Scourge",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : true,
+    "variationOf" : "68c6fbdb-7b5c-4ad0-88f5-4779deae16ce"
+  },
+  {
+    "collectorNumber" : "142†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d228ad88-669a-435f-a2fd-6188261988ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arborback Stomper",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : true,
+    "variationOf" : "788b9d55-6679-4fcc-a3af-11d31e477421"
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ab8435b-5fe8-4074-8809-46aa6e5504c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Pyrogenius",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac44e3cb-cc69-4222-87bc-ffa54b7ab34a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flame Lash",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9d2156e-2d54-440e-b0fd-7bef702afbfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liberating Combustion",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b633884-867c-4b51-bd5b-5f246d0ecd4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renegade Firebrand",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8214a439-b388-4f41-a897-725e56d23fe8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone Quarry",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "777533c3-0a87-4625-8987-d850fc236ddb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Nature's Artisan",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72638ac5-84fd-4688-9b81-0eea3c05e53e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of the Great Conduit",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32b89e5c-ffb4-406f-99d1-ec2797aca061",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Elemental",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07997554-9fd7-4d6f-abaf-6c3fda9644d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Elemental",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : true,
+    "variationOf" : "32b89e5c-ffb4-406f-99d1-ec2797aca061"
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea890019-f48f-4164-b057-773499ef273f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Crescendo",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a333bbdc-5af7-4679-b263-3aaa056452a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Stream",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76e5a14b-8fd2-4a62-90dc-4adb1cee4505",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wind Drake",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "kld",
+    "setName" : "Kaladesh",
+    "variation" : true,
+    "variationOf" : "5e227a63-abea-494e-9d66-6ff0a3da14ca"
+  }
+]

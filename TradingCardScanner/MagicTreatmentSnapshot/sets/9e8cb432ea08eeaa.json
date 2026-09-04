@@ -1,0 +1,26 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c68629ff-72b3-40a2-b578-cddb6ddb4ccf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "sds",
+    "setName" : "Stardates",
+    "variation" : false
+  }
+]

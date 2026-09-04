@@ -1,0 +1,232 @@
+[
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "32987720-cc0c-416b-b79b-217d3b37542d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acorn Harvest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "73cce010-a8e7-477b-9179-bbad38aa6438",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parallel Evolution",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "efdbe7c6-99ad-4c73-bffe-7bbdc6965854",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit Flare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "64cd68be-6e6a-4577-8465-a892463b6d6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alter Reality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "01e3c2e9-d8df-4a7a-be86-7be8c6254fa2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "014af391-3b4a-4aab-a3e9-f60e61016985",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0bb53a87-ba48-4c77-b284-3be321c8836e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crippling Fatigue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "97431dca-54ca-47ef-ab00-943140e8e758",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ichorid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "fb7fd9b7-c394-4ab3-b945-b4aab694eb6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flaming Gambit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "3e550776-b806-4f66-8aab-e6a5dac6d5cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flash of Defiance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-02-04",
+    "setCode" : "tor",
+    "setName" : "Torment",
+    "variation" : false
+  }
+]

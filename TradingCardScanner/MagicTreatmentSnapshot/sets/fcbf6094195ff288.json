@@ -1,0 +1,623 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "8bfd6889-90e2-49fe-bd30-7d850dc18db2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adriana's Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "abefb30c-780d-4496-8fc6-6e1b80686c15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sovereign's Realm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "c4f16145-1ace-48a9-bd98-b0aea3e4bf62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Summoner's Bond",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "feef03a1-f19a-413b-ad86-0b357cf9c09c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weight Advantage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "add304ab-7a45-40c4-96eb-e32a285c2a50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Custodi Peacekeeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "0a7f0d35-b91e-461a-822c-7ae2798ca51a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Banneret",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "7023889e-924f-495f-b189-82592989d659",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assemble the Rank and Vile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "2b120f2d-2585-4827-a8c5-d6ecdc8108e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paliano Vanguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "0e7466e5-9443-4b38-a7e9-e0d615a35667",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Savant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "165dd3b0-0878-448e-b922-019d0ba372d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Boon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "766150d9-c795-4675-a849-a388e8ae148d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Illusionary Informant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "2b6b39d3-b98f-4e52-bf67-a0782b175f55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spire Phantasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "632122b0-6525-4b41-840f-4fd5bea2f0ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archdemon of Paliano",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "ce5f3b5c-feb8-4304-852f-01c467d6517c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emissary's Ploy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "07f56287-91e0-418f-8b57-35c6c30cee33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regicide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "b10ce284-c994-429c-ad61-ffe1ca88d691",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "d3914468-d769-4fe3-ae18-0caee9eb1502",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hired Heist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "4d76b91e-e79c-4c7e-ae3c-2b27b7e871ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Fire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "0f17be2c-f8c7-41b3-b8fa-30b9e4e826c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyretic Hunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "f6d3334c-7cf6-4e50-bece-d1ce462cfce8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volatile Chimera",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "00717f7c-0778-4a02-b6c0-b3c3f07e75a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hold the Perimeter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "e5e8f955-4fa5-4d57-ac77-2a7be95ed4ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animus of Predation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "c62f25d9-7eb2-491e-ba7b-b71e49ee87b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caller of the Untamed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "d41deffe-766f-4a46-8552-73483adc0cfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leovold's Operative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "e7902666-21f2-4590-9dca-e95858dbde70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hymn of the Wilds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "cfbe340b-ca40-4604-bdc6-4b00e7444df4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incendiary Dissent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "draft"
+    ],
+    "id" : "5e633e76-ea92-46e5-a0c1-7930109c7712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Natural Unity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-08-26",
+    "setCode" : "cn2",
+    "setName" : "Conspiracy: Take the Crown",
+    "variation" : false
+  }
+]

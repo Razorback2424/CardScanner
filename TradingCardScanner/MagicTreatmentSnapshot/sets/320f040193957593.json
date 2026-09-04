@@ -1,0 +1,1244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "74033489-819a-42ee-ad38-5a3ecb71690d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tezzeret, Cruel Captain // Tezzeret, Cruel Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "87f8584f-77a5-46fb-9bd5-ef8acbe34866",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Weftwalking // Weftwalking",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2132920-6394-4925-a154-cdb87eb88c60",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Archenemy's Charm // Archenemy's Charm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "45210335-f9b2-4044-8dc3-5d19f6cf3ebc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chorale of the Void // Chorale of the Void",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c93edc52-ea33-407c-afc5-c8c06373636e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Embrace Oblivion // Embrace Oblivion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7b2cc59a-6e59-4b92-b8fa-f8f39d4536fd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gravkill // Gravkill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f21551bd-1868-42ce-a71e-ae354bfe884c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lightless Evangel // Lightless Evangel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ceb01885-3611-49ec-853d-4a7ac2c5f946",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Frontline War-Rager // Frontline War-Rager",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2db7647e-1209-4b31-b252-a517e8f3dff7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Full Bore // Full Bore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "34525a35-e50c-49cd-81c8-fba2eadf7de4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nova Hellkite // Nova Hellkite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e5dcb6df-9915-4b30-b94a-5fbf347a205e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tannuk, Steadfast Second // Tannuk, Steadfast Second",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c194815b-79cd-4745-8aa9-8f5c10803953",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cosmogrand Zenith // Cosmogrand Zenith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ab09664c-7171-418c-83cc-84fd03ac25ac",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Weftstalker Ardent // Weftstalker Ardent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5574e8d7-8d0b-4f6d-bd2a-6bbf2855ef0d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Galactic Wayfarer // Galactic Wayfarer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ee6c0fe2-8ec3-4c7e-a23a-c186eb95202f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Loading Zone // Loading Zone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "17843894-9ea9-4cfa-8565-36b291b1a505",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tapestry Warden // Tapestry Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0832fe63-1354-4f10-a563-c4c779e34eff",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cosmogoyf // Cosmogoyf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2f422540-15df-420c-8fc0-ebbd0b375e01",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Syr Vondam, Sunstar Exemplar // Syr Vondam, Sunstar Exemplar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7d38e276-d47f-4b13-a38b-617fd12911df",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bygone Colossus // Bygone Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f5faaeb6-43dd-41fc-b62f-f2a913704efd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dawnsire, Sunstar Dreadnought // Dawnsire, Sunstar Dreadnought",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a4eecef6-e5f7-4ced-a118-5769b006d9dd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Endstone // The Endstone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2884b96-5a9b-42e9-ab2d-77615cd27420",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Adagia, Windswept Bastion // Adagia, Windswept Bastion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "80aea82f-923b-41a5-b6d2-34e4e387ee0d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Exalted Sunborn // Exalted Sunborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93f366d4-f08e-4059-bdfa-c9fb84fe685c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Evendo, Waking Haven // Evendo, Waking Haven",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c34e3905-83fe-483b-a14f-1b82780dadad",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kavaron, Memorial World // Kavaron, Memorial World",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7d388885-7f42-4247-9c12-106f77a61a08",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Secluded Starforge // Secluded Starforge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "08b3131e-45cf-416c-87af-5f57e418ebcc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Susur Secundi, Void Altar // Susur Secundi, Void Altar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "308e4179-6fab-4ebc-ae50-3456fdf6720f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Uthros, Titanic Godcore // Uthros, Titanic Godcore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d9d3a8ec-b55c-4f22-98cc-e7f75e78e65f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tezzeret, Cruel Captain // Tezzeret, Cruel Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b731fce9-266a-43f8-a501-c439785dd0a7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Astelli Reclaimer // Astelli Reclaimer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ba71ebfe-fe20-4350-834f-d6899b2d00ef",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sami, Wildcat Captain // Sami, Wildcat Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "689f14d8-30e3-46da-b0b1-b0fa9c51d10f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Beyond the Quiet // Beyond the Quiet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cd1491f6-c34e-4baa-ba49-367826340ba9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quantum Riddler // Quantum Riddler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fa492110-f2d1-475f-adf0-ff7a5eef9dea",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hardlight Containment // Hardlight Containment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c4fa2d18-9105-4f5d-acac-464c3dbb782c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nova Hellkite // Nova Hellkite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f0b29f17-5ee1-4f55-8b12-31a12774101f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Terrasymbiosis // Terrasymbiosis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "97dc2ea7-4a6d-4235-9fba-9a4ec5ec6af2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blinkmoth Nexus // Blinkmoth Nexus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "33ea0047-bb86-4908-bb73-902d8db3b6de",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cascading Cataracts // Cascading Cataracts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e992005c-1cb8-434b-addf-66000116684f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Celestial Colonnade // Celestial Colonnade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7283c35e-5827-4bab-b110-b6a5f02f502e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Meteor Crater // Meteor Crater",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8b56ac1b-1d51-4a4d-a07c-7ffabd34e1dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Reflecting Pool // Reflecting Pool",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4412554b-73a3-4ca6-b8db-6d8466b60db5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scavenger Grounds // Scavenger Grounds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "621b2ac3-a5d0-454d-9559-a1157914053a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blast Zone // Blast Zone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dd8ebc77-0fbc-4012-ac60-c6a8bb3c8427",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bonders' Enclave // Bonders' Enclave",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b784cf7e-da2c-4289-8c27-8b883c80beb2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lightstall Inquisitor // Lightstall Inquisitor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cc4d666e-1ac4-4200-97f4-2394eb1af51d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cascading Cataracts // Cascading Cataracts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3659bc79-2c87-4a47-bec7-ce7d31b3af0e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mirrorpool // Mirrorpool",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cdfadc86-bc43-4f4b-bf8f-d454b8d81909",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Petrified Field // Petrified Field",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2a24420b-5e15-4ad9-92e8-13d16d5f4f1f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scavenger Grounds // Scavenger Grounds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5db81018-4872-4ac1-8df3-4d919d95d052",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Swarmyard // Swarmyard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f22e8056-b68b-4cae-b811-f0b0cae33c84",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Seam Rip // Seam Rip",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2b6bedb8-c506-4376-a552-cb1208e363b7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Illvoi Galeblade // Illvoi Galeblade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "65b2c341-a85a-4219-b3c6-fca3b2c38d42",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mm'menon, the Right Hand // Mm'menon, the Right Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bd6a025-ee39-4491-9111-f72841b3f12a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Starbreach Whale // Starbreach Whale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "aeoe",
+    "setName" : "Edge of Eternities Art Series",
+    "variation" : false
+  }
+]

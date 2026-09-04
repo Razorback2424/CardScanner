@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "016a7142-d4e9-4c3a-bfe3-f285ef30f6ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Buxton, Decorated Host",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-20",
+    "setCode" : "yblb",
+    "setName" : "Alchemy: Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c6c8540-9f2d-4abe-8acf-1d6670608364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Euru, Acorn Scrounger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-20",
+    "setCode" : "yblb",
+    "setName" : "Alchemy: Bloomburrow",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "618806ea-7ea8-4cfb-a8c1-c3defa34e7dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indris, the Hydrostatic Surge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-20",
+    "setCode" : "yblb",
+    "setName" : "Alchemy: Bloomburrow",
+    "variation" : false
+  }
+]

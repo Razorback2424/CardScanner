@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "efc002a4-a1ab-466c-a24f-e6f5e5f5bdb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darksteel Angel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "frc",
+    "setName" : "Reality Fracture Commander",
+    "variation" : false
+  }
+]

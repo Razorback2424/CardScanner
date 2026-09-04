@@ -1,0 +1,7469 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1a1e520-1fe2-4529-8afb-c187bb80da3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long-Bodied Grey Dog",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2341cf3-4d2c-4a4f-9aea-8834104a8910",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Shortsword",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccff7382-8609-494c-aeee-cd1436456dd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin-town Flunkies",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc4a60b8-a5bb-4dbf-8d48-95caf757eac3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gundabad Opportunist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46daa9ac-0ac7-4df9-b9d2-e03ab5b56c72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Hills Stalwart",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "df29484b-de4b-4bab-995a-7605745780d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Light of Durin's Day",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3d5f35ff-4146-4844-9da5-031461cc8c05",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Misty Mountains Cold",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6dff14cd-b60b-48f4-9d9f-c9019b55df4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misty Mountains Raider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9984b9ef-e81c-48f4-aa33-0504171a2d3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Óin the Brave",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea174cea-40e5-424e-9734-e39aae6c6b17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pinecone Strike",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bf81a8b-52ad-49f5-a3d4-22613cad3a3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragged Short Spear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "419ca9e5-8413-4378-a4ef-eda5a1024218",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Smaug, the Great Calamity // Spew Flame",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3feca644-5f65-4477-bbc8-d505cec6f3a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eagle of the Great Shelf",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a5d8fad-2ffd-4645-8c49-907999b6cecf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug the Magnificent",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a16f203a-785e-4c78-9410-fb9f8a0ffa01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug's Fury",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47666099-ffb2-4d07-a801-70524dba0837",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snowslope Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f4f4683-ffd2-447a-932b-276f7fa17cca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone-Giant of High Pass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "117347af-0dd7-4350-901d-8c8a81387e22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin, Mountain-king",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38c16a0a-375e-48cb-9720-dbbc08c603ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tidings of War",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81263d5d-e402-4813-9458-161112da27ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Attercop",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e95eba5c-e0d6-46b4-a0be-8e373b2185ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bejeweled Warg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "804589b7-3ef9-473d-97cc-c61a2d41f70d",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Beorn, Reluctant Host // Till and Tend",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "367d5f8b-77ee-47f7-bc71-972d62c280a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beorn the Fierce",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0bda1b62-47fc-42c2-a841-ccad8ea0db48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Eagles Are Coming!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beorn's Hospitality",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71bec005-2925-4944-be16-2cc5eb30f5d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boughside Wanderers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fae46a70-a6d3-4584-859d-6c7425fb1508",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cantankerous Keepers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "550cd0b6-ca61-4db7-9d20-0b68c48066f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing from Dark to Dawn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c8aa5179-475b-4cc8-b21e-205b475eb4cf",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Down in the Valley",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "985bd676-58c4-42c7-a570-1b413e9aa94c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galion, Elvenking's Butler",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d6ece3d-8e7a-41ad-974f-3c9748de4825",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gigantic Big Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4265caec-8c28-44cd-8e6b-90b5af926d3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of the Halls",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a50858a-33b5-4c45-9c31-5956ae5a33a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Little Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50fbedc0-bc66-4ffb-87f6-a2df69995091",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirkwood Pathmaker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "573f67b0-6ce8-4857-a703-4a5728640736",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esgaroth Garrison",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96bc7d25-2828-478a-8fe5-a1f4ede8c9c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nasty Little Rabbit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d876315f-b269-4254-a517-905c6e927462",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Notary Hobbits",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0c0f842-40fe-4776-a988-a35216bcfd47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Fat Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0feb9817-56e1-465a-851c-b2fe202aa8ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ordinary Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b4ff1eac-6d97-40ab-9b7c-c2fdca0917d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Part in Friendship",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5900a0b4-aa89-4019-94c9-7e9ea3b4792e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quarrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5741bbad-a6e4-45e0-b827-73f48c9975bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radagast of Rhosgobel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "880adfc8-69cf-4062-a804-e65b6cb6056d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Through the Forest Gate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca0f7bf4-b8a2-4ec4-ad7e-b639de9fa76a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Troll Negotiations",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b06d9cee-bb0f-4fe7-ab2a-b55d36461aec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warg Tactics",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b02142f3-5e55-40dc-a02c-9113fb7d763c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fíli the Pathfinder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ccbf823-846f-4f09-9c67-1deebb5d1d92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wargling",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63078f42-f404-4c61-86be-45d934393b0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilderland Scrounger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2476e42b-b209-4207-8ed9-cb668f89b218",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wood Elves",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe2b4bcf-56de-44d3-83af-aeb27f82c25e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Weavemaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c05c2aa6-29c7-40f8-872e-91099b9225c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard, King of Dale",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b84e232-428c-424a-848c-ef95debc6e50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard the Bowman",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d14aa2ff-7bbd-47a6-8e36-481e56302a62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee88cc80-8fbf-451c-b2b8-09158426c26a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bifur, Melodic Rider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b2d2a7f-88e0-45a9-8579-a6736bcd66eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolg of the North",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea3f5644-f7e3-40de-ada5-cea2e9113cfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolg's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3b087bd4-bbb7-4963-bdb6-0a700ff19a04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gleaming Splendor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c397a298-bf7f-49d7-a26a-206ccf9e8120",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Chief Warg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbc634af-63d2-444a-8123-85f16fe3e364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chief Warg's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36db4405-8589-481f-b627-f26087488337",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3685c783-d837-4466-a960-ab3098db64c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duskwatch Hunter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "196d9287-a37d-4b27-a83b-a5489a54f081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwalin, Weaponmaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "12c8f2cc-ac9d-4cf6-9025-efe366b4e07f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eagle's Rescue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2efe2dc7-3eaa-47f6-b1ae-f974c4a8ae79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fearsome Goblin Pair",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb982607-da37-4894-91a5-cf6307d4d703",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Plate Mail",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "78d8f53e-537d-4eaa-99e3-cac57fa53d22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Great Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50202288-f433-4b56-8f60-349bda7b4f6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Large Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "370e09c2-36c5-4662-8350-1db798afad3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Hills Blacksmith",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "704b45e4-566e-40f6-a33a-9151018b44e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirkwood Nurturer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b05adb48-980c-49a0-9ce6-7c7f3f20715d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nori, Teller of Tales",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4800508-8bb9-41bb-8712-b55fba7a80a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Patient Instructor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c71b74fb-fb0c-4953-b536-7a3f283c6918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silvan Reveler",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19cc91f0-e724-41ac-b6d8-9a293bd63b42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug, Wicked Worm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7e18609-d1ed-4829-be11-f2ce2cfcbc49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin Oakenshield",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "481870ee-d1f7-421b-86e1-570ea933bbbc",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Thranduil, Sindarin Liege // Silvan Rally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe2fe8fa-3b99-44c1-bab9-922e5c864952",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil, the Elvenking",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abdb9d4e-e6ca-409b-b589-0cf71724340b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "211a9764-3c60-46ba-bb53-e6692640ec8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tom, Bert, and William",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1805532f-6d99-47d0-9529-5f5831a7fdc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kíli the Resourceful",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a56a88ba-fcfa-4b56-bdae-a080b297b871",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "The Arkenstone // Seek the Heart",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab181190-d53d-4972-8cd5-8e54b45f2276",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Black Arrow",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92c6f09d-b525-4e8c-a87c-a74df9dc3b1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Mattock",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce254758-c928-4b43-a952-13fac1845668",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant's Boulder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a5cfbfde-783e-46ca-b3cf-11f16209d6cb",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Glamdring, Foe-hammer // Gleam of Death",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "898c14a2-d897-4341-83ed-eee666df9648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Key to the Side-Door",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15ae4d50-be2f-412c-bb6b-b0a06b60474a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "My Precious // Allure of Power",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f54f1c1d-6a22-43e9-a842-0a1ae25b323c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcrist, Goblin-cleaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d6a8d698-c454-42c4-ad4e-9a7625d5569f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sting, Bilbo's Sword",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ad0dba36-d056-4bc1-987a-391da26ad267",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrór's Map",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "178c4cf6-6b11-40e4-9673-c560d6818a6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lake-town Lookout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "659b687f-4068-496f-81b2-7b606bf07ec1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Well-Worn Spatula",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd1fd2ab-2565-4798-a832-fc849df82f74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Passage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd477096-41b1-4907-9cb3-852cb22c9ba2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvenking's Halls",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d76df9d0-56cf-4351-a5e8-e6ae6fc791d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin-town",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0365c439-30bf-4d32-a791-166751bdb996",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hobbit Hole",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78045c43-5cbe-48ff-837d-e7c6baac2937",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Hills",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fbd0584-81a7-4c47-8af1-1c8635899a97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lake-town",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b39ebc4d-a01a-4401-ab3a-bf6142c93b47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lonely Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "612cf954-f86c-4629-99df-4874d56fded3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirkwood",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b7c408b-8660-4db5-9a16-5003c11b4ac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67304269-c595-4cf0-8dbf-fcb2e9e01fe2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lake-town Toymaker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6aa89a8-3584-4906-b9a9-41ef2f021f8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4031e5e4-e573-4130-8d20-4a606edef0a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c49d378e-9549-4320-b3c6-1aeb216d1e98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24dc369c-020a-4115-a4bb-d60a44de64e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "739aaaac-c424-4ea7-a084-62a6fc0438b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5f590a3-9993-4ac4-a93c-1beb44eda17b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51acfb01-4b0b-48fc-9704-a9b4a1e43a23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f533364-0f91-4e49-aaeb-83c4c1f6d316",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6cbcd606-b864-4b81-9596-e7788befdd1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Troop of Ponies",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ad02b56-13ec-46ef-92bd-ae078b8bb517",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Thrush",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "430c8916-1167-400b-9cad-d301f59d5e5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magnificent End",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "349d7464-e778-4a24-a528-d31d36ff4799",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rage into the Valley",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "720ae752-c3a7-4bc0-bc0f-a9772bea3960",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Great Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b6d8d14d-4713-40ea-9509-81ce68b2184d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin Oakenshield",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ccf2923e-5358-4e40-bc64-2953ac2d1692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, Spark Starter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "53cd94e9-6006-4d43-8032-7920103740fa",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Glamdring, Foe-hammer // Gleam of Death",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "62a7ff97-b940-4745-9e2e-3258fb51b846",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Eagles Are Coming!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d84b0f8-aa9d-46b5-b46d-cb291aa6af9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreaded Bat-Cloud",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0015ae49-bc21-4cf3-bb46-3df52760e183",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lonely Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0dd7b2d8-ca9d-4125-b57e-9b14deae8d9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chief Warg's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "089e8e4b-c367-4d86-a69a-951f7d779aaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin's Last Stand",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a6a6ff0-b1cd-4b06-bd31-612690094e0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moment of Glory",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7ca1300a-0ac3-413b-9617-5e8d1b5f1ca2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a2ba9d82-83b6-43dd-8eb8-2401be0df754",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolg's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "323f7ae8-9247-479e-aead-f46018a3d81d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fcdfce79-c8da-4662-93c2-054e5328e18c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil's Company",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0ff767b1-b04d-4d1d-bc91-3bd1361c5ee8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belladonna Took",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a221baee-6ed1-4f11-b38c-e0be8531e170",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bofur, Reliable Guardian // Concerted Care",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6b428a9a-3a59-4416-b00b-78e2cb73e2d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Hills Blacksmith",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7d635dfb-0a48-4965-82d1-d98f943bb28d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Queen of Dale",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b5fe776d-00c2-4d5d-9493-77dd754aa728",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bilbo, Luckwearer // Burglar's Plot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dda07973-ed78-4f50-8794-f5cbfc6e8975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo, Thief in the Night",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "68f4893d-e9a5-4f89-ade3-9ab78a834ad5",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Mountain-king's Return",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "958f0de2-d209-4e97-9ad4-dedf5da304b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Discovery",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9093b067-e18e-4a6a-b4a6-cd67bcd4d5a7",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Most Decrepit Old Bird // Speak Secrets",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0b9ef17a-02a4-44c6-b0b3-9eccf7f324fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azog, Moria's Ruin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7f63f810-15a8-4bec-bd39-dbca453bcc1e",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Great Ugly-Looking Goblin // Clap! Snap!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d670ed30-e7e0-4908-ac9c-bdcab61092ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Head of the Hunt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3f4794de-701d-4619-8b8b-cbfdd860c567",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desert Were-Worm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "738d50ff-1bff-4841-93de-ccf521b2542f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desolation of Smaug",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7c9bfc6e-648a-482b-9483-9e8538726f53",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Glóin the Mighty // Easy Pickings",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "ba42b0f3-3f2f-4fbe-b56d-c2cb477f1182",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Light of Durin's Day",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4edcf8eb-d0b0-4aec-bec0-64c56982cdce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug the Magnificent",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c5727af5-a487-4b16-8278-81c3c928c417",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ori, Keeper of Songs",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "949e4c23-d0e7-4e11-abd4-33ff78b1c963",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beorn the Fierce",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "85f488cf-eb8a-43f6-9ed8-523daba284fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing from Dark to Dawn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b2b6ac15-2266-442a-99e5-96db904e1fd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Notary Hobbits",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0992ce8b-7bef-4799-a52d-7a46021a8672",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Thranduil, Sindarin Liege // Silvan Rally",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ba3ff39b-b591-4434-8d41-4826d0809ca7",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "The Arkenstone // Seek the Heart",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ceb193ed-b05f-4820-a17f-e2982bf547ae",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "My Precious // Allure of Power",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "758b4398-4522-49c8-94de-b0d647532544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcrist, Goblin-cleaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "30420a65-65f2-4331-9a5d-b1771da936b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sting, Bilbo's Sword",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c9789696-a702-4294-afd7-c48e5fc84398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Passage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "4a4ca473-3000-4e98-9881-03372c4f79a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gleaming Splendor",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c977fb5f-4436-41d0-af68-93b6d05897e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Queen of Dale",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8acfaac6-5a63-4fd6-999b-562e989e2ce1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lord of the Eagles",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0c13e282-bbfb-4601-94ff-803874634371",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gollum, Riddle Master",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "efc66a6b-8ac7-4cb7-82f1-710fb0e86f82",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Gandalf, Goblins' Bane // Flameshape",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2401d2a5-f65b-4a13-906c-999990589a1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin, Mountain-king",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a4adb258-381e-4e64-9f93-9fcf943be360",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard, King of Dale",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "189a7d55-c3ec-4402-a3b3-72817f533e87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug, Wicked Worm",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a416ca91-e646-40b4-824c-24aed6b9c683",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil, the Elvenking",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6c6193e8-453b-49dd-ad65-ee6e363bff93",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "The Arkenstone // Seek the Heart",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d9919a30-d60e-438e-b132-22e56b3cdf68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lonely Mountain",
+    "promoTypes" : [
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "43c56e15-ba46-4a27-b9b0-55cde9f8c933",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug the Magnificent",
+    "promoTypes" : [
+      "gleaminggold",
+      "headliner",
+      "poster",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b3c1ebd6-967f-4b8c-8f1f-442ce8c1da24",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Roads Go Ever, Ever On",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f2522398-39d2-43d3-9019-349e22438f65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belladonna Took",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7d9a89d1-3122-4fd8-b77f-5163c01b560c",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bofur, Reliable Guardian // Concerted Care",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8b592de0-0bf9-4972-9f43-c8ac1c3a1299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Hills Blacksmith",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4cff1878-3f23-4a0a-ad79-28a44921cca8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Queen of Dale",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "79892a5d-80df-4ee1-b482-30e57aaabf21",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bilbo, Luckwearer // Burglar's Plot",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c0c313d6-5a76-459d-9db1-9491c57861fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo, Thief in the Night",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "6a928a14-b906-402f-96e4-8b9391d6536c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Discovery",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "289a6c72-3d0d-402d-8e27-9ad0e254d5f6",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Most Decrepit Old Bird // Speak Secrets",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2e359014-f003-4dd6-bc97-ef2a5c515a23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azog, Moria's Ruin",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "68fe7914-21b4-44eb-9432-3b1637864bc1",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Great Ugly-Looking Goblin // Clap! Snap!",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31a7a5e2-4cb8-48fc-8351-18344b4a7560",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Settle the Wreckage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "77d2a543-d94f-4814-a60f-72c224e5768a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Head of the Hunt",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cfe91642-7651-4902-8386-b18cfb506925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desert Were-Worm",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4bb4033e-8b96-4c35-ab03-ff188002ae73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desolation of Smaug",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5546390b-3957-4e3b-aa64-85692381f53f",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Glóin the Mighty // Easy Pickings",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "7cb22e85-8d54-48a9-a006-d6e2f3ff00e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Light of Durin's Day",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b6529666-0ec8-45a8-8740-3bffc19d2265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug the Magnificent",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9f921e6b-12f0-4497-86ee-f2b4f4fa319a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beorn the Fierce",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "showcase"
+    ],
+    "id" : "9fa9a9de-ca46-4ea1-8fdb-4ccd3ef86805",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dancing from Dark to Dawn",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0e88b614-f5b3-4e1e-beed-3c49e366be11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Notary Hobbits",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a84cd965-fe5f-42e5-9775-d0285fe84308",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Thranduil, Sindarin Liege // Silvan Rally",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5752731-253c-4b41-bdd8-94c26d715206",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone by Sunlight",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2d08a806-c70d-4421-a9eb-e29e54e4268f",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "The Arkenstone // Seek the Heart",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ce239994-1bc6-4083-b9cf-776e862c5479",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "My Precious // Allure of Power",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a496a9e4-8dd7-44a2-a4b2-d4ecfc8ee7c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orcrist, Goblin-cleaver",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "7d57f11f-1698-4cf3-bb0e-bd9b0ea8442d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sting, Bilbo's Sword",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "75cb4095-b252-49b0-ad2e-0ea52ae4709a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Passage",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "42a1986c-9585-4544-b5a7-bee4be5c4506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gleaming Splendor",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b0f29cce-324d-4229-8e29-692594b2e3c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lord of the Eagles",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "12d441b7-9349-47a1-b61e-9d563bc085b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gollum, Riddle Master",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0db45ef8-5bc5-4914-9918-dae4ebf48153",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Gandalf, Goblins' Bane // Flameshape",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0e29ba51-763c-48ec-95ec-9d6916f4db44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin, Mountain-king",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "127367b6-9cfe-4516-9bfd-5b951468a25c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorin's Last Stand",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f7c75c32-a24f-46e5-9128-2df9a2ec11f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bard, King of Dale",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5091e2bd-247d-4a1d-adf4-6e66324ee20b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smaug, Wicked Worm",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "49539856-989e-4f95-8e67-9cff4408cd87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil, the Elvenking",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9a0d62ce-8fd3-4465-b3aa-5d5052df30dc",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "The Arkenstone // Seek the Heart",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "edff761b-2c2a-414f-b0a3-25c3fdbcb0bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lonely Mountain",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fa74ca8a-8bcd-4dc5-ab2b-a2e18a70978e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo's Gambit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0e4a1096-c40e-4471-8a44-9c2acad85769",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fíli the Pathfinder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c241a594-24bc-4fd9-ac6d-501d11dddad1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kíli the Resourceful",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a132a86d-1df2-42d1-a410-2a8479c84a55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Settle the Wreckage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "f75207fd-89d2-417b-8f36-4ea96b4e3794",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "An Unexpected Party // At the Door",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3aa29fe8-1687-486f-b4df-c04977869ab1",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "An Unexpected Party // At the Door",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3e95e9c2-cdbf-48b8-a7d0-87267f58e5ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elrond, Moon-Reader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d2b59872-0e11-41c3-9858-3e2dd5a1c3c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Gilded Boat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "234e941d-ad86-4a3e-bd8c-0e680944919a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riddles in the Dark",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "1849eb57-7560-4ffc-9400-02387b1a71e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uncover the Moon-Letters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "14e69ca4-5148-44ec-bb21-330e656a6833",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Staff",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "e340aa1c-a497-4fc4-9be9-26e7c982f893",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Along the Crooked Way",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5913d004-0ef6-4dce-8f74-a8fbfc794d43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inside Information",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d36d9c58-2bfe-418c-8512-fc4a3f229535",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Master of Lake-town",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "df7bdf15-9448-4cb0-a809-c5ac128e6b02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhovanion Rampager",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "11144267-15d1-47b4-8c26-d57328e11422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Sackville-Bagginses",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b4b1c59-bcec-4779-9e27-0e6f9feb4e11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Troop of Ponies",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cc0f994-5048-4898-926e-b56cbc97e0ca",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Velvetwing Butterflies // Gaze in Wonder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "de7a0139-ce52-4212-9514-b2daba282288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supper for Spiders",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f3a8e4e3-58c5-4380-94b6-6252f8ccb285",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balin, Loremaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ff35d11c-6429-4aab-b9c8-0c0306f13db9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin Ironfoot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8db47144-e048-4996-9f9a-1184dd86151f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Getaway Barrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1adfc347-5c69-45e1-829b-aaae19e04b96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stone-Giant of High Pass",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b689d91-1ac0-474b-ae58-2c320e1af5e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bejeweled Warg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ace0642f-fa57-4645-9891-43331b4963ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cantankerous Keepers",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0b6ed366-24a3-4697-8a87-12c54da7c238",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gigantic Big Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "46b3b094-0d1b-412e-8655-353ecbf983bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Part in Friendship",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3ea01785-add0-487d-b708-5bbf71033899",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radagast of Rhosgobel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d4f3eb5-fedf-45d6-8bd8-aacbe0ce33b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vow to Erebor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4408b22-c2b0-46ff-8d10-81d150c992ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Through the Forest Gate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6833cb81-a373-4b83-93b4-b1ed5f82ce54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwalin, Weaponmaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3909bdc4-e690-47fa-8cbc-4b437f7ab10c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tom, Bert, and William",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5b472d5-da70-4fd9-a68c-10e17797ad0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3ae6956-7f2d-4569-a9f8-3972b5ec5e56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e07d3e6-c602-446f-a453-f54f13bfc55a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15dd9a36-55df-4942-a7eb-1c49a7999e68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3550f914-cacb-4849-af06-1a7b25c2c95f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f82548c7-24ed-4529-8b57-7407dc0b8c8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46c75f8e-6590-4338-abbd-a37e08dbd58c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8bff0aa6-16d9-4c83-b598-ef00a3b33d2c",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bilbo, Luckwearer // Burglar's Plot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "128226f4-a733-4f0a-ab2b-7789cfa8b443",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1aaf8a8a-1032-4ee5-9c18-2debb40ec561",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Misty Mountains Cold",
+    "promoTypes" : [
+      "bundle",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "484c7f83-8339-4ae1-8350-68ce1f7d05a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo, Thief in the Night",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a109b3e-9f5b-4625-abb7-6b992c10530b",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bilbo Baggins, Burglar // Take a Glance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9de48690-e5ae-495a-addf-305f1db7ec21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confusticate and Bebother",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbcb310c-be73-46f8-8e65-8632454ccc6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elrond, Moon-Reader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c141695c-c108-41d5-85cb-1f7485d9d533",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elven Raft-Steerer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c50656d-c74a-4e90-9ef7-afa237682516",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvenking's Harper",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ad40a4b9-9fab-49c1-8e9f-6e0776966833",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enchanted River's Grasp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88f0c189-c9ed-4ea3-ae62-3d8ac6c7fecf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belladonna Took",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a1142fa1-b861-4876-aa48-402af35aaa63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Discovery",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f8403a2-849c-4a59-b0ed-c8803995028d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, Wandering Wizard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2fb3995-5b43-4776-88b2-346d353edee0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Gilded Boat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abfbb255-a39b-4df5-bfb6-5298584e89f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lakeshore Apothecary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4202a678-a5f4-47f9-9c18-e88ab9ad20a4",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Lake-town Mariners // Gone Fishing",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd5af94d-6321-4834-8e5f-e5d0261b3ef3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long Lake Nuisance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa0554fc-9448-4ae2-8712-4f4f7af3c7b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lord of the Eagles",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "addcefdd-e012-4adf-9052-e60376a8d2d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master's Councillors",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad7ed4e6-3fe2-40f1-909b-a03b2a3c941a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirkwood Meditator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d838feb-89f2-4cdb-a5ab-ec880f28d873",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Most Decrepit Old Bird // Speak Secrets",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45ad01f0-cda8-4931-82bb-cb4949e56ae9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo's Gambit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4a865cea-f947-4736-8ace-ba478fceeb22",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Old Fat Spider Can't See Me",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afb73190-b9bd-4744-a011-a37cd9c0148d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plunder the Trollshaws",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acbb4d32-2771-469e-a6de-0df15155cc62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenhill Flock",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6129286-7437-4ba4-be55-586a22cd67ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riddles in the Dark",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a2e4099e-86bd-461f-87fa-7f7850ae7eec",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Roll-Roll-Roll-Roll",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd32a1dd-3541-4572-a717-1deabc14b827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sound the Trumpets",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4ded4c1-0e3e-47c5-8fdc-e7c187f68b12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thranduil's Decree",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "79edf5f6-f6b6-4271-bd2a-14a980f30616",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uncover the Moon-Letters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e49866d4-966a-40f9-b08d-18e5af6d726b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uneasy Partings",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0de529a7-bdc5-4581-a169-1ad123bc099a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard's Staff",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b8e6435-7de4-41d5-bc7d-8e24c11897d0",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bofur, Reliable Guardian // Concerted Care",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3696d65c-fffd-4685-bb2d-e8769bf476e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Along the Crooked Way",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "135da718-affc-46ba-be57-c12c23b54dad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azog, Moria's Ruin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17892c93-b9b2-4720-933b-998ed0200492",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bilbo's Deadly Slice",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa8fd3c4-bd00-485d-80b1-2b67f5786fce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crude Bent Blade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63c87009-ff1b-44b9-88b1-e26219094c67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desolation Prowler",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b72e193c-e030-4936-9b79-c636eff750e1",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Down, Down to Goblin-town",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67d52db5-597e-46d5-af39-c3a2de107d30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreaded Bat-Cloud",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07bfc803-e11b-47ab-9f25-0ace7e174200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Front Porch Sentries",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ce066be-e5ad-4b93-8245-1b5018990d03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gathering of Darkness",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d485d70-c7b9-40a4-9089-5e7f1c2b9213",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnashing of Teeth",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "42fbd61d-e1a6-465d-b1a3-f5ee0869d3af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celebrate the Mountain-king",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bbdc7e37-c65a-497a-92b7-a30a6e369c71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gollum, Riddle Master",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6cfaa182-3fec-4907-8814-b4d29c33cec3",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Gollum, Silent Slinker // Meager Meal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50d91ef3-6f5d-4255-8d47-be731b5dad30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gollum the Abandoned",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d9ef88f-d208-4788-9553-cd672b3be1fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Great Fierce Bee",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c87f6004-e1cf-42b2-9647-322bc4939339",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Great Ugly-Looking Goblin // Clap! Snap!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ffe34d4-72f4-4562-a948-8909b9321e59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Head of the Hunt",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9763bd56-fa4b-4907-ad15-c3f040c5fc0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inside Information",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3788ada6-34a9-41af-a31c-2d090550e503",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Master of Lake-town",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3cbe830-7e95-4019-89c4-cfb36bcf00f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nighthowl Pursuer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8651958c-3b94-47a9-a751-faf8f6236a42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rage into the Valley",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99d27749-d16c-45e9-accc-6a01351c17f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin, Lord of the Iron Hills",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea7b5052-b343-466d-879e-2a211657ef0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravening Warg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16765eb2-d497-4cd6-b683-20eac2f10bbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reverent Howl",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ee45a5e-3650-47b3-8d31-6b1de9e27a14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhovanion Rampager",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed87b471-79f9-45ec-9188-69e970f6121e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Sackville-Bagginses",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd145e3a-c889-4390-accb-863dbcc845ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stir Up Trouble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fcc3699-b475-4612-884d-81bd4f21e9c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stony-Voiced Goblins",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b25e454-06bb-43ca-9a9f-57164f7a70c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supper for Spiders",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42d7ca7b-c983-40fd-ad57-59f6972bb375",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balin, Loremaster",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63c317e7-432c-4817-8db4-3670a1d84be3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bombur, Gentle Dreamer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb25b11a-6bf5-4a9a-b60f-d4dcac3816d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bothersome Noisemaker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f9a61a1-454e-4d5b-a6dd-1a79fe9dedf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Provisioner",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fceb1a2d-121e-49ad-acf2-1bb5aebec116",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Burn, Burn, Tree and Fern",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7112e460-9160-4535-ad94-93f1f4ac04cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin Ironfoot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc12c22a-11ff-4fb0-bc42-dd8490b8efb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desert Were-Worm",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2462358b-52c8-49b2-8d97-d65a9188f8f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desolation of Smaug",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d2f60ad0-c887-4585-85f8-afcf72fb80d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dori, Bearer of Friends",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd0f0415-43af-4f5d-8999-853c5d42780d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Mauler",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b0d29a1-7da9-4fb3-8536-8ff8d8acae0b",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Gandalf, Goblins' Bane // Flameshape",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c5c6f1c-35cf-4172-b5a1-b73222b0723b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gandalf, Spark Starter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4819aa6-5d28-4a37-942d-89523e30c4e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Getaway Barrel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5793b8eb-2fc5-454d-8fa2-20346fef167a",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Glóin the Mighty // Easy Pickings",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "hob",
+    "setName" : "The Hobbit",
+    "variation" : false
+  }
+]

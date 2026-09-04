@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "T1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d98c546e-2933-4833-b47b-084db56fb5d6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-10-30",
+    "setCode" : "tddd",
+    "setName" : "Duel Decks: Garruk vs. Liliana Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "T2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fd6877b-b4f1-4953-b9a4-c97d0ae7d673",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-10-30",
+    "setCode" : "tddd",
+    "setName" : "Duel Decks: Garruk vs. Liliana Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "T3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e357b329-b624-4c9a-bacf-d4744745860a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-10-30",
+    "setCode" : "tddd",
+    "setName" : "Duel Decks: Garruk vs. Liliana Tokens",
+    "variation" : false
+  }
+]

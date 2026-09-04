@@ -1,0 +1,222 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "531e952f-6136-489e-b3c5-a533a4f9898f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6af7133c-2c65-4977-9b72-c29985ec9d47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wooded Foothills",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ffb39a7-02b0-416a-8e2b-3c4741cde1cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maze of Ith",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6228e16-72d4-4771-9e3f-a83ec856d315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stifle",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b5862b3-e62e-4539-ab57-6c8f1138ac5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Survival of the Fittest",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2d7235f-3716-4c1e-affd-19e57ca97788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burning Wish",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62b5ee33-db0f-44f2-90f6-fb983b96b342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodstained Mire",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0df37cc8-3703-406a-adaf-ee0bb9d7aa61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flooded Strand",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f470954-9bb4-44f9-a700-d28aaa778668",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polluted Delta",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b2bf78a-546a-4f77-85b2-a5ff8eec60b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windswept Heath",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2009-01-01",
+    "setCode" : "g09",
+    "setName" : "Judge Gift Cards 2009",
+    "variation" : false
+  }
+]

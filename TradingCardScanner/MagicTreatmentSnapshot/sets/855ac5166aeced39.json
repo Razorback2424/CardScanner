@@ -1,0 +1,97 @@
+[
+  {
+    "collectorNumber" : "140★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1abeca7-0a9c-49ae-9042-9899829e74a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thopter Assembly",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-02-03",
+    "setCode" : "pmbs",
+    "setName" : "Mirrodin Besieged Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9a8a187-c479-429c-b0ef-c98153ffa5e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirran Crusader",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-02-03",
+    "setCode" : "pmbs",
+    "setName" : "Mirrodin Besieged Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8829efa0-498a-43ca-91aa-f9caeeafe298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Bladehold",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-02-03",
+    "setCode" : "pmbs",
+    "setName" : "Mirrodin Besieged Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e293b2d-5eae-43c3-bb1f-4c0ed2b0bd21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glissa, the Traitor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2011-02-03",
+    "setCode" : "pmbs",
+    "setName" : "Mirrodin Besieged Promos",
+    "variation" : false
+  }
+]

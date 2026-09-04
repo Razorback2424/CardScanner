@@ -1,0 +1,354 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f4fad58-ef91-4bcc-8a6a-48d033701fd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etrata, the Silencer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0eeccc8d-fe98-4868-939f-29277085aeff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani, Selesnya's Voice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59610445-ea23-4e35-9378-7bf2babedb85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolsimir Wolfblood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03c79e0a-291e-4822-a6c4-b2d3a8bb2202",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, Dimir Mastermind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "559f12ac-ed65-4762-bf60-1e9167c0ce18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirko Vosk, Mind Drinker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4ac4fbb-cd0b-4baf-b9bf-7c625d420e9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Szadek, Lord of Secrets",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71d33e53-74e4-4d6e-9236-0b6c25101902",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, the Firemind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d59d7fb6-6aa1-4ae1-8580-92e6080aa757",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tibor and Lumia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "003c6e4d-16f4-4ce8-9df2-a59e736b52cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izoni, Thousand-Eyed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e3b1844-6fff-40dc-a357-3394f63ea8dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jarad, Golgari Lich Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa6999a6-5840-4c9a-b6d4-4275c2554cc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savra, Queen of the Golgari",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "785fd04b-5cff-4a73-8376-de3c702ccd62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sisters of Stone Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1052bdb9-aa3c-4ec1-8f03-9fee90194518",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e525be2e-26e6-4082-b713-ac74fcbd13d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agrus Kos, Wojek Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80d88d83-d614-4995-ad3e-7ac062f4a93c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circu, Dimir Lobotomist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3384726e-a336-4da0-8fb8-a95a18f89d64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razia, Boros Archangel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "gk1",
+    "setName" : "GRN Guild Kit",
+    "variation" : false
+  }
+]

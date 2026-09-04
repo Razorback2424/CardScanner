@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "352ce47a-de26-44f4-b990-44333d08d4d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Grand Goatnapper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-02-03",
+    "setCode" : "yecl",
+    "setName" : "Alchemy: Lorwyn Eclipsed",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d79ce6f1-b9d1-4b0d-a098-4ac0a7c741f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Providence of Night",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-02-03",
+    "setCode" : "yecl",
+    "setName" : "Alchemy: Lorwyn Eclipsed",
+    "variation" : false
+  }
+]

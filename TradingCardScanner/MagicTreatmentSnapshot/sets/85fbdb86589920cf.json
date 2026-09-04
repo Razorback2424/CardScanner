@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d27b6a46-f9be-437a-a13c-ad8077ac0127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reliquary Tower",
+    "promoTypes" : [
+      "bringafriend"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-05-18",
+    "setCode" : "plg20",
+    "setName" : "Love Your LGS 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "773916fd-060e-4abc-a060-e18768807571",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hangarback Walker",
+    "promoTypes" : [
+      "godzillaseries"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-05-18",
+    "setCode" : "plg20",
+    "setName" : "Love Your LGS 2020",
+    "variation" : false
+  }
+]

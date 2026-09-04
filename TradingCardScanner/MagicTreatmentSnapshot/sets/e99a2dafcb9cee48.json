@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "200★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ee5aa80-32cc-486e-bbb2-5386eadaf4ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Embermage Goblin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-10-07",
+    "setCode" : "ons",
+    "setName" : "Onslaught",
+    "variation" : true,
+    "variationOf" : "f50f60a8-e99a-4891-b474-a21abee38970"
+  }
+]

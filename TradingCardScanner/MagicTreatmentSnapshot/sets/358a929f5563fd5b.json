@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d36d81d0-438e-4106-b45b-df9fba0e0591",
+    "language" : "ru",
+    "layout" : "normal",
+    "name" : "Laquatus's Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-26",
+    "setCode" : "ptor",
+    "setName" : "Torment Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e20b1920-9134-40bc-832f-8010968b1329",
+    "language" : "ru",
+    "layout" : "normal",
+    "name" : "Laquatus's Champion",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-26",
+    "setCode" : "ptor",
+    "setName" : "Torment Promos",
+    "variation" : true,
+    "variationOf" : "d36d81d0-438e-4106-b45b-df9fba0e0591"
+  },
+  {
+    "collectorNumber" : "67†a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f995525-7e82-45fc-8e55-76607487151a",
+    "language" : "ru",
+    "layout" : "normal",
+    "name" : "Laquatus's Champion",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-26",
+    "setCode" : "ptor",
+    "setName" : "Torment Promos",
+    "variation" : true,
+    "variationOf" : "d36d81d0-438e-4106-b45b-df9fba0e0591"
+  }
+]

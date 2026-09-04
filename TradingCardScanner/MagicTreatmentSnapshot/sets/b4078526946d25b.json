@@ -1,0 +1,1760 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0b9579d8-bc8f-4d74-bfc1-dcdd42568f79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adeline, Resplendent Cathar",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5b40815d-0104-461e-b193-fcf5e1f35299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6ed83401-0b7e-48c7-b1a4-8e97aec29960",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+      "boosterfun",
+      "ffii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f6cbc754-8aed-4c32-857c-ea639943b5d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Copper Dragon",
+    "promoTypes" : [
+      "boosterfun",
+      "ffi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b24b733e-f98a-4ae1-9e54-eb416dea7cf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godo, Bandit Warlord",
+    "promoTypes" : [
+      "boosterfun",
+      "ffv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fbd25e79-d29b-4b51-9653-3932c980b931",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros, God of the Forge",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ea8e1f76-bd26-4037-8556-e348d50bfd95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+      "boosterfun",
+      "ffi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "5f2b2373-9052-4246-a644-1f5b723ea9f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxbloom Ancient",
+    "promoTypes" : [
+      "boosterfun",
+      "ffi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c02bef17-a293-4f77-8043-104864de4eaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, the Unifier",
+    "promoTypes" : [
+      "boosterfun",
+      "ffi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "87eff269-c8d7-479e-ade4-383b8622e70d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymna the Weaver",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6e1a948f-2d7f-4398-9f56-90dac6897c69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winota, Joiner of Forces",
+    "promoTypes" : [
+      "boosterfun",
+      "ffv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9af0b8d6-f41b-4aa3-ae32-1ef2d1d4bade",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ranger-Captain of Eos",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3f0cbff1-4b4e-4d60-b114-20bd3e977b25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traxos, Scourge of Kroog",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fc9c542d-ff46-4193-9972-68287879a8a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma's Will",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "210ff924-215e-4ae8-8706-5af3891c6605",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+      "boosterfun",
+      "ffviii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d51b956a-acca-4aee-92ff-bd90a9814988",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenrith, the Returned King",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "450ec0a6-839b-4a35-a79b-ae358408a17c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+      "boosterfun",
+      "ffix",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "232b5c18-0a0a-425d-89aa-de2db833a22c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+      "boosterfun",
+      "ffii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "711135d0-7769-4154-873a-e2505f8795f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stroke of Midnight",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ae94ab2a-5a6b-4358-ad7f-bdc9a98a9ac0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall of Omens",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c14f8bce-d5b3-4d01-8346-8a4923ec03d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7b182d1f-be0f-4b97-bca3-083483f7713c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Command",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "084d7a61-ef18-42e3-8485-76ae9a36ef7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+      "boosterfun",
+      "ffii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "44ede007-b6db-4396-8b25-9e2621cfeec4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laboratory Maniac",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "cd212de7-25f6-4b3b-a35b-df7d87fe205b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhystic Study",
+    "promoTypes" : [
+      "boosterfun",
+      "ffx",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9ca8fdd4-7e62-4475-9aed-c227ab3977f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Mage of Zhalfir",
+    "promoTypes" : [
+      "boosterfun",
+      "ffviii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a4e0b297-6d33-4e2b-b497-aa952dcf2141",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Dispute",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a2ec8e5e-ada8-4cd7-b43d-157568356a80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Intent",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f1de9d89-4cbf-453b-ab6d-88090bd7a204",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "45393005-78c7-4056-9ce6-310264922af3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "K'rrik, Son of Yawgmoth",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e6628dee-54b1-4e04-90b2-3b327a2de090",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varragoth, Bloodsky Sire",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7c3aeedd-d41b-44c9-9b0a-e5952202f632",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "686150d8-1d01-4c4f-8e4d-61ada78d6859",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light Up the Stage",
+    "promoTypes" : [
+      "boosterfun",
+      "ffviii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e1e48b21-1a4f-4708-a4b4-e2e296df924c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "boosterfun",
+      "ffii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e89794ab-6070-4916-936f-2b42fe41d31b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8a139398-4d42-4715-8a5a-c446bf665a2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix's Mastery",
+    "promoTypes" : [
+      "boosterfun",
+      "ffv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cc30e027-8cb8-4b06-a24a-6ad49d6a2cf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najeela, the Blade-Blossom",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a71d1ec3-2d7a-4749-8936-8bf7a8b83d84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "boosterfun",
+      "ffix",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "dd28c05c-9473-4df8-9bb3-70593f2c5a50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carpet of Flowers",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f36f237f-6b44-4513-ba5d-fe6b4936f78e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farseek",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e983925b-de9c-4a09-8bff-913301aff269",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fynn, the Fangbearer",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d349901d-f9a6-4f09-a881-531c695cf1c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nature's Claim",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "972dfe0d-1f8a-4e18-bcd8-c1ff6266c01a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primeval Titan",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "be326fe9-4ed8-4f64-934c-9955edea5fdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atraxa, Grand Unifier",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "98294441-b5a1-4b59-9325-80d0ff913ebd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "07889f56-740f-4d17-9b0e-8d8e9e327f31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruse Tarl, Boorish Herder",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ba332954-ed8c-48d7-8d85-971c7b71dccf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dovin's Veto",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "786a3daa-41a6-4cf3-97bc-c59e1c7cd674",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inalla, Archmage Ritualist",
+    "promoTypes" : [
+      "boosterfun",
+      "ffix",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "92e0c1a4-e6f3-494d-9238-913af54dbffb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishai, Ojutai Dragonspeaker",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a3baaf97-171a-40c0-a1dc-74ae05db0e25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isshin, Two Heavens as One",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e141f975-945e-4e2c-ac04-6083b5bdaf16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kinnan, Bonder Prodigy",
+    "promoTypes" : [
+      "boosterfun",
+      "ffx",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b1a273c4-008a-41a0-84b8-38654303265d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraum, Ludevic's Opus",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "752e16fc-8ee1-41f7-9495-6ab8029c9353",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5f13417d-3fe1-4357-b826-cb48dd111247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrasios, Triton Hero",
+    "promoTypes" : [
+      "boosterfun",
+      "ffx",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "958077e8-a226-4cb5-839f-35557051c953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vial Smasher the Fierce",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d9aa060d-8682-4803-9ab9-052250e3d794",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venser, Shaper Savant",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6b26622f-7bf5-4a07-b109-4bcb13fdb010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuriko, the Tiger's Shadow",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d170adf6-eb5e-4094-9917-3b68be92e8b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Lantern",
+    "promoTypes" : [
+      "boosterfun",
+      "ffiii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d0e53c71-6a58-4ea1-a550-f3cbd749eafd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Copter",
+    "promoTypes" : [
+      "boosterfun",
+      "ffxii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bcf0d751-5c47-4531-add4-acd07b82adf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strixhaven Stadium",
+    "promoTypes" : [
+      "boosterfun",
+      "ffx",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63†",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f10dfb1e-f0ae-42d8-92e1-717eba61efed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strixhaven Stadium",
+    "promoTypes" : [
+      "ffx",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : true,
+    "variationOf" : "bcf0d751-5c47-4531-add4-acd07b82adf5"
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2670653e-fcaa-46e3-b3bf-cb8e8b981a9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Beacon",
+    "promoTypes" : [
+      "boosterfun",
+      "ffviii",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "24b2833e-6c08-4f33-8481-f65f2a063c60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bolas's Citadel",
+    "promoTypes" : [
+      "boosterfun",
+      "ffvi",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7cc0cfe1-7f13-4b1b-9a37-33ef457d3c62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+      "boosterfun",
+      "ffix",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2430f223-edb2-402b-a85b-5d328323992d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fatal Push",
+    "promoTypes" : [
+      "boosterfun",
+      "ffv",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "844a56c7-d17a-4495-9945-89b68443dd5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Winota, Joiner of Forces",
+    "promoTypes" : [
+      "alchemy",
+      "boosterfun",
+      "ffv",
+      "rebalanced",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "fca",
+    "setName" : "Final Fantasy: Through the Ages",
+    "variation" : false
+  }
+]

@@ -1,0 +1,1221 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9b74f022-3e1d-481d-b822-cd86060a9901",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Delivery Moogle // Delivery Moogle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7e10f8c5-d2bd-491e-827f-145a1bacc258",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gysahl Greens // Gysahl Greens",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d9ed7c22-12bc-488f-ba93-74b548228613",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quina, Qu Gourmet // Quina, Qu Gourmet",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fd964723-444e-4112-8db3-daf26d05e79a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hades, Sorcerer of Eld // Hades, Sorcerer of Eld",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9b491159-5ac0-4376-8344-33e01c64cda7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Emperor of Palamecia // The Emperor of Palamecia",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7d59bcba-4287-40c9-a1c2-746c62166894",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jenova, Ancient Calamity // Jenova, Ancient Calamity",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf158578-1959-4dee-9d11-d50d06bacbe6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Locke Cole // Locke Cole",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b5b6b3a2-3bbc-4f6a-9b59-db5e1e1e59eb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shantotto, Tactician Magician // Shantotto, Tactician Magician",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ce06b786-f407-46fc-920c-238363e18913",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Vivi Ornitier // Vivi Ornitier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "24c9126a-463b-4e5f-b456-a26fc36d3b22",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rabanastre, Royal City // Rabanastre, Royal City",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1462aa03-5e46-4ea9-8844-045ab9ad82dd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "G'raha Tia, Scion Reborn // G'raha Tia, Scion Reborn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09f68f79-0f5d-470b-adf2-4a554b9bf9a3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Machinist's Arsenal // Machinist's Arsenal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8d40da4e-9470-40a4-8eb6-d6ee3f99a153",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Terra, Herald of Hope // Terra, Herald of Hope",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ebeaadd-5c7a-4047-a009-c9e0fa5993be",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Y'shtola, Night's Blessed // Y'shtola, Night's Blessed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "452907b1-edc1-45eb-bd48-d46474d2c3a5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yuna, Grand Summoner // Yuna, Grand Summoner",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d82ba98b-869b-4f02-a086-b0fdcfb0a70e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cloud's Limit Break // Cloud's Limit Break",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "38a8ea39-4212-4521-bf59-0b7d488efe54",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dancer's Chakrams // Dancer's Chakrams",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e0da27b5-9586-4d66-b052-1efb86a34704",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tataru Taru // Tataru Taru",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0141880e-ad53-4c5a-8435-2da9d92057ba",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shadow, Mysterious Assassin // Shadow, Mysterious Assassin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b9e2cb5-6e1f-4e80-b52f-c158c89ce02a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Edgar, Master Machinist // Edgar, Master Machinist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "27b1b42f-da36-4e93-badd-cd761d837926",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Estinien Varlineau // Estinien Varlineau",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "60078126-4ee4-41c1-b249-d2e9f0276766",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kimahri, Valiant Guardian // Kimahri, Valiant Guardian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "23aa866f-fe13-478c-9ec4-f99f8119b6d7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Stiltzkin, Moogle Merchant // Stiltzkin, Moogle Merchant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2677ce15-1452-4514-adeb-f63ef6822ba7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Red XIII, Proud Warrior // Red XIII, Proud Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82209aac-42e2-4cc6-a9f8-abc9c8f14789",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Farewell // Farewell",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82981213-987a-407a-9084-00c69735fab8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Together Forever // Together Forever",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "610d926c-ca66-4006-9241-e153c4ea6eca",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ruinous Ultimatum // Ruinous Ultimatum",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "26d6ab7c-045f-4237-b4bb-2586acb97817",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hydaelyn, the Mothercrystal // Hydaelyn, the Mothercrystal",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d721a89-f928-413b-9e66-d7d9671f1534",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nibelheim Aflame // Nibelheim Aflame",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b65952d3-31ff-493f-85b3-82b15257158f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sin, Spira's Punishment // Sin, Spira's Punishment",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a306d654-15ef-4bfa-8f16-972408963743",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Summon: Bahamut // Summon: Bahamut",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7eb8d77f-8e60-47f7-8e5a-01baca70d554",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Summon: Leviathan // Summon: Leviathan",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2d9a5bfd-e0f2-44f9-9240-4081c6202e0a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Braska's Final Aeon // Braska's Final Aeon",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b3cdbce0-eba7-4be8-b6fc-b7fdd2a435eb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Astrologian's Planisphere // Astrologian's Planisphere",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c74a6ccf-fd7e-4f53-aa14-e9cede3661e7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Summon: Esper Ramuh // Summon: Esper Ramuh",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "674c5221-9726-4c37-822a-73e60fa55cfa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Summon: Good King Mog XII // Summon: Good King Mog XII",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "44b650a3-49ad-43a9-9da9-e34bbe384a0e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dion, Bahamut's Dominant // Dion, Bahamut's Dominant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "908ec49d-7671-469f-9aba-f68597f19a7f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jill, Shiva's Dominant // Jill, Shiva's Dominant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "213c5d4c-20d3-4e86-b0b1-d572b468fd7b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sephiroth, Fabled SOLDIER // Sephiroth, Fabled SOLDIER",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f71f77aa-e10e-4d6f-8478-aa9e9b1acd47",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Golbez, Crystal Collector // Golbez, Crystal Collector",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5c4b8e1d-f1a0-4b74-9edd-a477459a1211",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kefka, Court Mage // Kefka, Court Mage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "25f3ad30-ea49-4f24-ad85-95959a4c9e1e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Squall, SeeD Mercenary // Squall, SeeD Mercenary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "070d99d0-29c4-4bd6-9c7a-6635122d84b9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yuna, Hope of Spira // Yuna, Hope of Spira",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c5af371-8841-4e29-9a12-06f03f5541e8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zidane, Tantalus Thief // Zidane, Tantalus Thief",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a0923d9e-efd8-4c02-b08c-631b1f94a5b9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sage's Nouliths // Sage's Nouliths",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "18263a99-378d-45af-8bc1-7188ca2a83a5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cloud, Ex-SOLDIER // Cloud, Ex-SOLDIER",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "74f1708e-6446-4ca9-9186-3cb1e6a1ad3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "G'raha Tia, Scion Reborn // G'raha Tia, Scion Reborn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "090c3bb1-3964-4c0b-a7b1-e614de781364",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tifa, Martial Artist // Tifa, Martial Artist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c4a45167-f115-4573-bfa3-22cb9ec8ca60",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Y'shtola, Night's Blessed // Y'shtola, Night's Blessed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "11910fed-224d-44de-98e8-12ad49626178",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Final Days // The Final Days",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1cc61bfc-45e0-43aa-9bc2-039fada63281",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yiazmat, Ultimate Mark // Yiazmat, Ultimate Mark",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8025c445-45cb-42ac-b24e-98dda6490c54",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Barret Wallace // Barret Wallace",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c8e2bfb1-5a6a-4e49-a0ad-b7fae84890d1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sorceress's Schemes // Sorceress's Schemes",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "afin",
+    "setName" : "Final Fantasy Art Series",
+    "variation" : false
+  }
+]

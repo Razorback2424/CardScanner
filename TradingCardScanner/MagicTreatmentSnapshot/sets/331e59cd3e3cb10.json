@@ -1,0 +1,552 @@
+[
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "564a9faa-71a6-4481-ac7e-1fc0f9b11e1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvia Brightspear",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47ecc3d2-38bf-400d-b3de-041c58d44936",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pir, Imaginative Rascal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5eb19741-eaa1-4488-ad4c-e1bdcafbe5e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toothy, Imaginary Friend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03d8a49d-8a6a-4160-9b64-e825f2b9081e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blaring Recruiter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3885e78d-b281-4dfa-ae71-de15817a944d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blaring Captain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "717e9bc4-14ac-419f-95ae-e97f4dcf7499",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chakram Retriever",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c5f7446-836d-4df1-91b9-f3a47d1f640e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chakram Slinger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e81b80d3-d109-4d9e-8576-15f09dc1cbb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulblade Corrupter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98c7bdf9-cda0-4498-8f6e-c7e8bc735fd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulblade Renewer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34c18b74-75ae-4716-8e1c-613a0553ef98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impetuous Protege",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15e49a01-115c-47e5-b1e8-11171b7c6d0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Proud Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64fad61c-4bca-4d61-a59c-7d752bc373fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ley Weaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5493d051-4dcc-4415-a1ad-368f260257f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lore Weaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c6b3af5-f78c-45ac-ac16-0fdd53e7ccb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Will Kenrith",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2120a046-9c8c-47e9-93d5-46841794ba5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rowan Kenrith",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca5741c1-99b2-450e-93d7-d5c648851de7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regna, the Redeemer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a255a75-2fbd-43d5-974e-8196da0be810",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krav, the Unredeemed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c370b8c-fa8c-4a80-82a7-f81c6a924078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zndrsplt, Eye of Wisdom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ec874b1b-0bdc-47c8-a2a8-15ec47ea3510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Okaun, Eye of Chaos",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9bc530fa-fc57-4328-8365-55f8ad5e6d46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Virtus the Veiled",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ff53fe9d-6470-4a43-8ebb-579b602d83d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorm the Great",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32c9cc8f-913e-46b4-9e17-050f977e77f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Khorvath Brightflame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "pbbd",
+    "setName" : "Battlebond Promos",
+    "variation" : false
+  }
+]

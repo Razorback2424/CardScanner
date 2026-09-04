@@ -1,0 +1,4150 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3afebe8a-9f21-4260-8e93-1ab1dff13c09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Tomb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "be6c67b2-4142-4bb4-a707-6dba787f811e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Quarry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "532231fb-607f-46a6-85eb-4736d3371964",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Quarry",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "62e5009c-01b8-482c-ae4e-03914b44101e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deserted Temple",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e1c760a9-55ef-417d-9dc6-ef96fdc7c5d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Bowl",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "89f9ff89-2221-409e-b025-fa94dcbfecbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Deeps",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e65fa513-c449-4107-a44d-a4748f1ffd9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Temple",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4eb20a10-8b7e-4e4c-8258-029bd506ea0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Sands",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "946f355a-f621-4571-8082-cebba73ebd1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Caverns",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7a524818-c35e-4205-82a2-3268ba4f67ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grove of the Burnwillows",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2aca34aa-f07a-4d91-8050-c2dbf036c4a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Market",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a0948c7e-b3ca-422d-ba04-94b907042566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hissing Quagmire",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "463d8132-fe98-4b71-b6a8-0feb4d40a391",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deserted Temple",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8ecac908-4728-405f-9f94-7533a4cc1b6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b89155de-2fd1-4799-8571-c2d51be94c79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fb829d70-c903-4d99-a72e-900e4058b3a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaclaw Reaches",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15229ac3-6466-43fd-b4ab-4bffeac4d76b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Field",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6cb11668-a672-4c12-a15f-96930cc3bd3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Falls",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "901e5800-9004-4219-bd16-59a7ff282cee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Confluence",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "95957846-d24e-4d7e-acd3-23dc528e2af8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Crater",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "490b5da5-99c3-4e16-85b8-49c52ff947d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorpool",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2ac4ada1-1b60-49ec-b187-0b2844d5704f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutavault",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b50b1c57-b8c7-49f7-90e1-a6f30a18fa1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystifying Maze",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6d9b32b9-837f-438f-b0dd-1f8fb74b9e6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Bowl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "86bcfd8b-1ae5-4cc3-8cfa-908b2e2b5352",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Needle Spires",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d354fa5b-b216-4037-b7e0-0e4736b8d3cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nesting Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "90a28818-caed-45cf-a223-65de7aa1b536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petrified Field",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "740eae1a-bfe0-4f3c-81e3-3fef962fa02d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Heroes",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6215a662-b8bc-441d-89ef-3a2eb47582aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Power Depot",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b583f66f-b87e-4bcf-aca4-7b41ff23ff20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Ravine",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "afc8d797-624b-48d9-8d67-3bd8e6e7d2ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflecting Pool",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "01539181-c6ee-49b3-9136-249712e30ef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenger Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2fd26d73-0aa4-4169-9a6a-522a5a9519c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Vent",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "02c54350-36ad-4d09-9e01-a5ffc7fef54c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Wildwood",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b8a61e4e-e51f-4175-be3a-1f71fefc966f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Deeps",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b462bd2a-c49c-4f6d-9525-523c4510b40f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "16d147fe-1411-4c46-9afd-6e2b7612c0a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Citadel",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "86068b79-0532-40b6-9ff1-1f15015739fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4bdd6634-6de1-4938-9038-317c15c8bfc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Generator",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b3cb3c82-ae92-4afe-bf30-bc9f8119a11e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thespian's Stage",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "42defc87-d1b2-4d7d-bf41-2d9b8f73364b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wandering Fumarole",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "41914164-311e-4f8d-b002-c0d313bf658b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Tomb",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "901e9ec0-2584-4acd-ab43-378c7dde6da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6a540810-83c0-40c0-846b-98241a3ed9c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blinkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "37d6d2c5-5cf7-4c31-ab5b-f1546532a22e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonders' Enclave",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "010abd40-3f9c-44bc-8570-d539750c3cd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Temple",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "56c07e41-0835-42ef-a12a-5e45613d1474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cascading Cataracts",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6eb39df3-d70a-4d7a-a0f4-d52d2504466b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathedral of War",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b160bd45-4174-4b4b-ad17-2a211df4aad8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "72164dfc-bc01-485d-8d1e-f88383e7ef37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contested War Zone",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "080edb03-932f-4e0f-a230-5c7794925017",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Tar Pit",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d494275-299c-4221-8d9d-dc7ce6314261",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Quarry",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "65e95088-de4d-4881-b907-c6b20062de7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deserted Temple",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0c0b83b9-f6fd-4236-b96f-54c46b76be26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Bowl",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fcf5ef87-99f8-4235-94cc-0ef1faf69971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Deeps",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "20d6d27a-cc2f-4a08-a633-c2c8368dc17f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Temple",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0d79548c-bcef-46b5-929c-efbaf72cb29e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Sands",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fc05bc6b-6aa2-47c2-a1e1-f2fb5a236d5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Sands",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a8eaadbb-2f83-4fc5-8e69-5b31b48eb254",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Caverns",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "61f91b79-c135-4de8-b7f8-2ad440b3a64d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grove of the Burnwillows",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "80b83d88-18cb-4e47-bc29-d07260ea689a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Market",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c6b18511-a506-4067-bb8f-1790d59eb6b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hissing Quagmire",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0aec35cb-aaa8-4952-b421-a8b6c26d5e74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "82c18acf-fb83-4045-89c6-6dcea1cc63b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "96df3087-45cd-47bc-a4b7-7c8b995b9ff6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaclaw Reaches",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "582e10e0-2df9-4b8a-b2d9-9e5fa7c7b5d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Field",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ca355f8f-c0a1-45e1-8c55-8a540046effc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Falls",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "930ff1c5-7f34-47b8-8e8b-720909cc6a69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Caverns",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "263aac65-b18b-45ed-80c1-12428dfc5a4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Confluence",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fff60007-e50a-4f20-a98c-165f426505a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Crater",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ead69420-a4c8-47f5-8d2d-f433e919dfa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorpool",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3cfe344d-45e0-451b-8743-e4da125fdc24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutavault",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e8518fb-2233-4e88-b182-7ab93fba4a97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystifying Maze",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "62168ed0-57ef-4af1-bb6c-4ed52dc4aead",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Needle Spires",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2801cfa4-7796-4d2b-997b-35e284c19c94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nesting Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a43e99aa-e9eb-4cf7-bf0e-067b1aeb696f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petrified Field",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d87b5888-554a-4940-ac3b-a675cfa0bb6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Heroes",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e19af63c-41b9-4808-a4dc-2910e088f3d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Power Depot",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "38900352-9087-4842-9a99-aceb862e5d70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grove of the Burnwillows",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c0faf723-a9b6-458c-bdd4-f6a1b9c2356c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Ravine",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d503baa-c041-46b6-8589-5369b49dd3a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflecting Pool",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bc835879-84e8-4670-a466-89f8876b871b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenger Grounds",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "53aed562-0963-438e-a3b7-e05f789c2c28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Vent",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "04dc507d-aaa9-4fdf-b844-b87f26cb8664",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Wildwood",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "320287cb-b612-469c-a9e8-ac0cb2d93676",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "50560bc8-b8e0-4fd9-a3be-05ad0ac0b661",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Citadel",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a3832d2f-57a3-4536-9b10-83d1b87260ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5c29b036-2ece-4c85-a1e9-75e8fe40ce7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Generator",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8262562c-7328-47f8-8225-bf0613b7944e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thespian's Stage",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "229c383b-305b-44b1-ba0f-fbe95bbd633f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Market",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fc537de2-a40e-4544-b499-87d558683bd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wandering Fumarole",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d9bb686f-d66d-4de3-9497-a7d23d5c87b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hissing Quagmire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "75a02940-4930-4cd6-ba20-a88efd6e82ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4c65f0c0-e771-4236-a3aa-02a0104eb4bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "06b24278-4d20-4d74-8be8-c8078e0a1873",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5766b7ed-eb92-4c53-a5ad-577b5466ff6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaclaw Reaches",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2fdbc99-7696-434e-bbc5-366393ea7f04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Field",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d75fb845-e000-4f5d-9546-1fd610726aa2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Falls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a374b6ef-bd75-4eae-ac7a-09332b0a653d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cc67cb3d-76ae-4394-9f45-41865b12edf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Crater",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "eebffbb3-5421-40e4-af92-999d8eb504f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorpool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b13486fe-e5c7-47bf-abe7-d252fd4db459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutavault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2520c11e-5751-493e-bdae-defe2e05e448",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystifying Maze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "765fad0a-50fe-4e19-87a1-c3ec70937f61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blinkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "08fb8639-a0bb-4ad7-86b0-46116a078556",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Needle Spires",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "352b132b-7f97-46e3-8efd-238cb7f87b29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nesting Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf41d9f3-4e77-4b93-b153-d0aeb01ac312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petrified Field",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c5653373-d4ed-4211-9393-c7839d2d0a73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Heroes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "feaffb58-26e0-4f14-80af-681b785bb059",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Power Depot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ed878350-ebc3-419b-9dd9-384e44906569",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Ravine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2b4e8ad6-7a60-43d6-a402-c91284993c14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflecting Pool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c287ec37-c54e-4df8-a7be-50d6c4ffc744",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenger Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7f39bc7a-129e-4d52-8024-396c06906a45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Vent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "75ea63a8-3046-4578-a190-72efa34f8d88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Wildwood",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "02a16e1e-1ea8-49af-9cde-2166134f7bdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonders' Enclave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "62aa232c-6034-4417-95a6-77b3a81c505c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a12a9d09-7b6a-4207-96db-0d968cbdc09c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Citadel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2b4ee0e7-7528-4fdc-a768-055d2c097f05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "97b4d936-a7d6-4d43-87b5-0378f57e9e61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Generator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dc03cbbf-6157-48ee-9687-c91513a95f18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thespian's Stage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "89d53010-d85f-48e4-bf75-c02e8942f508",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wandering Fumarole",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c8b3180-6e29-484a-95f1-3e75af2766d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Tomb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bea9fa70-62d4-4afb-9317-8ee24914ffbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0f8a9286-17b7-4e21-8002-d5aceb007d9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blinkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1a3b19c3-d532-4779-94b8-6393d0a02e67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonders' Enclave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f74406a2-61f5-4ee4-bfea-8ba74f186e91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cascading Cataracts",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "016a3d0d-08f5-4352-97a2-262b802c46e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cascading Cataracts",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "26b000cd-3f1e-4a97-9a20-add9d98d17e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathedral of War",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "19082885-8180-430c-9c7a-e1d77f31f726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "42cc38d7-04d7-4aac-a000-785a7177bc94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contested War Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "49fec8b8-f418-40d7-9a81-0a1312db622b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Tar Pit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "095b2580-9f15-41eb-9f2f-bc5fd5889565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Quarry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a03daca1-eb33-48a7-b5c1-fc4c524249c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deserted Temple",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "203ecf3d-2c29-43ff-8a48-d1ac89fce6b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dust Bowl",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6f80b450-70fe-4148-a7ce-1463c4c7b28c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echoing Deeps",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93183338-d692-48d4-9549-164006ef776f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Temple",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d6ca2f32-dd29-4fd5-9d36-253209230ebd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathedral of War",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bce02db1-3a50-4ba8-a527-81d2bb3ddfcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Sands",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "80c235ae-8297-4860-babe-de4a9df48c58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Caverns",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c9c2562f-21c1-4d61-a397-b8a44c517f56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grove of the Burnwillows",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f4d42fb7-9946-4608-83d8-b9f8adfaf3da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Market",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bbedda3e-8cdd-4c80-97ef-89046840555d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hissing Quagmire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aa889b11-226a-4950-bea4-629aade6ad9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6c521e85-9b38-4c75-ac04-b6de0e36c36c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d52ff66-d02d-482e-b6aa-ac78391d590b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavaclaw Reaches",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6adb5b0-7c5b-4da3-9405-8cd3e69ffc19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Field",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9e1cc021-a41a-4969-a007-3cf88d7b8c8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Falls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ca60d7c8-4ceb-46c8-85be-30ba5879b130",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c7c5efdb-ba10-456d-9dc2-4ca6e3550108",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Confluence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4069927a-1d3b-4ded-a012-eec8e7674ba6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meteor Crater",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7eca11b2-6749-4ca2-9841-f3e3a25d031b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrorpool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7fa037c9-2d43-480e-92b0-30ce24843ef3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutavault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4bdcdc32-0e38-4b50-9120-defbc8b2b18f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystifying Maze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1b9ac749-c642-47a1-bc23-281f505edff4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Needle Spires",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bc20f043-aec6-405f-aa85-57a16bb037f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nesting Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0e386ba8-3621-4e55-9326-e239341142ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Petrified Field",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5a5e0599-62b0-4063-9872-33d5add06754",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Heroes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ea5314a6-244b-4375-9965-c7ea93f4d52f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Power Depot",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1617ef81-5815-47e1-9532-2af791bbd5b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contested War Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7f7903b2-b495-406d-ba7f-d65519d83b66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Ravine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7e0ca89e-c677-46c1-a505-b50208736988",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflecting Pool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fadc0fff-ab1c-4ad4-80ea-8bf903b94cf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenger Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8eed8ea9-3035-4f3f-a6a9-bbfe0edbd382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shambling Vent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a74e587e-d79e-48e3-8902-b02352b22975",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stirring Wildwood",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6c35a930-86ee-41bf-a287-30084b33c4a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "648c4597-9270-44e5-a21d-ce5fafac00d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Citadel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ef2082bd-eab7-4fe7-9b54-b9c3cc85405e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aa31c7a0-2cb1-463b-97ce-6fa6fbd9167c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrain Generator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c1394924-511a-43db-b9cd-5fb1b64c6597",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thespian's Stage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a2184faf-6fa0-4d3c-b811-814beffe4320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Tar Pit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d379494b-427a-4e1b-8268-7223a45c418c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wandering Fumarole",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3283c6d2-7061-460f-9c2b-a362cd7085bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Tomb",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "68a19f91-82b2-4f60-94a1-911d817125a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0dcf26d2-4fe0-41cf-8fb9-cb2c529b109b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blinkmoth Nexus",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b43d9b73-73c1-4b23-be72-0924bae9b7b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonders' Enclave",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "91356a0f-3fe8-4d01-9fe0-ae8ef1437f2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cascading Cataracts",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1cb9aaeb-4996-4c21-969d-5861b05dc432",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathedral of War",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3f051a88-4708-4d78-809e-2fcd6fc39247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e1d41bbc-a1e6-4706-99cd-99113db258a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contested War Zone",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e90fadb8-0400-493c-a443-122e1c9764b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creeping Tar Pit",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eos",
+    "setName" : "Edge of Eternities: Stellar Sights",
+    "variation" : false
+  }
+]

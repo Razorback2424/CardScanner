@@ -1,0 +1,1244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfa22ebc-7020-45c0-9614-5c52d8cdb43f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aang, the Last Airbender // Aang, the Last Airbender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "931bd301-20e9-46be-ad21-064c6b0a0243",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mai, Jaded Edge // Mai, Jaded Edge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "587b2145-f81b-401a-a3b3-15cb8e6048e8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zhao, the Moon Slayer // Zhao, the Moon Slayer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27fb30f0-c5df-4cea-a586-1b6222eee418",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Badgermole // Badgermole",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7968699-4ac1-412b-b0fa-c23100fb91ac",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Boulder, Ready to Rumble // The Boulder, Ready to Rumble",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "012766da-2057-4f81-a749-c601fd20eb67",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bumi, King of Three Trials // Bumi, King of Three Trials",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2ccf27e-536c-4266-b115-5ef54455eceb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Earth King // The Earth King",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e3fdbe1-cfa6-45de-8b97-52cbb197aef8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Pillar Launch // Pillar Launch",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b43d9d0d-e656-4564-865e-88ce15d2f032",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rockalanche // Rockalanche",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a2f369e-ee47-4e22-ac80-02084f586b9c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Turtle-Duck // Turtle-Duck",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d704e5ac-f943-4324-9ccc-c9f4ef6c2c66",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unlucky Cabbage Merchant // Unlucky Cabbage Merchant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0989b6e4-3daf-4ad6-bcc9-b529438bba3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aang's Iceberg // Aang's Iceberg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4f15002-8857-48d0-b485-88c2907f14d5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aang, Swift Savior // Aang, Swift Savior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a981e0-fd97-44ac-85ad-abfa4736b2d6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fire Lord Azula // Fire Lord Azula",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7de19b17-6a49-40f3-acf2-8b65b0658d5b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jet, Freedom Fighter // Jet, Freedom Fighter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31ecdb49-5e4b-43e3-9c36-a8ab1b0e30c3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sokka, Tenacious Tactician // Sokka, Tenacious Tactician",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04fe0cf8-e5a1-4d7d-b69a-9ea384540f6d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zuko, Conflicted // Zuko, Conflicted",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc28c9c2-26b4-479d-bbf3-a9f112af4214",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Trusty Boomerang // Trusty Boomerang",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68afb140-52ff-4583-b2e8-68937b492a26",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Jet, Rebel Leader // Jet, Rebel Leader",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "762b1820-268a-46c6-8ea0-3a76c2891df5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fire Lord Ozai // Fire Lord Ozai",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f13008a6-5507-470d-824d-760ca4bdb729",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Storm of Memories // Storm of Memories",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "299425de-2b47-445a-b686-2d4427083b08",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Katara, Seeking Revenge // Katara, Seeking Revenge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b333c1ae-66db-4464-bb9b-8dadf87cf71f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Momo, Playful Pet // Momo, Playful Pet",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5963ebf9-6383-42fc-beb0-55d110f098ae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bastion of Remembrance // Bastion of Remembrance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0636af97-f378-4c3b-934b-c9654cfd2db1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Appa, Aang's Companion // Appa, Aang's Companion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "235c508b-2c8e-4721-bea4-ca5b80b233b1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Appa, Steadfast Guardian // Appa, Steadfast Guardian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba64755b-2bda-499a-928c-3194cd807938",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wan Shi Tong, Librarian // Wan Shi Tong, Librarian",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58d468f8-1d86-409b-81ba-21f0d3a0773a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Koh, the Face Stealer // Koh, the Face Stealer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73d722e3-ab21-4429-a435-6249ba334013",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Phoenix Fleet Airship // Phoenix Fleet Airship",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4bb6d44-f32a-4dfb-9221-82f38d63a159",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ran and Shaw // Ran and Shaw",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ca276b3-886f-4324-9c0f-6450bfdd7f76",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Lion-Turtle // The Lion-Turtle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "918acc15-1510-47d5-b49c-06ee2936e8a5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Walls of Ba Sing Se // The Walls of Ba Sing Se",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef969887-5b78-4180-a5a6-c928cbcfaee0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ozai, the Phoenix King // Ozai, the Phoenix King",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7994f9ae-5911-41f4-ac2c-56590e881319",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Otter-Penguin // Otter-Penguin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5d96a67-491a-450f-ba8f-1d46be92d0fa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aang's Iceberg // Aang's Iceberg",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72851a07-62dc-402d-a89e-8bf59a1af562",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yue, the Moon Spirit // Yue, the Moon Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76c0043c-5599-4463-9a2f-94ec801c1706",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Obsessive Pursuit // Obsessive Pursuit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bf3c2bb-2d4a-4449-a9e5-66cb070dfd9c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fated Firepower // Fated Firepower",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0aa41062-6c2d-40b4-83e2-cad06ac1e3bf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Firebending Student // Firebending Student",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c50b2fd-468a-40ae-9272-884b3865d393",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aang, at the Crossroads // Aang, at the Crossroads",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29b7e9a2-7df1-4e59-8e8b-562890c9de38",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bumi, Unleashed // Bumi, Unleashed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cc290d1-fce7-4c1b-90fd-3b2916df6197",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Iroh, Grand Lotus // Iroh, Grand Lotus",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb8aceb9-df28-4887-9538-507ff6fe501e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Katara, Water Tribe's Hope // Katara, Water Tribe's Hope",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a5fb9b4-6cc2-4069-85a1-45c401836caf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Toph, the First Metalbender // Toph, the First Metalbender",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eeb3746e-4cc7-4bbc-b055-5dd00340076f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ty Lee, Chi Blocker // Ty Lee, Chi Blocker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "feef42ff-2075-45e1-8cac-1cbb1ce197f9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97b74d1b-322d-4df3-b83c-323ceeac84e0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Island // Island",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96af8e17-5acc-4d0e-bd53-76a9140d3f74",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Swamp // Swamp",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9de8de11-2e3b-4be7-89c6-690394ee813a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e73a3b5-3036-4954-b074-d24053abb595",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Forest // Forest",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3155190d-5bfb-493b-992c-7b5b3853ae96",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Waterbender Ascension // Waterbender Ascension",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62fb1c1a-0f26-463c-8c14-b46a64845cdb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yue, the Moon Spirit // Yue, the Moon Spirit",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0b0dfd2-4eb7-446e-b25f-0ce95576c01e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Joo Dee, One of Many // Joo Dee, One of Many",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b93a1e8b-1518-4cc9-9652-94dd1f7c3b31",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Koh, the Face Stealer // Koh, the Face Stealer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "atla",
+    "setName" : "Avatar: the Last Airbender Art Series",
+    "variation" : false
+  }
+]

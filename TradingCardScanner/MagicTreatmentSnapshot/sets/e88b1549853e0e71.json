@@ -1,0 +1,280 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f74f4377-38ab-4822-b14b-e679247ec991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elves of Deep Shadow",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc56b3a4-163c-4e7e-bcea-8c4213c2a2f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arrogant Wurm",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "776d76de-f8b3-4ab3-a326-6d9623b78ba3",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Life // Death",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04cb4e4e-8275-4132-8f1a-84b486725400",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Fire // Ice",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3f3777a-16b4-4860-b67e-23a25e65df50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armadillo Cloak",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b752cbd8-5f8b-4cd6-854d-69138be9fbdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "894e5b74-61e0-4165-82ab-5e7e22e5a817",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lobotomy",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "566a29cb-e96a-49a3-98b9-43d8a8ad97e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Warchief",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0558a53a-e05b-4eb8-9c48-519f3e6bb13c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Mongrel",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "edcff171-587d-4459-b6cc-8d7bc5ae145e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "617152ea-bacd-42f3-928b-e0bcc686dd41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circular Logic",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56d58edc-5c78-48b1-8d33-77e5a728f6bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astral Slide",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "f06",
+    "setName" : "Friday Night Magic 2006",
+    "variation" : false
+  }
+]

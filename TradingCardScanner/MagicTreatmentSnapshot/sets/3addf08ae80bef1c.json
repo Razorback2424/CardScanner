@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3960d63-168d-4d08-a10b-3331194fdc36",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Assassin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-03-14",
+    "setCode" : "tddm",
+    "setName" : "Duel Decks: Jace vs. Vraska Tokens",
+    "variation" : false
+  }
+]

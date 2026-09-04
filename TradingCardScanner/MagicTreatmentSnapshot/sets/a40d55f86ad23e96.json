@@ -1,0 +1,94 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0a7c8ad6-b6c6-41ef-939b-ce3ec261a50b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "l14",
+    "setName" : "League Tokens 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62a8926c-94d7-4399-ad38-f235bbfd1a7e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Minotaur",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "l14",
+    "setName" : "League Tokens 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8084eae3-6b2a-4803-9959-1fc5c80500de",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squid",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "l14",
+    "setName" : "League Tokens 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12856d0c-240f-42c6-80dd-715ccf314645",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Warrior",
+    "promoTypes" : [
+      "instore",
+      "league"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "l14",
+    "setName" : "League Tokens 2014",
+    "variation" : false
+  }
+]

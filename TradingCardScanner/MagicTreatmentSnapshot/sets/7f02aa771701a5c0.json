@@ -1,0 +1,420 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9a7ed9a-25e4-41ad-a53e-d589e923af2c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldrazi",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "276f0298-3af9-4564-ba0f-4bbf139a706a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31966bcd-2259-4e46-a5f1-d8d07abe074c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00a1209e-c4c3-4250-ad36-ef451f5e34cd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hellion",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e42b07b-50a4-44a9-9bc7-ccb78c5292c4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83dcacd3-8707-4354-a1a5-9863d677d67f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Boar",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e71e3a36-8f21-470f-b76c-faad47059ccb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab430ac0-6fbc-4361-8adc-0c13b399310f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ooze",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18b9c83d-4422-4b95-9fc2-070ed6b5bdf6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ooze",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e52ae24-f5a0-45a8-88e7-19b8e91c611a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Plant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c8d6000-0c8a-4672-b834-314c3baf974a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b71177f3-a7cb-4d38-b8c7-daa5b8266a19",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldrazi Spawn",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86e7507e-cebb-4047-b54a-226648655f2d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldrazi Spawn",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7a55908-ad02-43f4-8968-cd5598cb05c6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldrazi Spawn",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "964b7e7f-af5d-495a-80a6-2fc87e35e358",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37624323-b00f-4096-a3af-115217cfca16",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51544192-095a-457c-8642-fd0ca49952d8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Germ",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c6a885f-1471-4827-b4b6-13db766c94bb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spider",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1618e130-ccb6-4341-a999-60f61fb39cd6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-11-25",
+    "setCode" : "tpca",
+    "setName" : "Planechase Anthology Tokens",
+    "variation" : false
+  }
+]

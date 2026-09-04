@@ -1,0 +1,121 @@
+[
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5b13ba5a-f4b0-420a-9e4f-a65e57721fa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Oketra",
+    "promoTypes" : [
+      "convention",
+      "glossy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-18",
+    "setCode" : "ps19",
+    "setName" : "San Diego Comic-Con 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "37bc0128-a8d0-477c-abcf-2bdc9e38b872",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Rhonas",
+    "promoTypes" : [
+      "convention",
+      "glossy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-18",
+    "setCode" : "ps19",
+    "setName" : "San Diego Comic-Con 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c23b39b-a4d6-4f10-8ced-fa4b1ed2cf74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, Dragon-God",
+    "promoTypes" : [
+      "convention",
+      "glossy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-18",
+    "setCode" : "ps19",
+    "setName" : "San Diego Comic-Con 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4889a668-0f01-4447-ad2e-91b329258f22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Kefnet",
+    "promoTypes" : [
+      "convention",
+      "glossy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-18",
+    "setCode" : "ps19",
+    "setName" : "San Diego Comic-Con 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2ae1bb79-a931-4d2e-9cc9-a06862dc5cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Bontu",
+    "promoTypes" : [
+      "convention",
+      "glossy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-07-18",
+    "setCode" : "ps19",
+    "setName" : "San Diego Comic-Con 2019",
+    "variation" : false
+  }
+]

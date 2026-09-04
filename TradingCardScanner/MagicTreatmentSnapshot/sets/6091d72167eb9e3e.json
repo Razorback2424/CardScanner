@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47b48ea5-a12f-4a3b-b7d9-2124e43d8833",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Laserbeak",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "tbot",
+    "setName" : "Transformers Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3170b92-b4eb-4826-92ed-85deba4c4c88",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ravage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "tbot",
+    "setName" : "Transformers Tokens",
+    "variation" : false
+  }
+]

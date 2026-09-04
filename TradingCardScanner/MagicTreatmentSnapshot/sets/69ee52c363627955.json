@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16c19ce8-b295-4043-863b-f781147f9e32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everflowing Chalice",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d5b3a2a-123a-4044-bec6-d186bb2427a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contagion Clasp",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3109aaa-b1e9-4c68-85f0-7515c8eeadc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Go for the Throat",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5a9bbcf-b0d4-4040-bf46-fb9d6f3fd425",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Lands",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81fa2e36-f89b-42f9-946e-e2ca2b2ad75f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellstutter Sprite",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eff71574-bb6c-45e0-b022-a8f10f3b4573",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall of Omens",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3838810-446f-492b-995a-8e03b741e1a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Artisan of Kozilek",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a6d9c5-ac03-4865-8826-9f41883ad8c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squadron Hawk",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbbacad9-8ac0-4cd9-97f5-77940d8fd1e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhox War Monk",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b2c652a-f82f-4ad1-96ff-5788d6b4aebf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace's Ingenuity",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91efd7f7-6435-4070-b94c-35b6d756c584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivate",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce85799d-f8f1-43d6-b8f5-0759723ebd1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teetering Peaks",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2011-01-01",
+    "setCode" : "f11",
+    "setName" : "Friday Night Magic 2011",
+    "variation" : false
+  }
+]

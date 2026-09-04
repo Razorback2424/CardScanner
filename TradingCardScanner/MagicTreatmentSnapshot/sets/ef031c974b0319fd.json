@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c49e8e79-8673-41c2-a1ad-273c37e27aca",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Boo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "tafr",
+    "setName" : "Adventures in the Forgotten Realms Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b2c8f52-1580-42d5-8434-c4c70e31e31b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Guenhwyvar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "tafr",
+    "setName" : "Adventures in the Forgotten Realms Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9c981c9-3376-4f6e-b30d-859e5fc7347e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Icingdeath, Frost Tongue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "tafr",
+    "setName" : "Adventures in the Forgotten Realms Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65f8e40f-fb5e-4ab8-add3-a8b87e7bcdd9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "The Atropal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "tafr",
+    "setName" : "Adventures in the Forgotten Realms Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86881c5f-df5e-4f50-b554-e4c49d5316f9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vecna",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "tafr",
+    "setName" : "Adventures in the Forgotten Realms Tokens",
+    "variation" : false
+  }
+]

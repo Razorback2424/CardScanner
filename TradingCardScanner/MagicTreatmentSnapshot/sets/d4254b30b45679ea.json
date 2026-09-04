@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c990db6b-e1f2-4802-b8b1-80a8b768be0e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Primo, the Indivisible",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "tsoc",
+    "setName" : "Secrets of Strixhaven Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4c5e0caa-a043-41de-acbf-cdf3a6b6ab18",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Contract",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "tsoc",
+    "setName" : "Secrets of Strixhaven Commander Tokens",
+    "variation" : false
+  }
+]

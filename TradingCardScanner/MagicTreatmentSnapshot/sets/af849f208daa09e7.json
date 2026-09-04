@@ -1,0 +1,577 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac2fc7e1-3e33-4e85-a7b1-376d7364db78",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Odric, Lunarch Marshal // Odric, Lunarch Marshal",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5dfc8dc-b2aa-4331-9757-b113eb467f51",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Infernal Grasp // Infernal Grasp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34e2cc5c-6c5c-4dc5-bf04-6a462dd3644b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abrade // Abrade",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2801ee0-d217-4df8-88a8-df967188fb20",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zealous Conscripts // Zealous Conscripts",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9987dad-cc10-42c6-a0f3-8755b32a3b21",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abundant Growth // Abundant Growth",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95f6ec9d-bbdc-4461-b935-c18f3c12d2dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cryptolith Rite // Cryptolith Rite",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1ac6e20-c32b-4bda-a53e-1656bc3d0087",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cultivator Colossus // Cultivator Colossus",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ee1ba21-496a-46c9-9abb-c5f9e39b24c8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tireless Tracker // Tireless Tracker",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fea638d-f955-4b16-8dac-5c64231de60e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Conjurer's Closet // Conjurer's Closet",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0883a8dd-ba88-48fe-9b2f-f657d94129db",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sorin, Imperious Bloodlord // Sorin, Imperious Bloodlord",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "499cc9d6-4275-48d7-b4e7-64483dbc1745",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Krallenhorde Howler // Krallenhorde Howler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56dffc4a-c361-4961-a497-f57d76265508",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thalia, Heretic Cathar // Thalia, Heretic Cathar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "637a79f7-29d7-4d62-9df5-d934730efff8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Arlinn, Embraced by the Moon // Arlinn, Embraced by the Moon",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "132772ff-6eff-4de3-af68-ed338007538c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ravager of the Fells // Ravager of the Fells",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca71a9fb-f169-4804-8275-985d941bbb97",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blood Artist // Blood Artist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a85e6c5e-3895-4b26-a6e6-e08c2bc00821",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bloodline Keeper // Bloodline Keeper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a898f98-267b-426b-a066-f051b9c01d0b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Edgar Markov // Edgar Markov",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3a659f5-5d09-4095-9974-35277911f4ed",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Gitrog Monster // The Gitrog Monster",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e37a6777-6c93-4ea7-80e8-136326cb5e32",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thraben Inspector // Thraben Inspector",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee5ef37c-6960-4396-9647-be61ac244c0e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Vanquish the Horde // Vanquish the Horde",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e36fffeb-f7d1-4128-a6d8-6b20bfc29db4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hullbreaker Horror // Hullbreaker Horror",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "443f6319-f69e-426c-be91-521ef704df03",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Laboratory Maniac // Laboratory Maniac",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35eb1f1c-26a3-484e-b214-441b98905361",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mausoleum Wanderer // Mausoleum Wanderer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e562cd3e-18f5-420a-a452-ea7e23d0a3e4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rooftop Storm // Rooftop Storm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b4a4bb7-12f7-40eb-82b8-3f9ec465bba7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Heartless Summoning // Heartless Summoning",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-01-24",
+    "setCode" : "ainr",
+    "setName" : "Innistrad Remastered Art Series",
+    "variation" : false
+  }
+]

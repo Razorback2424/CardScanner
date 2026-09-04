@@ -1,0 +1,1037 @@
+[
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "0f2133c0-8561-4264-8802-1b2933abf186",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "82d43220-1e4e-4b61-9844-51c8bb5dde35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brute Force",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "dddda66c-2df4-452e-8eca-7e100213fd98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Firebird",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "97787109-408e-42d3-acc5-300f5f5bf2ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prodigal Pyromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "0b778d44-60a9-4230-8090-73c38e7c9697",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrohemia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "17d4fd92-33d1-4f14-a4f4-7c7feaa18f93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "7958a1e5-b671-4ecb-95de-240ffaf5021e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Wumpus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "5d7f701c-dcdc-4067-8d00-b4b7aadee9ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simian Spirit Guide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "47307d3f-14e8-42bd-acf4-1383e5790e6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skirk Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "da2a65d6-0887-4fe8-a6e6-909208fddd90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "6a9985e8-535d-4815-8a58-a98c3edb68d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fa'adiyah Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "ea9e0de1-2299-4ff9-b49a-88535a96bda0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Anthem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "f467cdea-6166-4289-918b-18f5038c94ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Groundbreaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "4b90dbd0-4672-4c0b-92eb-262ddd11cd32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonize",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "d6f58258-a1bd-4364-954e-c39938f7dab2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Healing Leaves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "2b2e6027-598d-4ba0-93ae-f76d031de8af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Troll",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "4197d992-f868-44dd-85f7-598b22e208f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keen Sense",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "b2ba91ee-1f8e-47db-bb2d-bbb62039db17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seal of Primordium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "f0159719-ccf4-4798-a394-b01f5e422a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calciderm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "6f5df373-5dad-4e33-9e2b-351f1f4bdde4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malach of the Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "7d48d622-f397-4f31-b1a5-0c23f60aa71c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Tithe",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "4037d6de-f30b-483c-83a8-9a4e2978f7fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mesa Enchantress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "56d8e9fa-e241-4a11-99b8-ffced81eb38b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mycologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "21a8f0e5-8fec-45b2-a6a0-59d7b493a259",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Porphyry Nodes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "f9a78d5c-27f8-4061-be89-0246fb69e752",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Revered Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "6cd2ed50-cd9a-45d9-a59a-6279be1ab308",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinew Sliver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "46144ca5-aa81-4314-a1e5-1716f8565d70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunlance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "e727bb9e-3510-4c8e-ac49-6d7217667a18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frozen Aether",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "307d53c7-ef63-464f-b5f0-90220ee2b575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gossamer Phantasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "efa3d335-f39f-4291-85e0-7430561e953b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merfolk Thaumaturgist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "a985cfb0-6bae-4b1c-902e-d9d7a1aeec61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ovinize",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "586a1d9f-59ae-41a7-8de7-d6c4553ea79e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piracy Charm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "2bbdd96b-e740-43d0-a1b6-7b9b92cc7993",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Plasma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "4bcc3c1a-edb5-4534-aafa-5e078d503e64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riptide Pilferer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "0bbfd6aa-2fc9-4628-aa17-3ff0c30dc804",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serendib Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "f9a4d7ac-082b-4f66-9b7f-4d1d0fda78c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Sphinx",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "2958de76-a5ec-4e14-a025-4fe0e84c8b4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bog Serpent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "26c68473-70ca-40ba-b5c6-71ec30f88a2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damnation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "9965d9f9-0a7b-48bc-a6ab-d8b73c4550a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dunerider Outlaw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "b6e1ec29-508f-4e5e-b601-79e27743bcea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kor Dirge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "faa6fe9a-27ba-480f-84ce-b8d3306f0339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Melancholy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "c996792c-0846-4b78-bce5-1c6ad29640f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Null Profusion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "b2968e01-2d04-4591-98de-24688bb087df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rathi Trapper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "a26bf956-90eb-4221-a8e0-c8414d819072",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shrouded Lore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "a9be1058-0668-4938-8801-e9a98464651c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Link",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "plc",
+    "setName" : "Planar Chaos",
+    "variation" : false
+  }
+]

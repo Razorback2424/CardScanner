@@ -1,0 +1,161 @@
+[
+  {
+    "collectorNumber" : "4a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68a4653a-5063-4fa9-8cbe-21d3ddebe3df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The General",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51726f8f-b63d-4e93-82b2-d63d361a3b70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Savant",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be5044ab-5f7d-4109-8574-42306ca86b4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Tyrant",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f02b5e79-5eea-4cbe-b087-241cf27f0580",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Warmonger",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9987b43-7f20-46ce-b7dd-f3126e5bc991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Provider",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1936aa23-3a5d-4386-bc4d-66841e0cab2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Explorer",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08a63083-997b-4a72-af48-cd35e6e9599d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Vanquisher",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "thp2",
+    "setName" : "Born of the Gods Hero's Path",
+    "variation" : false
+  }
+]

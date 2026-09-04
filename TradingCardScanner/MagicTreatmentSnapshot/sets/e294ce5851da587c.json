@@ -1,0 +1,1880 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9f868023-6035-403d-ba91-7a4840c6c392",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aminatou, Veil Piercer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fc7895bf-a5fe-45bd-bc57-c4abe0703900",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soaring Lightbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "204972f7-8111-4e7d-97c4-53bcdc222230",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Imagination",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca06ae1a-4080-450a-8ff0-ad6aafd8f04c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kefnet the Mindful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "845e9d68-11a9-4759-a031-13464d337e12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Sleep Paralysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "f81e3110-857c-4074-9c55-7e87c22051c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arvinox, the Mind Flail",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f8937d6-a1a0-4930-968f-29fa611528e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0d3668fe-78d9-4c2c-8c83-5cace9d39e03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demon of Fate's Design",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "db8ff080-04d8-43c6-a8a5-1bf4eabf01ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomwake Giant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "30250c4d-2c16-4d03-874e-aec39d8e72a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fate Unraveler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8c36e65-395c-4800-bd0a-c444940a9b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mask of Griselbrand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59957c45-4672-4650-80b1-70e4a60b429e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c03c1ad6-3122-4267-80d6-94ecf1ff3884",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare Shepherd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "443a4eac-f972-4027-aed4-552d4edc2ce1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b738612f-4e78-4b19-9392-6c074956d6e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whip of Erebos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "27e2477d-4f04-408d-8c39-8a886ac81f44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Cellarspawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a74b4e6-f6c9-4fef-a83c-a285a541e720",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashaya, Soul of the Wild",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "65a193bb-22f3-4732-93cd-877cd8c8417c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greater Tanuki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a61bad1-f212-4d9b-8422-8ec548b8155c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishkanah, Grafwidow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61337cf3-709d-4886-9c9b-0c346677f026",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "a87b3207-5d09-4821-ba26-f0b8a6aaff42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shigeki, Jukai Visionary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ce7753e0-2838-49c2-acd0-80b534f43bad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skola Grovedancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d970c966-9a89-4c4c-ac73-8cf8fffe7721",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kianne, Corrupted Memory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1230be09-8436-4023-bb8b-d325456c0914",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Nature's Force",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b852b55-bee1-46fc-87e4-5c01b90bbd43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yedora, Grave Gardener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "16448d95-ee21-4def-b880-26f6f159c213",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metamorphosis Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "673c21f8-02b6-4ac4-b2fc-df065b4ac662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aesi, Tyrant of Gyre Strait",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf561379-4e5f-486a-bcdf-6e08e105316e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "f50ffa76-f704-4d53-a15c-8316b07c1d12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Athreos, Shroud-Veiled",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3377d600-e43f-4cce-ae3f-541e519ee4ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Florian, Voldaren Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "95c5bd95-b483-4dfb-9010-cfee47d22468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek the Merciless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c0f7712-7bbf-471b-8107-3a49cf922ad9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kardur, Doomscourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5b88ca44-1151-49c1-9ad8-d8bffee867c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "329888c6-25d9-4eb9-9308-f979c3859669",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old Stickfingers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d0d5a41-8251-437c-a4a0-3b712281ebb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, Lord of Riots",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e553935f-d8d8-4b98-ab4a-5a2eea3f3626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi, Eternities Crafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "13a902f7-2711-4769-9866-762195c3d0fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Benthic Druid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cc7be939-2202-40fe-8899-a05682d76190",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vial Smasher the Fierce",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f08dfd99-59fa-4a6c-bd69-c647f639de4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Heliod's Generosity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c1752b65-dace-4c87-b102-23df276b2e41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Gorge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "494c244e-dcdc-4169-9743-8a61f58e8763",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lord of Pain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "16b97600-e4cf-4b9e-8f2d-2eb74298eb54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demolisher Spawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "060c12ee-65b0-48d3-82d0-fdb5e27097a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crypt Ghast",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2624fbf2-3a81-40f7-b3a0-9483cd4bf782",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damn",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "241d374b-cc8e-4916-acd0-e6bdf5229c16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exhume",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10be3e37-da93-476c-8da3-57bed77df2d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Cruelty",
+    "promoTypes" : [
+      "bundle",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d451d81-cc5c-4d9b-8825-c6865edcf84a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goryo's Vengeance",
+    "promoTypes" : [
+      "bundle",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47b2b383-393e-49c7-be0f-0fb8ffb39287",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Death",
+    "promoTypes" : [
+      "bundle",
+      "poster"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3545341b-dacc-4ac8-976e-39754a62bbc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Master of Keys",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "miracle"
+    ],
+    "id" : "dc48f31f-f869-4264-9e49-c7d546115622",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redress Fate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "1933e212-213f-461f-aeb5-4a86a4dae003",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soaring Lightbringer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "3a2c84e9-b63f-4683-a1be-93567b1cf991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Sleep Paralysis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "453d6565-137a-44b9-987d-e67944f2bebf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glitch Interpreter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "541fc8eb-dba2-4d2b-9df2-9380c8c37e21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "They Came from the Pipes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0e0a196a-fff1-4135-8e0f-dc842382523c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone's Hypothesis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "f37f2926-c653-4de4-83f8-3b493317c430",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Cellarspawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b64ace2b-e1f6-4aec-b08f-fdb7fb893483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deluge of Doom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dd12c395-4d18-472b-9e91-337b86007fcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Covenant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4dc2d415-fdf7-4f2d-95d0-a793ffc26491",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rendmaw, Creaking Nest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "368be2f2-3d65-40c9-b99c-ec26c568d50c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Into the Pit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "miracle"
+    ],
+    "id" : "48acd7ae-d61a-451a-b03a-0c93b548b908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metamorphosis Fanatic",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1b874319-5d65-4875-be0a-00adcf0cc476",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Persistent Constrictor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4f71547e-9cf9-4afe-b768-efaecdddc13a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sadistic Shell Game",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fd3ceb49-3a13-47ff-b0a2-abfff43ad100",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suspended Sentence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "26b96f77-c342-4c3b-abf8-5f101729d1a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barbflare Gremlin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5949e77b-a9e8-4c1c-8ee0-f3c7ac5f8f83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gleeful Arsonist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c01b9aec-d164-4ab6-9911-a92c00d1674d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Star Athlete",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "78385399-fc28-4944-a817-7b3166414620",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curator Beastie",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "24b020bb-c758-4957-a9d6-69b9e0fe80d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demolisher Spawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8d7c1f6c-af45-4449-8cf8-e13830b3df8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth, Harrower of Souls",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "69a6433f-b832-4edc-bf74-2bed59cb4e20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disorienting Choice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1e33e16-3c8a-4cd1-8de4-ba6e92838fb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Formless Genesis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3796eccf-513e-41fe-be5b-aae3b476615b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shriekwood Devourer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4fdb69ae-2d15-4e91-b229-4d03ff9d6fbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ursine Monstrosity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "03f67156-0a79-43ee-8b7d-5a788a2107f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Convert to Slime",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0c3dfaeb-7a84-4463-bebe-501634f13945",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phenomenon Investigators",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a7360ffb-5a45-490f-9adf-d540a404e64d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giggling Skitterspike",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b6ec7a70-dcd9-4210-9283-af848e638361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Séance Board",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "94dc35e4-a492-4019-afcd-cbef6f59a512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Cynical Opportunist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "4c53c684-37f9-4b95-88be-a42b9600c47c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "30f23588-5064-48d9-a271-039df757f8d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, Mystery Unraveler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "521911e5-9ce5-4d55-bfc4-fbfeba4047fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogis, God of Slaughter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "19f56096-f692-4719-af38-6a4955f2b65c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Redress Fate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "ff4411bc-ed4e-4d54-9e1b-21fc77b0e415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "dsc",
+    "setName" : "Duskmourn: House of Horror Commander",
+    "variation" : false
+  }
+]

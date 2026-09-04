@@ -1,0 +1,145 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ffc26409-4f6a-4740-adbf-83550e7ab262",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "860b5c66-c583-4605-a209-8c315053d076",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f4eb48c-a56f-487f-a062-3588d4ae48c0",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "570b18a0-1ed2-41b9-a807-02b440f4b159",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e885fd6e-6125-45fe-8556-fc27ade66ca9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "a1_2007",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ef3d575-0009-4bd5-a0c4-49dc26a6bdb1",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Jaya Ballard, Task Mage",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "pmps08",
+    "setName" : "Magic Premiere Shop 2008",
+    "variation" : false
+  }
+]

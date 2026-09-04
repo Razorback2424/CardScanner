@@ -1,0 +1,3104 @@
+[
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59faa45d-868b-4bc7-934c-0e077642e129",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9998f898-1f08-481b-8505-b890f0fec5e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran, Disciple of History",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5ca4cb0e-63ad-4275-a27f-da476260b467",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon, Ronom Excavator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5d02416-8578-40a5-bf31-d1ef9b8764f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra, Excavation Prodigy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0220c1e9-07bc-44f0-b39e-ca345ec4ea28",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Mishra, Lost to Phyrexia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e632ed57-bb00-4493-adef-7b4805edd7ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myrel, Shield of Argive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ee387b7-18e4-41b7-aefe-f2b5954e3051",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenna, Eyes of Gaea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "deeb6a21-23b0-44f1-b70e-5899bb9d4a84",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Titania, Voice of Gaea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a0a2f82-57d3-45d8-b1c8-357883c62728",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hajar, Loyal Bodyguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b88be69-3201-4345-a193-cc21bd066d15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbin, Vanguard Aviator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a469d7ec-42de-45de-9d8f-469bb979de58",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Mishra, Claimed by Gix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "585a753d-a692-474a-bc28-48dd93b73ace",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra, Tamer of Mak Fawa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "685c9767-eaa7-4e16-b245-816181e2fc36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Kayla bin-Kroog",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f855a7e-3a97-4b62-a2a7-06ff1fbb2c4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, the Toymaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "919a32a6-b66d-4a75-a02f-fa1c4c87b738",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia, Dig Site Mentor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8aefe8bd-216a-4ec1-9362-3f9dbf7fd083",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Urza, Lord Protector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a7329cd-95af-4d71-984f-f5f28982520c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Prince of Kroog",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c31e6768-bcab-43c4-bfc1-76e961689ae9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liberator, Urza's Battlethopter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02aea379-b444-46a3-82f4-3038f698d4f4",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "The Mightstone and Weakstone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40a01679-3224-427e-bd1d-b797b0ab68b7",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Urza, Planeswalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "45537ac3-fc61-4253-a782-7f3e436b2aa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stasis Coffin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3570ebf2-a94c-4621-8808-b06e6e830c06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stone Brain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "414b9230-9d25-4bdf-8b1e-b4fa2035b6a4",
+    "language" : "en",
+    "layout" : "meld",
+    "name" : "Titania, Gaea Incarnate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fee692dd-4030-4783-92a8-21304e40533a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Temporal Pilgrim",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d40063a-7397-49a5-80c6-6e4f245e1e2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli, Filigree Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fc81aac1-4d23-4826-912e-6355d8ccb3ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra, Tamer of Mak Fawa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8f944c2f-c84f-4986-9e6f-ec8e171298c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Prince of Kroog",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7dbd1d94-9ae2-46dc-9ece-26e72a323fd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battlefield Forge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "98178c9d-e113-4f0e-9a7b-3ebfaafe2503",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brushland",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d8528e41-299d-461e-83c6-04ba3da6b17d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Wastes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4b4fa784-010d-4b27-9e35-43ad78e1ed5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground River",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "257ab263-a9f2-4376-ad43-46150a39fcdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In the Trenches",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "feed2cec-7935-49b8-9fdf-5168e228edb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e63feee-550c-4d6c-a50b-9340b12832e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kayla's Reconstruction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f35a0fc1-790e-4f47-b756-a6b4b298e299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loran of the Third Path",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "977da60c-073a-42d1-b9f5-789a2b7071b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myrel, Shield of Argive",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d65b4140-ba70-4860-b6cc-cb307da3793a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Veteran",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8798bdb6-a04e-4dce-bd4a-f54b907b9f36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Partition",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eedc76a2-f0b2-4cb3-8662-88537b7474cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia's Welcome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c58a6c36-7ca2-433c-95f4-b9b4d9f638b1",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Autonomous Assembler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1549221a-9b37-44a9-af36-9c2e6c99684e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Platoon Dispenser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6a4a0d3d-58a7-42e3-923b-cc14b85716f6",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Steel Seraph",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d01c3c7c-d9a0-421b-8174-310b3e3cb163",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Sylex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c3f9fd87-5c9b-4732-b8a5-f6be360a5fa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drafna, Founder of Lat-Nam",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9392a373-0629-4f58-905f-292f3e069127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl, Master Wizard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e00e1564-f11e-44b9-b4ac-7a327a854e6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl's Final Meditation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9e44a396-d09d-4f87-9c04-0f74d94a3dcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One with the Multiverse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "07d01c40-d5fe-4dc5-9358-02dac8542509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skystrike Officer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1511ad30-16fb-48d9-887e-fce5caede441",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e57ef48e-66e6-4395-9cf2-6eb634523874",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Arcane Proxy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9a9a4b87-59fd-45fd-a6ea-598e49fc2cc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5f72c739-9897-4d50-8232-45027869e4c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Temporal Anchor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "abfc1f6e-9a93-4608-905f-f1fe7d1a9ee1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terisian Mindbreaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b1e6775a-f711-4709-a4c7-ae159023f0fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashnod, Flesh Mechanist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "57a21794-dea0-46c8-a575-c41527ea46b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Intent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a15095c3-b9a1-43e2-8140-2a73a89336de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Handoff",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fb87dbd3-1b80-4c91-b4f7-b13bdd885c3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2495b60a-7cd0-4514-84ff-f82f28602d42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5a114052-6cd1-4f88-ab5a-0828f7fd3bf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gixian Puppeteer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9525527a-1f4d-4050-893a-cbeca21dceeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Negotiations",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "75ed1ad1-f28b-4de3-8df6-ad5bdcf393c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misery's Shadow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c97467f7-01a9-46c8-8e1c-7ebc5f65a0c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Painful Quandary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "37dc4676-5e8e-4ce8-a7f7-8cb956bd5a10",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Phyrexian Fleshgorger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e021e750-74f3-466a-b670-f5cd9cebb84a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razorlash Transmogrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0c99eb4-0c18-461c-ad26-0351adbf0a3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrant's Crown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "83c3d2cc-e2d8-4b44-9f87-17d25b5918a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brotherhood's End",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f98ce511-ecc3-48f7-80ec-66f3367998ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draconic Destiny",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a1e5e5ae-e35a-4be0-bc13-0d7f41506a26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon, Ronom Excavator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5887679d-0319-4907-abdb-a8b813ff27d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanized Warfare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "80c64a7f-7cce-43d1-8356-e9ad1d4e6f12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a913dba9-70ca-4ba3-a7b8-876843b1b1df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Over the Top",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8aff76d6-336a-4746-9002-4daefef44984",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrant of Kher Ridges",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c493e826-121f-4445-94db-5c75e5d16f75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visions of Phyrexia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "db1fb5c7-f3e7-4c98-a5a4-3cf0571b6334",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Skitterbeam Battalion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d661aa8e-46fd-4f47-ade7-99c9142f3733",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awaken the Woods",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "92646d9a-67ea-40b0-9b92-c8e1cbd31e4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fade from History",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4eeed580-d00d-4d8c-a137-18b0f354933d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fauna Shaman",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f4774554-1de5-4011-bd74-d3982bf33971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwenna, Eyes of Gaea",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f6f19007-b501-44e6-8f86-51493dc69da3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teething Wurmlet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "854c29a0-b7ea-433f-b342-a3228de0e092",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b4815d9a-0c59-4446-8cd8-416f8cd43a60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perennial Behemoth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a1c4622d-eecb-449c-acd4-c05ed4094b20",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Rootwire Amalgam",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "036eee90-b002-4d9a-a72e-56cef7cc8648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simian Simulacrum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6e988c8-c70f-4995-b500-8bc0fa580f1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbloom Ritualist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a5f42a51-02a0-4915-a459-887ac787a90e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hajar, Loyal Bodyguard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "494d3faf-73fc-4f2d-8d88-2b15298461ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbin, Vanguard Aviator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "33a5af15-86cf-48c7-8743-6b13295db41e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legions to Ashes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "73bdc53f-03af-404f-b62d-f59dda792887",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Kayla bin-Kroog",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8659b228-67e9-4cf6-be90-810d0393720a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarinth Greatwurm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4f8cde13-e7c8-4781-acf0-56f522afe425",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, the Toymaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "25d759dc-0501-481a-8330-005f83b999d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tocasia, Dig Site Mentor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b10471a6-38ee-4a84-986a-779bdf4f1464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladecoil Serpent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7bca059b-e5ea-42f3-adad-cb1801ddf3cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clay Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "35d2bcd1-3ed3-4b99-9bb6-d0fa0a9f2ea1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cityscape Leveler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "04acd5af-bd55-4c16-9b6d-10822d564c14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liberator, Urza's Battlethopter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b05bda29-654a-4f4f-9296-702ccda7f800",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Portal to Phyrexia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a41793ef-73a3-41fc-8efc-df0d72ede984",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stasis Coffin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "913460c0-2482-4d1b-9235-1cecfee653cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Stone Brain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "42c400de-25cb-4865-ad1b-9a8a8da3da55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Spider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "08f9b863-10b7-46d6-badd-97381e6c7c5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4d60a5e3-7b37-4363-ab22-c30a6fcf5716",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortified Beachhead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "de42a4e7-317e-480e-9d38-da1c42c47521",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Tagsin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f493bc22-2e38-4459-81f1-37cd1ce921cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Foundry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "22dde654-5bde-47f9-8e90-4f38dddc07b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rescue Retriever",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dae85295-9bad-4f5b-9935-7242632e9008",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geology Enthusiast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "56ef8698-982d-4c35-b3a0-99788fc2f8a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror Ballista",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55e71c3b-4c97-4eac-9ac9-c97cd6253849",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Artificer's Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "37065a61-3883-49fa-a931-8f1566451795",
+    "language" : "en",
+    "layout" : "prototype",
+    "name" : "Woodcaller Automaton",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e91f9a1e-809b-4bc0-afca-c0c3755d130f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Foundry",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65d8c862-47e9-4cc5-833c-0e762ee2a670",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Kayla bin-Kroog",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "74b8340f-19ca-40d2-ae8e-68bba18e918b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lay Down Arms",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6de8324f-07ee-4dd1-9547-1a1cfb361ff5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flow of Knowledge",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0f7c6f6f-9516-4cfd-830f-5910a25bd1a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corrupt",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "03b86f24-de8c-40f5-9486-119a366c42e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sardian Cliffstomper",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9755c1da-f1ed-4328-b85f-e905b7468504",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blanchwood Armor",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3000d1c6-dbb3-4e65-b428-dbf167bb8797",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Sylex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7355905-2b3b-4191-a89c-a0fc1494928b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drafna, Founder of Lat-Nam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fcee066-425f-4341-bde5-13a5bdf06f2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurkyl, Master Wizard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "445f897e-a059-4cd5-bfd2-302dc7a4c8e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Powerstone Prodigy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a212d59-b72e-4939-a757-c131ca4323ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Temporal Anchor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5eb43c15-50a9-488f-b0be-84a5e0a6d10b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashnod, Flesh Mechanist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c76f7e0-37e7-4e87-93a3-a25ba0674645",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gix, Yawgmoth Praetor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-132",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22d27b4e-1ff5-4b5a-baa0-98bc4d6abb37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Excavation Explosion",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-140",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2553c1f3-0382-4be3-8f8c-c99251ad814e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Mishra, Excavation Prodigy",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-156",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fd1af34-999a-4649-bc27-dc44a601095d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Visions of Phyrexia",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-199",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0398ea6e-94f8-4a34-873b-6cde8426169d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Haywire Mite",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-04",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-219",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4688b825-de44-4697-8267-acd1713d13d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Saheeli, Filigree Master",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-254",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a6a3320-638a-46de-9a60-010c65ecd6e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Thran Spider",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-263",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35277e29-369e-4ca2-a6b2-285210a04f98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Hall of Tagsin",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-289",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b60d67a-0133-4688-83e4-7ff8209a3946",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Geology Enthusiast",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-58",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2c62ffd-f01b-4d5a-a429-04940458f4f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Mightstone's Animation",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-63",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b486d77-dbd8-4fe1-bd5e-3d33ba6605be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Splitting the Powerstone",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-69",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4f414b6-7323-4ced-bcd5-36bd1fac4573",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Urza, Powerstone Prodigy",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-70",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4b2e503-4024-45dc-86e5-f68dbce59af1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Urza's Command",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "bro",
+    "setName" : "The Brothers' War",
+    "variation" : false
+  }
+]

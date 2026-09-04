@@ -1,0 +1,3944 @@
+[
+  {
+    "collectorNumber" : "101p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8408728-1118-47b3-bbb2-fd6c20df2aba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Bombardment",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5d50b91-9e50-47da-9c60-15a93b33c904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Bombardment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b375fa8-12a3-4ed4-bb39-6cd0ab24bf44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devilish Valet",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0e85299-f5a7-443e-bf2e-8547fb2ad7d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devilish Valet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e255761-f151-41f7-aa04-426a9d9b633b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hoard Hauler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "babf2713-eb42-4af9-a2c8-fac80bd268f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hoard Hauler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2caec3a1-c551-491a-89f3-e02584311116",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Depopulate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "139d4af6-e08b-4006-bcf6-19b3158f2a4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Depopulate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c01624e-808a-42df-acb4-5ea786378269",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaxis, the Troublemaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fd68304-e032-4d8e-b3a0-8d56eb6554dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaxis, the Troublemaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05bf07aa-1dda-4628-8a4b-c40d13145a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Professional Face-Breaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bdb0818-77c1-401a-8654-eb20a858150f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Professional Face-Breaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb826550-8943-4e0d-9729-d0981c3dee5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth Resplendent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae696188-930f-437d-89a0-05522eb6f38e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth Resplendent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40f05069-09df-4123-a8d8-8a8bd8186d63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Structural Assault",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed9b973b-ea88-4ef7-9b97-67f135fbd4a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Structural Assault",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fff271af-abc2-44c2-b2de-d77dee87604d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask, Heretic Praetor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5afcd538-75f0-4e82-b9a7-26fdd59e983b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urabrask, Heretic Praetor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9835ad4b-3248-466b-9f5a-987009b73e17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extraction Specialist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07f63a0c-b5a9-4095-ab03-6379664be525",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extraction Specialist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2943db52-7b80-46c9-9a0c-ae99f7961415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Widespread Thieving",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76c1995b-ad93-443f-a3f5-00e2313b5934",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Widespread Thieving",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db2bac7c-7823-4e40-a04b-ffa140ef650d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bootleggers' Stash",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51549331-8142-4a62-87ec-bcd9219bec65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bootleggers' Stash",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48558ee0-738c-4208-89ab-267d076758f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolving Door",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbf1b5db-bc61-4846-8095-888bef40b044",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolving Door",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce73857b-0a32-4f77-9af4-3176758ca7b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fight Rigging",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03691ee7-9f30-4fd9-a4e4-8d67b0e8c0ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fight Rigging",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08a964c7-1611-40ff-b09c-91228befcec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gala Greeters",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "985377cb-98ba-4f21-b01e-f63958ef68c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gala Greeters",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ced9f9b-2d20-41ed-90ff-5b37959a0b3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giada, Font of Hope",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1e1113c6-1fbf-4242-8908-cbf2d8585661",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giada, Font of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72ff838c-c9c4-45bf-997e-527d246d3faa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titan of Industry",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fac0e65-4aed-43e9-961d-868fb1a98969",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titan of Industry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a14557d0-6b30-4055-9d52-6af31e3a9ca3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Halo Fountain",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "734164cc-0cb9-43bb-8498-48301a8986ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Halo Fountain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2b05aee-1d09-48c1-b766-d5e9e9c71796",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Topiary Stomper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15de3307-137c-4055-add8-acd10f03fb46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Topiary Stomper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c64cd22b-558b-4982-bb43-633df9e56176",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien on the Hunt",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca92c59e-b67c-4dc1-9b85-e3bbd27de6b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien on the Hunt",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "395517fa-2cfc-43a8-b937-fe71971731c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Workshop Warchief",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9be9af23-07c6-4f4d-8fba-50087247a165",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Workshop Warchief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2e366bd-82b5-4dba-a051-99f10d6081bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aven Heartstabber",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04b6c236-2b02-4889-903a-b4cfc8c6946a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aven Heartstabber",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e382e5a-39ff-4eea-8425-8fc63953ffdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Market Tycoon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6582382e-6c93-4846-8d29-4fcc2aa918ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Market Tycoon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "012abe1c-a5ff-4785-a555-76e4662b0a95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brokers Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "137ddd0e-f243-4634-a355-5f41aa29d990",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brokers Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f90d5c9-6a2c-407d-bac8-780e8c1f2cd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabaretti Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36f738e4-b0d8-4cb0-bb52-0fa6199e2666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabaretti Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c7b3585-ab46-40bc-a090-69a9bfb7cbf4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpse Explosion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f3cc735-43fd-4d57-8eac-da0cb8b1808e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpse Explosion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af78ac1d-b1f5-4bef-8120-0c5b3748e65d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Detour",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3bc9dd01-9d77-4091-880b-68139dd7bdf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Detour",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1cef767a-6fbb-4ca7-8cff-e9121ac131ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evelyn, the Covetous",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e09a8ee-27d1-43d8-bd18-2870744146e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evelyn, the Covetous",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a10deb58-9fb5-4b19-a1ca-6bb540142d9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Falco Spara, Pactweaver",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a5bba05-e8cf-4be6-a5e7-0161a9a2089c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Falco Spara, Pactweaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "210e21cc-173f-428d-879d-c2be721af44c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fleetfoot Dancer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77d00363-723c-4c10-8c06-ef02bf54b03d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fleetfoot Dancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "052c7632-09a7-49e3-be72-e387a8aa4b47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Takeover",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f295368-1041-4b25-9029-c0fb86badad6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostile Takeover",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "009ba3d1-c1bf-4dad-b7b2-3799399534b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incandescent Aria",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f550b59-3368-4098-b93e-adbb52cdb2b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incandescent Aria",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa8af39d-ce16-4d23-a6b7-55af65aea243",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jetmir, Nexus of Revels",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1bb24fc7-785d-4fa6-8da3-99a9a726bb12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jetmir, Nexus of Revels",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "43bb8a14-28b5-425f-a9f5-8ab4b291d300",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jinnie Fay, Jetmir's Second",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b0604fe-0610-4f70-a170-4f141b8f1605",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jinnie Fay, Jetmir's Second",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c44828a2-ef5d-4fcd-913d-d5ad2f1a269a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Xander, the Collector",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "686de61b-505d-4e95-8a34-b3a1c6e5967f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Xander, the Collector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47a9a078-c54e-4987-b927-4c4e50417e3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "402a930b-7590-4d1d-ada3-02546f13c9cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a26196ce-50a4-42c0-8704-38eadbdb77ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Diabolist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48fe7387-f956-47f0-a5c3-63802ae4d3d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Diabolist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b721a762-245a-4c95-93e8-c401832783d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meeting of the Five",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f81cf8a1-5463-4e78-a6e4-87191b74b7de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meeting of the Five",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0db53adf-efe9-441d-91f5-d6e357ddb45f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, the Adversary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d0615fc-ec4f-4651-b29d-94f6e3f23e0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, the Adversary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d5f4c19-b621-4c14-a369-c16d65d8652e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e9e41b7-92f6-4a24-b3ba-0170dde818dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cc3b9c4-e2d8-4f53-8744-451a9e5c6216",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Interceptor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cffc9480-0fe7-4b9a-b49e-444c6e3b185d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Interceptor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a72f1e87-636b-492c-9e48-eb3dd78602cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ognis, the Dragon's Lash",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b0f1d90-e194-4096-bb89-d6e82d1f741a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ognis, the Dragon's Lash",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "599bd005-3185-4ec1-9f69-1880d4407033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Park Heights Pegasus",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ad2b1ee-fd05-4289-b41c-5eb2c1e57b4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Park Heights Pegasus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73d5e059-2527-4170-ad59-7bb01a038e50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Park Heights Pegasus",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-08",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da7a42b9-2214-426a-bb62-9ebc2d3e342c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine, Scheming Seer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0cb5087f-32cc-4d36-9da9-083c0336d89a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine, Scheming Seer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e0c1d8a8-d523-4ad7-8f78-1278e587105f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rigo, Streetwise Mentor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2417037-3eb2-4634-bd7c-da470c28b7ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rigo, Streetwise Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3917c0f-bf5c-4177-a2fd-b7ba2b38c242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riveteers Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "303c4263-6172-4c69-810a-d838eb4aee19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riveteers Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e989ccb3-805b-4cc4-9c20-6f0e3eba3592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scheming Fence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ac8ae8e-146d-48d9-b1fc-a5a03cefd58d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scheming Fence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa38fffd-3b69-497e-830b-92cdccd6022b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Emancipation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69884f83-ce57-48c2-85e1-bf5c8c60ae18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Emancipation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd196551-66d2-45cd-a596-21c262069e11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toluz, Clever Conductor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "58573e34-9dfb-4554-8d35-42414014f2df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toluz, Clever Conductor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "406b52e4-8b74-4805-8db5-834abde8a99c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unleash the Inferno",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dda68682-3ab0-471f-b29a-8340d243bc3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unleash the Inferno",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bc80d09-3659-4179-8f9c-3676ecc9b3e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterious Limousine",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "beff151f-81d3-4a47-93d2-9bb6b81cc65f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mysterious Limousine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba2a5750-d62c-4be8-958a-4057bb1c2c31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Rend",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0cdfb9b4-3ba3-4875-ab84-c93064c0e4e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Rend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cbc296d0-e575-403b-b909-919364b7b444",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora, the Incinerator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33368c51-bc33-49e3-b922-2d215bfbc704",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora, the Incinerator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "298fd1b2-a52d-4c7f-ae6a-baf8f9b8b288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora's Envoy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b735943-847c-4f5a-8377-b46fc0f46761",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora's Envoy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da91a726-1687-4403-be80-32b74f0adcf7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Getaway Car",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d5fb9d9-4eab-470c-b12c-8d1cca5f8e4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Getaway Car",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "162741b5-4220-4280-93cc-c78a45e37f84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luxior, Giada's Gift",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "12d2b750-b740-484b-b1cb-d17ab13c5d18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luxior, Giada's Gift",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69b35a25-8c7c-4c4e-905c-8db59e0d3f32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unlicensed Hearse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6af0fdcb-2c7a-402e-8a1a-bd53509e2926",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unlicensed Hearse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35ab950a-92f5-4eed-b7bc-cf90ba385789",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rabble Rousing",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16bb12eb-197b-414c-9700-ca50350ff645",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rabble Rousing",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ad4f235-1be7-44de-98ab-4f14eba34033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jetmir's Garden",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c629c6b-59b3-4a53-b9fc-94a0b5867c57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jetmir's Garden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f47199c3-e7d3-4cfd-acbb-287adf526ba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine's Tower",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7919ca2-f336-49b8-9a60-289fc173cb27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine's Tower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bc770c4-4dd8-4129-8428-b730acc7bc68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spara's Headquarters",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f4ca98d-0884-4ae9-b109-4d2d10acda9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spara's Headquarters",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5728a46b-5e12-4abd-97c2-d94734a7ee77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xander's Lounge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85a9981b-f4f7-47ba-86b7-2358c1a28ff7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xander's Lounge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49bdba86-21d9-412a-80ea-60cb722ac31c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora's Proving Ground",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99ba2597-83b0-40d3-ac1a-dbc856e3223d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ziatora's Proving Ground",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0448ddc8-9ed7-4859-a256-bbcf148c9c39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctuary Warden",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83dcb63a-8596-4099-8aa8-1066217cff88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctuary Warden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb049456-578e-436e-9942-27ba278d83bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Seeing Arbiter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90775909-e325-4c1e-bded-d80e6003fd22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Seeing Arbiter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c579383-1266-4fb2-9c49-f4b3bdba5bea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cut Your Losses",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a42e68d-016e-4055-9cbb-6b06160fb333",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cut Your Losses",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e3d171f-80a8-4968-a9cd-42fca12cb506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Errant, Street Artist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ec5bec4-d1cb-4eee-b397-3a043c6ed0cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Errant, Street Artist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd115bf0-1cb8-44dc-993a-34583eb102f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Even the Score",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4adb5462-dc4f-4788-ad7e-f92236d7ff09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Even the Score",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "005fd651-7546-462f-bf9f-c78fb3310889",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ledger Shredder",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a57efa1-dc87-44e0-b3a4-f2aa74128dd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ledger Shredder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4171a904-e7aa-450d-a6b8-b85038dcb48f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reservoir Kraken",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f67c833b-07d4-4ea1-b774-58992e79842b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reservoir Kraken",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18ceb6cd-3b11-4d83-b467-a93369647477",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercover Operative",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31cc978e-17b8-472c-9262-93f274380085",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercover Operative",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a534a2f-b49a-45c0-800d-a3109d54b8ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wiretapping",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d50d7c9-a45e-47d2-b0e3-83baf7249ce7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wiretapping",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e416101-4fae-4684-921b-12207b137ac9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Suffering",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bd5c6ae-af36-406f-bb65-3c4a56600980",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Suffering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5df4efd6-c8a3-48f5-88f7-f5be3e7426ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body Launderer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "709011b8-7b78-4aaf-98aa-882150281e97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body Launderer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60424b11-798e-4ac7-9131-78df359ba389",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cemetery Tampering",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17d04f9e-73dc-4afc-9c42-1cf892260860",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cemetery Tampering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f392d918-95ef-4f86-af4c-1ebefbde37e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cut of the Profits",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd2771fb-fffd-43a4-acfb-34ac706178a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cut of the Profits",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb3affde-0f57-4450-a139-ac00436debf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanguine Spy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86127d09-8c4a-413e-9cfc-8c456f961578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanguine Spy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad4f6fcd-9d38-4a7d-a07a-be30dac4ff1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of Mortality",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "488aa36f-e520-4b9b-83bb-d5550b8dd306",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow of Mortality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9df9c956-1774-40f1-a7dc-5eb40100d76d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shakedown Heavy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df97ae9e-a575-40e4-89d8-9dc08a64f73b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shakedown Heavy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2a7edc0-b8db-415d-9583-b0738d7753fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenacious Underdog",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "744dd9fb-2e24-4332-af66-aa209922eb78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenacious Underdog",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "psnc",
+    "setName" : "Streets of New Capenna Promos",
+    "variation" : false
+  }
+]

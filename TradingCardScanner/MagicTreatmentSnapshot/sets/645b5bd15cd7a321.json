@@ -1,0 +1,1244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20f9e0fa-e346-40d3-979b-318f99005dd0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Flash Thompson, Spider-Fan // Flash Thompson, Spider-Fan",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3bc70a0-e140-4712-9f2d-69008e3c9764",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Soul Stone // The Soul Stone",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d0be053-dadf-4f15-a6e4-a7144a6a4cf1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Swarm, Being of Bees // Swarm, Being of Bees",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23a07e0e-0017-4517-93b4-07acbdd8ef59",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Venom, Evil Unleashed // Venom, Evil Unleashed",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8894034d-769e-4759-a676-1894a850503a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gwen Stacy // Gwen Stacy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc2a93a2-45d1-4fa7-aab1-c4b5c42e977c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Heroes' Hangout // Heroes' Hangout",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acf78a4f-b299-46fe-ac7c-ff33e3f7b06b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hobgoblin, Mantled Marauder // Hobgoblin, Mantled Marauder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b14e794-7d98-49cd-a463-3ec0b886d09e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wisecrack // Wisecrack",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c193b1c7-1792-4548-abda-10f8fdcb260a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kapow! // Kapow!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e0b9499-ee34-492f-a026-3cd9e407d906",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lizard, Connors's Curse // Lizard, Connors's Curse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a910c10f-b84b-4577-86a9-bdae0553ef98",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Ham, Peter Porker // Spider-Ham, Peter Porker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47e3ec1f-0d09-42f2-9c4d-d99bc4ce09fe",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Friendly Neighborhood // Friendly Neighborhood",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "739c7818-7578-4ee4-8c0e-01fe8d705a07",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Man, Brooklyn Visionary // Spider-Man, Brooklyn Visionary",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c0b6ba8-77bd-428d-9d50-2672d264a858",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spiders-Man, Heroic Horde // Spiders-Man, Heroic Horde",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff594945-704a-4bea-b9f9-dff27d7c903b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Strength of Will // Strength of Will",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7e2ad4d-0630-49bc-89eb-1ae71bf895af",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Terrific Team-Up // Terrific Team-Up",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c02e3ff-a459-4550-9142-7922a3ef1a1a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Amazing Spider-Man // Amazing Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f8f8289-baa6-45c3-ab9c-4868668825cb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Doctor Octopus, Master Planner // Doctor Octopus, Master Planner",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bdd2ae0-9f2c-4f82-aa85-90152599c6fe",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Green Goblin // Green Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ccc6d16-4819-49cc-aef3-6eb7ea06a116",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Green Goblin, Revenant // Green Goblin, Revenant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "229a0fa9-5255-45ed-a3ad-4963fccbaf6c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kraven, Proud Predator // Kraven, Proud Predator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cfaf53c-777c-4e7e-b12d-e7e09768db1f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Silk, Web Weaver // Silk, Web Weaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e409038e-41a9-4410-991f-1b4740e43eec",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Peter Parker // Peter Parker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b36cc89b-57a0-4017-803e-10132967d9ac",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Man 2099 // Spider-Man 2099",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aef80e24-839d-4667-b6e5-18a184557faf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Man India // Spider-Man India",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "588b74db-c836-4f55-9a48-045bd4f5e521",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Superior Spider-Man // Superior Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d415795-1933-4a53-803f-151de7b8b721",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Peter Parker // Peter Parker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "094cd9ec-d1ea-4e61-bdeb-8c21ce1d791e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gwen Stacy // Gwen Stacy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f157e2ce-3066-433c-bba8-da19e800e426",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Miles Morales // Miles Morales",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4285aae3-2dda-4847-aea6-fa93202bbc54",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Amazing Spider-Man // Amazing Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e60964b9-1f7f-46d3-ba47-2463b562b9b0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Araña, Heart of the Spider // Araña, Heart of the Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a51cf43f-169c-4500-afcc-7c354c01b55e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scarlet Spider, Ben Reilly // Scarlet Spider, Ben Reilly",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65b87b47-c141-426d-9cc5-407b6cdc76e7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Silk, Web Weaver // Silk, Web Weaver",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d439102e-8051-4bf3-938f-460a9960a8d0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Man, Web-Slinger // Spider-Man, Web-Slinger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f40af742-1d20-482f-9a3a-5680073dcad3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Symbiote Spider-Man // Symbiote Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "833c6a38-f8a3-4fb5-98df-417b9b32c143",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ultimate Spider-Man // Ultimate Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41b46740-e355-4c58-936f-659421b713f7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Clone Saga // The Clone Saga",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a9446e5-bfa9-4cb5-b60e-3252fb55743b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Norman Osborn // Norman Osborn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bfcc09a-6b5a-4e66-a199-746348e788f8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Black Cat, Cunning Thief // Black Cat, Cunning Thief",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43d9e9b0-6338-458b-ae1e-50e7b2ded203",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Behold the Sinister Six! // Behold the Sinister Six!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9631aa34-d0fd-4caa-83fd-23c3a0d85cc3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Maximum Carnage // Maximum Carnage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23228f2d-3dad-4bb2-8f81-06b16aa5c203",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Carnage, Crimson Chaos // Carnage, Crimson Chaos",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae44ca40-0c79-4b60-82f0-376c447168a4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Doctor Octopus, Master Planner // Doctor Octopus, Master Planner",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26ba42f5-21f2-4714-9b45-d2609a257825",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Green Goblin // Green Goblin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "114b8769-2a12-4e8d-81c6-c81f8580ca8f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chameleon, Master of Disguise // Chameleon, Master of Disguise",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65451ae7-ed2c-4765-8553-c228e4aa1480",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mary Jane Watson // Mary Jane Watson",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6bb00859-f2d6-4943-9683-b67d0b60e8e2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Woman, Stunning Savior // Spider-Woman, Stunning Savior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ced07bc-b96b-49f0-ba9a-aa0c55cf1c2c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spectacular Spider-Man // Spectacular Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76d182b7-7373-45f7-81f8-c6db96f8e9fc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Spider-Man, Peter Parker // Spider-Man, Peter Parker",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0421763-7616-4557-a9c7-97bd05c8d12b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Grendel, Spawn of Knull // Grendel, Spawn of Knull",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f4f2723-b7bc-4068-a89a-6ad43980e420",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Secret Identity // Secret Identity",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce2d759e-d366-4526-8cc8-b7d0920babee",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Behold the Sinister Six! // Behold the Sinister Six!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac77ec48-fd58-48fb-af9e-b7b21c6490cd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gwenom, Remorseless // Gwenom, Remorseless",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdeef3cf-0fc6-47a0-9c95-e0b369a632de",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Morlun, Devourer of Spiders // Morlun, Devourer of Spiders",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "aspm",
+    "setName" : "Marvel's Spider-Man Art Series",
+    "variation" : false
+  }
+]

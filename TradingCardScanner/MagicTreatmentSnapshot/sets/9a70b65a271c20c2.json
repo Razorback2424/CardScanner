@@ -1,0 +1,222 @@
+[
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2923c85a-4022-4cda-bcbb-bb000137f64f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Genesis Mage",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0468e488-94ce-4ae3-abe4-7782673a7e62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avid Reclaimer",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c759e94-e437-4dda-af0f-6578c0a50619",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brambleweft Behemoth",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a489d5c7-ef57-4973-86ac-06234c308c3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa's Encouragement",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d757641-a6e8-4584-b35e-be043c228134",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Stream",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74239d78-1608-4b27-b2fd-8c7453f6b86b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, the Deceiver",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46d348eb-7db0-4209-8960-c6adc473417d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasp of the Bitter End",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "180d1cd4-7d0d-4279-bc2a-59bb21b06904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zealot of the God-Pharaoh",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f29bbfe2-d59f-4361-8ea4-6a8d1b909769",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visage of Bolas",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caedf353-35f8-4b58-8ed9-183d29302be9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Barrens",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-07-14",
+    "setCode" : "hou",
+    "setName" : "Hour of Devastation",
+    "variation" : false
+  }
+]

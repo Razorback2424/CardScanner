@@ -1,0 +1,179 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03a02803-4579-4af4-b4f7-3e3fb61199ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lam, Storm Crane Elder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "27b5910b-67eb-4c35-98fa-ed8cc59ded12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Typhoon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f7b6c5b-0883-43ff-8ae5-560f5af2df90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormforged Armor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a4eec538-f8bc-4ac2-b983-bda5698aa792",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Bonds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89a187c6-ebc5-41bb-99f4-f52ac19c4a6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamza, Might of the Yathan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "ba6052fb-c9fc-48e8-86ad-f548d6d463f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oasis of Renewal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b56080b1-f174-4bb2-85af-7a01bd2c77e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xho Cai, Flickering Talon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fc4d776d-0d3f-4e85-a902-93e18ae8342c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waystone's Guidance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-04-29",
+    "setCode" : "ytdm",
+    "setName" : "Alchemy: Tarkir",
+    "variation" : false
+  }
+]

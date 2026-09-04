@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "2013",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "956238ab-52ff-4787-aebc-efd13b6a2468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vengevine",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-04-06",
+    "setCode" : "wmc",
+    "setName" : "World Magic Cup Qualifiers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2014",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27153f2f-998d-42ce-a718-ee08412ba0f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geist of Saint Traft",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-08-16",
+    "setCode" : "wmc",
+    "setName" : "World Magic Cup Qualifiers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2015",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6f9792f-7435-49dd-98b4-cc2e9f556338",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalia, Guardian of Thraben",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-08-22",
+    "setCode" : "wmc",
+    "setName" : "World Magic Cup Qualifiers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2016",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b10ef54-368c-4841-ab5d-f2e8e1265c83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abrupt Decay",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-06-18",
+    "setCode" : "wmc",
+    "setName" : "World Magic Cup Qualifiers",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2c931cd-f2de-4d65-8dee-8b0fdade6594",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inkmoth Nexus",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-09-09",
+    "setCode" : "wmc",
+    "setName" : "World Magic Cup Qualifiers",
+    "variation" : false
+  }
+]

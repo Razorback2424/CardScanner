@@ -1,0 +1,416 @@
+[
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8879190f-d8ff-47ce-a5d8-6a481a67236a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Unhallowed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0757cb66-7aa2-41a2-8efc-f3f35b70ab9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shirei, Shizo's Caretaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d7b7d726-c395-4af4-aa6a-e8e0c0582a1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasigur, the Golden Fang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7fa9fdb-1458-4e34-8d2a-dfc083a7a223",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Goblin Nabob",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f40cfba1-08b5-4241-bd36-8ae18e584557",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaddock Teeg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cc84b7cf-5c68-4bb1-a1dc-2a5fae3baf04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, the Bloodflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cedfc5b7-9242-4680-b284-debc8b5a9bc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leovold, Emissary of Trest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fcac0cff-efa6-4068-a69c-67ea4e7acea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigarda, Host of Herons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e00d16f9-ea27-4aa3-a134-4e04f934d020",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e93d3a9f-abc2-4f63-a74d-e5936609386f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flagstones of Trokair",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e52214e1-404a-405a-b08e-20e13c087338",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karakas",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c25dc997-219f-44e9-9003-384f75a606a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02e17705-739e-409f-a6fd-7bab22120b22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44b45bdd-829a-4fc1-ad37-17c2bd57fac8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reya Dawnbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e0d989d-7186-40dc-bdfe-cfbb77656bc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6d47a1c7-d32b-425a-b15d-24eb35318f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffe0f77f-5092-4372-83fb-269dfb11f9b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83c74e76-c6ce-4107-8816-0be8c20d7617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-12-07",
+    "setCode" : "uma",
+    "setName" : "Ultimate Masters",
+    "variation" : false
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "dda84c94-bc11-4af6-9fa0-a5af5c8c1d30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-08-22",
+    "setCode" : "v14",
+    "setName" : "From the Vault: Annihilation",
+    "variation" : false
+  }
+]

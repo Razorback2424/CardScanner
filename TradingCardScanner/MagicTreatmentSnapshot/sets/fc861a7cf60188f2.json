@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "51cfd1dc-b7f8-418b-9a7a-76d887f83929",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Golem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "teoc",
+    "setName" : "Edge of Eternities Commander Tokens",
+    "variation" : false
+  }
+]

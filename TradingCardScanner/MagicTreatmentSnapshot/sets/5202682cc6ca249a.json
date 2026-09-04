@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f0fe7c9-b0ab-4d48-94d0-99e7bee0c0de",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Volo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "tclb",
+    "setName" : "Battle for Baldur's Gate Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c65185b-6cf0-451d-985e-56aa45d9a57d",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Undercity // The Initiative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "tclb",
+    "setName" : "Battle for Baldur's Gate Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d0475e9-68ae-4553-a5ef-650091e04967",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Boo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "tclb",
+    "setName" : "Battle for Baldur's Gate Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e9fabb82-d866-4d5b-809b-acd88005bcf7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultima",
+    "promoTypes" : [
+      "ffxvi",
+      "instore",
+      "standardshowdown",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pss5",
+    "setName" : "FIN Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "076af4bd-1b74-4cf3-b6a0-8ec17d5b0e26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squall, SeeD Mercenary",
+    "promoTypes" : [
+      "boosterfun",
+      "ffviii",
+      "instore",
+      "standardshowdown",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "pss5",
+    "setName" : "FIN Standard Showdown",
+    "variation" : false
+  }
+]

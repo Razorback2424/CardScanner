@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bca62e7-8fb5-45ff-ac9a-17db8095e76c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-04-01",
+    "setCode" : "tddg",
+    "setName" : "Duel Decks: Knights vs. Dragons Tokens",
+    "variation" : false
+  }
+]

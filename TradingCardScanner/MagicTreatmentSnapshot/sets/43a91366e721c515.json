@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "28104289-3043-4ba6-bcc6-e35fad429135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalma the Shaper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-28",
+    "setCode" : "yone",
+    "setName" : "Alchemy: Phyrexia",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4f250af-01fb-41dd-b6da-8b636166058f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rothga, Bonded Engulfer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-28",
+    "setCode" : "yone",
+    "setName" : "Alchemy: Phyrexia",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0da98dfc-3de1-48fb-881f-d01f34b2a22e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arek, False Goldwarden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-28",
+    "setCode" : "yone",
+    "setName" : "Alchemy: Phyrexia",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0db18acd-36dd-4469-a370-430141858722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyox, Brutal Carnivora",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-02-28",
+    "setCode" : "yone",
+    "setName" : "Alchemy: Phyrexia",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a18b6ab0-1214-48c3-9b72-1644b6ff63fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vexyr, Ich-Tekik's Heir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-02-28",
+    "setCode" : "yone",
+    "setName" : "Alchemy: Phyrexia",
+    "variation" : false
+  }
+]

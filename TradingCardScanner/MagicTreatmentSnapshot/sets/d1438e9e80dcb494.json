@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8916e24f-9c74-4b6c-9894-d60669854f35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "pf24",
+    "setName" : "MagicFest 2024",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8eef19e-30a8-4e3d-abf7-a1435a6d6643",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Convention Maro",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-08-19",
+    "setCode" : "pf24",
+    "setName" : "MagicFest 2024",
+    "variation" : false
+  }
+]

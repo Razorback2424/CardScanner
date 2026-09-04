@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7246341-5a22-4857-b7ab-331843db0915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-05-27",
+    "setCode" : "ppcy",
+    "setName" : "Prophecy Promos",
+    "variation" : false
+  }
+]

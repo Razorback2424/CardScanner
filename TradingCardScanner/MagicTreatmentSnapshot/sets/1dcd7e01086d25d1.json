@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0e3a11d-c7a3-495b-add9-0503141b1cfe",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Griffin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-06",
+    "setCode" : "tddl",
+    "setName" : "Duel Decks: Heroes vs. Monsters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b28a5db-d095-4214-ba0c-14b1aeddb1eb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-09-06",
+    "setCode" : "tddl",
+    "setName" : "Duel Decks: Heroes vs. Monsters Tokens",
+    "variation" : false
+  }
+]

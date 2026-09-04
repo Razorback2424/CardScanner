@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "595c4665-48e1-492e-9e62-a49ec443e161",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8597029c-3b0d-476e-a6ee-48402f815dab",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Demon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22aec1b4-33ec-4cf1-9f41-3e0468a679cd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efaa37e5-302e-4b4b-bb2d-6a0f9f80cd3f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ogre",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "572840b5-c0a1-4a9d-8913-f38fc7b2da78",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3af9733f-192f-4028-8ad6-aa1187dd15e7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Squirrel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4cd989d-e274-4058-876f-3c20f28def0d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f30e5e6-e9df-4ae2-9e40-ad2fee58fc29",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Construct",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4e0b8d9-4e22-409d-acf1-05afaaac33df",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Dack Fayden Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "tcns",
+    "setName" : "Conspiracy Tokens",
+    "variation" : false
+  }
+]

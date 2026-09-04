@@ -1,0 +1,96 @@
+[
+  {
+    "collectorNumber" : "205★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b268cd3b-af91-4c22-ac73-347babb69200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steel Hellkite",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-09-30",
+    "setCode" : "psom",
+    "setName" : "Scars of Mirrodin Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9bdfa34-f608-40d4-b634-b260ad620f18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wurmcoil Engine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2010-09-30",
+    "setCode" : "psom",
+    "setName" : "Scars of Mirrodin Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9d74bae-0b96-4a78-b805-a0b764d0716c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memoricide",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-09-30",
+    "setCode" : "psom",
+    "setName" : "Scars of Mirrodin Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f08829de-c93e-4f2f-b008-28c7cd7bb29e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunblast Angel",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-01",
+    "setCode" : "psom",
+    "setName" : "Scars of Mirrodin Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "collectorNumber" : "107p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fecc2117-fff8-4852-b31b-b494648b1770",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrong Turn",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b0336f5-e6a2-49e0-8d8e-760adf7112b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opposition Agent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "345a4b89-1030-40b9-9e79-f3838f25946c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keeper of the Accord",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdab94e2-f0a1-42ad-9b03-a780f3de6901",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Plate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7796c3cd-1f0d-4c31-b4fa-5e5dab6a85ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Beacon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df72c35b-168a-45e3-b1f1-4f1c69d37eb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "War Room",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pcmr",
+    "setName" : "Commander Legends Promos",
+    "variation" : false
+  }
+]

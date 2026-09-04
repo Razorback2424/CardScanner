@@ -1,0 +1,3906 @@
+[
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "e99d6fc0-dcf2-4b25-81c2-02c230a36246",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sothera, the Supervoid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0838f25-2193-4305-b73a-bf0c0bb4981a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xu-Ifit, Osteoharmonist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d2948913-817b-4715-92d5-ed3cde347be7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pain for All",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44607ed3-9523-40ac-9f61-0edd011cf762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tannuk, Steadfast Second",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a058f1a6-318c-4bba-981e-ace079ada806",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weapons Manufacturing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "800ee479-c1dc-4dd0-9b98-436c78997958",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bioengineered Future",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177†",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "143e5853-9a31-4c8d-b21d-5ef120eb6952",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diplomatic Relations",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-21",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : true,
+    "variationOf" : "e0a104c5-61fb-4733-97ab-a31a15a49443"
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "011bd7d8-6d60-482a-91b7-d3f0aad13b71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eusocial Engineering",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f7c63ae-5df3-410f-8643-b8c69133ca9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haliya, Guided by Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0d2c95bd-79af-4a23-b265-62cc0b164e3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loading Zone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "53c08af4-b975-4d9d-baba-73e6727f2778",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meltstrider's Resolve",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0b934241-4d6b-4b9c-99f1-c49cb387cf56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardlight Containment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "26008c7d-5dbe-4da2-b475-4dd307e7bc68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrasymbiosis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "349a2211-2b23-418d-a1ef-1c72ad2e171d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alpharael, Dreaming Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "994ca692-7138-4dcb-bf46-5da530f86036",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dyadrine, Synthesis Amalgam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "683d6eba-7f98-4105-b318-7f2290012f32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haliya, Ascendant Cadet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5688894a-bbec-476b-ae2e-94000be258d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infinite Guideline Station",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5546c044-5826-48c3-9d28-866f3c3c5f2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mm'menon, Uthros Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "011374c3-f69d-4573-8c32-5bd0fe083d6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragost, Deft Gastronaut",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75c38cc9-07de-46d4-8195-f04b2b7e0fee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sami, Ship's Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bed64207-9193-4770-8f8f-e3203289d5a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sami, Wildcat Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "49554198-549b-4066-86ce-77a03fda0a2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Vondam, Sunstar Exemplar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea954205-5ff5-493b-bf30-6212042c2bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Vondam, the Lucent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52498b7b-0389-4e7b-b29f-7ac86aab9229",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tannuk, Memorial Ensign",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6133355c-3dcf-466a-b771-fe6c44d4fa4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnsire, Sunstar Dreadnought",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5360880-2849-45d6-b1aa-08c7e01083af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Dominion Bracelet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a451a459-18e0-4c53-a171-3e9da534ebf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Endstone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1bb90ab9-43b9-4991-806a-0afc4d8caf5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Eternity Elevator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "089ae01b-e042-4255-b0ee-17d8f416a8d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "76313c69-8ec7-49e3-a34e-ade26097284c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e724e54-a622-4c77-8183-5a397a7c14a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3204f401-1bcb-4d97-b15d-113a5d3c3e9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8335b9f1-e726-423b-8ba7-6151448ab3fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4d6901e7-d519-4dfc-a74d-63fff5e4ffae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adagia, Windswept Bastion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "1c575871-9b46-4cd4-8596-54dc04f76456",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "91d18bf4-0e95-41f7-a65d-238fc010fd82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evendo, Waking Haven",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "7bb18340-5507-44da-b008-6b010daad617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "0f03d025-3ec8-4ae4-93e3-0fb96e105b7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kavaron, Memorial World",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "9f74d8ad-9db9-4162-9d20-9779233a634e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f802db1f-6533-4118-b677-562bfb135904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "f6bb05de-4cf5-479d-a0f7-1a2792a6b6d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Susur Secundi, Void Altar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a76ecc4f-5e77-4d96-9df7-fe703bbc39df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uthros, Titanic Godcore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b248ff3a-e10d-4797-8c04-7f4094608d32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5cf53baa-b0c3-4190-a5c6-c141d54cff32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Cruel Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f01aaada-2525-4f92-83e8-bbc61fa7b9cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astelli Reclaimer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e97f7f80-51f0-4366-a094-ee75ce03adb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haliya, Guided by Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "53bd9149-e157-4f0b-becf-0b64f47dbad3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mm'menon, the Right Hand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "637a4457-5600-4d33-81c7-f4009df3d8a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starwinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cabf4bdb-160a-4d0e-aa07-87bb74aef34a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alpharael, Stonechosen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ffa43efe-15ea-4c38-ab4a-764baa084e44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elegy Acolyte",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "98e7fb9e-44c2-4fa6-8d81-895f909ea9b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xu-Ifit, Osteoharmonist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d68ed960-c7ea-454c-8395-6cbb621a7940",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Possibility Technician",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a94a4760-cf43-4f27-96e1-be9d13611d99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tannuk, Steadfast Second",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "29bc9be4-4fc3-440a-a851-0c7f8989c9b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mightform Harmonizer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3cba1ffa-9b43-41f9-a5ea-57cd48013c1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dyadrine, Synthesis Amalgam",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "37c2ab54-e856-41d5-86ba-c6a7d2774546",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genemorph Imago",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4a62293d-63a7-4038-b3e9-197bb2b9ec90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragost, Deft Gastronaut",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "968fb6d4-f4b9-4c8d-b296-fea002a8c003",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sami, Wildcat Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9c39b081-ad53-4c43-93f4-3a4ebb24299b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Vondam, Sunstar Exemplar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "215f488b-6d33-4b08-88ff-b258c00515d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beyond the Quiet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d68d891d-333f-46c9-b5a3-3b1d4d3e4563",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmogrand Zenith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2b0e16d5-a3e5-4e58-9f97-3d967618f015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quantum Riddler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5a9c1d90-b2a3-40a9-86d7-ce6930acee0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starwinder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c9e9b71b-a54c-4891-9c16-28aebfafb644",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archenemy's Charm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "376d4b86-b530-4063-b530-87cc5c32e2fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastating Onslaught",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c627d558-98e8-459e-860b-7ac4dfac44de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nova Hellkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7aca78c5-3ee4-49b8-a2bd-99f5ace9d9f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rust Harvester",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "b2c86408-5e19-46ca-a3ce-949eb148acde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weapons Manufacturing",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "cc708b6c-6224-42b7-8249-a78fcb31fef4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terrasymbiosis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15b98944-23c9-4609-b323-7925adaa9aac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmogoyf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b4bdb1ac-abe2-4ce7-84cb-eb53196b4b01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutinous Massacre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b2e78e22-7a19-4e3a-93c5-6432bc5922ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Space-Time Anomaly",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9024ae78-8a60-4856-9d26-97e3d9310542",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secluded Starforge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fb9ecadf-6145-49e7-972f-bfe28ca92266",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anticausal Vestige",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c295983e-e8eb-4adc-8c72-9c3ecf3a29df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exalted Sunborn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "a84523b1-bfa4-4506-96d3-f655727f1cfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardlight Containment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ad782559-9b45-4a87-8ae6-82be6fd32f76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightstall Inquisitor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7fffe390-d16c-4891-b94a-99e895f219d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumen-Class Frigate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "884f3feb-994f-4a65-b0e1-958e2fb38af1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pinnacle Starcage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9361996c-414b-4d0d-9d94-b6d5fe04e987",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Seriema",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d1588748-3398-4b9d-97a6-8266f11d0862",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunstar Chaplain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "94d11159-c389-4461-abf9-2a3be6b39d8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consult the Star Charts",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c2dca493-9f1e-479a-a1d2-893d4799be3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emissary Escort",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "9763f489-6b2b-4a19-84a4-1fc602124890",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonlit Meditation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9831b27e-90f5-4799-8b87-644a91b853e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfield Vocalist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "85bbbbed-1dbb-4c85-b585-cde6713890ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Synthesizer Labship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "59a862ac-ef3b-41ff-abb7-d09879e9a7b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weftwalking",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "6fda7329-0a1e-4921-bc6f-f2f4f1544878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chorale of the Void",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c3cf23c5-cef9-4d78-9f09-a737e59b8d70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entropic Battlecruiser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2c44310c-80e2-4398-9b7a-097eca86ee48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Requiem Monolith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2e75cf29-a084-4ff7-ae58-eb267befa293",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunset Saboteur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c56ea5ca-f9b3-4ffa-9d2b-0190ab43cabc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zero Point Ballad",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6b4cf1fb-9a56-4d75-a42e-5a92bcfe5b08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memorial Vault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "2a9e9951-7ded-41de-808f-8a0fea964307",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pain for All",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d36147a8-dfcd-4d56-a98d-72fee52578d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminal Velocity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "515c0b63-c710-4419-a84d-4777d874bf19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warmaker Gunship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9d298847-2d02-4593-b4d3-c5b722edac1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seam Rip",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "8064eb67-5397-4a25-a02e-f2a0a3e839aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bioengineered Future",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4253d6f1-f568-4419-8b5c-a2e8855057c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Famished Worldsire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dbd6cfbd-1cb7-4b15-9d03-f07b3a874e2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frenzied Baloth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f63de2e4-f094-4b10-b754-1285ad64effc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icetill Explorer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "d2111f0f-924e-4293-ba1d-15ae31088bb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loading Zone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9a6eb356-7418-443f-a51b-37ebc3526fce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ouroboroid",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4d0c21a9-033c-42af-acbe-84284e0849f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sledge-Class Seedship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "97dc831c-bd78-4c21-a1f3-24794db8eb5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biotech Specialist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "334654be-c433-43b6-bf33-8ba040c3c3a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infinite Guideline Station",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b755ebd-a194-4b78-b1e8-606a7d231598",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pinnacle Emissary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dec91ec3-42d3-4922-96f0-dbb50a576084",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Seriema",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e88877c1-0a77-4730-8bc3-5ca0dbdd4566",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Singularity Rupture",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8a242c45-07a7-48bf-8cd0-159fd9f5ecbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnsire, Sunstar Dreadnought",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bb1492cf-b56f-40c7-a52b-7e354bcadc1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Dominion Bracelet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "62a08de0-27d6-466b-8ba8-a1bb7719049d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Endstone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "23d2c721-42a6-4108-91c2-93f59b645313",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Eternity Elevator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5062b3a3-0ec6-4c1b-9394-e2f2e2301c43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extinguisher Battleship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ef76c1af-394d-4ab6-b89f-d0c6009c8299",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrumming Hivepool",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a8c94ccb-f6af-4a26-b773-624d6ce54330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anticausal Vestige",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "59183da2-8315-49f4-ab87-01b957b26366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exalted Sunborn",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "eb6f8c8c-1905-4c3c-aa03-d56bce983559",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfield Vocalist",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "80d0b4ed-116a-445a-a571-7ebfc1983654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sothera, the Supervoid",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3d043992-251c-40cb-b1bc-481ba2830cfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastating Onslaught",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "895e5e9b-84dd-4741-8a2c-442165ea9b15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icetill Explorer",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b446c5a9-0963-474c-a4d6-13da808dbbc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutinous Massacre",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2aea7e3a-7dc4-4770-a22e-8ab29f494844",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Dominion Bracelet",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c9f2599c-9fec-4392-8228-03acfdee50e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Endstone",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "ec78b16c-be63-4aef-9308-f7a093f032a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secluded Starforge",
+    "promoTypes" : [
+      "boosterfun",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "926aad15-87a8-4510-b327-d1648f89c497",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "81368899-5fef-4f10-80ea-b282eca0f42f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b938ac10-bd0f-4ce3-a743-958d5beadf58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b092822-f34f-4384-9d0a-23d863d27231",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0d6250d3-728b-4412-8efc-911bb6f5e910",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "bf314021-ba15-46c2-99e0-94141f118bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adagia, Windswept Bastion",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "fda15a78-a370-4cc6-a4df-92200d6ca826",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "064255cc-445f-4794-aa64-3aee34e11181",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evendo, Waking Haven",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "da9708aa-c4db-4ed5-bcf2-29ea15af7d8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "4d5a29a4-98f6-4de9-b685-120e26c8b785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kavaron, Memorial World",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "15e9f2fe-7703-42bf-a6f7-c4db6e62621f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "3ba7e782-3c6a-4f3b-b00d-cf982ad31376",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "dd59063a-8ad7-4efa-8f40-7b3c9ccc68f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Susur Secundi, Void Altar",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "634bccd9-ab66-4620-a7b1-b9c984641558",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uthros, Titanic Godcore",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d854480d-a163-422b-a3dc-54dffd7b3eab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "boosterfun",
+      "galaxyfoil"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "07b10f1b-b03b-4f19-bc7e-69d5eaa5ff07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sothera, the Supervoid",
+    "promoTypes" : [
+      "boosterfun",
+      "headliner",
+      "poster",
+      "singularityfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "c0a00a77-1f7b-4528-aaf1-b2d78e73a604",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anticausal Vestige",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a827ede4-eec6-4a9d-b491-cddfab6aa39b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exalted Sunborn",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "d8a6759d-e858-41d0-a5e3-a2ac1d074263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfield Vocalist",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "668b1796-2722-4d69-9a41-8067ad189ad6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sothera, the Supervoid",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "2dedcdcd-4dbf-4bc1-9de3-823f0c7e3961",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastating Onslaught",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "b2ace91b-0329-4511-bf45-cb72e0ebeae0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icetill Explorer",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "8f319e32-56e2-402e-8e99-3cf2953ae19d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mutinous Massacre",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "dac293bd-0724-40e9-856e-a6a0483565ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Dominion Bracelet",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1227eb7f-c2a5-4112-98d0-70275a63c26a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Endstone",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "492a1bc6-6f4b-400c-959f-1bfef03a68c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secluded Starforge",
+    "promoTypes" : [
+      "boosterfun",
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "67dfd9e5-bd2e-4140-91c0-da33dc7f46e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starfield Shepherd",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "26dd02c4-569b-437f-b9dd-bd2f1d86a968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Annul",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9b14b659-9b4d-4099-90a0-d2a673b86648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umbral Collar Zealot",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "57264a8e-764a-46e6-afea-747f1b3dbf23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kavaron Harrier",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "07404acc-4f25-45e6-8174-683f296daa8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pull Through the Weft",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "422d7bc1-e2a2-4cfc-a29d-9d67354cdafd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Singularity Rupture",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f32df6a8-d77f-40ce-bcac-9495db458210",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emissary Escort",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7b62b1e2-9e43-4a66-a647-7e5de2871f2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryoshatter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c45f11cd-a0aa-4d14-aa21-57f0969f3e2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banishing Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "82add0a0-e402-4b31-b101-81c0bf332015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mm'menon, the Right Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f2a56007-5bca-4edf-9cc4-5f77a273636c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moonlit Meditation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "efc96d54-d6e1-49b6-b4c2-70b997776548",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tractor Beam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "39d48ddd-4529-4284-9da3-5272ad362b9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weftwalking",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "33063d26-37f7-4e35-8da2-5770dfabdc41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alpharael, Stonechosen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7389fe88-f6ff-4497-a037-9ca283fb89e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chorale of the Void",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoe",
+    "setName" : "Edge of Eternities",
+    "variation" : false
+  }
+]

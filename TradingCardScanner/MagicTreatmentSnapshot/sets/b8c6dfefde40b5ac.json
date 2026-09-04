@@ -1,0 +1,3924 @@
+[
+  {
+    "collectorNumber" : "100p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbede516-796d-410f-ac65-7affa23d524b",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Funeral Room // Awakening Hall",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51de1377-6f3a-4d3f-a3a4-02d77ba80372",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Funeral Room // Awakening Hall",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e632cbd-4c94-47b3-a42f-73f39fcdaf0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grievous Wound",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3df40a2-26ae-48ba-9972-42920f92d03a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grievous Wound",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a92a4534-8b67-44a8-9676-f9f432cd7573",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of the Void",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d16e2583-4b66-43ab-8f41-9e84db6f3563",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of the Void",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e50e2235-1365-4eed-8fde-2c3142108474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meathook Massacre II",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b069634-a13a-48aa-97a7-1fa99bb5de15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meathook Massacre II",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d16af289-c74d-4b1f-a6cf-8aed30fa961c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Balemurk",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "88f1dba1-4e37-4083-a80a-e5e85834d92f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Balemurk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fb666ce-b2a5-4af1-8112-acad88715438",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Unholy Annex // Ritual Chamber",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0ac772a-1246-4a52-8349-f2521ed31823",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Unholy Annex // Ritual Chamber",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d2106b4-c6a9-4a37-a50d-2a54d497e340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstoppable Slasher",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dcd12443-17ff-4221-8894-860077d686f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unstoppable Slasher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a44bbbf-2c38-4ecb-99a0-b944983f7e51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth, Terror Eater",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b211675-a204-41cb-8b53-d9883e3fd229",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth, Terror Eater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbdbe882-ac5e-4f40-92c1-1b50c11ca3ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainsaw",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af22a15a-7ad9-440f-a9c7-0ada9568e702",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainsaw",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53f6f7ac-d8ae-4029-9193-1d301e7fdacb",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Charred Foyer // Warped Space",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e4dcd84-f4cf-4952-81fa-168ee9e3b151",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Charred Foyer // Warped Space",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "032694f1-100f-451d-a28b-daf85ddd96d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursed Recording",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bb318d8-4639-4ebe-b5da-9ca1c3a08c87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cursed Recording",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9843e0d8-2e71-431f-a389-7573027441d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Courage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a9f2d97a-b902-484b-b27a-7d9312aa2af4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Courage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4731f96b-7730-4713-baae-c1cffc113cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Missing Out",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "88cd4950-a5d7-428d-9f28-01e9c684ae9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Missing Out",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "099ade8b-d622-4610-b5cc-97e587aae262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Dancers",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57a213c2-43ce-4775-ba4b-9d3ac398e6fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Dancers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a61a46b3-966a-48c2-94d5-ec88eb201b86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Resonance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0874f7dc-cabe-436b-892f-fdc4d2018486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Resonance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d64c152c-cddb-44c0-80c1-4e3a11588005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Boilerbilges",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7747ad15-e54c-47fc-9e55-6785c3fa3a50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Boilerbilges",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54bcb8ae-2582-4854-83ea-819deb03c6a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razorkin Needlehead",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2ab05a9-e58e-458b-a4f4-592deb5cf302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Razorkin Needlehead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0844043-d2d8-489a-9bfd-ef968b4b1875",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Rollercrusher Ride",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e9fdc28-3822-4404-bba4-59a99deed24f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Rollercrusher Ride",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfc039e8-ae8d-4b4a-8cdf-cfb36da532cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Screaming Nemesis",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae79260b-818c-4157-a3bf-e6cd91f56ba5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Screaming Nemesis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "521c9cbd-63f3-47d1-8eb9-3b2c52e0bf44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waltz of Rage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be65635e-70d5-4e82-801d-18d8d08a6a0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waltz of Rage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4da49052-013a-4062-ab51-17279e676468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balustrade Wurm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a5ef312-0fea-4d37-b562-04b098bcc395",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balustrade Wurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f6efb59a-feec-491f-8a6d-933d508f8e60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Vitality",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "826b10da-cb94-4b2c-93f1-7ec81d35963f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Vitality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d1874ea-b818-4b9b-a460-9df80906c510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hauntwoods Shrieker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb957d94-c6ce-4699-8de7-264a56f20530",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hauntwoods Shrieker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63e96e3b-645a-4440-8db7-29751ae77d1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Shredder",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be147f42-e6b6-4021-8898-92bca98e9011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Shredder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "759e8fa3-e8d5-4b29-b423-850a375d8125",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kona, Rescue Beastie",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca2b4041-e5f5-4fcb-9c94-e3054a7a6cbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kona, Rescue Beastie",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5624c27-a788-4c23-876e-1a956f4fd5cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Mutation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9dd85c45-86e0-4238-9a92-611091dc3d8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Mutation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7638424f-d9b3-45ec-b522-36e317a4f0cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Hope",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb5ad499-5622-4142-8f38-9d43febb124a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2dc5ae0-311e-4f49-9a59-a5301125db7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnivorous Flytrap",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ca68099-cb4d-4b8f-8ff0-5d03c1adacf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnivorous Flytrap",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f97bab94-dda6-4327-80ac-612d39e3eecd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Hauntwoods",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2750c5ea-c76d-4854-be61-29b95bbc757f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Hauntwoods",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83b12965-df25-46ef-a346-a21aa0472269",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twitching Doll",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7b5eae9-6159-4a9d-900a-805ef702d2a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twitching Doll",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68e57f81-54e0-4b3b-88ac-026cc38bcb47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar, the Pummeler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "353fc31d-55a6-49e7-83e5-c0f7202e73db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar, the Pummeler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2c0a34a-95d6-4161-a4c9-c1687df95413",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth's Onslaught",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "454ca565-fc46-432a-a8e0-d916f4e0f847",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth's Onslaught",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78a20fd4-a1a1-4e20-b910-cb685de42525",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Walk-In Closet // Forgotten Cellar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96b9ec37-0276-4f95-9dea-aa675bd18233",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Walk-In Closet // Forgotten Cellar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee34dd8c-930b-4f3c-8773-5536e5515363",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Jolly Balloon Man",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5bbcdc9a-453c-431e-a73a-f2cecdc8d078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Jolly Balloon Man",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24bd788f-72a9-42ba-9a69-ef6111fee40b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito, Bane of Nightmares",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f7aadbf-46bf-4d1c-9981-436ea5e1fed6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaito, Bane of Nightmares",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c929def3-c3a7-4720-8858-ca4c94dc2c9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marina Vendrell",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b4f6733-2afb-4a68-8949-1a02c5d84fbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marina Vendrell",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5daabf9e-c2dd-47da-b852-8098070ff6c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Searcher in the Dark",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53a4e015-049d-4cc2-b017-634afa262099",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Searcher in the Dark",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7fa860c-1ed1-4ef0-896b-00c33c271117",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niko, Light of Hope",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "11832736-aa70-45b6-921c-63c102061a12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niko, Light of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71f0d650-d89f-4785-be92-4f197a3bdab6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peer Past the Veil",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e17fc92-d316-48ad-b56c-3392881b51d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peer Past the Veil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5912fcf3-844c-4fbe-94ff-2f04f60ed1bf",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Restricted Office // Lecture Hall",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da89596c-6348-4afa-880d-7540b8214ddd",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Restricted Office // Lecture Hall",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "68d234f4-6ee6-4b29-81fa-ad3990d8c11b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rip, Spawn Hunter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84bfb346-9b4d-4811-95b4-103961adf6d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rip, Spawn Hunter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "455ca32e-0cf1-43dc-a4dd-8c8a8e906915",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Roaring Furnace // Steaming Sauna",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6d0d033-53ea-4431-a800-7f165ec83aee",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Roaring Furnace // Steaming Sauna",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c073327-c028-49af-9122-7ebfcf13fa57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Swarmweaver",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd9d0ee8-a692-4d98-9bfd-8bac912228ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Swarmweaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a65d9c19-2b69-41d8-b822-1ffb84f80968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undead Sprinter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "586b2cfd-327e-46b5-984e-80e003cfbd98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undead Sprinter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a0d512f-cdbb-4408-ae7e-db516c4e2949",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Victor, Valgavoth's Seneschal",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f831eb06-fa75-4364-a6f4-a67e4d95b309",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Victor, Valgavoth's Seneschal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d7ebeac4-bce4-4197-8dc6-93785be683c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Mistmoors",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3cfd1990-eeb0-4a31-8bc9-ebd96b37212a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Mistmoors",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "13053e1b-e0c5-435f-a092-3a7aaae445f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Misanthropic Guide",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2658c6d1-2683-41c3-8c6e-a0391304e47a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter, Misanthropic Guide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "351dfe67-1477-4766-aad8-5525a8d0d1a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, All-Questioning",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "503ea912-a536-487c-9dab-540b9f935828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zimone, All-Questioning",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "837c5bb7-1f89-4cdc-8766-60a8d97fd9e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dissection Tools",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03b61214-05a0-412f-a881-8221d35e6af5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dissection Tools",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44629bec-8d1b-4fe2-a323-ebd29562097d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost Vacuum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "206fb477-5f4e-42e6-a35a-1ceba5d85b78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost Vacuum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d15e8cef-1a92-4883-8f78-e27b40e618ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marvin, Murderous Mimic",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "46a46aa9-89d4-4b10-a411-0b98dd870521",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marvin, Murderous Mimic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f422d39c-ca99-4b0b-997d-543f84c4f742",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blazemire Verge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb794ac8-9d22-4acc-81db-80b21c0abc0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blazemire Verge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5763cd7-32c1-4b9e-8167-130a8bd943c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Floodfarm Verge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f66ecc7-e3c2-4a38-aea0-e4872e8af6c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Floodfarm Verge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3a90c5d-b21e-4554-84e1-c8addf18937d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gloomlake Verge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3406179e-9692-4147-a990-624087618c68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gloomlake Verge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb763d8c-cffc-499a-a9e8-10f0f50fe634",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hushwood Verge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8a7cb20-bf2d-4fc9-ac44-ae0157a08979",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hushwood Verge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6bf0db55-037a-4a9b-aaeb-30818f83b4fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reluctant Role Model",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba24582a-ca29-4372-a207-a3a816f09142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reluctant Role Model",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99bbbe89-b3d0-43b3-9eaf-8e2ee967da3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thornspire Verge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d45ff05c-fbee-4eeb-b1a2-cd5aaa9c5a10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thornspire Verge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf575707-8829-4385-8450-550c8d4822c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth's Lair",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34c56d64-45a7-4385-a754-5e0793889c9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valgavoth's Lair",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf4d5acd-2ba6-4c64-b7fe-6af36e91f259",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Split Up",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0259dbf2-b1f9-46a7-aeb3-e6640c409cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Split Up",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c950654c-eb97-439a-9708-e6a92e30fddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toby, Beastie Befriender",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bdede660-1165-428d-9984-b037f77418fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toby, Beastie Befriender",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76348c05-2a00-40e1-96a8-9af6c12b7e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unidentified Hovership",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a313369b-be36-484b-a4d5-89c445cd082c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unidentified Hovership",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb381cb8-71dd-4c64-8a57-c37ac16ec97f",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Dazzling Theater // Prop Room",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fda5116-4124-4103-a329-2b397c0d62e4",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Dazzling Theater // Prop Room",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e2aff2f5-18de-40f0-9520-d6c63a9547d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Rescuer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0513e60a-60c5-4b1f-ab5d-e650dd1ff3fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Wandering Rescuer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a140142-30bd-428b-82cb-323029090c21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abhorrent Oculus",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b595b0a5-99c9-48b0-a51b-abf1754711fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abhorrent Oculus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b1850fd-7041-40e3-a352-d39b804170ce",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Central Elevator // Promising Stairs",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b6245c6-0eb3-4821-bd62-6b0adb6fd481",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Central Elevator // Promising Stairs",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb6dd879-eb15-4c31-a28b-0943f274e607",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Dollmaker's Shop // Porcelain Gallery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "507e07e7-52d1-473a-b64c-a2386551cced",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Dollmaker's Shop // Porcelain Gallery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8d980821-091a-44d4-8fc3-66e85cdb71ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Curiosity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "40ce3076-dde9-416a-98b2-34e291874df1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Curiosity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ea6c0fe-3251-422a-b1df-c28ab99ef123",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entity Tracker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f1fe795-532d-4c1a-b05c-5d35222e4e7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entity Tracker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b97aedf6-9e43-4813-acc7-0d39992dd2fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Transformation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39126742-b9d1-4376-9621-cf9bd0d214f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Transformation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16f8c4e1-1d1f-4102-bd69-cf760afb58c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marina Vendrell's Grimoire",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29dfa248-3cf9-421a-b20c-2dbd5852903b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marina Vendrell's Grimoire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "5ae92fde-d1fe-44d5-b9cc-eea5a2943eb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mindskinner",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "494a0618-8514-4f70-94b1-dc70f4cd8722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mindskinner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14a3757b-e9f1-40b4-adf9-2f785a8bf5bf",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Mirror Room // Fractured Realm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87dea881-36f5-4d5f-88d0-c6722530f9e1",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Mirror Room // Fractured Realm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a7f06f81-5b2d-41bb-b878-939b57bf19a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Floodpits",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b326fd9b-f1a5-4a56-b9f3-f35ce5a6d468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overlord of the Floodpits",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f0ddac0d-b1a2-429e-832a-8c5d19288066",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Innocence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c83220c9-9e06-4bc5-9c57-de3ae3d67dee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Innocence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a7ac4d05-31d6-4bf6-bc33-4b900fe81b67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Hallcreeper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c78d03bf-7afe-48ca-8119-d5404b2fabbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Hallcreeper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91e6701e-77b9-4b49-889a-4fe3c7959250",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Tale of Tamiyo",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e0e3781-585d-498f-b671-6a18c4818bef",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Tale of Tamiyo",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f0e552e-8e9b-4ba1-80eb-4ccdbe7a2315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Come Back Wrong",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57fb6fba-10d0-4efc-87a8-9d1737e658e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Come Back Wrong",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d7e421d-4447-421a-8a14-f67c72cdcdc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Counsel",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fd98c42-f4c6-4eb1-aff5-91987efc6fbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Counsel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8435979f-4e16-4fe9-902e-b9c824c05212",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomsday Excruciator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "486e0d8c-2c45-4d35-853b-d247f641f3f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomsday Excruciator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9151a1c0-5c2c-4224-9f29-b0f90e589245",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Tenacity",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e933f19d-568d-4b5a-8f24-856ba1aa48fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Tenacity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "pdsk",
+    "setName" : "Duskmourn: House of Horror Promos",
+    "variation" : false
+  }
+]

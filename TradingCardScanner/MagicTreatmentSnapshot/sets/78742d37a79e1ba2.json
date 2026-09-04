@@ -1,0 +1,202 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "547888c3-a9a6-4413-b29a-6bcd8a9279bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathril, Blade of the Elves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1c8c41dd-8551-4ce8-a9be-9b9f65718852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ranar the Ever-Watchful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7bdb9bfe-5e56-429d-af23-7548532e2406",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miara, Thorn of the Glade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2eb0f12b-9199-440d-9b85-831a5aec5dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwynen, Gilt-Leaf Daen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aad61d99-5c8e-47b7-ab1a-e70905f59205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marwyn, the Nurturer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ac36353-6bf7-46b1-85cb-87d389138d32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Numa, Joraga Chieftain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85004079-f9fa-4a05-904d-a77782c4165c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhys the Exiled",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b68bc46-5591-44dd-becc-eca154066925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abomination of Llanowar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ac3fb08-741a-49e5-9fae-b26819677d24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brago, King Eternal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "khc",
+    "setName" : "Kaldheim Commander",
+    "variation" : false
+  }
+]

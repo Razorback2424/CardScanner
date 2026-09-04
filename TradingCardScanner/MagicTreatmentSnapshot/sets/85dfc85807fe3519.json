@@ -1,0 +1,463 @@
+[
+  {
+    "collectorNumber" : "2016EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f5a1578-d5fe-4b31-bb71-3253be8775a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Jet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2016-10-23",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2016NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c4ab6f6-bcb1-4369-9d05-3582b2639eed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Sapphire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2016-10-26",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d86490f7-8de4-4086-a1d1-cd543cbacd6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Ruby",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2017-03-31",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2017NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11e5a2c6-dcc4-4ad3-a4b5-b9095d77c4f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2017-10-19",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2018A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38dff637-abeb-4c41-9962-148205fee651",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timetwister",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2018-08-18",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2018NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "319bcff2-3173-40e8-954a-d48fa090e7b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Walk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2018-11-04",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c88832e3-218d-4b4b-9a5f-4389cf0a900c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Sapphire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-18",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b8285b7-bd88-4a6c-bd2e-9798a1c661f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Jet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2019-11-03",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0247ee3-7799-43c2-9617-35b3edc91f22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolarian Academy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-10-16",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1073b7f-3d63-4e1c-a093-cf3be6784252",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Library of Alexandria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-10-16",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9d6c1c3-1745-4da0-9a8c-7a2e4147d039",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Workshop",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-09",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4240625f-19f5-4ada-bda2-093789ddd129",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Emerald",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-26",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6157016-a16c-46c8-9daf-6edcddd6a1c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timetwister",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-27",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d96a23ed-27a1-44c5-8d8b-654947f9cce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Ruby",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-28",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9595a2d-a3ff-4757-be02-23a317fcf1a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bazaar of Baghdad",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-11-26",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022B",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e9ab027-120f-4bf3-a281-51d7cbb23604",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Walk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-12-09",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022C",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d69f9e2-9673-42bc-b2b5-d1c271212cc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancestral Recall",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2022-12-07",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023A",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a570bca-ff73-4899-8069-3557fedfb717",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2023-11-24",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023EU",
+    "collectorNumberSuffix" : "eu",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cffb4aad-30e8-4c27-ad12-048630caed8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023NA",
+    "collectorNumberSuffix" : "na",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5d24a5b-c950-4fd9-99e6-a4b979d915b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2023-12-08",
+    "setCode" : "ovnt",
+    "setName" : "Vintage Championship",
+    "variation" : false
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "48★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf5caad9-2388-4df9-9e29-a06f45bc9ce1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magister of Worth",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-06-06",
+    "setCode" : "pcns",
+    "setName" : "Conspiracy Promos",
+    "variation" : false
+  }
+]

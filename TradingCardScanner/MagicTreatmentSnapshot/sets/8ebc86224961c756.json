@@ -1,0 +1,163 @@
+[
+  {
+    "collectorNumber" : "119s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c8a8e6f-4c3b-4d92-bd05-9bbb0150d653",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Bog Raiders",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d353d6bc-693b-4c2b-9c3b-b0db241ebb42",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Diabolic Servitude",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e94ab55-4390-4b3d-8e7f-a95996e2c5b7",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Looming Shade",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c20a4bce-15db-43a7-9514-5e657b618aac",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "No Rest for the Wicked",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcf88542-e5af-430e-9d48-03a216d7526f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Unworthy Dead",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91d48d7c-3db8-437a-85e2-2bf9699a305c",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Vampiric Embrace",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5e32a3d-c477-419a-97c2-851974c6b89e",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Fire Ants",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1998-10-12",
+    "setCode" : "usg",
+    "setName" : "Urza's Saga",
+    "variation" : false
+  }
+]

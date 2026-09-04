@@ -1,0 +1,420 @@
+[
+  {
+    "collectorNumber" : "dh122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "aa3313be-3422-46ff-aff3-fc364f44126a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Reclamation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh122sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ae897dd1-0a4d-4853-bed1-545e5a0a9f1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Reclamation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d7dc17f9-3928-46d1-9686-b50a2167b330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh20sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "33e1c83b-27d1-4c24-9e57-5dd6b7c8bf14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh266",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "120991a3-0ceb-42f8-b912-4e9c7a9ea9ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roar of the Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "a76c4fdf-a0ba-4e78-a939-1b03bfc05992",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dh36sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "6c0224c2-255e-4fc1-9e55-5942bc3e3364",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dz122sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "855f4fe7-7644-4cc4-8f0a-6048d97c727e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Reclamation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dz20sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ac265223-11c1-40e8-8f24-27d8f8175841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dz251",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "70d1977c-edaf-4085-bc42-0e2b041b9b77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moment's Peace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dz36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d1c578c6-9c18-421f-951c-3dd04a06273e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Analysis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "dz42sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "8ddee74c-088e-4554-85fc-bd1453798eae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Distortion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "pk216",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "32d7c3e4-d86c-4c4b-977d-f903c7c953ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recoup",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "pk216sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "5524a198-fc47-40ff-9b82-36635db19fb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recoup",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "pk57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "9d533369-2c3a-4408-87b9-188323bc1c69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "pk62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "fdb64371-f713-4b53-88f8-8c005a3f880e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Therapy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "pk62sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "186a6db2-caf7-4e29-a3e3-6ba93402cd33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Therapy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "we62sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "a032bcf1-9221-4315-b2b9-065cb55a5fd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Therapy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "we89sb",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "e5226775-272f-4c10-a545-dd1ae91a5b55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flaring Pain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-08-06",
+    "setCode" : "wc03",
+    "setName" : "World Championship Decks 2003",
+    "variation" : false
+  }
+]

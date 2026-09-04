@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c76fa1c6-6000-47b2-9188-9c15b2c73f8f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cragflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-08-02",
+    "setCode" : "tblb",
+    "setName" : "Bloomburrow Tokens",
+    "variation" : false
+  }
+]

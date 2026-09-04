@@ -1,0 +1,642 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b43bdc7-e49e-4848-9101-6cad2ecab4dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruvac the Grandiloquent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6afead32-3542-44c4-82d6-b6a81beb9f90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isamaru, Hound of Konda",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da1fb1a6-7f64-45a6-9fc0-a325b7600afa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lena, Selfless Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dded98c3-17cb-4a43-a209-289ceb11df39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Linvala, Keeper of Silence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b238485f-ef67-4295-892b-a10235368f74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inniaz, the Gale Force",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b24d60d-bd80-4363-829c-a9d7f8c61fdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Lunarch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "711412f1-9ab3-48b6-91a4-77232b416a32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ormos, Archive Keeper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b70d445b-d3d6-4f7c-b9ea-bed6a26d4a2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kels, Fight Fixer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "437ded6e-4e53-49fa-a5ca-fd76b9165a47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kira, Great Glass-Spinner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4063be5b-bfd9-43c5-bc39-09a40bc793bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones, Trinket Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d89c1a1-1896-4360-b123-52d82a6871d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31d0c37f-ebce-4362-9400-6b9a6e439247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, Liberator of Malakir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bcba8d3-725b-49f9-8281-eafac15208c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghoulcaller Gisa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c716d10-2130-43b7-a939-349d437e1091",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muxus, Goblin Grandee",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2eb69961-0053-476f-b58e-20b6df0e2649",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "274cdb39-1454-4c9b-acd8-4f762a48e71f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sethron, Hurloon General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d94b4c3-7944-41b6-8c92-78fd6e50658d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurzoth, Chaos Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b207a4a-47d1-4905-81d3-455c59bfd7da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, Whispering One",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f74dfd07-d17c-4890-82c3-4b12a6029940",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0c1eed0f-9692-44c0-b1ad-afa691165d52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neyith of the Dire Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99c40669-87fa-4b1e-885f-2d0a626c3a25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd9fec9d-23c8-4d35-97c1-9499527198fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Mob Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9460e3c6-e745-41d3-8e17-0b92fb126a16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c342309-aef7-4733-ac1c-ff0b704539a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3a35e69-145f-4cb0-b7f1-0eac8638afbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb87782d-e9c7-440b-bd96-aa043d18e185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Heart of the Wilds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "493",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "05b2cc68-1d20-421f-9800-af0996071554",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "496",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "390a53e5-2392-403d-9105-338e0c8320a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scholar of the Lost Trove",
+    "promoTypes" : [
+      "datestamped",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-206",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab76e956-5d6c-49b8-991c-c39d5b18b876",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Blood Artist",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-04-07",
+    "setCode" : "jmp",
+    "setName" : "Jumpstart",
+    "variation" : false
+  }
+]

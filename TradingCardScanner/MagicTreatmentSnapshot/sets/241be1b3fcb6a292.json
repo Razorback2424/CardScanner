@@ -1,0 +1,979 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6b913e79-a9f6-44d4-bb37-c4f6f66b8151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hearthhull, the Worldseed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c37a0136-1c40-4cd1-8787-a25c377c1741",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "732c208b-cd9e-48a9-9b9d-aba63066ba53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "d25856c9-cb3d-44d9-905e-007f1af65c06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "10ff4bac-1f93-4dd3-987a-523a6f733a1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alibou, Ancient Witness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40489e28-878d-44a2-847f-07beef1aa0f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Gitrog Monster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "776f490a-2f75-4c18-8164-56bd65bb09c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Weatherlight Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5006eae5-3b77-45ab-a907-f5094b2eaf1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "607c1793-8e5a-4ebf-87c6-7f9c99bbd29a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Korvold, Fae-Cursed King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1522122b-e4bf-4dba-b22c-efa18bc6c33b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazirek, Kraul Death Priest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "777552e5-cc2d-460f-b26f-977c6ebcfc6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a80f7e1-1d79-4302-a603-73eb060b97a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Windgrace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1974536-9e4f-4808-9e49-a036ec7bf65c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uurg, Spawn of Turg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "46900ec7-eb18-45c4-8e90-a48b665cfdee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspirit, Flagship Vessel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "34429a6d-2d62-4b4d-9b6e-2006a07837a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Patrolling Peacemaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e1849b92-feac-4e41-84f1-728a566446da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insight Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2063f688-ab86-4c7c-9237-bdb47f56a618",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uthros Research Craft",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "813ce895-959c-46b1-82c8-48b73a681dbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eumidian Wastewaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4b379771-e16f-4ca4-b656-9f66a8128970",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Depthshaker Titan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "307a859e-eb80-4af6-b731-92e4767b5100",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kilo, Apogee Mind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e7a4a1da-664d-4675-8ddd-df5fc1b962bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evendo Brushrazer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fd45c938-6c03-4d27-bff6-e454377748df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Long-Range Sensor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "65a07be7-1967-4db6-8868-94e2dde10ad5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planetary Annihilation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9ea5a4f4-14d0-4da4-9cd0-0b3188307302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baloth Prime",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3410f9c6-ac11-4e7f-aefd-69fba43e1315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exploration Broodship",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3ed072ea-437b-472c-8a37-712654aef264",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horizon Explorer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1a9318ca-2974-4d3f-8951-205ba3f9c64a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scouring Swarm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eae2f9c7-8a72-4b9b-a8ea-c531d0ef168f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moxite Refinery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0e14344e-f8cf-4266-804f-207783814306",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solar Array",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9256ac07-aa4d-4f65-8e74-85ec5959dee9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge Conductor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "89b61123-b10f-4bcf-b5f9-1f302f9b22d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Szarel, Genesis Shepherd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "00281944-a9d3-4294-8f63-34ad09e4c627",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eumidian Hatchery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "da778e94-0d73-4be4-abcc-7d0ae418927c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Festering Thicket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cf9b8d08-93f4-479c-875a-b6f7766c59d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glittering Massif",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b8e7e906-2bac-4399-84c9-bc3f2647baba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Summit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "63a8b029-add2-4f47-8959-8bf1b6cff399",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vernal Fen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "65b3df37-8dea-4486-8904-55372b93c66f",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Binding the Old Gods",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "78743ab3-0289-4799-b139-a37964532b92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resourceful Defense",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c977d89a-bfd1-4e98-9d95-3e41c53dd188",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emry, Lurker of the Loch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2d389264-e2d2-4589-9636-faa11fe46710",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tekuthal, Inquiry Dominus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f96223d0-04c4-40c2-87a9-0c6bc74adddb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "142b0860-8a82-4830-a4ff-2bbfc102437e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "God-Eternal Bontu",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "900de725-741b-4b25-8e40-78ed7575a83f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hammer of Purphoros",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4481eab8-9e7d-4db8-b1f2-fdf5ee1919a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moraug, Fury of Akoum",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "eoc",
+    "setName" : "Edge of Eternities Commander",
+    "variation" : false
+  }
+]

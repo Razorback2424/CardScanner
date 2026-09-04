@@ -1,0 +1,1388 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bbcdd814-24a3-4a5c-b650-3460aba5d93a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All That Glitters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7cc24cab-157e-4487-9f6d-264e00ef5de4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oboro, Palace in the Clouds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "031c71f7-37a7-4b64-ac18-01f587525df1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "551565d5-2207-4f81-9295-0b5c93126908",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All That Glitters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "50fd50c5-18dc-49de-91ca-afc4b2bedc07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Land Tax",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bf195cee-bcbc-4c8b-8e57-fce0dfcfeb1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b95090ec-9a26-457a-b3a2-b6805ebdf1d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animate Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5e50f643-373c-45cb-9a85-a278e65980c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Reality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93f7454b-7d8a-4ce6-85e9-3eca68f31fca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter, Sewer King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1807fe16-48f2-4f6f-b1b0-434878ddf807",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortuary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e3bc873-6856-4248-b858-77465b787580",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c5eb4b15-b0c6-4ee5-89f7-1f1b449b5b2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21860b0b-620b-458e-9631-811ec66d76f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7ac41afa-2fa7-4311-8ead-841ca6d53a8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Echoes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2124b0a9-7c88-4df0-af5e-6cc16f7eee63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51a06796-3623-4501-a1f8-e9423f7af6d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruxa, Patient Professor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7a868933-f4bd-408d-a5a8-da243a606fcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f50f5930-8932-473d-a959-20e5a8622372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dueling Grounds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a74e9143-a2ca-4ae1-8417-e9bff63420cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86e39ad3-d029-42a1-8ad3-c144b1655879",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Jolly Balloon Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b585ed9-68cf-4148-a3e6-263383fd14b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Brute Chronologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2244a4f6-7bd0-4864-b9c2-96e48bc0fcbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine, Scheming Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba1076da-a7d4-48af-9c97-e688c95c3423",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f342594b-38d0-4d8b-b624-52647317851f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oboro, Palace in the Clouds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0aaa9d78-c499-433f-98a2-e716c43eacb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "38866a48-8ad0-4813-8c53-fbee3ac3bcf9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All That Glitters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e9be3cc7-a3ff-4b0e-9ef3-a429c946e4c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Land Tax",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "dcbb8589-60a4-4800-9306-aa160d48b76c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imprisoned in the Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9ad691e5-a920-4d9a-8424-926f8c4b2a4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animate Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "649a3afe-bf7e-4863-88a5-e8d5e0cef48d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Reality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9cda7271-04c6-44df-a780-5273083d3343",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter, Sewer King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b4d28171-d4c3-48d2-8faa-d867fc00bea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortuary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1dca823-5ef5-4b87-8c04-9469cec5d7f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c854ce72-d206-4b9c-b998-9dff21f957a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea786ac1-e8bf-47b0-af47-b2ec060b6601",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e649dfc2-450c-4117-9b4e-f57afefbc685",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Echoes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7cb10182-3142-4d36-becc-8321c31a7947",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruxa, Patient Professor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f89f62e5-d1f7-4fd3-afe2-574723c29662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e42f1908-6a87-49de-b318-6d37b362fe76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dueling Grounds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80fc6d97-4c28-4789-93dc-9eae07a6276e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "758eefba-ff86-4f2f-9764-3a4a491d8af2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Jolly Balloon Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "944f996d-4861-4787-9a01-910d9e0036e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Brute Chronologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fd678200-aeda-4874-b59a-e0d15ba373a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine, Scheming Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70219b22-5bda-481d-9858-0a69ff556416",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d5d9bc32-e2d6-43e6-bb32-4237a795abfa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animate Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1fc0f15b-97c4-45ba-8bbf-de54b331b45a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cruel Reality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c830764f-93ce-4638-b91b-807026d1817f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oboro, Palace in the Clouds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47dbb29c-b905-4392-8029-cb5d94d77228",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5165917b-4d9c-4dc4-917b-a3a17d5869f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord Skitter, Sewer King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a6b40db2-1b63-4b0f-9260-75c8739866f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortuary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4fb0a1a8-d64a-4d22-a078-7673fd63b3cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Land Tax",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc2ee711-0cf6-4fe4-bcf1-c9006f396205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d53c7a66-882d-42e7-a534-bbdae356143c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ff1af66d-7ed3-4ed9-a708-948d3c6ae4ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazuul, Tyrant of the Cliffs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "76b65f1b-2933-47bd-9e4b-e1e6abe9dfb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Echoes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ce6f43a-5267-41bb-b364-c22d45258b97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruxa, Patient Professor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fcd28411-208e-452b-9b29-0c3981516fe0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4ad9013a-a7b6-43b9-9c80-8d7fb5f094fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dueling Grounds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "baab7523-9d31-48da-8ed0-cb2232945b19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e271fd6a-1a18-4c23-8797-32759aae9ed1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Jolly Balloon Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "20cc082d-a9ff-48c9-94b6-5bd2761f38cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Brute Chronologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19c4dcd3-4cad-4bb4-9c3a-00362254f577",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raffine, Scheming Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee056dbf-7f3a-47dd-b6b6-7938eb8ec5b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-02",
+    "setCode" : "slz",
+    "setName" : "The Zeta Set",
+    "variation" : false
+  }
+]

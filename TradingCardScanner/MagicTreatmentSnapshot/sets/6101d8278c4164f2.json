@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25b0644d-4934-4495-9b6e-c31d1d10c298",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-11-13",
+    "setCode" : "ttrk",
+    "setName" : "Star Trek Tokens",
+    "variation" : false
+  }
+]

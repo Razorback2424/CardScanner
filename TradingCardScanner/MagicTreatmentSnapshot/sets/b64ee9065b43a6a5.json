@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "C1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06c30f28-15a1-4fd5-a743-5c2aed19d85f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Xantcha, Sleeper Agent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-22",
+    "setCode" : "plg21",
+    "setName" : "Love Your LGS 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "C2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de2f26fc-1c69-490d-83a9-4031bcff6895",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Yuriko, the Tiger's Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-01-01",
+    "setCode" : "plg21",
+    "setName" : "Love Your LGS 2021",
+    "variation" : false
+  }
+]

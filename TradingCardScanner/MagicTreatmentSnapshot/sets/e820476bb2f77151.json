@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bfb1440-d4c1-42cf-a777-ee1644dbbac7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-05-03",
+    "setCode" : "tdgm",
+    "setName" : "Dragon's Maze Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9670f4eb-cca7-45fd-b3d7-58b436c00526",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1999-04-21",
+    "setCode" : "6ed",
+    "setName" : "Classic Sixth Edition",
+    "variation" : false
+  }
+]

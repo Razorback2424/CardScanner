@@ -1,0 +1,259 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4311bea6-a65c-4c1b-9596-797cc3410eb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of the Peaks",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-03",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02667018-cd8c-4645-ab1d-17a917caa597",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elektra, Daughter of the Hand",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4346f8cb-6c1a-4bd0-8211-78ad1f56d075",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riddles in the Dark",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-28",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4aaac603-6c4f-46fb-85f4-d6b51c966524",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaldra Compleat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-03-15",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b103e9f5-fdfd-4533-a63b-1c212dc76ba7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Forge and Frontier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-11",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "32e03ed1-6d1e-4303-b67c-4a5a4f825e9c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Cloud, Midgar Mercenary",
+    "promoTypes" : [
+      "ffvii",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-01-03",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "314671b3-26c6-463e-934c-93f62e704db6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Get Lost",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-29",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f1b7b3e-3449-4c8f-8eb7-aacc62d9eadd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-10-24",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7e165f1-d016-4f6b-afcd-8711d26f055d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Black Sun",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-09",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d05a2b18-f562-4aa5-8979-4c6942ce7edf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vendilion Clique",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-02-06",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a6000825-81bd-4deb-b115-c52c7890de2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Super Shredder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pspl",
+    "setName" : "Spotlight Series",
+    "variation" : false
+  }
+]

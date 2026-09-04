@@ -1,0 +1,1865 @@
+[
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c1dc403-5676-4b64-965f-0349fc867356",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unbounded Potential // Unbounded Potential",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fc79219-c983-47e2-9ca8-2aaa96828e3b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aeromoeba // Aeromoeba",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22419182-359a-4cb9-b1d3-60af75f7e941",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dress Down // Dress Down",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6dfafa0-2d37-48e1-8887-2a77cc96b13f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Junk Winder // Junk Winder",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "179dbdb4-130f-4ebf-8f3c-2a5104b0ebb1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lucid Dreams // Lucid Dreams",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5769a63a-52aa-4c97-8932-87498603ab01",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mental Journey // Mental Journey",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e4ba17b-ae04-4033-9f6e-44f33d60ad09",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mystic Redaction // Mystic Redaction",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2a0bf00-0d7d-4971-b717-93d23daa3077",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Recalibrate // Recalibrate",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7046e67c-5cfb-49fb-8b76-1191b133b4c1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rise and Shine // Rise and Shine",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14e1dd51-cfb3-44f5-a56e-3f3fa524bc18",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shattered Ego // Shattered Ego",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f526612-0db2-4013-9a1e-d4f7c8a4f601",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Blossoming Calm // Blossoming Calm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f660e34-6ab5-463c-9b1c-d4348c2a095a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Murktide Regent // Murktide Regent",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc96e12a-fcf7-4db2-93d7-ed679afa6967",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Step Through // Step Through",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cd8a7cf-a13e-4e0b-ba27-c8f86ffc27f6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Subtlety // Subtlety",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97c0601f-c009-443c-808d-eb063ed193bf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Suspend // Suspend",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc0dc901-dcad-4f2b-8429-dbf2f1452ef9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Svyelun of Sea and Sky // Svyelun of Sea and Sky",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7e13bd0-d54c-4553-b1af-abdfc31854f7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Svyelun of Sea and Sky // Svyelun of Sea and Sky",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8e74474-8a56-430a-b368-416f02e1e13b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Archfiend of Sorrows // Archfiend of Sorrows",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a853ac7-bdd3-4612-b6d6-a6dd29b36ef7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bone Shards // Bone Shards",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad41372c-beee-4fb2-a24a-1178209e843d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Damn // Damn",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e0fd24b-8021-4332-88b1-494a50a18b05",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Flay Essence // Flay Essence",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c4045c4-37de-4c36-8e9a-109169b9a038",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Glorious Enforcer // Glorious Enforcer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6c9ae4d-5010-4c43-9128-49c4374d8c5f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Grief // Grief",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "449fbe61-9250-4618-a478-4e3f359190c4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Necrogoyf // Necrogoyf",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "286ae6fb-1677-4137-a802-75fbb0affd02",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nested Shambler // Nested Shambler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b0a3434-232b-4a28-b828-2662e5f32af3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Radiant Epicure // Radiant Epicure",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "752099c4-99aa-46c2-918a-a9acc402c4be",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chef's Kiss // Chef's Kiss",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8daf3c9a-d7e8-4fe7-9a1f-7772e8f5c0b7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dragon's Rage Channeler // Dragon's Rage Channeler",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b90e5403-5103-43f2-a967-d88cd833c42a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Strike It Rich // Strike It Rich",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a158795-85c2-45b0-a2ce-33ec65fffbbf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Abundant Harvest // Abundant Harvest",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46f6cadc-408f-46fc-8bd2-814a8d9a2f2b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gaea's Will // Gaea's Will",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c9f0286-33a1-4126-b1e3-fa23376f9d24",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Glimmer Bairn // Glimmer Bairn",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f83aa0e-3e22-46a8-abea-6b3e2a67b535",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Late to Dinner // Late to Dinner",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d5eccf5-0dd3-4375-8a0e-e17eace87ffd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scurry Oak // Scurry Oak",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d49fe25-de06-4bae-a02a-c0475a0bff27",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thrasta, Tempest's Roar // Thrasta, Tempest's Roar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2fd61e6b-6ea3-4421-82ee-a6a8afb73c3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thrasta, Tempest's Roar // Thrasta, Tempest's Roar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "371d7665-c8ca-49e4-8a29-c85b8c1b5a90",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Titania, Protector of Argoth // Titania, Protector of Argoth",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b36fcf98-8624-4a6c-a010-f76b1855e315",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Arcus Acolyte // Arcus Acolyte",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3a40e8e-9c30-4d8b-a2db-1aa9dd97f0ae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Asmoranomardicadaistinaculdacar // Asmoranomardicadaistinaculdacar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85cdea1a-e63f-4b11-b233-dea0d8a2bf4b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Captured by Lagacs // Captured by Lagacs",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "995bdec1-cf04-4e9c-a35d-98b9ae269d34",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Carth the Lion // Carth the Lion",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a87fa9d-b0a9-41d6-bfc5-1445067966c1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dakkon, Shadow Slayer // Dakkon, Shadow Slayer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5634db3-8dcf-4ce0-bb64-cc0bb9daf05d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dakkon, Shadow Slayer // Dakkon, Shadow Slayer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb99e429-db20-495a-9a36-a00fb5aaffae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Piercing Rays // Piercing Rays",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5cc5ca5-c3af-41b8-8a5e-7a3fe2668564",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ethersworn Sphinx // Ethersworn Sphinx",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a840a06-7f9e-4233-ac44-c9a70d32b2dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Garth One-Eye // Garth One-Eye",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "196c43ac-1e81-466e-b2a6-879a2d578f5d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "General Ferrous Rokiric // General Ferrous Rokiric",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7923c916-7916-4dd8-9a15-f0d73175d9d4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Geyadrone Dihada // Geyadrone Dihada",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1998e336-7a66-4a53-8114-8214536f5fdc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Geyadrone Dihada // Geyadrone Dihada",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e46d2908-4898-4d4d-b446-87fe9c36e6b1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Grist, the Hunger Tide // Grist, the Hunger Tide",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "675b98c4-92ef-43c6-8e7e-9447387bdc4d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Grist, the Hunger Tide // Grist, the Hunger Tide",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a200c80-a128-419e-99e1-ed725e9684fb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lonis, Cryptozoologist // Lonis, Cryptozoologist",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29e0f526-f6a4-486e-943b-442869f50798",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Piru, the Volatile // Piru, the Volatile",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6059c619-0051-4e78-be02-bb6805406dbf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sythis, Harvest's Hand // Sythis, Harvest's Hand",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0310667f-7f88-42ec-978c-749c94769cf8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Prismatic Ending // Prismatic Ending",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "599f1163-b39a-4dce-9dc8-c73ea7a80655",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yusri, Fortune's Flame // Yusri, Fortune's Flame",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96604f29-8d45-4d8c-9d5b-8d86ac15e1d7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kaldra Compleat // Kaldra Compleat",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22fe1e6b-98dd-4b48-9fd5-e0f6225d7edb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Scion of Draco // Scion of Draco",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72bd6938-9b87-4003-a225-62b1bbe504ba",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sojourner's Companion // Sojourner's Companion",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57a3f7d9-9cff-4c18-ae4b-c0bf7edf0e54",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sword of Hearth and Home // Sword of Hearth and Home",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01d8fad9-9354-47b8-bb65-b9621003688a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zabaz, the Glimmerwasp // Zabaz, the Glimmerwasp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41e0a80b-0c23-458d-8456-c23fbbb71d81",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yavimaya, Cradle of Growth // Yavimaya, Cradle of Growth",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5576437-65a8-4273-9fc5-f60077e631cf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chatterfang, Squirrel General // Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c338679-a371-4929-9b9e-1e5ff07db83b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chatterfang, Squirrel General // Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2a3a6da-3de7-44a4-a029-6bb482f6f6f5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chatterstorm // Chatterstorm",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d52bc596-bbb5-49d5-8097-1a4fff354ae8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sanctifier en-Vec // Sanctifier en-Vec",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbab393d-11ea-4c85-a74a-2f20738e49aa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Squirrel Sanctuary // Squirrel Sanctuary",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b835f5bf-75f0-4a1d-8eef-c686dd32550c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Squirrel Sovereign // Squirrel Sovereign",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65dc6201-8106-44a8-8f3b-3f1d858c9e8c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Darkmoss Bridge // Darkmoss Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "453db9de-7997-4aa4-b75d-eb9c862965ce",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Drossforge Bridge // Drossforge Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd07ee38-0b34-4bd7-9f8a-9af9384f6631",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Goldmire Bridge // Goldmire Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3fc9807e-9e97-4a93-a797-0de8cee73f3b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mistvault Bridge // Mistvault Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee35029b-fae5-452a-92a9-4e98ab9d2fcf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Razortide Bridge // Razortide Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc5c3c55-0ff7-4d8e-ac94-c4ca282ef0e7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rustvale Bridge // Rustvale Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b0d310a-4e6f-4dd6-87ea-203a787899ae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Silverbluff Bridge // Silverbluff Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d8703b6-cf00-4dfe-9507-a7fcdd8e8333",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Slagwoods Bridge // Slagwoods Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6c0d2b8-63f0-4ad9-a52f-ec1d2ff0d6b7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Search the Premises // Search the Premises",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af42880c-daef-442c-847b-8f121349ecc5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tanglepool Bridge // Tanglepool Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87cc4d5c-2fc4-42d8-bc9c-5b49c523b26a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thornglint Bridge // Thornglint Bridge",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97187c4f-6182-4560-8de1-bbe090449c24",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Serra's Emissary // Serra's Emissary",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d9383dc-2c8d-4140-ae2f-bb4794236973",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Timeless Dragon // Timeless Dragon",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "amh2",
+    "setName" : "Modern Horizons 2 Art Series",
+    "variation" : false
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "collectorNumber" : "61a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3831df29-83d4-48d6-a3d6-a5fbd5ddf30d",
+    "language" : "en",
+    "layout" : "vanguard",
+    "name" : "Momir Vig, Simic Visionary Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "pmoa",
+    "setName" : "Magic Online Avatars",
+    "variation" : false
+  }
+]

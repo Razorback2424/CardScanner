@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbb5b3f9-0012-4deb-b795-c377cdfe546b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Keimi",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "tneo",
+    "setName" : "Kamigawa: Neon Dynasty Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0281825d-9d38-4b56-b522-a8d3cf8c77c9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Mechtitan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "tneo",
+    "setName" : "Kamigawa: Neon Dynasty Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "992cb1e0-e846-4710-b49e-a748e4ebffa5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tamiyo's Notebook",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-02-18",
+    "setCode" : "tneo",
+    "setName" : "Kamigawa: Neon Dynasty Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,1627 @@
+[
+  {
+    "collectorNumber" : "104s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3389a57f-c228-455c-99b4-b11f1131663c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherwind Basker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fe64316-562b-4b9e-b0a4-2d7404e3f3ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aid from the Cowl",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4588d0aa-929c-4a22-ace8-4cb788386bf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greenbelt Rampager",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23b7a17d-f8b5-4c35-a16c-ece5834ea292",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greenwheel Liberator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "706c1b5c-507d-4ebd-b66e-26703e46c2a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63729bb5-28ad-45a4-8890-7b4a0b265674",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de80cc7d-d868-41ba-b81a-39c2e4f69fe2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consulate Crackdown",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "172684cc-beed-4f99-99e0-9383ba13f1d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94e199a0-c449-48e8-8f01-7c331ba06ef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar's Expertise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3b4faf6-ea41-433c-bc74-9523cc82d4ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani Unyielding",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8338f5d2-38e8-460e-ade3-c7f96025362b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Intimations",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77c7e143-d1d0-4974-93e7-f43e32906536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Ajani",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1601447-7110-4dc4-8a05-85d0419e2262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret the Schemer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ef0434b-e4c7-4d3f-9a6e-83863a89a6c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aethersphere Harvester",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2168b98d-f4d0-437e-b01e-055f08cefabb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti's Aether Heart",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5f329a6-e49c-47cb-bdc4-2fd945d64fe1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heart of Kiran",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f4e1e34-73c0-40e5-a832-47aee6b5ff2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hope of Ghirapur",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60bbc227-a129-4fb3-922b-95279cf049c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Statuary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5de7230d-dc3b-497c-97bc-02c06f6e2103",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecrafter's Bestiary",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a638d77b-cc82-4a2f-ba75-2391b3c834c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lifecrafter's Bestiary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3abdefd1-5562-4c10-8127-aaf3a9009adf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Merchant's Dockhand",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b163cbf6-3ac8-4111-b348-b9b5f5dd696a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metallic Mimic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70730874-70bc-4d8e-8985-408b37935f8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paradox Engine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cd849b0-095b-42a7-a46b-720122387d70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peacewalker Colossus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8381f787-cd28-4be7-8688-62c39d8665dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Bridge",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7ef2b20-5e7c-4a0e-a885-9ba76d8b41dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Bridge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3702f2f1-971c-4b25-b099-0f10b5097ce8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrap Trawler",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53b6212c-b4eb-44a7-88db-8e9fa1ee2167",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrap Trawler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33622675-7bb3-4d4c-9bca-5db68d7d166b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Walking Ballista",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99e6b5e3-61ac-4b7c-8a52-20a60a4ebeb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spire of Industry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22244d3f-a693-4576-a9e1-f1f5e0373c75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exquisite Archangel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eedfdf12-938f-455c-8e73-ed1425fad3fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Recruit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f0b9edd6-e6f3-42d8-b669-36bcfd748814",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efa3f433-ef51-4452-8444-86241c0cbc8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3658c18f-e940-479d-a1aa-7ddb41337ef1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram's Expertise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e12c01d2-53c6-434e-af76-abb6f90cb9d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aethertide Whale",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64e1b4e5-1e24-4e2e-8fd4-1b22c6da2a58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral, Chief of Compliance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e5dbc8a-c826-45d4-b913-c81d5e95122e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baral's Expertise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e423e3fe-0acb-4318-9b98-7aa7a3f4c931",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disallow",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32cef20a-6659-4fff-b744-6759332f6207",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disallow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9835a44a-94f4-456f-bbe3-d89d97ff6e4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanized Production",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6bfd5d4-cd83-4617-9a5c-98adc65369b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksmith Spy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "317ffc8a-4b6e-4ff7-b049-7494cb41e448",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trophy Mage",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90157a71-6754-4aeb-9da9-93f07698ef07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whir of Invention",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73622e2f-5f3a-4ab2-a87b-de45f179bc5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whir of Invention",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aff9859d-ff0c-4865-9629-cf3dc31ccbef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aethergeode Miner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aef6009c-8d93-4b33-b468-dc021290164b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle at the Bridge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e115dc72-4a82-4395-ae5a-d00cbe94c96c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glint-Sleeve Siphoner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad6f6990-369c-4cc2-8c74-bb9831e6cf99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herald of Anguish",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df30f444-c459-4ff4-8fc2-47aea40e1c2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Midnight Entourage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5293e83-bf30-4559-b92c-d47ed59ad85a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Salvage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "360878a3-afd7-4401-a51f-cd268126bd52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e88c5363-58b3-4199-a01c-acd6b2ca3185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f4ddbb7-b317-44dc-bb3d-52f52c0a8f96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni's Expertise",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "327a9b93-00a5-41f7-8515-3a42b5bab729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni's Expertise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b80ed31-1d70-40ab-9c0d-fc3e6f86a029",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Freejam Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19fd6a55-564f-45c3-8231-29adfb7d7366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Indomitable Creativity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ad3450a-56ce-4c02-93c5-70b46e19ff2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev, Skyship Raider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47155b2a-d8e3-43be-bf72-1583745e6262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev's Expertise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b0eeac3-27f9-4576-a8cc-c4e8738bc9d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Runner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d67ba34d-58cc-4392-81ba-d21576fae1de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia's Revolution",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54b8a03a-de93-43ed-b90d-7d168a21801a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksmith Rebel",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c35ef8c8-d9a0-48ba-84fc-3ae8200d5acf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksmith Rebel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d851efc-bb42-43a9-92ff-55eeaefd9b45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Release the Gremlins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "413b2015-208a-4086-88bd-9089240763e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call for Unity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "paer",
+    "setName" : "Aether Revolt Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,2073 @@
+[
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3f39a26-9e62-416e-baa9-fe44cda4a403",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tourach, Dread Cantor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc7f0181-0c0c-4084-9277-add0a2fe842c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unmarked Grave",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5b5d640-2339-4730-b24f-73d18424d724",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unmarked Grave",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb5b8e7d-76e9-428e-8ad9-48c5e7d1d1c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodbraid Marauder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "570d4711-6c0c-4aaf-93ba-97d7f0463f11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breya's Apprentice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10f731c7-000f-4533-851e-9a8240cd5bc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calibrated Blast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d7da31e-2b44-41c3-9042-6dec5a5ea049",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chef's Kiss",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb6d2808-b75b-44b3-91c9-bb7134075b20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fury",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b924cc79-b5d3-49d3-867f-7e712de59030",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse of Tomorrow",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "491282a9-f344-4011-bf8a-340e4d679c2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse of Tomorrow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e61ae0e2-8170-453e-93dd-f8ee82290677",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esper Sentinel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7be9f5ac-2f77-43f2-a3a1-35c5f1fe0c21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonic Prodigy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f380221e-79b5-4050-b507-607c9b0fe9f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obsidian Charmaw",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c058155b-0fe3-4e80-9f0a-6db221d00edd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15250ea9-49b2-4f5f-bfa4-f356d1bedd4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeve, Progenitor Ooze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5dcdd0c9-8798-4587-8391-0473eabde4ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebbef10d-5b5e-4468-ac3a-c412abf61269",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chitterspitter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b7d9545-04f5-49b9-91f6-158e95e22cb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endurance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05496f26-9174-4920-8632-5de3453fb55b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Will",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c24603d3-54a6-45f5-93d6-295f3692b3e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ignoble Hierarch",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "404f83fb-0090-49d5-a4d0-c963adac2fb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ignoble Hierarch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3979ee8f-ab9c-4b3f-9857-9977550d1323",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum Weaver",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cb45ef6-ad14-499a-a79c-b2aa8eef3bce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Anthem",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "66569089-f9e2-46e3-b2d1-28f9202a7f9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrasta, Tempest's Roar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d11338fc-c13b-4e70-994b-4ff94b08571a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c77709b-0278-47b2-81c2-c72c255ed6b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmoranomardicadaistinaculdacar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e0929e3a-1ec6-46e9-a3f9-b54c5026a852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carth the Lion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d353904f-5bc1-4b88-8a89-1e52a2409d0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dakkon, Shadow Slayer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d543d08c-10cd-47c8-bc15-fa58e2fb5c30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19f1aa2e-6866-4b12-b63a-a0a4a9bebdf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Ferrous Rokiric",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0161465-f986-4665-933a-18089c24166c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geyadrone Dihada",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8eadbeaf-f01c-4c85-8eaf-6a569a1bdf64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grist, the Hunger Tide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4baa34d6-60cc-481d-b0f7-5816477dbe6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Cryptozoologist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1893cb1b-7c14-4c04-a98b-d6e4b23fe6ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Death",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3992de3-6fc1-484b-b0be-b9a4ef48974b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moderation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83207f9c-4def-44c7-906a-aca11e259fa2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piru, the Volatile",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5010a68b-5591-475e-9fa6-526732ceedfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Fell Rites",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "f645c59f-ebcc-4297-89f8-0cf900a3fafd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sythis, Harvest's Hand",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8001e712-798a-426e-8064-6e2985cbcec1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Kavu",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2effb766-b475-4edb-b645-3ebbc5edfe6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yusri, Fortune's Flame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a1e328d-076f-49e0-a585-58cef2015859",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Manufactor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3a3a232-87a6-4296-96a2-5d86c1d78aa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dermotaxi",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cff801d0-7d17-425b-a50c-02a1e03cfea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diamond Lion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b6c6ad4-d5fb-4503-8b15-c2104f125990",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaldra Compleat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cacc9de4-12a8-4aba-85e5-23d8f0a5aece",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos Paragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83b336d3-ca04-4221-99e9-c8815410a6b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nettlecyst",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa24283b-6989-4b7a-90b4-e263635d9505",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion of Draco",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bdc104e-9a89-402b-82bc-95672d0b753b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Talisman",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fed2fe5-3f09-494c-90cf-557d95328734",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Hearth and Home",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bf9353a-96df-430e-a92f-523bdd815dd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Out of Time",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "147047f3-d920-4d5a-86dc-8a27b55d301c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Out of Time",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e6a9ef6-4244-4b02-a947-e88c69604379",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Mirror",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6971fc96-d0da-4023-ab7d-f79f2f47bb0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zabaz, the Glimmerwasp",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64a6c831-18a5-44d1-aac4-afb018bc93c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arid Mesa",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b076441-b770-4a06-97ac-34a52822f4c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marsh Flats",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4d3e17b-e610-4bd7-a6d7-e4d8706c665d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misty Rainforest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d45d60e-e580-4416-9513-1203660656a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scalding Tarn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1cf96437-0943-40f9-b175-31a1504028ba",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Urza's Saga",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23168129-cc88-4ea2-b94c-ba4bfcd4692f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Catacombs",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9239a1bb-bc84-4f3f-a9a0-6f3b5264b3a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya, Cradle of Growth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00ba4527-5350-4bc9-94cd-59170009cc47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resurgent Belief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "239764a4-49ba-4398-a220-981a381f39ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctifier en-Vec",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee1ced11-72da-4cdd-9132-7fa1f12ae849",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Search the Premises",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09283c34-b063-4290-a444-6730334324f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra's Emissary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b648cc94-7880-456b-82ea-859746d52397",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solitude",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ed34755-9f5e-4246-b4e9-2a69ec46b875",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timeless Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0b2a429-8f74-4df5-b35c-37c5215e40dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dress Down",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8dc9131-0f17-4ad5-ba10-d4d81d9ecb38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractured Sanity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bf891ce-b0ea-497f-a049-b7397d70b1f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inevitable Betrayal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dda68e02-45d4-4dee-b257-c4ae7e47eaeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murktide Regent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a67bd6c-c3fb-4ff9-b0c4-047ae8ebba86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murktide Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42fbe349-47b2-4529-843c-8bb1a60b1690",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise and Shine",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c0345b0-ec7b-4966-b088-019e8a494ae1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishadan Dockhand",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "faf08e64-8cc7-4ed5-a2da-1ec12285494e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subtlety",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94232a90-c965-4958-8c55-ae0e0da6f726",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suspend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab6db97a-f2cf-4318-bc45-28e90d231274",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5b53f25-25e7-47db-b356-65e93e3b0059",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Monitor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afeb627e-0832-4724-bd95-cd8594c66e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Cruelty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8dc408b-c857-4546-b7fc-17e771158af2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damn",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "138d9df8-ab9a-4d00-b6cc-320100dbaaaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b7029b0-cd20-4970-9355-a27611b817bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauthi Voidwalker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40d77804-b81f-4e89-8528-1f3970ef3cd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cfc3b75a-5494-4a40-b261-127dbc8586fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magus of the Bridge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bab02de-f5ff-4bce-b1a2-8c399e4e4011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrogoyf",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa812c92-1563-4eda-86c9-47a9f08ad505",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Persist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e3167e7-0d7c-4f78-9f01-fd0b5dbceb14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Profane Tutor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-05-06",
+    "setCode" : "pmh2",
+    "setName" : "Modern Horizons 2 Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "collectorNumber" : "106★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac802bda-6214-4631-a378-eb67765445c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Joraga Warcaller",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2915763-2b63-4408-b014-49d52e3d65f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Colonnade",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a70c4952-9daf-4824-88ed-fad50753a30f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Loam Lion",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2010-02-10",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dae03745-cec0-4fb1-ab5b-2b0ce5bfdbac",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ruthless Cullblade",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-07-30",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14b0011a-f0b4-40c1-85ff-a83f45601cb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Comet Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fd62681-18f2-4841-a92a-d0d55e5cfe31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terastodon",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-08-01",
+    "setCode" : "pwwk",
+    "setName" : "Worldwake Promos",
+    "variation" : false
+  }
+]

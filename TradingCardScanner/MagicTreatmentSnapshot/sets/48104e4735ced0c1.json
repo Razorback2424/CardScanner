@@ -1,0 +1,491 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ae0397e7-796b-412b-afec-d22759b610db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "49c8b2ed-95bf-4a85-a0d7-6d7c01fc086d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Breach",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "8c2d6fde-5c3b-48c3-828c-832f00570824",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doubling Season",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "e7843a8a-a8d8-4236-a05d-287fad0a74b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhythm of the Wild",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83a8bff9-cf74-40d6-87c5-0c2a33cdaed0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waves of Aggression",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "108033ab-e9d0-4510-9075-f28c3044629c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcbound Ravager",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "24db0362-fb1a-4ab4-9922-c4db4b0ca6e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conqueror's Flail",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "443b0960-a490-4287-80d9-2bfa0bdbea51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metallic Mimic",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "90de17d0-1783-48f3-8aef-0b85df6da730",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowspear",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "af0d7cb4-aaac-4dbd-9daa-622342e33388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Sinew and Steel",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4ddaccfb-52e5-4448-8273-797cff31db2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umezawa's Jitte",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "d4291f04-2f94-483f-93f6-db313ecffabf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teleportation Circle",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "19545db3-8be5-41e5-8d13-dec4f96fe624",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Sewers",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "3f631a24-4d71-400c-a58d-ae91e193db2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trouble in Pairs",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bb0a0cf-5b04-4d68-bf7a-7131ae50d06b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstorm",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "402e538f-c8f9-4fb7-9a9f-f9c75c9ca97f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cytoplast Manipulator",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6873a1d1-b1bc-4ed6-a734-0e35fd8dbc8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashcoat of the Shadow Swarm",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6c6aca69-1624-420f-b83e-290a2c38291e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plague of Vermin",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "7d9681a6-1c22-41ee-8437-22baafbf8e4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All Will Be One",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d042bcf5-476e-4994-bec5-831b6b84d74e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverclad Ferocidons",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "pza",
+    "setName" : "Teenage Mutant Ninja Turtles Source Material",
+    "variation" : false
+  }
+]

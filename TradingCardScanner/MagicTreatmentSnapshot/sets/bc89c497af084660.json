@@ -1,0 +1,3853 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "160d705f-48fb-4bff-a677-cdf1c3305080",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Fiendish Duo",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-01-29",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73628490-baa5-4057-99fc-da4a9a16132f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise of the Dread Marn",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c4dfa14-f7e0-4623-8a1c-58ccb940a684",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise of the Dread Marn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de1063fa-3c9a-4978-8976-8727d9b5d2bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skemfar Avenger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e1a9b9c-5990-4914-8b01-ec8b19e912e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skemfar Avenger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "66904768-09d0-4836-a6a0-c474678f19c1",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Tergrid, God of Fright // Tergrid's Lantern",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a70c5a0b-77d8-4d9e-a143-aaa2be4dc494",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Valki, God of Lies // Tibalt, Cosmic Impostor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cdcefaf2-ad5a-4bab-95bb-7f6155cb8764",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varragoth, Bloodsky Sire",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa0db676-6e0a-421d-a089-c6d6cfdd0584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varragoth, Bloodsky Sire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96797fc6-3288-4fb5-97b7-06de0f5ea4d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Brokenbrow",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ff712e3e-3831-4ef5-95bb-02144a9d8539",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arni Brokenbrow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "252c0f8a-54d5-461d-84f7-496c42703ff0",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Birgi, God of Storytelling // Harnfel, Horn of Bounty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d521e56a-6c05-40c0-a0a0-d2cddbf214f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity Bearer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30204768-b2af-4796-8117-ffba05ce972e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity Bearer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6199e5cd-3faf-48a2-ae5d-0ca980cfb83f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calamity Bearer",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-10",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9305f9f3-7c34-4af4-b2f9-a833516c9352",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Protector",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79c357e4-7aa6-4789-976a-4d480e070097",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Protector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d088f78-42fd-4166-a6d4-88d025193648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonkin Berserker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91a72d38-a7b5-40ad-a76f-da5950307f99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonkin Berserker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c860c53a-b33f-47e6-8715-3529d0fc6c35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldspan Dragon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a23c31d-a056-402a-8142-75189eda667a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goldspan Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e446a2b-1e8e-49e2-9c09-9d614474b192",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magda, Brazen Outlaw",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2eefac21-f972-4f77-970a-e0e4a3fc433c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magda, Brazen Outlaw",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04b333fc-7354-49b7-a6fc-5d75951a6ddb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quakebringer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09efd4e1-1d5e-405e-abef-abca4c3aeb1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quakebringer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8df2a9c6-0bda-468e-9f86-c3c66fa6474f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Crew",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "366cdfc4-3f52-42a4-8512-6bf22f7a4daf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Crew",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51c2ce43-16ae-49bd-8fb3-0aa65eae5b9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tibalt's Trickery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc84af8a-c950-4da2-b307-ac36f454ce88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tibalt's Trickery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56169747-9603-431e-bd88-bfa6982f029c",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Toralf, God of Fury // Toralf's Hammer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "ce3ca151-8d95-4367-9df1-82b7c8f85bfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tundra Fumarole",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "d31769d1-7521-42fd-bc2f-9ed3302bd183",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tundra Fumarole",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c604e263-11cf-46ee-8d26-b2ef833d44f6",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Halvar, God of Battle // Sword of the Realms",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "645f24f5-8411-4fb8-bfa6-316833fe99ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle Mammoth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb036e88-5e5a-4c08-be0b-64fc45aded2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle Mammoth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "29f32166-20b9-4e4d-b357-a72e5c923f9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blessing of Frost",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "006b5880-eb49-4198-930c-39a85ff6ec66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blessing of Frost",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32bd6e06-8971-4134-9ca4-5300a9022d85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Warmaster",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96889b5d-4f7c-418a-95c9-8675fdd0a2c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Warmaster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91b23fea-9347-4bd2-a073-f48f46e32869",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Esika, God of the Tree // The Prismatic Bridge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce058f51-4ab9-4481-8813-1f5b0654b227",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esika's Chariot",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f6c1b83-ac63-4666-b853-66a8bf14ad14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esika's Chariot",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21837093-1dba-4c3e-8782-f9e77d10a773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In Search of Greatness",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e69efcc2-8cb5-437e-ab4b-e8d13fe9e22d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In Search of Greatness",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "snow"
+    ],
+    "id" : "c0195076-ce62-4a4e-b381-aaf7c009b9ee",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Jorn, God of Winter // Kaldring, the Rimestaff",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f43e124-344e-4e58-8a8e-c710b28d7ebf",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Kolvori, God of Kinship // The Ringhart Crest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ddda844-96b6-4bc0-be4e-8cb12c84f630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old-Growth Troll",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "953fade5-1ea1-421a-8d6f-7729b64e94c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Old-Growth Troll",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd38662b-06c7-4e75-81c8-a6e071632e0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Realmwalker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20543e39-749a-40af-9320-584ac5f5346a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Realmwalker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99355ca7-9447-4ba2-b515-e1f823caab11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toski, Bearer of Secrets",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86fba621-3cda-4090-999e-84ae4897c576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toski, Bearer of Secrets",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4a7582b-2755-43d9-b8d3-a3d5a9f6709b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar Kell",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a007cfa6-4ef5-4e84-af31-fb87601a55f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyvar Kell",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce330b20-bc6e-4353-93af-4c5bf8fc12be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Monstrous Raider",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e835ba1-d408-4dcf-abd2-93196ac06e1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vorinclex, Monstrous Raider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a494aa22-60b9-47d0-b43f-b6593e49ea30",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Battle for Bretagard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "624b66e3-8bc2-4e3f-88a6-f634853f2820",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Battle for Bretagard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "894f90ce-c105-44aa-98a8-13deb916a9c5",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Battle of Frost and Fire",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4e2e7ec-f90b-4646-8bda-627488236d06",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Battle of Frost and Fire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68a6723c-d401-44fa-9728-e28f46e738f4",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Bears of Littjara",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0675dfab-2c60-4701-9a0f-da6c876d9616",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Bears of Littjara",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec475385-6755-4b90-a48f-5e58e326aaca",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Bloodsky Massacre",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "313d00cc-2cd7-4e2a-a218-935801c297b3",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Bloodsky Massacre",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22e71ec5-f9bd-4434-982b-7cb4cfa7ea15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rally the Ranks",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9fd635c-60e6-4dc8-a2b4-3f960a693ce8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rally the Ranks",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55ef5a63-7990-43e5-bfad-e1834809cad5",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Firja's Retribution",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1329b3dc-c08a-4e9d-a354-0fdb60fb1a95",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Firja's Retribution",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfe533c5-19c4-4d7a-8d8c-be7fa5b4e6bc",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Harald Unites the Elves",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "838f4cde-c428-44ed-b7e8-e330e228a304",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Harald Unites the Elves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "858121f5-4110-47ed-b6c2-28ff414652dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immersturm Predator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0eae38b6-12d5-4414-93fd-7b2d8dd1398b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immersturm Predator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "459c4a00-35eb-4cb4-8cee-e7d8a8152c4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya the Inexorable",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03eeec31-538f-4f67-b635-8c68bc678dea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya the Inexorable",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9562b164-33f5-4dff-b2df-2281c1125ee4",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "King Narfi's Betrayal",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4a160a0-df41-4a33-bed2-7fca8e1edc87",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "King Narfi's Betrayal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2dca37fb-e794-4027-bc4d-11677e67dfa7",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Reidane, God of the Worthy // Valkmira, Protector's Shield",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "682cdd7e-31ff-4789-9d0d-ad43581c7621",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, Cosmos Serpent",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ea77f6d-9e1b-479f-bc1b-8d2474ddf46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Koma, Cosmos Serpent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed8b624f-e888-4ee4-9ca2-9a0f2f30a9f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niko Aris",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc8353d8-bb68-4483-85b0-5ac61788c923",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niko Aris",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa206f9e-5dfc-4ffa-bfbd-c19142f97f98",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Raven's Warning",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "573b3e89-9dbc-4a93-8dbc-2fdd64edee85",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Raven's Warning",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29415c76-ba78-403e-a2da-7c1dcde01d68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarulf, Realm Eater",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a6d55b53-ccd2-496a-a969-23fcde8f2210",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarulf, Realm Eater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60c80c69-3bee-4c53-aac8-afc313973abc",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Showdown of the Skalds",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f31d5885-35bc-455a-a824-22d8b4b459ef",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Showdown of the Skalds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52de996e-e06d-4507-86d1-ffe836182e08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resplendent Marshal",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3d136f7-bcac-41c4-b411-85851a586a06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resplendent Marshal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c40cbbb6-7585-4f70-b4b8-668b3182242e",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Waking the Trolls",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fe7367c-d5fe-404a-9e21-ff61c22bf5fc",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Waking the Trolls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3f92c04-8136-4c5f-bfa0-7849a4a74eed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmos Elixir",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85a9d667-5cc0-4a3a-a722-24616993943e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmos Elixir",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bbcf127-8612-4569-a618-34507300d2ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maskwood Nexus",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9900049-65e4-47e0-a90a-38678cc940a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maskwood Nexus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd1751ca-4945-4071-87f1-9d5f282c35f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyre of Heroes",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc8a934e-220e-4788-9ea2-9d96c8c2481f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyre of Heroes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d7d4bc6-d539-4caa-841a-7b70c736cf20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Righteous Valkyrie",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ab9ab79-cdee-4847-91f8-6344794cb2af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Righteous Valkyrie",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "954adeb7-84f1-44f6-a801-9fdef7b54fae",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Barkchannel Pathway // Tidechannel Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba86286b-d2ce-4f50-b675-37a356d64bd9",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Blightstep Pathway // Searstep Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6197486-ac34-4762-88c5-caed219a99a6",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Darkbore Pathway // Slitherbore Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "9a07c63b-10da-4685-9380-e14dfc55092a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faceless Haven",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "3a377a2a-4f79-4ea5-9ce2-4677ba6df081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faceless Haven",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "358ac5f8-6719-4777-81cb-4d64d5f24415",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Hengegate Pathway // Mistgate Pathway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5731fe7d-d0db-48fc-86ae-51b0213303a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runeforge Champion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a1e9dbe-ace3-4ac3-9d4d-98e2f65bba12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runeforge Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7879ccd-5548-47ac-9611-23fc425c3333",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrite Sanctum",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53d85e79-ec12-41bc-bbd7-5cf37e889051",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrite Sanctum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e19fb1a1-b0fb-4ffd-b6f2-dfc69c7d5473",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The World Tree",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34fc25b4-046a-4893-9041-6a00df53fe12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The World Tree",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "00c833d3-d406-4c24-a4ab-9302fc27497e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Search for Glory",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "950ec42d-69df-497b-9cda-7b1e53f2c204",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Search for Glory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd7a0a0f-8a8e-480e-9a5a-3942c8a09d74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigrid, God-Favored",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "105e4824-306a-46d2-a1f4-d19a4302cc58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigrid, God-Favored",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2★",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4dc94b73-ce6a-4360-b2bd-732f6857ddd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathril, Blade of the Elves",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-09-01",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba7e9886-4c52-4685-a686-0dfb23b28410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starnheim Unleashed",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a07040ff-06c0-4a40-a019-9500e4fef9d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Starnheim Unleashed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebfd7235-bbda-41c1-a21d-072ea0a80e7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valkyrie Harbinger",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-10",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63f00fbd-71de-4535-aeb8-494447cc3509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleaving Reaper",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-21",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e1e85b9-db1d-4bf8-b504-d419bcbd5ee2",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Alrund, God of the Cosmos // Hakka, Whispering Raven",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c453a523-f154-4e96-97c4-df720c2cf0bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alrund's Epiphany",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e83c24b8-9f33-4b91-87ac-afe2c10dc302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alrund's Epiphany",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "083596f7-cf4d-417c-98af-67aed3403617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ascendant Spirit",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "6c250a40-1a3c-42a2-88fe-75c5b12dedc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ascendant Spirit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2528acc3-682c-4129-af6f-ffca8ecf85f5",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Cosima, God of the Voyage // The Omenkeel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "099e0c0c-d44d-48d6-b798-7acb95a5b565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmos Charger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16b5b227-1c02-4d0d-81c8-335f5f908ce9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmos Charger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0c70717-0765-47e1-b10d-9dfabba8052a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclone Summoner",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf5da39e-ba07-4b7f-90e4-3138b736337e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclone Summoner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1ff926c-2104-4168-bd88-a6331242363a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclone Summoner",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-10",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "cfed0f5b-c65a-489a-920f-9a0426b5c671",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Graven Lore",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "7dc2adbf-488b-49e3-b840-a22338a03b6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Graven Lore",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "02e0cbc9-fc3f-45f8-80d3-a321ccb82f1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icebreaker Kraken",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "11900b77-f09a-4018-bb5d-5bb1979b6721",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icebreaker Kraken",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "302580e6-b639-40a3-9754-4f5cfc98a9a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Reflection",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e519d5bf-ff17-4688-977d-ccb2e47b94aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Reflection",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0cd55a90-440e-4b0e-92b3-a022b8d34c0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orvar, the All-Form",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b882f4b-df46-465b-a058-2cc4ec9303d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orvar, the All-Form",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d680e67-4a88-4ef8-9ca1-0d198de5b25e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflections of Littjara",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62773d6e-b530-4391-a6c4-775619660d07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflections of Littjara",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "66a2d37e-4edf-4774-8cc1-0b091c1aa801",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood on the Snow",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "898819fe-8042-46b0-86f4-e3bce253731d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood on the Snow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b968ca8-3307-42f0-b51f-36e6d6fe33b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burning-Rune Demon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56d18713-4078-490b-bde4-00875426d028",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burning-Rune Demon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b82ca44-6c80-4220-bf41-76a62cd3459f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crippling Fear",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9128be6-bdb3-498e-be23-59598a558cc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crippling Fear",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "0a918f05-23cf-4d3a-b21a-dc4539f7fb95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draugr Necromancer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "b22238c2-0100-4ff6-b715-2339ca1abda5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Draugr Necromancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5748b305-0428-40dd-b12d-0abeef5fcfde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream Devourer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e5b9ae4-cc88-46e9-89b7-7ba85e4c4da6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream Devourer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d1f5c0a-3590-4da2-81a2-107f2a0f5b5f",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Egon, God of Death // Throne of Death",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af1459fc-a19f-4106-939d-9b9672cecce7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eradicator Valkyrie",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7dcd014c-455e-444c-aec5-a1108dc4a80a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eradicator Valkyrie",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cccb5f07-69ba-475f-8b91-9a5e1cd58594",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunting Voyage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "682d5ccb-d192-4b04-9aa3-6c348dff271a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunting Voyage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11224400-f8c7-4d8e-9793-49436255aeef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomskar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aec7e049-ab9d-4d3b-97ff-ea08bffe9246",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomskar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pkhm",
+    "setName" : "Kaldheim Promos",
+    "variation" : false
+  }
+]

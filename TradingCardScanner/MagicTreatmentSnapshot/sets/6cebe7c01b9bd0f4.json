@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f5533cb-699a-4eaa-9a9c-e3fe206447d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Vista",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pss1",
+    "setName" : "BFZ Standard Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91f3dcdc-c5ec-49ba-82be-86795d401cbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Glade",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pss1",
+    "setName" : "BFZ Standard Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d39faa94-8e2a-4d74-8035-5b5d31d3629a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prairie Stream",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pss1",
+    "setName" : "BFZ Standard Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7381dec7-1429-4499-b5dd-4aa93a41e73a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoldering Marsh",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pss1",
+    "setName" : "BFZ Standard Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c01678bf-0eaa-4ff5-8d6c-20b2bb5d1f77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Hollow",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-10-02",
+    "setCode" : "pss1",
+    "setName" : "BFZ Standard Series",
+    "variation" : false
+  }
+]

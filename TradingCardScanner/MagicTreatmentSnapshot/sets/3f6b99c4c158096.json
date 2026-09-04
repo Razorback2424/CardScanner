@@ -1,0 +1,437 @@
+[
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70d8c400-87dc-4f15-808f-e54a95d779fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana the Faultless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1eb25a6c-d6b4-465d-990e-f1ab86b26b69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana the Repentant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2f47ddf7-35b6-4205-8045-f057914c5f64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tinybones, Pocket Nuisance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "edea6f70-a5a7-475d-b7f2-97933d0f32cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titanbones, Towering Heart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9a8ee54c-7b03-42d5-9143-f40c1016a67a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana the Faultless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ddefddbc-c769-4e53-a9b3-087578ae8bc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana the Repentant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "64126446-8c25-4be9-8559-31f407d41578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Confidant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8733a9a4-c184-46d9-afca-bf9048e2f25c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Craterclaw Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "086ef095-32ad-4311-a40b-996c5f7b86cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stingcaster Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a5db4d2-035f-4f48-8752-75487267c222",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Bloodline Recollector // Ancestral Craving",
+    "promoTypes" : [
+      "boosterfun",
+      "doublerainbow",
+      "headliner",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "326894e1-469d-4586-b823-9d5038315078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Theorist, Jace Beleren",
+    "promoTypes" : [
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bcdda05-4d27-4da7-9fdb-064195aca568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Theorist, Jace Beleren",
+    "promoTypes" : [
+      "fracturefoil",
+      "japanshowcase"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9fb84b18-0775-44eb-83af-5dcb69518360",
+    "language" : "en",
+    "layout" : "prepare",
+    "name" : "Bloodline Recollector // Ancestral Craving",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "236b2024-9141-4a91-b5f8-2180ecc3a761",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Confidant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "60b9f969-694a-4445-9b0f-525c259edfc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Craterclaw Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3d580fa2-954d-4de6-a64c-369c5ab8e03f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stingcaster Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "81372104-e98c-45c9-9490-6ccbb0dac309",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Confidant",
+    "promoTypes" : [
+      "facetfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3b67dc41-1157-47eb-b126-0149b477d551",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Craterclaw Colossus",
+    "promoTypes" : [
+      "facetfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "38096f2a-7fae-43f1-a1e9-f9c670bc191d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stingcaster Mage",
+    "promoTypes" : [
+      "facetfoil"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "fra",
+    "setName" : "Reality Fracture",
+    "variation" : false
+  }
+]

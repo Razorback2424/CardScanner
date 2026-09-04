@@ -1,0 +1,260 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "527c262d-3315-4f7b-9f31-907f6656461c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+      "commanderpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-16",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "05e9d580-5da2-4559-b611-870726c53791",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rograkh, Son of Rohgahh",
+    "promoTypes" : [
+      "ffxvi",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-12",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d7a7b817-90a3-4cb4-bbea-316f98ff0402",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+      "ffxiv",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-20",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb91c551-8dde-4b07-bd8c-63aee651ac5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spaghetti Junction",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-18",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "548b1498-3dc0-4f0a-b183-24f66de10018",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "J. Jonah Jameson",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-01",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "47fa71ec-18bd-4098-983b-f9ea59a9855a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sokka, Bold Boomeranger",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1F",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "28f23108-0a1e-4406-9002-0bff20462e56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avacyn's Pilgrim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-21",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04ab3fa9-13b2-42da-bdf7-1df93e4e3e08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Second City",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-02-03",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c33afc48-c85e-42b7-aa00-22b0d36aaa09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yoshimaru, Ever Faithful",
+    "promoTypes" : [
+      "ffxvi",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-06-20",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b2a86f5-15c0-4bf4-9591-b91681d83a7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-You-Can-Eat Buffet",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-05-19",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6969ef4f-e27b-40fc-9558-c9281deae80c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tifa Lockhart",
+    "promoTypes" : [
+      "ffvii",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-01",
+    "setCode" : "pf25",
+    "setName" : "MagicFest 2025",
+    "variation" : false
+  }
+]

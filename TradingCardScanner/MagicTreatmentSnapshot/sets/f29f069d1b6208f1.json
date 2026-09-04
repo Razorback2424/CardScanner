@@ -1,0 +1,347 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ed2d2f3-e1b0-41e0-a29d-31624e5e9004",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f7a3999-e341-43bb-9b8f-6c1a05b98906",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Axe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3440e247-a733-4609-9d80-d4a5fc58ae46",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Stone Boulder",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c6e096bb-ad9e-4a8b-8b42-26852fa32c1d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1892b78-7663-4cbd-a732-9a4b0b18d4c8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53bfaac7-07cf-4637-8f64-aba93ec7fd1a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Enduring Story",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "borderless"
+    ],
+    "id" : "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "On an Adventure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6007af81-4541-4b55-90ea-03d365362ae5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e2028b1-34c0-40b6-8f65-79f79a279996",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin Army",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0045408d-4ab9-48bf-84aa-c6d827682090",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin Army",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e4408fa-8037-42f1-989e-2da84867f76c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fcb3a3f-c0d4-43d4-8549-826a38bfa27d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dwarf",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31661af9-a40a-418c-82e3-b74aa14cc7c4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bear",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "761c7c31-c6c5-44e2-a845-f590542b6eda",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elf",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e07312b9-f3c1-4e36-88fc-b29cde581eb6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "thob",
+    "setName" : "The Hobbit Tokens",
+    "variation" : false
+  }
+]

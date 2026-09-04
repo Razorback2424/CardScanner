@@ -1,0 +1,310 @@
+[
+  {
+    "collectorNumber" : "2021-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aaaf7d5b-417e-4eaa-9c4a-97aaa5832198",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-12",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021-6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "f447b55a-8998-46dd-b10c-4545bbcb97c2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Faceless Haven",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-10-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed30b866-cc93-48a6-9f70-4c855783f7bc",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Krydle of Baldur's Gate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-04-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06eda212-933c-484e-bbf6-611472a168ea",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Giada, Font of Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d7741b03-c16a-426c-8847-622b5fc1236f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-02",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5dd5b018-bb3e-4333-a9c7-dac134b99b8c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ruby, Daring Tracker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-05",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "836a1a87-8c49-415e-8b7c-550469c24328",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Saheeli, the Sun's Brilliance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-07-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-07",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a3c271fd-4aee-4e5b-bda0-1abe168799f4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Lightning Helix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-16",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-08",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d448d79-4a93-4507-a3e8-c2559adc801f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Aven Interrupter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-26",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9392994b-a817-4b53-8c84-9f2c81a72e57",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-04-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "760b2a0c-baa1-44c1-9d28-faaa1193a6f2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Delney, Streetwise Lookout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-07-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40cdaff8-e2ce-499c-bcdc-aae8921356f8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Inti, Seneschal of the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-07-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64381d3b-83b3-4457-a2be-e230486b46bf",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Beza, the Bounding Spring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cfe413ac-b1f6-472b-bcc0-564c843db65e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "The Wandering Rescuer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-07-01",
+    "setCode" : "pwcs",
+    "setName" : "Planeswalker Championship Promos",
+    "variation" : false
+  }
+]

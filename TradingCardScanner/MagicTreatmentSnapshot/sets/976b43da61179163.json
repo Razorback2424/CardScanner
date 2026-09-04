@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af8ba142-4f39-45e4-8872-b6e348fd760c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Voja",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "trvr",
+    "setName" : "Ravnica Remastered Tokens",
+    "variation" : false
+  }
+]

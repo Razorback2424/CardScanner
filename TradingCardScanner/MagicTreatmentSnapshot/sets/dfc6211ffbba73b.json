@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a81c130-d7ec-4914-89e3-4769743837aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rathi Assassin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-29",
+    "setCode" : "pnem",
+    "setName" : "Nemesis Promos",
+    "variation" : false
+  }
+]

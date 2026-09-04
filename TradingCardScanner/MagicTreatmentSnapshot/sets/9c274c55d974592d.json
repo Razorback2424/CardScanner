@@ -1,0 +1,6759 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a69e6d8f-f742-4508-a83a-38ae84be228c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Prismatic Piper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "728b802c-969b-4865-b7a0-871c585d097a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ardenn, Intrepid Archaeologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5f69e24-6b5c-4a9a-af5b-1ce88efdc0aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armix, Filigree Thrasher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84537fea-ad81-4a9a-99d4-722a938adc7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Falthis, Shadowcat Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8f5ffe8-b4ed-4db8-8f0f-97aaeb659689",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keskit, the Flesh Sculptor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41a76adc-42e1-4f65-940c-d0a5555c0633",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miara, Thorn of the Glade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47c5948b-b021-4d07-8003-9c11db690bc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadier, Agent of the Duskenel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d51a22e-74fc-442e-945a-56d02ca12713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir, the Dark Baron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89903d5e-241f-477e-a336-2abe0232c04a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tormod, the Desecrator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90c51949-b1ef-4c6e-98b0-4fb33a81db24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alena, Kessig Trapper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83e8fe2e-ec6c-47fc-85c0-6eec185ecdce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, Brazen Plunderer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5cd87cf8-4d5d-4aba-8dfa-800b1fb3799b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dargo, the Shipwrecker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f606ebf1-483d-4331-b16a-9fb6f591a39f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kediss, Emberclaw Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06a981cd-1951-438e-95c9-68294795638e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krark, the Thumbless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4fab67f-00c2-4125-9262-d21a29411797",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rograkh, Son of Rohgahh",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0bdd07d-9fb9-4ee4-80db-494ee0cba58d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma, Vision of Ixidor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a05b3e2-259e-4fce-92ee-c00660e22ae7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toggo, Goblin Weaponsmith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a67cfaa-990c-4dcb-97a9-9c5d7316cabe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anara, Wolvid Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "745d297d-4bb4-40cf-bb9c-99dac04e5069",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilanra, Caller of Wirewood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6bee6eb2-2708-4596-86ad-40eea88dbb6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Halana, Kessig Ranger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0409a15a-7cf6-43e5-958c-d23da4304f29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ich-Tekik, Salvage Splicer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4c3560ae-b1f6-4269-a9eb-1a45247b6232",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl, Heart of Krosa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af5105ee-09e2-4344-ab39-00f0e9034c47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the East Tree",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9465d118-5ad5-42c5-a512-7aca5f7b905d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Numa, Joraga Chieftain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4da14a82-0c33-4319-9af5-390013ccbe19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slurrk, All-Ingesting",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "567dbc64-4d59-4bab-a551-08fc66c085fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abomination of Llanowar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fbea010-de77-468e-be39-1717070c9303",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amareth, the Lustrous",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48b597dd-f6eb-45da-977d-453e8c1433cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Araumi of the Dead Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eafb8740-1bab-4f5e-96d1-79f1f04cc0d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archelos, Lagoon Mystic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e46b3ef3-3ba9-4da7-a675-86468a8da4c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Averna, the Chaos Bloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4427e73-8c60-490d-8ae3-53e872a5163e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belbe, Corrupted Observer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5602cf54-3c34-4f86-8440-13ac28ace68c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bell Borca, Spectral Sergeant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d8cd7dc-028a-4da2-b2a1-435d40cf48ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blim, Comedic Genius",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0beafec9-24db-4903-97c1-c5fe740ada83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Vargus Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afa3b31a-b52a-43c0-9084-e0535e1bd871",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colfenor, the Last Yew",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b335496-05d2-40f5-a52c-10029f7fa008",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghen, Arcanum Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c171f179-9ccf-4819-915c-7f2cd3a91ad8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnostro, Voice of the Crags",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40b006f9-a287-4e64-915f-ca71712b8d27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gor Muldrak, Amphinologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c793d594-c319-4e97-8620-de8eddaf247d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamza, Guardian of Arashin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24a0babe-8da4-4c95-9cdf-626a5c5e2e5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hans Eriksson",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de0ba512-b6c3-4931-be05-cb6bd03a4b7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keleth, Sunmane Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8afceb13-877a-4256-9ba6-851b6924ffd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "81bd293b-07b9-4d7c-826a-948d5b01ab5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jared Carthalion, True Heir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aec6b2b7-625a-451d-bc0b-4456f5bf2719",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99988f41-99b4-4423-be5f-9dc4ec7d813b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kangee, Sky Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f571fef1-1fd2-4355-b803-5edccb6f4b94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwain, Itinerant Meddler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29d3484f-abd1-43fe-99f8-e0fa0a7b6692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e32453a1-1fd9-4bda-aaa8-7c287e4c2587",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liesa, Shroud of Dusk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73255848-3112-4508-a66a-d3101a53057e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nevinyrral, Urborg Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b8cfc97a-3c8a-4d44-846b-7a523dc11878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nymris, Oona's Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dbdb335d-3e45-4dd5-9e3e-c50ca0a4dfb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Brute Chronologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90307dd6-196d-4d51-9b3f-6ff339882d31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "474d6363-ebe1-4a1a-b4e6-7bd53d878527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalisse, Reverent Medium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8cf6b42f-8eb7-4b40-a4e6-8775ee208f7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuya Bearclaw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ead8a1f5-6260-47fa-a649-43711ec5bbeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yurlok of Scorch Thrash",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34b1455e-b9c2-4501-a24f-b50534466c31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zara, Renegade Recruiter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02bce846-8049-4d5c-b0ad-8abd484e5a27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Livio, Oathsworn Sentinel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c5ada8c-98f2-4f9c-bcb5-dfa4f804fbe6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyleth, Soul of Steel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d607b003-6b48-429c-a7fd-45b8dd1bb4f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aesi, Tyrant of Gyre Strait",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce5391bc-6b50-49b0-96a1-df944a55d62e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "17b429bd-d7da-45f5-988b-7eed0d3efeaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9e40e2a-e447-4754-a98b-5521e546781f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prava of the Steel Legion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0a57c65-5010-4472-b877-42daf2f15af2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "On Serra's Wings",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1ab1ef1-f4e8-461e-801a-a498e4946fa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sram, Senior Edificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60b9db96-a6ab-454b-99a7-910ef77560d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meloku the Clouded Mirror",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2047bfa4-3f4d-47bd-9484-545686f15b75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alharu, Solemn Ritualist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "38b00110-e3de-40ce-b2bd-9466fe9e53a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant, Serra Archangel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a959b40d-dd8c-49d8-8003-744d0c877b04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezahal, Primal Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cebf2c16-bd9d-4a8f-a1b6-6e0c393178bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slinn Voda, the Rising Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "160686f3-44fd-4f7a-81cf-d3b5b964bfba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tromokratis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "365336b4-92ee-429d-8f18-4624cba5469d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya's Immolating Inferno",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "46975250-950f-4f5d-a7c5-f61aec8e40ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebbec, Architect of Ascension",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "321f68b5-42ad-4f71-8df4-78075bf68ce5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molimo, Maro-Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63852ffb-22ef-4b88-9cba-254291e978cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiana, Ship's Caretaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2f192c3e-34ce-4857-82ef-a0423823220d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "512",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f68b4de-271b-415f-ad8f-104981bb12ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tevesh Szat, Doom of Fools",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "513",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2de336a3-224f-49e0-b4ff-34bf3de398bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeska, Thrice Reborn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "514",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "be898edb-35dd-4896-96d9-323aca64a2ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najeela, the Blade-Blossom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "515",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ccf9923a-ad50-49e5-bf96-c669a39b84fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akiri, Line-Slinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "516",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fb8bb45f-5f65-4ee4-a64e-d5e8f758d9e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brago, King Eternal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "517",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2816c031-8816-4f52-b1db-590f0688d801",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruse Tarl, Boorish Herder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "518",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "915a1707-1cda-4121-a3d1-55a7604bbd77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Derevi, Empyrial Tactician",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "519",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0fb98089-11b8-4afd-9724-e488d864b4dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ikra Shidiqi, the Usurper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "520",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c35eb2a8-ecdc-4ce3-a628-e031141645e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ishai, Ojutai Dragonspeaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "521",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c61a6018-7f07-4623-b981-9516b53b8534",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karador, Ghost Chieftain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "522",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5bb07085-0dcd-43c9-8355-270a77c573e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karametra, God of Harvests",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "523",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "20e13fc2-c4dd-4875-be32-e04d954e658d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraum, Ludevic's Opus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "524",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "86eee902-dc0b-48d0-a8db-7e6de89977ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kydele, Chosen of Kruphix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "525",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "07d6724f-f781-446b-be69-5c6949f9bbaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ludevic, Necro-Alchemist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "526",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d5a75062-b5e3-4942-af64-12f43101c294",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maelstrom Wanderer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "527",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "58e1033e-3d7e-451a-8e0f-1ae7f3de925a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marath, Will of the Wild",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "528",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d5c19629-b129-4c8b-9456-c38309248189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "529",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8d1691bd-5194-4f1e-981f-6d5ef808ed4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nekusar, the Mindrazer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "530",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8a6d5e58-f06e-43bb-8e3c-bbf241cc2de6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prossh, Skyraider of Kher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "531",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d6c04d8d-f552-4af3-b014-efb7a1c577f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Marchesa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "532",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2143f275-6d3e-4040-a60e-8259a82befdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, Lord of Riots",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "533",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dde62b0c-ea15-4b25-9cb1-697cc2e459c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravos, Soultender",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "534",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0a34158d-9925-4de8-b862-d1cc06bbae60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyhan, Last of the Abzan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "535",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e6593325-d279-43ca-a3bc-576852aaa4f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Kondo of Jamuraa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "536",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7c5e4382-3f5c-46c7-915f-df9373d316bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silas Renn, Seeker Adept",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "537",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c505876d-217f-43cb-b0cb-bf19208b98d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tana, the Bloodsower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "538",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "845bf543-0367-4d2c-81ba-e424bfbfb7de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrasios, Triton Hero",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cec4983f-c2ec-4bf5-9f14-e75f0a2788a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymna the Weaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "540",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a4dc32ca-89c9-4d3a-8809-846c34ef3592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vial Smasher the Fierce",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "541",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5943d27d-6db2-422d-97f5-ae98270a2556",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos, God of Revels",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "542",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7af7847e-82e6-45ed-834d-6f3bcba44017",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuriko, the Tiger's Shadow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "543",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c1f49150-9977-4ccb-b6cb-f89f7da9bf85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zedruu the Greathearted",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "544",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "18a9385e-fe0f-41d0-8415-123431aa1fee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "545",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5865c39e-847e-4dc6-8e6c-a4200124f21f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramos, Dragon Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "546",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b6a221ac-2022-49b6-929e-91db38929a9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Prismatic Piper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "547",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f26a9ba3-1aaf-4422-9b24-7e388b9a6f45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma, Vision of Ixidor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "548",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "58ee8919-65f7-475c-972a-36d9c8d063fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alharu, Solemn Ritualist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "549",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6eb712a0-b648-460b-8d3d-7d920ed11a8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ardenn, Intrepid Archaeologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "550",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9b7e280f-1f41-4d70-8f8c-bb77c66bcf8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keleth, Sunmane Familiar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "551",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ba508669-c15d-4194-ac37-236d4fd3ece7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Livio, Oathsworn Sentinel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "552",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "23c33648-fb0e-4460-aae6-f3793d86e689",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prava of the Steel Legion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "553",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dc74d047-9fcc-476f-bd4a-a74e52785ebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant, Serra Archangel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "554",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "936cfe1a-3ddd-481a-80d3-02504d3004dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebbec, Architect of Ascension",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "555",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3af2dc41-202e-4aec-ba58-f5dec01eaf27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brinelin, the Moon Kraken",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "556",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "65c163d7-8e63-42d0-a943-7cea3771fd87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eligeth, Crossroads Augur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "557",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ae854d22-f511-4bed-b30f-b3b52aed50a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esior, Wardwing Familiar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "558",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bf4cf323-e645-4db2-82c3-6860ea8aa9a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost of Ramirez DePietro",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "559",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "81668017-5ba4-4f62-9e21-41de7a13ad76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glacian, Powerstone Engineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "560",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dd85fd88-7e5b-494a-9106-c78602604a1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, Keen-Eyed Navigator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "561",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "69639b23-9975-4356-ab7d-0aa3387e02c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakashima of a Thousand Faces",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "562",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9e3d31f8-f726-4b81-840b-c8ba2944d711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siani, Eye of the Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "563",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "879a678a-d81a-4994-a864-0b1af80a39ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armix, Filigree Thrasher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "564",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ffb45a20-bfcc-45e2-9863-da58f5e9a0e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Falthis, Shadowcat Familiar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "565",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b6448e6e-f625-4dce-a7b9-01fee55cce6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keskit, the Flesh Sculptor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "566",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "006d1cf4-bdf2-4ed3-8583-38309807ce93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miara, Thorn of the Glade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "567",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "706b078f-0355-45cd-94db-26b925777efe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadier, Agent of the Duskenel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "568",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4e44b5ff-450b-4345-902e-5721af142cdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir, the Dark Baron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "569",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "82aab532-0f3e-4569-9bef-18ce90654e5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tormod, the Desecrator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "570",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "011dc183-eb83-4c66-9604-63d9ecf33705",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alena, Kessig Trapper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "571",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ef509abb-55d8-4c5c-b8c0-eec424665b1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeches, Brazen Plunderer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "572",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6cf0cc0f-84fd-420e-ac90-b3f0bd49e2bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dargo, the Shipwrecker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "573",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "23766fa0-e673-46c7-a29f-3fb140844b1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kediss, Emberclaw Familiar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "574",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "69482de1-4959-4fd5-a314-983bde659c5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krark, the Thumbless",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "575",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c7e7c27a-47e4-47d1-90b3-88a936839cbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rograkh, Son of Rohgahh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "576",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "16a097ba-6242-4a28-a6f1-72a5b3ec3a8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toggo, Goblin Weaponsmith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "577",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8f2aadfd-e35a-4a00-9d64-265b57526d05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anara, Wolvid Familiar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "578",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "80a65e24-08f1-4006-9547-804751e8959c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilanra, Caller of Wirewood",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "579",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d7ad87f5-26da-445e-bdaa-8768d885444e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Halana, Kessig Ranger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "580",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f77faeb0-f0f3-4934-bb39-808db8002efd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ich-Tekik, Salvage Splicer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "581",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9848a1d6-ffb5-4961-80f9-38de374dc707",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl, Heart of Krosa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "582",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "896f357e-38e6-4259-91bc-1c2e7119d1d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the East Tree",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "583",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2f1706a2-7dbe-405f-a435-d9f3a0c06760",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Numa, Joraga Chieftain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "584",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1bc1783d-751a-490f-abe3-4661a76fce9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slurrk, All-Ingesting",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "585",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "53229b5c-20d9-4abb-b7be-fd58acdb4747",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abomination of Llanowar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "586",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f31ad3a5-4e42-4f2c-badf-4cef2a39be41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amareth, the Lustrous",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "587",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "750f26c2-d7ea-4d39-bef0-f1f84c631265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Araumi of the Dead Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "588",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "25e5643c-26d9-4ada-bc03-cafda0f64f40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archelos, Lagoon Mystic",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "589",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e17aa3ad-8f84-400e-ad73-e73ebcd5a4b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Averna, the Chaos Bloom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "590",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ee6c3f6e-3c46-47b2-abcc-8aeb2f12d2fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Belbe, Corrupted Observer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "591",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b88418f5-8f75-4144-b8f6-e1e5009fa341",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bell Borca, Spectral Sergeant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "592",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7954777c-34c1-43c2-83e2-db2dbb82329c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blim, Comedic Genius",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "593",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0f7502db-947b-49ca-968c-58ee83bd19b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Vargus Wrath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "594",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a3a2c725-6133-4264-96ac-d80fe85b3632",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Colfenor, the Last Yew",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "595",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "804a7bac-0425-4cab-817a-5cb3686ef5bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghen, Arcanum Weaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "596",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "05d14b74-437e-4421-b5da-efbad2e70adb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gnostro, Voice of the Crags",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "597",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "22ff4985-981c-4748-b6f4-5d0dab6c787b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gor Muldrak, Amphinologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "598",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "713cf745-c41a-4f37-94b3-1c5850b751f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamza, Guardian of Arashin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "599",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1bb5d3b3-d92f-4d2a-82cc-8cb166241dc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hans Eriksson",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b063dfd-5a80-48c9-8f7b-48d21a129a76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brinelin, the Moon Kraken",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "600",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "77d6f813-a1ff-49fe-9678-e0fcd12dea48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoti, Celebrant of Bounty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "601",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6b925277-89e7-4143-8985-46c2fe3aeb9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jared Carthalion, True Heir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "602",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "89552cac-5567-43f2-a566-be522f24c7b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juri, Master of the Revue",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "603",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c614a61d-b988-40fb-9172-0f86a0e41997",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kangee, Sky Warden",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "604",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e30d4b6e-44c3-4bf9-8edd-aebf97438f19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwain, Itinerant Meddler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "605",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "913752eb-b446-41f8-9914-f78f981b042b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathiel, the Bounteous Dawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "606",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ed90b377-8f27-47fc-a004-0f84f4ad6490",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liesa, Shroud of Dusk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "607",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0f7247d7-fa1d-4d40-8630-e1874e41996b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nevinyrral, Urborg Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "608",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "53f46923-2ffe-4bf8-8f19-ed3b60665426",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nymris, Oona's Trickster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "609",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "afa7030c-e3b8-4ea1-b245-60432ca6e303",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obeka, Brute Chronologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "610",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "465c1e86-e828-44a0-802e-1cbba356c524",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reyav, Master Smith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "611",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e4899773-c501-45e5-bf1f-8d818788d61f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thalisse, Reverent Medium",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "612",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a491e74d-07e6-4467-90db-c5cb2627877f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuya Bearclaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "613",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "403b8d9c-da2e-4902-b198-edfcf16aea7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yurlok of Scorch Thrash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "614",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a9323237-9457-4751-8176-c322c9f6f9be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zara, Renegade Recruiter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "615",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0e65d75-7fe1-4804-8cfa-d7a42bacacae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "616",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bd14d110-185d-4812-a992-902e7b0ab880",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Coronation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "617",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ac255917-c54d-4569-b6f9-88a0e16c9064",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armored Skyhunter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "618",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fb5db772-5ced-485f-a559-81b4e41bbff1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Austere Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "619",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "059aef39-1d27-472e-8bb6-b6cd8dc8c45e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court of Grace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "620",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9e8ca62e-a48c-4381-a100-7061a84d230e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generous Gift",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "621",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "60f50b6f-0049-4f2c-8a41-1345d1b88dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keeper of the Accord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "622",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b9a307a1-d2b3-481b-92cd-14a2866a022d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Promise of Tomorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "623",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3c02d7ad-51c1-4088-b55b-9cb2aa346dcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return to Dust",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "624",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e18fd49d-c91e-458e-9bf3-13724ec404f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seraphic Greatsword",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "625",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "528f9922-b0c3-410e-86ca-87495a4fbd3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slash the Ranks",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "626",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "007f0aab-e4e1-48dd-b333-76dd5c7ebe67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Eternity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "627",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cd33c0f5-5545-477a-9185-53c707983795",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "628",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3e1dbbb8-c384-42fe-a9b3-ab94f18e360f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triumphant Reckoning",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "629",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b465a22b-6fea-4bf8-b290-fa3e1a4aa6eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amphin Mutineer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "630",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "25532c00-d4c0-4f49-b306-6991e49d3c4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Denial",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "631",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0295f53a-0529-4809-9f57-0c3f747ca449",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body of Knowledge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "632",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f5c6f284-fc07-4849-8210-80f12f77f518",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "633",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e60d3606-6f90-43b4-b056-543f7245958f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court of Cunning",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "634",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8fb642e0-a390-4079-b349-ff0ec29c610e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fact or Fiction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "635",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a49d0990-2f3b-4fa9-a895-4148d65c3fff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hullbreacher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "636",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "850acddf-b3ec-4e6f-bd48-9d0a100d0df1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laboratory Drudge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "637",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e351ec05-8c4d-4631-9dbf-7f85f664770b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "638",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cbba25f3-6258-43e7-a230-334de1c31dc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mnemonic Deluge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "639",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0f0e6ff7-eed1-4965-813f-00d92fb48a1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mulldrifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "640",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c1ab73a5-6c55-4c30-a965-8adf3dba2ddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Preordain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "641",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d6d313bc-2ae5-4f97-ae34-12da285d7fa7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakashima's Protege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "642",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b87d4d43-7a46-4f72-97a9-3958bf253a3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakashima's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "643",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ef1d8061-e1f0-4bef-bf32-1e7358ae65b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of the Second Sun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "644",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "068879c2-d923-414a-b2e8-0a80f2634865",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrong Turn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "645",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b5fcc6b0-778f-4dcd-874e-04549493a6ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court of Ambition",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "646",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ca318a56-f13e-46cb-819d-2cf8a2b16f0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cuombajj Witches",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "647",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5039df58-70f9-404e-8b18-d1169c77699c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Dreadlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "648",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "712c8708-cd43-4f1e-b520-ef90cf2ba72d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fleshbag Marauder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "649",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d627c457-a1c2-451c-9ed8-ea55547e5b0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrotic Hex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "650",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c4e30039-580d-4ad0-a913-54298ceec42e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightshade Harvester",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "651",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7b218531-9f5c-4ffb-9d2f-f2ead5b9f221",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opposition Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "652",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5b092685-b0c8-4977-a86a-a167f79eb6b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plague Reaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "653",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c3387cfc-2dbe-409e-bfc7-b399f05a817d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Profane Transfusion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "654",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6d28b259-a368-484d-898f-ef29219a0135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa Debaser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "655",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a4eaff0d-678b-47ab-915d-12e4fa43bb6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Szat's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "656",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9e1b4cec-68e0-4259-9be5-565d927017d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "657",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b6eaeb18-a7e3-4b7d-b2c2-04a66a5b89d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Victimize",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "658",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d2e1c1c3-641a-4cd5-b46d-e03e5e529cc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viscera Seer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "659",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4f984662-8fe0-42eb-8031-89c80315dede",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abrade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a0adf34-1a2b-497b-aaab-4b2b998ed8b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eligeth, Crossroads Augur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "660",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3af03a68-0746-4d9c-8b91-1305e2751700",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurora Phoenix",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "661",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b8ddab6f-0d13-4ec7-908d-54edb09b5727",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blasphemous Act",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "662",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8daee74d-aaf9-41bb-96f4-6d967cd4faf7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coercive Recruiter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "663",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e55b67b7-900e-4b8b-a977-a96a71e198e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court of Ire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "664",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "db9b1282-01fd-48a0-929f-356f6d7e201e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emberwilde Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "665",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "68f03399-c9f8-40ca-bee5-07217788c186",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flamekin Herald",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "666",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fea7f618-5757-4611-8689-e34690404992",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hellkite Courser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "667",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cccce0e4-7f59-4ab8-86e7-1134226ed2de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Humble Defector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "668",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6b4d78f-af3e-4210-8886-231a40a6bd98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeska's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "669",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "77222431-9db0-4bc8-80be-7bfc7c48bc5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Port Razer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86958821-76eb-43a5-974b-7c945e826a66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esior, Wardwing Familiar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "670",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6532b62a-3cc3-44ed-8eac-eaa091be3cee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulfire Eruption",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "671",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5796d5e7-78b9-419a-a04a-fa3232bd2906",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Battle Rage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "672",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "943aa774-e149-431b-804a-310cca6de006",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wheel of Misfortune",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "673",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "551afb4c-17e8-424f-ace3-b2c184b16b2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acidic Slime",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "674",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b345eb6f-ef2e-4d24-964c-252956031e4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apex Devastator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "675",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "699ee8a9-a06c-4f95-9308-f8f7fb272568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biowaste Blob",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "676",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "17c4205a-959d-4da8-b228-791fa1eed07a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court of Bounty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "677",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4f1c8567-9d47-433c-b8d6-101d43f62a9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnglade Regent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "678",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ec8bf526-1260-40a1-b007-10ff9340f10b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fyndhorn Elves",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "679",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4b3ae08c-aa65-441e-a1cd-8bcb8bda5e33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immaculate Magistrate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "680",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f5c98793-8bc0-419b-a1a9-7360f370bcdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "681",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d3eec2c0-dfe4-489a-a3e3-1bdb94707305",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama's Reach",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "682",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6c861f78-c04a-41a9-bfca-54f22656973f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magus of the Order",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "683",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1ffa9a70-1221-4dba-8c2c-9872913021cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reshape the Earth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "684",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a1bea124-3241-4c0a-8863-a2e603c66126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rootweaver Druid",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "685",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9c5ffa3d-ecff-457f-9216-f4e8d3202536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sweet-Gum Recluse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "686",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9037cf0e-6e5f-455f-941c-b909a03e770f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Visits",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "687",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "607d5bb1-001a-451a-8021-434f7c0eda93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boros Charm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "688",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "46ddfce6-5b8c-4ce1-a329-6a4a4576ca9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coiling Oracle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "689",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "40924da3-c974-4b37-ad35-e7d8e4cd3d4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "690",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "10d90634-df3f-470b-aa1e-833a3b7b42f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladegriff Prototype",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "691",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b2dddd41-ae59-4e5e-bac5-3695ba09edfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burnished Hart",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "692",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f520601f-c092-4f83-9c21-66e999a01c16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Plate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "693",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c5e75bf0-7f26-4852-b9e8-9576773ce78a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Sphere",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "694",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eba7f1a7-5e3a-4567-8f4e-176f6322f4a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horizon Stone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "695",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4c44abab-85ff-4196-a739-8e363df84aef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeweled Lotus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "696",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9bd9fbe2-3961-4096-aec5-f5358fa4b9fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nevinyrral's Disk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "697",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2730b56a-47b9-4042-bf5b-463392807f36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Triniform",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "698",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1dbc00c6-5df2-4953-95c2-6c79dc86f409",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rings of Brighthearth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "699",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3826d13f-e10f-4201-b680-51f826ff4ca9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scroll Rack",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "700",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aa21fc27-42d0-456a-9882-34d7f404270b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Ring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "701",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ea92a1b-1340-4777-9452-840e0aa9332d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Domination",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "702",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2408b216-d383-4212-981e-5bc277c962a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftfoot Boots",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "703",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2699f796-4721-4c2a-8834-ea2b2b5b74c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Vessel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "704",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d5dc9b78-d1c0-4473-acfc-75825a7f9bb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Beacon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "705",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "148abd94-e752-4394-abce-21d594318b41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "706",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c06906eb-a417-411d-bc66-854c9cf8056d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myriad Landscape",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "707",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cb789935-b0ba-427c-a0d5-93b006a28312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opal Palace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "708",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9c198ffd-50c8-46ae-a4bd-75c9d39f40de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of Ancestry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "709",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5888b82e-79e0-4b8e-9c16-07dddc2bfeff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rejuvenating Springs",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4a41506-85c6-4362-b983-36df13db09d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost of Ramirez DePietro",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "710",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b1e3f701-4783-42ef-bfe5-20606ada49f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reliquary Tower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "711",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b16e9306-79bc-451a-9046-6a0f8d4b9606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectator Seating",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "712",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6b92b751-6162-4293-953b-ec7190309a6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terramorphic Expanse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "713",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "15a0efa5-6559-446b-a4d9-47585f6e94fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Center",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "714",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "35bd7a70-0cd1-48f2-96b6-7869c003a8c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undergrowth Stadium",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "715",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7695a48e-391a-4ac1-93d6-35373e13718f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vault of Champions",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "716",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "79793d28-64e4-4372-a0f7-468264c554a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "War Room",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a736df42-18e9-4259-b0b8-54d21143e72e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glacian, Powerstone Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "721",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4cb8d03e-e1d2-451e-97a8-141082f92501",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Confluence",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "722",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24d6256a-42b5-40f8-92e6-878d7002768f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir, the Dark Baron",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bbc3bbda-a4bc-4302-a3fc-b1c89f0f5461",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Malcolm, Keen-Eyed Navigator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "714c3a1f-7b30-4ed8-8f38-6176758741fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sakashima of a Thousand Faces",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8812e448-241e-4640-9cb6-0cdbe1ad2fcc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siani, Eye of the Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-11-20",
+    "setCode" : "cmr",
+    "setName" : "Commander Legends",
+    "variation" : false
+  }
+]

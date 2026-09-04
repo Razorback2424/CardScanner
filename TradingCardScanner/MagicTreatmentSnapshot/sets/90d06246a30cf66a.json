@@ -1,0 +1,314 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bca84fc4-4710-44c8-b90a-73ef888714d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anowon, the Ruin Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b10e23a-7cf5-47dc-9c51-5cbe444a99c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sygg, River Cutthroat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa4146f0-0c8c-4b8a-8d24-b6c5e33eba3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8319b155-0fba-4d30-9481-bf01afbd3457",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obuun, Mul Daya Ancestor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59356854-e84f-4cf6-92ca-e47a2108a8df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f484c817-af85-4e03-9f31-5809cc90eb03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nighthowler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "685faa53-c0b3-4dbb-abd9-bf09067f6f91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fed9d62b-e1af-4cad-9708-35a95c469c45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anowon, the Ruin Thief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88733b6d-6d45-4318-ae49-623929231d17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3ae4c174-e57e-4f7b-afd4-48f25e444dda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obuun, Mul Daya Ancestor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "003dc436-a3af-4e65-b4f8-387155fbcb85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, Dimir Mastermind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "374b5d57-fd20-4062-9ec2-24ac557d9dde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mina and Denn, Wildborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "08c14bb4-c9d9-41ce-a075-a441522a52c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbea42c8-6e9f-499d-9d26-401536afd5c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oona, Queen of the Fae",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "znc",
+    "setName" : "Zendikar Rising Commander",
+    "variation" : false
+  }
+]

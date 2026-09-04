@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b22f99c9-87e8-4b72-8369-3fb2badbaf46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, the Great Distortion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "976452de-9cc9-4ca7-8c32-e384e5607149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of the Great Revel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "08784b79-570d-495c-a05e-d5fe3e876a97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courser of Kruphix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "f6a1cc1b-6c49-44f4-a69d-f898ae4222b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce9e5568-ad5b-4534-8e09-348551c29bb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sliver Hivelord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "920bbc28-1a57-4dc3-86e9-6a491a4afa1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos, Shrine to Nyx",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "8860a10c-bd03-4886-bc6e-a50f400e1e7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldrazi Displacer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-13",
+    "setCode" : "ea2",
+    "setName" : "Explorer Anthology 2",
+    "variation" : false
+  }
+]

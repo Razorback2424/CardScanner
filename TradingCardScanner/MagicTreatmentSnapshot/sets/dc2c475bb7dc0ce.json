@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a628087-9179-49eb-87a5-f67cfd0a814c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana Vess",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2010-01-01",
+    "setCode" : "pdp10",
+    "setName" : "Duels of the Planeswalkers 2010 Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4afe1f83-f53d-477d-8523-3e6fa8e51a0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa Revane",
+    "promoTypes" : [
+      "duels"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2010-01-01",
+    "setCode" : "pdp10",
+    "setName" : "Duels of the Planeswalkers 2010 Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,687 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2fc764f-d5fe-452a-8474-5ad380048faf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ooze",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd43716d-06bb-4187-ab77-414cfc59d20f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rat King, the Chaosbringer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b2a91d9-42ae-4f2b-ba95-46dc74e68fd6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rocksteady, Rowdy Rhino",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22c51c78-a578-4a1a-87b0-430b32da7d78",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Savanti Romero, Temporal Rogue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19f04282-ef44-4474-bb0f-bcc938bdba7a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shredder, Foot Clan Overlord",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d84f8fc-0da6-4acc-9da2-9993daabd9f4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Slash, the Dark Mirror",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb231e4d-dbba-4475-a01b-212d83859722",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Baxter's Experiments",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b05811b0-1856-4cf8-9910-44da1a994116",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Bebop's Rampage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f183188-a0a2-474c-b741-63a70365fd8e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Chrome Dome's Overload",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33dd64d2-8656-4ee8-93a8-fccbdc950899",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Karai's Planning",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c25a10b-e2a7-4345-ae6f-021b607a3e59",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Krang's Stratagem",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c321b9e4-ab7e-4e8a-988f-5463c776d685",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fac36345-b2fb-4a44-a499-f68bbe87e736",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Leatherhead's Smackdown",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbafc14d-099c-4bad-a90c-788d2b838186",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Rat King's Revolution",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7fbf846e-9496-470d-b039-b4cd9e71f066",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Rocksteady's Beatdown",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84c98b5c-4bec-4455-9681-045842a87721",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Savanti Romero's Curse",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b673d4b-0188-4225-9067-dc61386a18fd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Shredder's Challenge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5287c97-72fa-47a0-9316-44719e447f99",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Slash's Smash",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "321f758f-a738-4f9b-a1d8-8edeb4fd9aff",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Villain Infiltration",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e05ee2a3-4054-48a5-8646-6588d1b39fb8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Villain Mayhem!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3119f359-ca5f-46f4-aa32-c03db9a4f397",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Event: Villain Scheme!",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd58ad15-8d15-46f6-b9b3-05ee8cbecadc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Foot Skirmisher",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4837a3f1-ca7f-41e5-a5d1-729c8495b0e8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5dd41f4-3153-408a-a20c-09334cfd686c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Foot Disciple",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "641b27a0-7fe5-4987-81bd-aa208b7463fd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Foot Enforcer",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85067e01-384c-434d-8cbf-e9dcba5e9ae8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Baxter, Exzzperimental Zzientist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66acff08-ba29-4785-8d10-127d023a055e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bebop, Porcine Punk",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a2d23c4-d381-4a92-b4b1-0cf71948f941",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Chrome Dome, Cyber-Ninja",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a534b81-f4a1-4a57-85cc-be6801ebd5b0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Karai, Shadow Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8742baf6-2bf9-48ac-af68-6427704b3593",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Krang, Dimension X Overlord",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17193bd0-63c0-49ce-9a85-12996fdcda00",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Leatherhead, Sewer Gator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "ttmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal Tokens",
+    "variation" : false
+  }
+]

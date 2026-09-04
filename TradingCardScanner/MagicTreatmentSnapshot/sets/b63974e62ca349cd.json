@@ -1,0 +1,2471 @@
+[
+  {
+    "collectorNumber" : "100p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f92e75f4-a892-4b71-a0cf-05fd7f0b2c4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2344cba3-85ec-4fb1-9cfc-b4298aeb47ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73060667-df78-4db7-a75e-9d3036010d39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-03-01",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6bd7af95-f5be-48a0-b9f3-b294045cc298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Form of the Dinosaur",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36da8a69-2547-4836-ac33-805306a7f3af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rekindling Phoenix",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6100ec8a-25d7-4f46-9b0b-1b160ddc3dd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rekindling Phoenix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b480b36-61b1-476c-a04c-37720fd35c05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverclad Ferocidons",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fd4e6cf-73ef-4d0f-89a3-ddc14f055a33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverclad Ferocidons",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b259a0dd-9ffc-4eee-b67b-d68d06992a6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tilonalli's Summoner",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32067e8a-4d68-494c-95fa-6e8172496f0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tilonalli's Summoner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f5419d8-a8bb-4bb5-84b1-a5d977917b34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deeproot Elite",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3f7fd09-e62b-45c7-a0df-c2e2d10eb96c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deeproot Elite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c11a7c2e-75e8-432e-84c4-df63e0df0981",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+      "setpromo",
+      "storechampionship"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28416303-b036-4fab-b8eb-f5754d4ff7dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1286b253-dacd-4e9c-a704-d21b4230a08e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3304111e-4689-4dc8-b32b-9621087bbf1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jadelight Ranger",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e809730a-aa0e-4e15-9046-1da11f7832d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jadelight Ranger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a482fc37-70df-4565-a607-7192eeef86ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of Discovery",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a907663c-d249-4b59-b6b8-44a10fa6fc40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of Discovery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53cfded0-ff53-49f6-85be-f8e9225a91fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polyraptor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28e4b40f-4ce4-4d8b-96b1-35c6bac74fda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tendershoot Dryad",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c80973f3-ee03-491d-9e91-d4bcca5667ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tendershoot Dryad",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d98486a-bfbe-4144-b65c-c2e8e8e5a3ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wayward Swordtooth",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a53cf129-3ab1-4106-9cef-ce76c5ffcc4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wayward Swordtooth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b18133c-3522-4922-9a49-4bed75c5a51a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Shaper",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b05050d6-0893-493b-9d69-c6540cfcaca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Shaper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b15b721-f69f-464b-ab5b-68ca323615d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angrath, the Flame-Chained",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "201b527a-f6a1-47af-95d0-a15d6c0d3107",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azor, the Lawbringer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b57cd8bb-b35a-463e-b9b5-528762893b64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, the Dusk Rose",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "9093ef42-ab58-45b3-9dd5-a30baf20c46a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hadana's Climb // Winged Temple of Orazca",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d56a9058-ab65-4023-baf8-4f199b8e56e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Huatli, Radiant Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "82b6bcb6-110d-47ec-8d41-31c156a45a41",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Journey to Eternity // Atzal, Cave of Eternity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c80bf440-ba93-4e72-bdf8-14d360e2d337",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kumena, Tyrant of Orazca",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "8d4aa064-240f-4aea-97b7-b687e67b4cb9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Path of Mettle // Metzali, Tower of Triumph",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "828e8abf-30bc-486b-a3fb-8a0a9c73eeb1",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Profane Procession // Tomb of the Dusk Rose",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb75eabb-c366-48fa-9fb7-d3fb2d43a849",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Protean Raider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "402711d6-2010-4015-8f06-e1aad02ed556",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paladin of Atonement",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "284eccf9-957a-40a7-8f0a-7f71422055e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siegehorn Ceratops",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b70c0b83-47f9-4f29-93a9-61d616534452",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siegehorn Ceratops",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "853c8df2-75b2-403e-87a4-5e5aa43a31b8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Storm the Vault // Vault of Catlacan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3581f83f-f757-468d-bb4d-17793ac666b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zacama, Primal Calamity",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a838fba4-afe4-40d3-9466-05e384a28112",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zacama, Primal Calamity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e738223b-c685-40d7-a6e6-6417b1a65554",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awakened Amalgam",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "4d171fae-6c67-401d-84af-322cb300a078",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Azor's Gateway // Sanctum of the Sun",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c67d1402-6026-4aad-9f89-6c5828f8bde0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain's Hook",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d734aa18-6efd-460e-93c8-03a30d6d019d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain's Hook",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "compasslanddfc"
+    ],
+    "id" : "7b597c97-dad9-4caf-adfc-b5a33dad9c8c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Golden Guardian // Gold-Forge Garrison",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e92b0d5-b171-4096-b1bb-65755db73b73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Immortal Sun",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a57f003-d162-4ea7-880c-328413235fd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Immortal Sun",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77dab686-9e53-4bab-8851-e04d6e413206",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Gravestone",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea584586-17b8-4bcb-b4b7-92ecdd57f81a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Gravestone",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "943c3b7d-d6f2-41ce-9980-d54827c6f26b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arch of Orazca",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "358a3c0e-1ff3-4490-99d7-d1597b915ff0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arch of Orazca",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56214360-6790-49a2-950c-5365b6a9b630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolving Wilds",
+    "promoTypes" : [
+      "league",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c2ba82b-8bf5-49d2-a2e0-ee9fc0de7eb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Destiny",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c52e687d-cd81-458b-a0c2-3b77db2a8aa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiant Destiny",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbc08bf3-3af3-4d67-84eb-ecececd1a91e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slaughter the Strong",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fdb033d-3ce7-419f-a2be-76df80a841cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slaughter the Strong",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c9daefa-3716-4391-b95c-fc6f2abea56d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx's Decree",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a3df66a-2332-4734-9236-23b0d3163569",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Altisaur",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cb5fc7e-5ac4-4245-9f88-3921ab5704b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trapjaw Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efdf96d6-2428-4192-a904-300782e338af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bishop of Binding",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b27c1231-b3cf-4dcb-ab32-4ffea5e36138",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e960e96-9044-41a5-807e-8a29b30ba828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27e508f2-5f4e-4d8c-8e72-b896d5e204ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Admiral's Order",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "720406ef-4460-475f-bbc1-491c8c48794e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Admiral's Order",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7ef4fa8-76a9-4643-8823-cc7c7fada383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crafty Cutpurse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d36d5b78-6d63-4666-a103-66c449d5f734",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Induced Amnesia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96f2b208-ea5e-42d2-ba7c-f7d41e9b0bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kumena's Awakening",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3effc85e-14e0-42b5-b730-f1594968ee06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezahal, Primal Tide",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3767d0d8-817b-4cc5-ac55-f5d5c61703fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezahal, Primal Tide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11ccbbb2-0631-4fdf-a1ed-06207c98ed85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Release to the Wind",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94ff8403-67fe-4f5a-9a60-98d687bd3ef3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seafloor Oracle",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9dc4cc4-19b2-43ae-a008-996184f67f90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seafloor Oracle",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "918b9b18-8da3-4cfa-90f7-f3271dfc49a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silvergill Adept",
+    "promoTypes" : [
+      "openhouse",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a16dbcb7-9cdb-463c-858a-510fed9e9b80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timestream Navigator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bdcc765-bb32-46bf-b2ab-3fd7b8ebf591",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warkite Marauder",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c66f8e05-06e4-4315-9ae4-1e9b52533da1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warkite Marauder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0009f87-532b-4b75-b9ce-fb9d93c7671f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Champion of Dusk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "10027c0a-7ee2-424f-a879-374d857ae359",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dead Man's Chest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb8f2fbe-e4f2-45e7-8cd1-a20f59f1859f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dire Fleet Poisoner",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a07e800-c3d8-4383-a1c5-31561b609622",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dire Fleet Poisoner",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84ce5147-c418-4b11-8a78-46bd0bdced8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mastermind's Acquisition",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6c54914-885f-4c9f-a74d-e26aa3ce09f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mastermind's Acquisition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30d8237e-cec6-496b-93cb-7b522159fbaf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetzimoc, Primal Death",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1008fb35-9e51-4e58-b698-3bb8dc5aad09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetzimoc, Primal Death",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6645cfbc-a384-4f48-b4de-7ec0e889d387",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tomb Robber",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e2ac1bf-be41-4011-adc4-0398539386b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twilight Prophet",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "974e0e45-4820-4e8d-b397-15eb09628e10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twilight Prophet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ef0afd7-9746-4c5c-9c90-70aaeb6c3de2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vona's Hunger",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ccb6e7af-5317-4b7f-aaee-c6ea420d0431",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vona's Hunger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23402650-7f1c-481f-b311-c8e6c40c6c95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Sun",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f156bb8-11b2-4f56-9f48-31a5cdf04474",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Sun",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab7c0987-8e84-44e2-b894-c36911bcff79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brass's Bounty",
+    "promoTypes" : [
+      "draftweekend",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "010d1d16-4219-4445-b25b-6d133a4c469b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brass's Bounty",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c60b7724-6333-42a0-9abb-12feea5f3cb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brass's Bounty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa489267-6f8d-42ae-81ea-3a9d270bb64e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dire Fleet Daredevil",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99386fa2-2519-4560-80b7-f4721663dec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dire Fleet Daredevil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-01-19",
+    "setCode" : "prix",
+    "setName" : "Rivals of Ixalan Promos",
+    "variation" : false
+  }
+]

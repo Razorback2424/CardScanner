@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b1686c8-5ce1-49bd-aae3-dce89578094a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tuktuk the Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "tcm2",
+    "setName" : "Commander Anthology Volume II Tokens",
+    "variation" : false
+  }
+]

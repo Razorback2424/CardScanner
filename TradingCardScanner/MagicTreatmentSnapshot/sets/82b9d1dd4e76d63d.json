@@ -1,0 +1,2044 @@
+[
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d884b313-5c7a-430a-ab2b-3086baa02cda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Immolation Shaman",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f2ee6661-e63e-4fba-8da1-70a485097401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light Up the Stage",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "779b1bbb-6889-448c-98aa-1455d38e0b14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirror March",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49aa1d61-0292-4056-b797-9d4d4286d7b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rix Maadi Reveler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69b82c39-3e9c-426b-9742-a7b3295dc195",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skarrgan Hellkite",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1007842c-27b9-4e0e-a12d-e05d96e9db15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Precinct One",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e5e43d3-9048-490a-97ab-392d5c6e0c45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of Precinct One",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d61d4a0d-60ad-4434-ba2b-9aa574bd038a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biogenic Ooze",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "463ec274-0c1a-4a3e-82ce-726f5a679a37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "End-Raze Forerunners",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26dda691-4f9b-414c-8220-d6bf1af04d97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "End-Raze Forerunners",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-12-08",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "213c938d-85dc-494e-96ab-5df2c247a84c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Growth-Chamber Guardian",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44389ea0-2a75-4a38-a185-b207d51c9e2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Growth-Chamber Guardian",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a375e3d3-22f5-416b-ad32-83b6028f7024",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Project",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6980aff2-b91c-49c8-adc6-dbe652c853eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Project",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf10896d-77c4-41b8-9b8a-da65a3b1f32c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incubation Druid",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06954269-16a5-4cbb-b2dc-d5b26e811192",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incubation Druid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e768b0f4-ba5f-4d1a-b68a-1274d761de90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampage of the Clans",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "513997c3-a754-4160-9b22-67cfe2953851",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Absorb",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7e5d52e-7f1c-4ce7-8746-50bb414311c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Absorb",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06a34cfb-b0b3-4a51-af7a-601631d6c93b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedevil",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c2608d6-649a-4b39-bd7b-02d6d42d3d5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedevil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38fe6c0a-22d3-4c3d-b44c-691aae98d53c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biomancer's Familiar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7046d773-eb6b-4fbd-b64e-b9e178e3fb79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lumbering Battlement",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd85846e-bef3-4763-8003-a6bd9714b9dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cindervines",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33c159a1-0cf5-4aa2-abdc-ab8daafc1225",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cindervines",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "060c2b3c-2671-4ec9-8367-e0d4ca553616",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deputy of Detention",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52814f63-af04-4dd1-a67a-97edd6f4e9b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deputy of Detention",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "547d62cb-9cf1-48c8-8b58-3ce1db4c0a2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emergency Powers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23c0c440-00b8-41d2-85ee-f5b4468853da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ethereal Absolution",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "288ed3e9-4485-44ad-8561-efa09ed96f34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Growth Spiral",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "efb66fa0-b47c-49e1-8ee0-982f646545ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruul Spellbreaker",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98c1fae3-4208-4a16-9068-61103988cafb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruul Spellbreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc8309ea-93e0-447c-9d99-e451d087f25a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydroid Krasis",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24a26df1-8530-412a-932c-f86ec230d12d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydroid Krasis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9d4873b7-7209-4efb-86f1-9c6276b7257e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "22e41010-c62b-4940-9f51-f064a397056a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43e703f8-d7f2-4f63-831a-18cd119e1f54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya, Orzhov Usurper",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6473767e-867d-49de-9bfc-7bbdda5511b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya's Wrath",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f822f28-81c7-49dc-bdbe-b40671b0fa49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya's Wrath",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37361166-330b-475e-b300-1e89cc1afaff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia, Azorius Renegade",
+    "promoTypes" : [
+      "setpromo",
+      "storechampionship"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02aaf396-3cb6-4ac6-902c-2faa776e7b48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia, Azorius Renegade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "645f4d28-68cb-4386-91b9-c748930d69fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mortify",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90ff41a6-6604-4953-a43d-816c4568b742",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nikya of the Old Ways",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73037cc3-1986-42b9-9917-fa20418c0d2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Firewheeler",
+    "promoTypes" : [
+      "openhouse",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "655dcb1b-2fe0-4e6b-b0fb-1438524ac1ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, the Showstopper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e20cbaf3-64d8-4fd5-866a-74e1a2aa41fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravager Wurm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25938792-397a-4e9b-bf89-cc04d82cdea1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seraph of the Scales",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca4677fb-9663-4da0-8cc1-2ba732d26ee5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seraph of the Scales",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e90192b4-696c-4d63-b752-0c891f50a810",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simic Ascendancy",
+    "promoTypes" : [
+      "draftweekend",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60b659cc-a168-4b09-a0d5-23979fefec2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simic Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "247de9ae-802f-4f3d-a33e-7bc9af24b8c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4fef65b0-fad1-4376-9614-f834eeada67a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa Karlov",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4962bf58-74d8-4c11-b042-d054312fb8b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Theater of Horrors",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93d52d08-433a-46c5-bd4c-542775c76576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zegana, Utopian Speaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4411a717-fda0-45f1-a8ba-618884de5ce2",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Bedeck // Bedazzle",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fcea5a1-6f62-450a-9351-b7e280c5ae60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smothering Tithe",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37d124dd-c5d8-4d53-820f-546be18685ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gate Colossus",
+    "promoTypes" : [
+      "league",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d7c66e7-2b43-443f-998c-80613735a87f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Crypt",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4ab950c-9516-4b5d-bd54-a17958968320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15d4eec2-8587-4ec6-aea5-21804a998375",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be1b2869-b0ba-490f-b207-f6cfe4dfe317",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallowed Fountain",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81571924-c892-4dcf-9696-cb4858857e15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Harmony",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92f1bb76-3999-494e-974a-66600fba54e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "848d4dae-1e51-446f-bad0-cdf852970486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tithe Taker",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d7969a1-afae-4076-bb1f-fb52014badea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tithe Taker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77846b54-169c-4e27-a478-5a4bd2685b67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unbreakable Formation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91e56f03-5167-4331-8f7d-a767c65c510c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unbreakable Formation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa24f634-1042-4f7b-939b-8ca480b07f2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Benthic Biomancer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d352e980-d3bb-4a52-8982-c493896fef45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Benthic Biomancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5115083-0365-4a87-86be-c6d771a116e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mass Manipulation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c800486-345f-4cf7-86a1-d217ed06edad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Precognitive Perception",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8edd796-34c4-4d3b-a5a8-3417af96b3b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of Foresight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9782b0b8-07f1-45dd-b1a9-3edd37e0e3ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Awaken the Erstwhile",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b8a0659-e42f-4e5c-9d58-275aa638ad0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Font of Agonies",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f6cd598a-f42d-4402-a7f7-c81ad0a87b07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gutterbones",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5411cb1a-c4dd-479c-8283-393a97711b51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gutterbones",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26dfe564-3d2d-4d95-aff1-61371bbe4ab2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Forgotten Gods",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "036379e2-9248-4d67-8c95-d38e8dab11de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Forgotten Gods",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd86104c-6fad-4e1e-a157-eb0c36314e3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spawn of Mayhem",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a529382-75d5-4129-880c-16d8425326be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amplifire",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ebf3faa-6f31-4f73-abf9-68633af6bf9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrodominance",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-01-25",
+    "setCode" : "prna",
+    "setName" : "Ravnica Allegiance Promos",
+    "variation" : false
+  }
+]

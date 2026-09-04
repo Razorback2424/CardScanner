@@ -1,0 +1,2265 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a485c2c3-c90b-43b4-bb00-c1b811b4b392",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bright-Palm, Soul Awakener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80804f25-efc3-44a2-bbae-9a97fec98009",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shalai and Hallar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "004966d8-2e2d-4b6a-938a-10f257179cf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darksteel Splicer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "425f4659-5c39-4e2d-9a6a-7bb38d32fda7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excise the Imperfect",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e3d91065-79c4-41ab-82ab-393f4553b752",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Filigree Vector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fa54ab0b-72aa-458e-a182-5792d8699dc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian Scalelord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5d7b2638-2e6b-49c4-b716-9286ee0866d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nesting Dovehawk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "97c4288f-7d22-4a5f-9b2e-d67734d9a6e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of the Ghosthunter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "031fbbcc-6d87-4b4d-b406-687c878e8a78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vulpine Harvester",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4a5e0283-b6e8-4036-bb58-3edda36b45a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wand of the Worldsoul",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ebc86cc-dcda-463f-a916-292f36d3ad04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deluxe Dragster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b67b2f70-4909-4ac3-b18c-4f9756283e1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herald of Hoofbeats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c0d2eaea-9e2d-46a0-9973-05a1c487cade",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of the Enigma",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "312591ec-436d-40e5-805e-e78e6a63096d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Schema Thief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ae304cbe-aa42-4f02-a6d8-86fd5ded43ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blight Titan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0b359cc1-5518-4ef7-9f5c-4eaca6fb4674",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exsanguinator Cavalry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c2b9253c-38c0-483f-b269-4b96da85fda2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Locthwain Lancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "125d156c-daf7-478f-9054-80c09095c16c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of the Schemer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6204f145-4287-47ec-a37d-d03dfa809128",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dance with Calamity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b0dbcce3-d914-4e07-95a6-27a6b675ca38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Death-Greeter's Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5194978a-ebc3-442f-97f3-012b3edd92da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedron Detonator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6b407f48-5b78-463e-ace9-3f109a9c55a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirror-Style Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a954ac22-8236-4821-a29d-0da60993d6c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pain Distributor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aa0a1ba3-07fd-4fbc-bb57-8dd3788d3716",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of the Pyromancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0a9e1b5e-233e-4066-9d03-d04a051d8cfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uncivil Unrest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3320f1b0-84b6-43c1-8423-1a044bdfb328",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conclave Sledge-Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c1ea2455-afa2-41b4-b2ba-1e084d6c602e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emergent Woodwurm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6bf1c791-4cac-4100-a201-84873458c939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of the Animist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "28cca229-77c9-4d57-b980-c98b76d94d26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandsteppe War Riders",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3f006075-96b8-4e70-be46-8f01eb13fed4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cutthroat Negotiator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "044cc7da-d1b2-43bf-b81e-8ec4b69ca6e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flockchaser Phantom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "13e9382c-f3c8-4b30-99cb-87f69f5828c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mistmeadow Vanisher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "df06a598-4ac6-4ee5-9cb3-8f7ad19b5a0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Wave-Knight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "942bbb43-2280-4a8e-852f-e20759cac312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildfire Awakener",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9b36e17d-7c1a-42cb-99ad-e546c3a17635",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterthorn, Nissa's Animus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c5088bdd-29ff-4341-b14d-7667f4aa6df4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ichor Elixir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "15a64f1c-b5f9-48cb-b497-6fd70bced8ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bright-Palm, Soul Awakener",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2f92733b-6d7e-4037-a2dd-e85726721863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brimaz, Blight of Oreskos",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f4cc58af-1226-4e6b-8f46-d46f3c3068eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gimbal, Gremlin Prodigy",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e9ded49d-2679-4d4a-b151-4aa693ffed5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kasla, the Broken Halo",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2ccf3eea-a921-4db5-b071-4d9a53756863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Jabari of Zhalfir",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd95d377-a61e-4b62-a883-ed491c48da15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adeline, Resplendent Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73be08fb-f5ce-4458-9f5b-c1055b3fb04d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alharu, Solemn Ritualist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb885d30-c6e5-494a-bc01-3d5085b8e262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Lunarch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f0d31ae7-8580-402a-a917-3d626a9e1f49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brimaz, Blight of Oreskos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d280f5cc-ef6f-46e3-9b81-e2906959831c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3850ac6b-11e6-4367-b3b2-b7a9b2d0403b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Elenora, the Discerning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c70d5d1f-30e7-4a14-9bd9-2b654549f7ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7e7d463b-e74e-4ebe-9f92-02ccdeadbf96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haakon, Stromgald Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "30553f61-6edf-4e7b-b60f-b8f62ca2bcad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Josu Vess, Lich Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9ecbf55-1f85-4877-a1ea-bf0d90dd9979",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keskit, the Flesh Sculptor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03f16bbd-00d6-43ed-9a11-ebe7fc65933a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "31825ceb-d795-4ad7-81d8-77ab34c272f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth's Vile Offering",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0360f1ff-15c9-48e3-89eb-fbc4bf140c55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feldon of the Third Path",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2f5689e2-d8a2-442b-8027-f89686adcb67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Tin Street Kingpin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5aab5a55-0aee-4d8e-92b7-92b057a00509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a9aa899-752b-4106-89ba-9475ee777d41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gimbal, Gremlin Prodigy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6310af34-e671-4974-b291-279b91585459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8107fd21-7d34-44ce-afb8-920eab3b924e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slurrk, All-Ingesting",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "475d3d3a-8df7-42e8-adeb-5810e48ddaa7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arvad the Cursed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cfa67dd1-8a67-4b63-8a4c-07a5144afa3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aryel, Knight of Windgrace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f402e6d9-8c72-4b31-bec5-4a1b3ffb39ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamza, Guardian of Arashin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b992166-5906-4b29-bade-91566eba530e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kykar, Wind's Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7e599847-8ab0-4fd6-b2c0-cb44a7669aa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Locust God",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1dea34d8-c68f-41b5-8476-fd6128d69576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vona, Butcher of Magan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "f1e6e3a2-5145-4898-990e-150e090f5206",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Replicating Ring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a209bda2-f0bf-4417-94f9-b73eff0b4217",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kasla, the Broken Halo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e75a8b5-45c5-4586-aad8-19370477cbc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kher Keep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b661b53-2e58-4dcc-9100-fc00e0fdb606",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goro-Goro and Satoru",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a30ee96-00a0-4da9-a2e3-f87dedf2698f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katilda and Lier",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e449e38-6f03-4316-8ebc-d0faf79d6bc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slimefoot and Squee",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "841e14a3-abb9-4a2d-a21b-273307825e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goro-Goro and Satoru",
+    "promoTypes" : [
+      "boosterfun",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d7728bb4-7fd1-49b0-8778-5d9ea01fbf1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Katilda and Lier",
+    "promoTypes" : [
+      "boosterfun",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa7a883f-e180-48ce-b7d4-cded2f74c323",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterthorn, Nissa's Animus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c6f777b0-2f35-4333-8f54-7ceeeac2ec83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slimefoot and Squee",
+    "promoTypes" : [
+      "boosterfun",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fc707be-9286-4ba1-90f6-475265d19ed2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Jabari of Zhalfir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35db4bfe-78e1-46b1-a70b-728ceede94b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda and Azor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19d0acaa-bfbf-4155-a9b0-5b39c3c87361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moira and Teshar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "30b2f2fd-8087-4fa8-9eb7-bf9b89a5dfb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi and Ragavan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "df8b8262-390a-4d22-adff-178bc8c52ace",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth's Talent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4f8226bd-3e9b-474b-b2d5-95049762824b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firemane Commando",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7d771d89-4dfd-4f0e-ac43-e60c904e6ea5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Talent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2bd80e18-3d2e-443f-8476-de6f7fd8136e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infernal Sovereign",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ac1c1fc6-5b7b-41c5-97a8-ef1245d1c5a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Talent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c68b762d-11c6-4e9d-b2e9-07155ea8fb34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rowan's Talent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bf58b187-99c1-475f-a154-880047b1bb4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Talent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6b27b162-33cc-4543-8744-dbd00279a6a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Begin the Invasion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "03056df6-ae03-40ce-be4b-96d8061b12d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bright-Palm, Soul Awakener",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "653294a2-e023-4142-96d8-29568315649f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brimaz, Blight of Oreskos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "55a45de4-cc76-4aa0-a1dc-24df8e495215",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saint Traft and Rem Karolus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c8896833-843c-437f-a9d5-7352b7ea6d3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda and Azor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "30cd6ab7-7235-427e-bc92-c9fe6032ffa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gimbal, Gremlin Prodigy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "259de719-f633-4667-80f3-c7d13b1aca01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kasla, the Broken Halo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "812bf682-db65-40cc-a85b-9a96c34f0b4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moira and Teshar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "552ecf3b-5635-4aa7-90e1-fb0c7c0574b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi and Ragavan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c460abcf-43d8-4184-b654-3d247164aa3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saint Traft and Rem Karolus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0dcb27cd-e5f1-46c6-b7cf-33fa90335459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shalai and Hallar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "89dcc644-37aa-485a-870f-284c5666a21b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidar Jabari of Zhalfir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "853adaa2-184f-460d-856c-bdb989bade61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chivalric Alliance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a569e7a3-d20b-47b1-ba7f-70513718c4cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conjurer's Mantle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-04-21",
+    "setCode" : "moc",
+    "setName" : "March of the Machine Commander",
+    "variation" : false
+  }
+]

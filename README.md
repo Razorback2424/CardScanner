@@ -46,6 +46,17 @@ first launch and offline; `ScryfallService.fetchSupportedSets()` then replaces i
 in the background without pausing recognition, and a failed refresh costs the
 newest sets rather than the feature.
 
+`MagicTreatmentSnapshot` is a separate, audit-only snapshot of Scryfall's
+`default_cards` bulk feed. It records every set's collector-number suffix counts
+and preserves the exact rows carrying `promo_types`, `frame_effects`, or
+variation metadata. It is not consulted by scanning yet; it makes the all-history
+treatment decision reproducible without a network dependency in tests. The
+snapshot is included in the test bundle only, not the production app bundle;
+its manifest also records source-backed manual mappings for distinctions that
+Scryfall does not encode, such as NEO Neon Ink color. Regenerate it with
+`scripts/generate_magic_treatment_snapshot.sh` when the provider feed or the
+audit rule changes.
+
 ### The acceptance pipeline
 
 ```
@@ -381,6 +392,8 @@ module, so it exercises the same compiled code the app runs.
 - `ScanParserTests` — identifiers, merged OCR, `l`/`1` confusion, illustrator-name
   rejection, two-card ambiguity, denominators, rolling confirmation, split Magic
   footers, automatic game recognition, and the bundled set snapshot
+- `MagicTreatmentSnapshotTests` — the offline all-history treatment artifact,
+  suffix audit, JSONL generator, and manifest/resource integrity
 - `CardLatchTests` — the duplicate-protection guarantees, written as the physical
   situations they stand for
 - `VariantResolverTests` — the finish hierarchy, Finish Lock as evidence rather

@@ -1,0 +1,186 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c7bbb911-9de2-455d-9677-e1004db65dbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Torch of Defiance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8c1a02f9-3ce7-46e9-8d0e-0d491bb13012",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cathartic Reunion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4c454a20-8ec8-41d9-b9c3-acaa510d050b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Confluence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d1bf32c4-4f0d-4c50-b6e5-2e6a4456bd1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Past in Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93c460dc-cef2-4345-b9b8-a774307ba2d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyroblast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aeffd6f6-0fee-4afc-9256-04099d9d41aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyromancer Ascension",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "10548126-2bac-435d-b7ee-cbfea97a40ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rite of Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2dd80b9f-5c35-438b-ba52-da0e3e8ff781",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Young Pyromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-06-26",
+    "setCode" : "ss3",
+    "setName" : "Signature Spellbook: Chandra",
+    "variation" : false
+  }
+]

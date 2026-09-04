@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a67b5770-3b52-4f43-9db3-71224c9bebd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whip of Erebos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-23",
+    "setCode" : "cp2",
+    "setName" : "Fate Reforged Clash Pack",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e8383d6a-0f26-4afe-88e0-9b14c8e9122d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courser of Kruphix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-01-23",
+    "setCode" : "cp2",
+    "setName" : "Fate Reforged Clash Pack",
+    "variation" : false
+  }
+]

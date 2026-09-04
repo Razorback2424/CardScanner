@@ -1,0 +1,981 @@
+[
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "74e49567-8ad6-4ce9-a55d-4db5e0fd9532",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isareth the Awakener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54a4c37d-5eeb-42c9-9688-c2ed0d5044cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36d4574a-3266-4497-b145-fb25820d8a7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ffcbcda-2ba3-45e7-80c0-85ea3b7eea0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lena, Selfless Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1e90c638-d4b2-4243-bbc4-1cc10516c40f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcades, the Strategist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "50c1de2c-1acc-47c8-9b5e-a9dae3da8a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromium, the Mutable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "originpwdfc"
+    ],
+    "id" : "7b215968-93a6-4278-ac61-4e3e8c3c3943",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nicol Bolas, the Ravager // Nicol Bolas, the Arisen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4663bd13-243e-4b8c-9ca8-158576b58803",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Palladia-Mors, the Ruiner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d19fdc00-21eb-48dc-966a-6b634dc5a2c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaevictis Asmadi, the Dire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4a22ecc-3a5c-44a1-bb52-bbeffa2dbf17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Wise Counselor",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d38ad178-35a5-44ad-b80a-d746f3e6a45c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani's Influence",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc2e1a93-4b5c-4f89-9e11-1693dee64b63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Court Cleric",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a1d95b9-aa18-41e2-b972-93fda25e0b11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra's Guardian",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36b4c374-42a4-4912-8a74-a11c3fa0e065",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverbeak Griffin",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "277dbeea-103c-4c5b-8981-3f5f7e60c66a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret, Cruel Machinist",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "037f6792-ab41-4bcd-a0a3-a4af4a801eb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riddlemaster Sphinx",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ad452a4-be42-4d2f-a161-2b327f423b9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pendulum of Patterns",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "584e0528-01c2-49fb-aa4a-098172bb17a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret's Gatebreaker",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cf74535-31e3-4d2c-b42a-072580fa4ba0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tezzeret's Strider",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d2cbc2c-dbe3-4ecb-8fbe-785cb80b9e76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Necromancer",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e39502fd-193c-4526-8dd8-0cd8c822552c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arisen Gorgon",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ee347d62-867e-40c2-bf4a-0ac2f627e24c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravewaker",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e960fb5a-70cc-490d-99cf-99bc65485cfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Spoils",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a27ce41-69e7-4b86-9b9c-1a724d0728e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tattered Mummy",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59715c84-8eed-41ad-aaf9-cfcce4445254",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan, Dragonsoul",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "34750304-c536-47d4-922d-a3654c37ffbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kargan Dragonrider",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b96a7320-089a-4a7e-813f-49ca1620df76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan's Dragonfire",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07135c4d-b4de-4054-800a-11090ed32692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarkhan's Whelp",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d389b8db-5866-4146-a379-f24b6463622b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c185555-acd4-461a-821a-b21b7b0914a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien of the Arkbow",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "323f3c76-5e79-43e6-ae78-f555810edbc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aggressive Mammoth",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f320e9f2-963d-468a-bf7a-726ef11e886d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skalla Wolf",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e60b6c02-c1f1-4ab9-bd62-ae3b447a898f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ursine Champion",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4b406cf-738b-4e65-ac00-b1c36ded5f96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Jaguar",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f163cfbf-6df6-4af5-9fe4-23b0d511586a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nexus of Fate",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cd0b4d6-9753-46a3-924c-2adf3dad2819",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sun Sentinel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "194d52c7-cdaf-49bc-ae32-350a526af239",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Air Elemental",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d2115c3-aa6d-4c81-af55-5b740287b8aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Befuddle",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "574f73a7-9ff7-4ce3-9f56-002af968d35a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mist-Cloaked Herald",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56e109e2-b8ff-47d0-a962-dc996c1656e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waterknot",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fd574a9-2034-402c-9fd6-83c4b9db83d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grasping Scoundrel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9395fce4-11bf-4934-8323-5be4862c9779",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radiating Lightning",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73542493-cd0b-4bb7-a5b8-8f889c76e4d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Elves",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19316cbb-d1af-4ab7-b588-78637503e986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sai, Master Thopterist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "m19",
+    "setName" : "Core Set 2019",
+    "variation" : false
+  }
+]

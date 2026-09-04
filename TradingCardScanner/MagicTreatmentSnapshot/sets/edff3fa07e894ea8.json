@@ -1,0 +1,2503 @@
+[
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f9de8d1-03f9-491b-8871-d297a0543de9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tomb of Horrors Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bee7ac7-5a66-4ced-ad3a-4b19e3256c3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volo, Itinerant Scholar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fb093f0-3b6f-438f-9ff3-373430140794",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizards of Thay",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "328ed5e2-66ca-4c44-b834-70dc4880c535",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Altar of Bhaal // Bone Offering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "536f7d4d-701b-4358-8a26-da1463a509aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Brass Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb7b099b-9b0f-4897-8665-bc55e437a5eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astarion's Thirst",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dec899f3-c145-4452-b0c1-6dcb3960c25f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Money",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76cf9228-de22-4625-ac6c-2e71f8041289",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call to the Void",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ed84097-1710-4789-bf65-9793a2fd6ecf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultist of the Absolute",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17fa8573-b0a7-404e-aa3e-838bf11531f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elder Brain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce9385f6-f00f-448b-8c32-a85397280b6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eldritch Pact",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c36156ba-9e15-4da5-bfbf-0a092478d3af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intellect Devourer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a05b07e-8e4f-44f8-8f6a-7f4333cc6539",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pact Weapon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47a6569e-ab96-4c84-8985-57769be3cc35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenloft Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d8f57cd7-0cda-4bc9-ae4a-f01a24d4dc08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Dark Justiciar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe6bb58b-9c57-4e43-90b8-b0a6f8a38006",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Copper Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab97e063-1e9d-4a3f-9907-9e380dbeabee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdb8eae2-4f8f-4ed5-b61f-2a98c050aafe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45fd73bc-edd9-4629-aa8a-8a2999949c70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caves of Chaos Adventurer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e909fe36-e95c-4094-9029-a292a8fcf73a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caves of Chaos Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4bfa93a-e9b4-4881-a1e3-ebdc9d500dd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Descent into Avernus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfd9f3d3-d42f-45bd-a2b3-6390ca089f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elturel Survivors",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d732069-5c97-4bd3-a290-e7bd44fbacb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firbolg Flutist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9262cffc-e5ff-4460-a3c2-3196327c5f33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Fury of Avernus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14881c52-2623-4af7-95e3-7a33fe06ae47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Popular Entertainer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "624b2e32-72e7-40ce-9617-e04c318a835e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm King's Thunder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05d1b195-1142-4a9a-92a5-fda8c25c1e21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wand of Wonder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08b83d2e-6484-4482-bac3-f8588f796ea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrathful Red Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8844f9f1-37b7-407c-9772-3b971855807b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll, Blade of Frontiers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc438064-d606-4854-b0d9-33dfccc86be7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll's Reversal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "699d3077-e2a7-4228-9bd3-646d5e725b6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Bronze Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85610d70-6db6-448a-9c78-34a78710e2ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barroom Brawl",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc95d1bc-68f2-4a43-8545-cdd8b7ae8d18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bramble Sovereign",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87cad41f-bb38-4f5c-89df-42be69709b2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earthquake Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "77c6d1e8-fdac-46a2-ab2b-dd474009e54a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Friend of the Forest",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b387a940-daa3-4ba5-b897-3fdc2855d02a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira's Respite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ec3dd36-06b1-4886-81fb-6d3532ebf932",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Majestic Genesis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b78aff6-02c8-491b-929d-c7318d31d39b",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Monster Manual // Zoological Study",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44d0cc1e-c248-404d-a68b-ce449acb4ff8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Owlbear Cub",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e6ad5feb-a0b2-44e1-a7a3-ae5f1bf95b58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raised by Giants",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc55c2f5-1c40-431c-9b4c-e2ea4a15487d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traverse the Outlands",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d68382cd-da62-4c85-a5b3-3594a3302280",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undermountain Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23edce49-0b6c-4780-aeff-28d70bd53b51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alaundo the Seer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b49eb8e7-35b8-498c-9291-dc6dd9266124",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astarion, the Decadent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac69410a-14ee-4a53-ab60-fd19838a3dc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baba Lysaga, Night Witch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8427e319-1aae-4788-86c3-46c7b1e7ba7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bane, Lord of Darkness",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e266763-3af6-48f0-83a8-ab346d37f565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bhaal, Lord of Murder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d3e55d2-a433-4775-b80f-fb05a1ad9852",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Horn of Valhalla // Ysgard's Call",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bcef4b8e-ca94-4ea4-8770-a10cc5603c6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Council of Four",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f878e32-c959-4baa-9801-e93b0a76dc67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duke Ulder Ravengard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9cc449a3-a57b-45ed-895b-4e7d8a32e713",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dynaheir, Invoker Adept",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "387997e8-6f08-4c90-8ae6-3d54dd493f42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elminster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64835cb9-ec93-4b1d-8c6b-4be6ceb8a71c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gluntch, the Bestower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c79ab0b7-63e3-4c45-a067-f3a483d0546a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorion, Wise Mentor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "771378d4-68d7-4752-b2c2-b7a998c49dbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jan Jansen, Chaos Crafter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb3c3b1a-2f26-4f0d-8c8c-75da5dad6fa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jon Irenicus, Shattered One",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29734859-4e37-453e-a81b-4d3f55a21538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazzy, Truesword Paladin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01a6649f-ccd9-4a7c-9226-512029c9f7d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miirym, Sentinel Wyrm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25ea10b4-e6e9-43ba-8e26-71076cb24ab1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minsc & Boo, Timeless Heroes",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2d692c7-99cd-4602-8925-e2ac833d416b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minsc & Boo, Timeless Heroes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "83952c99-d1d5-4833-aa07-9796899be8ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myrkul, Lord of Bones",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4f62bc1-963f-4358-b5f9-1a59c5a7aa3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neera, Wild Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a326f4ad-03df-4155-9b12-60528ebbefee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine-Fingers Keene",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16c0bb8f-2549-45ab-bc2e-e45a4954d911",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raggadragga, Goreguts Boss",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a196419-83f9-4286-9e3d-93f0518e281d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raphael, Fiendish Savior",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15351c9b-b891-41b8-87eb-bebbd32c3670",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tasha, the Witch Queen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44ad5058-e01a-4453-951a-a8c7752265bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zevlor, Elturel Exile",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0dd2dac2-00a9-456e-8217-3ab8d7eff26d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Vlaakith's Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e645b9bb-db35-4fdf-aa7a-8ae217ec78e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basilisk Collar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd0157f5-bde8-4932-aaee-f0e2b19ba4f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blade of Selves",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ba515c5-b512-4e35-9ce2-33fcb76204b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel's Acrobatics",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e491a854-50bb-4d54-8fbf-05138a95ac7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fraying Line",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c0dced7-cc8e-45d2-955f-9e4e90f67d8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Loyalty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c017a4c1-9085-4849-8595-8d6af44808ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mighty Servant of Leuk-o",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6937c7be-9ebd-4407-99c3-4f3ddaa4436d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirror of Life Trapping",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8804e78b-57ec-47ab-b02e-461e0b7b3c24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nautiloid Ship",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58848bfe-9206-4fdc-8140-7dc7236594a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vexing Puzzlebox",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bcbed9d0-622d-4307-8c2b-39a7c7dfaa42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baldur's Gate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a061af8e-d1e9-478b-a1d8-c88e3ce061f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bountiful Promenade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "570e2736-cee6-4141-ad23-4853caa40c53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Luxury Suite",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5264ca3-755d-4219-a15c-4985fb2a76f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morphic Pool",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "124f2b48-ee22-4fc9-9493-b05474aabd8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reflecting Pool",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26fa2364-13f1-4bfc-a48c-81e1917770d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Heritage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd552175-2942-4c9e-ae87-743fac1ef706",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sea of Clouds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a2b3911-40f2-4a05-9eb7-57a29a35109d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spire Garden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a684ee9d-8a40-418d-8e6e-012e9c9d5de5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Gold Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "368a8492-1d87-429e-abcd-3a87c6f0160e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sculpted Sunburst",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95ec8866-8374-4b17-93db-f3cf9f01fec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "White Plume Adventurer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1f4081a-6200-4baf-964a-9c2219cb5497",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archivist of Oghma",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02d4ee28-62ef-442e-af80-30dc978e413c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windshaper Planetar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e990e4e-9987-4ed2-b0a2-39cacfc94152",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancient Silver Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45444db1-25c2-46e0-ad57-dcab603efc04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ascend from Avernus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b347ecf-d032-4d6c-9b4b-6e33c08a0722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Displacer Kitten",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25fe7b73-7e7c-436f-aae1-21bab34efefe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Displacer Kitten",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "546cce9d-4e2a-4a7f-85e4-908f0ee164d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elminster's Simulacrum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9cabfb2-f0b8-43ef-9319-df33b1fde2ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Font of Magic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "633f39a7-0e3a-43eb-942d-3822a8c01ad5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Waterdeep Prodigy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d733ce6d-ab4a-4966-aeab-c613bb528409",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale's Redirection",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02b5d22a-e928-42a0-a688-8994fcd358b0",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Illithid Harvester // Plant Tadpoles",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e75c36b1-5e57-4b72-b167-fc7b50ad2936",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kindred Discovery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ddf263b-b686-4de1-8a19-b4df049edb43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Robe of the Archmagi",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "106abe4c-8b42-45b5-a87f-ea023d5c00ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shameless Charlatan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eae141d6-f4a7-4223-ae4f-217415be559a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle Angels of Tyr",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a99a4eff-7745-4f8f-ab13-49ab8173c8e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle Angels of Tyr",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "pclb",
+    "setName" : "Battle for Baldur's Gate Promos",
+    "variation" : false
+  }
+]

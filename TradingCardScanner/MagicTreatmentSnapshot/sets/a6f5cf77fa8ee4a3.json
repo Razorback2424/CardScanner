@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "102★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "15c0c1eb-09ac-4d07-aeef-181af9f2a1ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Dark Realms",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-07-18",
+    "setCode" : "psdc",
+    "setName" : "San Diego Comic-Con 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "53ce8381-4cbb-4bf9-bdac-3b2375a46340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Pyromaster",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-07-18",
+    "setCode" : "psdc",
+    "setName" : "San Diego Comic-Con 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d61f670e-8e4c-493f-bef0-c4c7b0bcd288",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Caller of Beasts",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-07-18",
+    "setCode" : "psdc",
+    "setName" : "San Diego Comic-Con 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a2ff8a87-b07d-436f-9e0b-86ef6aa918d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Caller of the Pride",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-07-18",
+    "setCode" : "psdc",
+    "setName" : "San Diego Comic-Con 2013",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ca17ab95-2799-4822-a345-d81dc2c8dba9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Memory Adept",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2013-07-18",
+    "setCode" : "psdc",
+    "setName" : "San Diego Comic-Con 2013",
+    "variation" : false
+  }
+]

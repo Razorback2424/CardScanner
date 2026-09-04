@@ -1,0 +1,92 @@
+[
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1f9c8f9-dbb4-408f-835a-4b6c6abfdc74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Look at Me, I'm R&D",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-11-19",
+    "setCode" : "unh",
+    "setName" : "Unhinged",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdca743d-f861-4aec-b9cb-b7490dd3425a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Topsy Turvy",
+    "promoTypes" : [
+      "upsidedown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-11-19",
+    "setCode" : "unh",
+    "setName" : "Unhinged",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "5ca23782-80d3-4656-afba-f8440c813253",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast from the Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-11-19",
+    "setCode" : "unh",
+    "setName" : "Unhinged",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "aa30bf92-5281-4b74-8d2a-dc7b0467cb0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast from the Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-11-19",
+    "setCode" : "unh",
+    "setName" : "Unhinged",
+    "variation" : false
+  }
+]

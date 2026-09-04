@@ -1,0 +1,94 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3865036d-d1cc-4f81-8f2a-a5fef4c67fa8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anti-Venom, Horrifying Healer",
+    "promoTypes" : [
+      "boosterfun",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-30",
+    "setCode" : "lmar",
+    "setName" : "Marvel Legends Series Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "818a5c98-8740-43b1-a42a-6d2382138df8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectacular Spider-Man",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-30",
+    "setCode" : "lmar",
+    "setName" : "Marvel Legends Series Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "64b5818e-7d5d-42ac-8d81-e3ad625eb11d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huntmaster of the Fells // Ravager of the Fells",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-30",
+    "setCode" : "lmar",
+    "setName" : "Marvel Legends Series Inserts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b0050aa3-533f-4801-b315-59654e8766bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Spider, Stark Upgrade",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-30",
+    "setCode" : "lmar",
+    "setName" : "Marvel Legends Series Inserts",
+    "variation" : false
+  }
+]

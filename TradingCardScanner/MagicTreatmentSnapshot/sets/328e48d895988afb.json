@@ -1,0 +1,178 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "160c268c-db2f-4105-8f40-0237b59ed333",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Avatar",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6dccd622-264e-4867-b34b-324c94861241",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd51a6b5-1165-4df6-a30d-d46c729633f7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f8cdaea-32da-4c18-bcd0-18bbbda54afb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b935437-e097-466b-a9d5-6dc0dc6a10f3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67563770-a392-4f69-b93b-6029da639993",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f63920d-18a0-4267-bb4e-a972ba86067d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af3aa149-00fa-4932-b004-f64c8b5d3ca7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Gargoyle",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2009-07-17",
+    "setCode" : "tm10",
+    "setName" : "Magic 2010 Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,531 @@
+[
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "e9f4b7fc-8793-43af-ade3-b23846a80457",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "c4530da2-fd04-40d9-ad69-5c2847921509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Canopy Claws",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "7a414f0e-b157-4570-8213-1c58a96bf7a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "32a924b3-3bd6-43ad-acbd-1303dd670db4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crush of Wurms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "751bd716-5352-41d7-89fb-d5f100f6646b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Folk Medicine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "b43aee5e-b12e-43ea-9fae-16310acdc640",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Genesis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "92d23432-6181-44c3-8d36-d7632a8a329f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grizzly Fate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "5b3c5144-7e15-46c6-b819-d729ecb30bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Reclamation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "92ece630-e484-4221-911f-e32048894f23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riftstone Portal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "3454ef42-2e0b-4ce4-945f-e4ec3e83c39d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Strands",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "6d762c8c-6172-4dc0-8fcc-d0f6dd8ca013",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Revelation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "c3c38264-0d79-47d4-bca2-a20a991bbac9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Battle Screech",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "58095f6b-d937-4871-b3af-5c6a1d9c04b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "461413fe-0392-41c1-b50f-05e87ea1c338",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defy Gravity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ffaab905-0b97-42c2-a1a3-1e72275caa82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flash of Insight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "44670666-9028-4b4a-a5af-a3bf35fc6a21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wonder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0a5df970-c6ba-4824-b8ba-67244aec2b82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Therapy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "37de06dc-c0c1-4edb-9732-2d16dbabfb31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Filth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "fa2920af-e6a1-4939-ab59-67af4430e5b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d4e1d485-02d5-4a07-bcc6-d2a8d95763e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firecat Blitz",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "eeb5c96a-1d16-459d-9968-ced9a8f1c520",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flaring Pain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "865bb1d3-5b7d-40e9-87cc-96be9524a105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lava Dart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0452d78d-eafc-4ccb-a478-d1f46bcefffe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Surge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-05-27",
+    "setCode" : "jud",
+    "setName" : "Judgment",
+    "variation" : false
+  }
+]

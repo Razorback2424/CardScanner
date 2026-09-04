@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed39da4b-d24e-44bb-a534-a43b63520692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ormacar, Relic Wraith",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-24",
+    "setCode" : "ph23",
+    "setName" : "2023 Heroes of the Realm",
+    "variation" : false
+  }
+]

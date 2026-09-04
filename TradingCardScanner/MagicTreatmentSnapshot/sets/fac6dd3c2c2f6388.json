@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c5834227-e292-495a-b8dc-ee80085da72e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Sisay",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-21",
+    "setCode" : "ha1",
+    "setName" : "Historic Anthology 1",
+    "variation" : false
+  }
+]

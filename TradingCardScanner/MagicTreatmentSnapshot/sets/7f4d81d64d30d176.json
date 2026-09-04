@@ -1,0 +1,301 @@
+[
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "932d753d-9584-4ad8-9a5e-a3524184f961",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Lambholt Elder // Silverpelt Werewolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "6f35e364-81d9-4888-993b-acc7a53d963c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Scorned Villager // Moonscarred Werewolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "cb09041b-4d09-4cae-9e85-b859edae885b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Loyal Cathar // Unhallowed Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "1303e02a-ef69-4817-bca5-02c74774b811",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Wolfbitten Captive // Krallenhorde Killer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "aae6fb12-b252-453b-bca7-1ea2a0d6c8dc",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Huntmaster of the Fells // Ravager of the Fells",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "9d9c1c46-7aa7-464c-87b0-b29b9663daef",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Chalice of Life // Chalice of Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "683af377-c491-4f62-900c-6b83d75c33c9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Elbrus, the Binding Blade // Withengar Unbound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "f500cb95-d5ea-4cf2-920a-f1df45a9059b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Soul Seizer // Ghastly Haunting",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "7c5a3c09-5656-4975-ba03-2d809903ed18",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Chosen of Markov // Markov's Servant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "6aef77b3-4b38-4902-9f7a-dc18b5bb9da9",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Ravenous Demon // Archdemon of Greed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "a2c044c0-3625-4bdf-9445-b462394cecae",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Afflicted Deserter // Werewolf Ransacker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "b6edac85-78e7-4e90-b538-b67c88bb5c62",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hinterland Hermit // Hinterland Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "b150d71f-11c9-40d6-a461-4967ef437315",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Mondronen Shaman // Tovolar's Magehunter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-02-03",
+    "setCode" : "dka",
+    "setName" : "Dark Ascension",
+    "variation" : false
+  }
+]

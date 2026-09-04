@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9ad6e7a-8ad8-4a35-b6c9-151720d88af9",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Venser, the Sojourner Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-03-30",
+    "setCode" : "tddi",
+    "setName" : "Duel Decks: Venser vs. Koth Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89afdaa4-3555-4adf-b3c4-63f905710c76",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Koth of the Hammer Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-03-30",
+    "setCode" : "tddi",
+    "setName" : "Duel Decks: Venser vs. Koth Tokens",
+    "variation" : false
+  }
+]

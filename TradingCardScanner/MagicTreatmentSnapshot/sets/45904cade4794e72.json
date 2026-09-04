@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8a448dbf-08a1-4145-a4b2-0265cc9f2e53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Renegade Leader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-06",
+    "setCode" : "ddu",
+    "setName" : "Duel Decks: Elves vs. Inventors",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "868bb9fc-6b55-471c-9963-055ed2221526",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwynen, Gilt-Leaf Daen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-06",
+    "setCode" : "ddu",
+    "setName" : "Duel Decks: Elves vs. Inventors",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "22ecead7-58b3-4e34-8f7d-b095abee7f24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yeva, Nature's Herald",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-06",
+    "setCode" : "ddu",
+    "setName" : "Duel Decks: Elves vs. Inventors",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "107b2271-ec4d-4c4c-b52b-ecf698066aef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia and Kiran Nalaar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-06",
+    "setCode" : "ddu",
+    "setName" : "Duel Decks: Elves vs. Inventors",
+    "variation" : false
+  }
+]

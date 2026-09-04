@@ -1,0 +1,244 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e44f31c6-8837-4659-98b8-98206f18cf92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4be19a74-09c3-4eb3-ba77-3e7700779cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17d36674-2598-4df2-b9f3-0224ae08d37d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7da9157-fdb6-477f-a605-5ee325410fda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f04144b-5943-4d24-8a1a-ff5009322fd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uktabi Orangutan",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc9a7c57-bc83-4965-b670-144a0019b466",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chill",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01230f9e-9d35-47a5-bd96-2cf584b439e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pillage",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d682f2d-cefa-451f-b58c-2d3c96de23f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Tutor",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "632fd85f-036f-48ef-8b3a-36f3d14f4dce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stupor",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d453e952-0b24-4b95-849c-25fecc9c683d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4311e22-d106-456a-9d81-6d6c6fbee9a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "arenaleague"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pal00",
+    "setName" : "Arena League 2000",
+    "variation" : false
+  }
+]

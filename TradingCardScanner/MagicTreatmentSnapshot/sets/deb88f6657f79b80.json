@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05abf2df-833f-4172-af74-6533b022dfa9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier Ally",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b87835c7-4739-45c9-a15a-889aa6b6b7ab",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a99c10f3-9f11-42f1-9007-c0320a1929e0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ogre",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c5a05d3-7824-4570-b32d-91fe2dced952",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1424e8d-1f96-44af-9382-c337b6695ddf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Plant",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04d6b47f-5c2a-4771-90ee-4aa8c1eda0be",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Construct",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-02-05",
+    "setCode" : "twwk",
+    "setName" : "Worldwake Tokens",
+    "variation" : false
+  }
+]

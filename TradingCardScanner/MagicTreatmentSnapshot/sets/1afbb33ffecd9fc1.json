@@ -1,0 +1,3100 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "72e637db-7112-406f-809b-0eda248488b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo, the Balance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baxter, Fly in the Ointment",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30f96e3b-fa3b-4737-ad66-1876a2482f14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamato Ninpō",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b6913056-de4a-45ac-a731-b478bdad6754",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo, Worldly Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9498b8c-cb1c-46e2-a0b0-6c53d27d0bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leo's Guidance",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8959c36-068f-48fa-ab6a-9dd24ba985ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splinter & Leo, Father & Son",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a9cd2d2-74ba-497a-828c-ba22fbb9f2b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splinter, Aging Champion",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60e9e931-6e64-439f-9513-c64cf17047f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triceraton Regenta",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c056bc2-e33e-4e8e-ab02-d5d0a4c8a13c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wooden Cane",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cd6d7bba-2de4-49fe-8e07-a7c00c6bfc96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "April O'Neil, Human Element",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5a92ec45-3eb5-4212-bdbd-073cbd0299d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Containment Protocol",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a80b791-17e1-46be-bc65-ab96f52b23dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donatello, Rad Scientist",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "096a07e2-c213-4f8a-852f-813435bf1655",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Here Comes a New Hero!",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7f0365f-ec72-4472-9506-6cc3e490b2e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donatello's Science Lesson",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b4bdb8c-e19f-46bd-9743-edc26ee5c8e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donnie & April, Adorkable Duo",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ce6647c-343a-45e8-9b6e-0292ae01ec81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Utrom Monitor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bc235c57-b263-418a-8d33-094d9ba1f5e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casey & Raph, Hotheads",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2754751-031f-4682-86fd-ea9a60a33a05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casey Jones, Asphalt Hooligan",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e27bc544-ff5f-405c-914e-b727341b776e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monster Mashup",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3bae5c7-2c4a-42a6-a108-3f23d70204b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raphael, Tag Team Tough",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cf1aa146-fa2e-4996-9b36-2262d3cdc04d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raph's Bravado",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c3128529-4ccd-4809-8388-03f7faa0eabe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Irma, Part-Time Mutant",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18836218-292e-4217-b040-2658cea94a29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Steel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "909b765a-1a2b-403b-8842-657e0d482357",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ticked Off",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d54cd688-8950-4a84-a74f-5f31b344b6c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foe-liage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60a80d88-1f76-4a97-9e61-3a0d6304c9c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Michelangelo, On the Scene",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb7fdad9-8a39-4c66-b9d2-cfce8c4928a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikey & Mona, Mutant Sitters",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41f1503b-b056-4f7c-94a1-1e6d78eb209b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mona Lisa, Ever Adaptable",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb73c782-d246-4a4c-b15c-e7d8f944221a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prehistoric Turtlesaurus",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "128",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c609e1a6-3976-4d54-889d-e95ba4f25c1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Study the Classics",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7e2ece7-8182-4ad8-a266-bffcb4be4522",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turtle Tracks",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "08a0ca58-e29e-477e-9377-f8b00e4b28a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krang, the All-Powerful",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5eeb4a0e-20d4-461b-954e-ef65c8612f68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Manhole Cover",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ef9d3e48-85c2-4347-810f-a6a0725b288d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "fd3e5359-97c4-41ec-b18e-4abcd2205886",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waste Not",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "5021063d-c5a1-4925-8ac6-0113b8c58dc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Food Chain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3deafdae-9083-4d64-b0bb-6204a1b6536a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supreme Verdict",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4b470e1e-579f-4230-99dc-ee4a833bf5bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander's Plate",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b35b5b3f-3daa-4091-9de4-1e6a7da27a74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Hearth and Home",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "796c1b1c-c701-4c7e-922b-0964f04e03a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray Fillet, Wave Warrior",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af2a1494-9c0d-4590-999b-2c52725dc5d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bebop, Skull & Crossbones",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe4ab58f-3fb5-45fa-8ea1-794efa6f7da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dimension X Pizzasaur",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f43fa5c7-51e6-4824-95f8-837ccc77a6ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foot Chopper",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1eb50a6-07e2-41de-b948-8075bba197ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Game Over",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b215ce4-a085-4627-99b1-f4f1344ad41b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rat King, Pale Piper",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "774716f4-d211-497a-be91-69cd700edbf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donatello, the Brains",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ddf4d3c9-bef9-4796-91ef-3d5beebae571",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shredder, Shadow Master",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "442feb65-9c0f-4962-8518-78e6d314c916",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swift Demise",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "416d888d-2699-49bd-830b-bf5bda25c91f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casey Jones, Back Alley Brute",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ead9586-2b40-498e-90d3-c8a3aa81ef92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electric Seaweed",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe07512e-46c1-4f45-a06f-5875acaf8928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fast Forward",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d180bb8-6a33-4c55-b4c0-2abbf6595d7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shellshock",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "600e2c3f-dfbd-4d5c-813a-47ae2d75ac12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Special Move",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ccb74c9-046a-4d6b-b8c2-641e2a238d52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempestra, Dame of Games",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tokka & Rahzar, Unsupervised",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b9077ef5-d19a-4106-950b-bb49b3b37510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Score",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "06c595fa-55ff-46f3-afaf-17edae465864",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splinter, the Mentor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0cacd61-bdce-46c6-ac7f-b084987d9aec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leatherhead, Iron Gator",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d4398907-17d2-4fad-bfa9-56925fb75834",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Level Up",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "74c24ff9-d3d2-4ffb-bf8b-dba803481a99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ninja Pizza",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ae25d91f-5489-4cd8-8634-42bcd32d4cf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocksteady, Mutant Marauder",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52bed0d4-3bcf-4770-b9c9-2a1d0666d220",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Super Combo",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0b94a92-48d5-4d08-a8fa-6f3a992db941",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Double Jump // Flying Kick",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2fd1df8-cc67-4209-af9d-5cf18c68cca9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcade Cabinet",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9ae6898-6b5a-43bd-8c84-4d8add285f7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Big Mother Mouser",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca053574-2ac9-4814-955d-87a97e0aca7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coin of Mastery",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dee26c1c-f890-46ca-81bb-2bd63fa691c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exploding Barrel",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bccdd54c-e64b-44d2-87b3-e80029672529",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raphael, the Muscle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "248757d9-f590-4f90-98a5-3df947b2bff6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mole Module",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3fc23e7a-5059-4c8d-85bd-224f4c1bfc1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roadkill Rodney",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9cc16f9-fea3-4527-9b81-3c84ce9c5e01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Big Apple, 3 a.m.",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f356522c-018d-43c7-988a-9ef9829ae75c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Hideout",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "1b19f82a-9724-41b1-934d-a8ec1493587b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Together Forever",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87514302-be90-4afe-9508-d9742425d1ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vanquish the Horde",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fb141d9-addd-47ad-bfc1-b5b376d4c950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wave Goodbye",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc6c4337-7d3e-4700-9473-26185c109166",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blasphemous Act",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e2ee84d-1d11-48a3-b79d-6a67991a2e60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acidic Slime",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e850205-d010-49af-b68b-262360751b70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biogenic Ooze",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bac2d744-db65-4b56-8634-c87fd00c090e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Michelangelo, the Heart",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4824ad7c-e533-4357-b486-9e908721db65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivate",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90b42c40-d6ff-4fda-a040-1594f0ef9585",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonize",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7869df96-ce77-45c0-829f-367819806356",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steelbane Hydra",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6952b1c3-2a18-4ad5-8130-861fce1cb422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vigor",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f415b285-4771-43ba-9534-244e446f8f72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voracious Hydra",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "932efc19-9bfd-4501-a623-ff6765a356d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85caf05a-035b-47c0-975c-dec76799ffcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corpsejack Menace",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "049ca0ff-0ca4-44f7-b144-731cf453afa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Signet",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68625010-3e4e-4400-b503-bf381a7fd81b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Lantern",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14dbce79-1fcc-4cc9-bf38-7729e44a411e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Ring",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ccc2a4e6-f505-4040-9d8a-c7b8e1a2b55e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroes in a Half Shell",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8510205-4baa-4f1c-bf64-5d931e2ddf48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ash Barrens",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45f13a94-c693-4a3b-a0bb-f18ae9fb1ca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cinder Glade",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c21565d0-fc40-4d89-9b27-87c03385e0af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "City of Brass",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d51a621-be31-4b74-8e0b-3958180a8bc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "897976cb-a242-493e-b215-843bcdb6b44d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonskull Summit",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a30f5555-2fbe-4c88-9e4f-1f2e81ea6cfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolving Wilds",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac9d97ef-a64b-43ef-8e4d-f3ebe46d9932",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exotic Orchard",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c787c6b-b6c7-47a0-8f8d-761629f5568e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b07eb189-559a-4cd5-95ac-f6612fd11cf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Coliseum",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7598a728-796b-4b82-b269-217ecca44c2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinterland Harbor",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c99c472-8820-43d8-9dfa-508dc3d07478",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Continue?",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4c1c9ba-d930-435c-8978-f10a2adb3d4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path of Ancestry",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70e5e700-b215-4a55-ae96-04e9f886cad1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rain-Slicked Copse",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f01bb3fd-14c6-47cb-aba3-e3069da56c9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rootbound Crag",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4746e54-974a-4743-ab9b-a9e49034b16d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoldering Marsh",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b5e219b-28fa-40e3-8afb-355ae767326d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sodden Verdure",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48444c3e-2068-4961-a9cd-9398052e5bd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spire Garden",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ab0a5f2-5260-403d-9522-954efc91e96d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunken Hollow",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26cb32c5-83b8-4288-ae2d-788cdc4e6445",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Grove",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90bf15bd-4167-4a66-8729-73af5c65692a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Isle",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7c7d0c0-ada6-4c89-b47b-977e35e67b39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thriving Moor",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "387f6f60-69da-4965-9ab9-57bdb763a013",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endless Foot Assault",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f25aa8aa-e2f7-4634-8a96-2082e76c6503",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undergrowth Stadium",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba8f92ec-cd84-4958-9b31-b89598cb274d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vernal Fen",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5e7cdb4-7b4d-4c6c-b016-d6cd3f9a04f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vibrant Cityscape",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "514b6ffe-c887-4be5-8755-5da8e15e0cf4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonardo, the Balance",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e428acf5-056e-4212-8069-d2b2c095c9f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "April O'Neil, Live on the Scene",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3c9595dc-e078-4b27-bf55-89574ce154fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donatello, the Brains",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2ef22a88-14f2-4f71-86f4-56e2ac2870a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krang, the All-Powerful",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d7ed8569-7b6b-4924-aedd-4210930e3bfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bebop, Skull & Crossbones",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e11dfc36-0a70-4a7e-8395-854684a81a2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shredder, Shadow Master",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8729bd29-d525-4883-9455-6976218d28e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splinter, the Mentor",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7265ab42-5434-4127-acd6-8905ab63d62d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "April O'Neil, Live on the Scene",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "797589b8-a419-4396-91ba-ce6695291559",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casey Jones, Back Alley Brute",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1821e80b-f2f6-479a-a422-237c6cc644f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raphael, the Muscle",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4c6b7f78-3882-42cc-bac5-4df33938a6f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Michelangelo, the Heart",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "00cf8be8-8359-4172-8e86-07ecbbf1fd58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ninja Pizza",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4f40a1d3-eb94-455d-a1f3-fcfd91fd888b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rocksteady, Mutant Marauder",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "31375e66-6519-4131-849f-5aef1ec4c4d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Super Combo",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f611ebb9-8e71-46ee-b24e-9f2404678013",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroes in a Half Shell",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8f586a85-f9b7-49c4-bfb0-e348b9088841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Big Mother Mouser",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f15d16e-b9cc-4edd-9792-f5d452488778",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Definitely Not a Turtle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-03-06",
+    "setCode" : "tmc",
+    "setName" : "Teenage Mutant Ninja Turtles Eternal",
+    "variation" : false
+  }
+]

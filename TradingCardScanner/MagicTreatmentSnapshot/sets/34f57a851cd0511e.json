@@ -1,0 +1,577 @@
+[
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24c1706d-2faa-452b-a192-204386df29f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirri the Cursed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "94a9dfa5-0e94-433e-8f4a-edfa2dac4913",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crovax, Ascendant Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c21655e-fda4-4852-a801-c5593644044a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma, Angel of Fury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2890840e-da0b-40ba-b3c2-7e4af39922b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya Ballard, Task Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "783f1b9f-9866-4ead-96cf-88babf459ce2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thelon of Havenwood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9554f402-35d4-43ac-9494-9d17d2a79092",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dralnu, Lich Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54c32735-e8e7-46a1-84ea-92806f459e84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ith, High Arcanist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa6c3c8a-aa35-46b3-8769-27b4244457b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira of the Ghitu",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e9a163e-7896-47bf-9b9b-dcf011402ce7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek the Merciless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7924e5a5-9614-4fd0-a621-80fa3103cc22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heir to Keld",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4176dda4-ec5c-4734-bb48-0876304aa219",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saffi Eriksdotter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87545415-2e27-4841-a3af-7653af2ba6d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sliver Legion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "950ee61d-0bc1-4d7b-ba68-157061aa98eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma's Memorial",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db5686b7-4b7b-4127-9330-9282f36bd70b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara of Corondor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0acea27-88de-4d27-8da2-8f82439526a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flagstones of Trokair",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f273641-c5f3-48bc-b89e-3cff52d26a0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Caverns",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5daf0fe9-d567-4749-b649-4bfc929cb238",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kher Keep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e1a9e38-6ffc-490f-b0be-23ba4e8204c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg, Tomb of Yawgmoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "278e97cf-312d-4e9e-bc39-023f4e547121",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lingering Souls",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "fd78ce3d-cf5a-4f1a-9a47-7872be8cf45c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinkweed Imp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "e655061a-8071-4b7b-b993-27f9ea360f7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Past in Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "4bf17671-5323-4c84-8215-d58dd2189cdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prized Amalgam",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "special",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7466be25-5d41-408d-90eb-6de47ea11484",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Bloom",
+    "promoTypes" : [
+      "buyabox",
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8fc5e4a8-ea7b-4803-a7ed-3b915708661f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Mage of Zhalfir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c08dabd1-c043-4bcf-afa8-271225a099e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venser, Shaper Savant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-19",
+    "setCode" : "tsr",
+    "setName" : "Time Spiral Remastered",
+    "variation" : false
+  }
+]

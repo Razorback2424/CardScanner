@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb911c45-9f6a-4cf2-aa1e-4361cf170c17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Millicent, Restless Revenant",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "ovoc",
+    "setName" : "Crimson Vow Commander Display Commanders",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9e57391-bda4-4c2e-863d-16ad5ec483a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strefan, Maurer Progenitor",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "ovoc",
+    "setName" : "Crimson Vow Commander Display Commanders",
+    "variation" : false
+  }
+]

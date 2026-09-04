@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "42ec3561-019c-49cc-95d1-d1282c1dfe76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elusen, the Giving",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-08-01",
+    "setCode" : "ph22",
+    "setName" : "2022 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24527eb8-ae2f-4154-80b7-7bf588862981",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizard from Beyond",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-08-01",
+    "setCode" : "ph22",
+    "setName" : "2022 Heroes of the Realm",
+    "variation" : false
+  }
+]

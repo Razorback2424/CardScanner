@@ -1,0 +1,556 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ded0147d-220f-411d-8950-fd8a47786f6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nowhere to Run",
+    "promoTypes" : [
+      "standardshowdown",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a07db360-ccf5-451c-be5e-a9b43992dc4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mister Fantastic, Reed Richards",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "92a26fea-d0e5-4e50-93c8-e1785be40f95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Echo, Perceptive Prodigy",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1881823-524b-4cac-bf12-6053a1b6e3ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Deed",
+    "promoTypes" : [
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72ef7900-4c25-48f8-9651-1d251cb2e6cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hellcat, Undying Vigilante",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-07-17",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "262d6907-f598-433a-8a11-cb8fd96a4adf",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "An Unexpected Party // At the Door",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-09-04",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "09f8b967-96fa-4c2b-b331-85b3704770c0",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Bilbo, Luckwearer // Burglar's Plot",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8a34a1f6-c0a7-419b-b40c-7ab0dc9ec857",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wood Elves",
+    "promoTypes" : [
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "841d539f-4578-489f-b41a-55c884a7a9fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Highly Illogical",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-20",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1750e98f-344d-4fdd-bc9f-2ef239781a24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Munitions Enthusiast",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-20",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dceabd88-d8e0-4e19-a625-e8c5b1a2a33a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Simulacrum",
+    "promoTypes" : [
+      "playpromo",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-20",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "007dc743-19e4-4086-8afe-364116b0c91c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Farhaven Elf",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4a2552ae-a1ef-4558-860f-7b1c0e749f9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burst Lightning",
+    "promoTypes" : [
+      "playpromo",
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-20",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64bf92e9-406d-4c73-a082-17b4c12bf666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crystal Ball",
+    "promoTypes" : [
+      "playpromo",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-09",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2625812-a7b5-4956-9a2b-9a783ead783e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tragic Trajectory",
+    "promoTypes" : [
+      "playpromo",
+      "standardshowdown",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-02",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ee146904-a45b-4ecc-b2f6-3f72430e09e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of Anticipation",
+    "promoTypes" : [
+      "playpromo",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-10-30",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8737ee71-d1c1-4977-a509-c2c121f7ac4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Lotus",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-05",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f4ebb5a-936a-45bb-9bfd-5cd0c6d2fd97",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "The Eternal Wanderer",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-17",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6bc6ff3-f466-4cb0-8b4e-a20d8ed129c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+      "standardshowdown",
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-01",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2155537f-37b1-4121-9612-63781b461497",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courier of Comestibles",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-01",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cbe07254-5a32-45d6-b0c0-d842640deb47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spicy Oatmeal Pizza",
+    "promoTypes" : [
+      "universesbeyond",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-01",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e412870c-62bc-4ab7-a3e3-755b6228fa0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Into the Flood Maw",
+    "promoTypes" : [
+      "standardshowdown",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92d37929-fc8b-40a9-8c25-ca79ae750d58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Access Tunnel",
+    "promoTypes" : [
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pw26",
+    "setName" : "Wizards Play Network 2026",
+    "variation" : false
+  }
+]

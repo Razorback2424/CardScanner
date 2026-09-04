@@ -1,0 +1,354 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1a41d0d-aaf5-4cb4-a9db-07992c57e436",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Giant Warrior",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b1ac66f-4b21-4acf-b51b-41c9d241d971",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e9c63b7-ec72-443f-9216-5cb7bd07e940",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elemental",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15854c49-14fd-4947-8444-c5ab614cb416",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d75c1ada-2a49-49e8-800d-f11d08263dde",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treefolk Shaman",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1eb3b8a-f9d3-4ce1-b171-ba7b0c3f4830",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Faerie Rogue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "828b9eb1-ccdc-4540-9d53-7853539af189",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Worm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "014c0557-11b8-49da-8486-0dd14b919338",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Elspeth, Knight-Errant Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28adced8-4f86-4dc7-bd21-e20ba403219c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Kithkin Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3317ef0-5104-41de-9e7a-2629ad658ae7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b24ae780-d226-4deb-9a4a-91262763d0cd",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Illusion",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89d7ed94-564b-415c-b590-d89c972384a1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33bd708d-dc84-44d3-a563-536ade028bd0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin Rogue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d833298-a270-4b89-987c-5b6432bbc311",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spider",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "738dce42-9852-4ced-8e9e-4639fad8b79f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "529930fe-a1af-42fb-85a4-4999e787b25b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Dragon",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2013-06-07",
+    "setCode" : "tmma",
+    "setName" : "Modern Masters Tokens",
+    "variation" : false
+  }
+]

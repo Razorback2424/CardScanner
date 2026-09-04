@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "245★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9ab53af-749e-4559-85fa-f8d4181cf7da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dimir Guildmage",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-10-07",
+    "setCode" : "prav",
+    "setName" : "Ravnica: City of Guilds Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c62b3627-34d3-4c05-b479-c2cfbf3b8c91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gleancrawler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-09-24",
+    "setCode" : "prav",
+    "setName" : "Ravnica: City of Guilds Promos",
+    "variation" : false
+  }
+]

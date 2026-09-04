@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4bdc1632-6824-4059-a6bd-bce9cd4a02f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voidmage Prodigy",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa47df37-f246-4f80-a944-008cdf347dad",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3b8ae33-f0c3-4fe7-8121-41307d13bb4a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Sliver",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e1fc8db-f4a3-4f9c-bfab-64d5a3968435",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bear",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08ca3900-3845-40ac-8581-d4aebc2850a0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "084c3292-c3ec-431e-b162-309b5cf6309e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Demon",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5489e26-6aec-4706-9c3e-8454878fa6c3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rukh",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-01-01",
+    "setCode" : "p03",
+    "setName" : "Magic Player Rewards 2003",
+    "variation" : false
+  }
+]

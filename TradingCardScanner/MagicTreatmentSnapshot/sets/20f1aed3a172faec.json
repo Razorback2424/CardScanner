@@ -1,0 +1,575 @@
+[
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ed39a719-8a4b-4749-adeb-74cd82d9b416",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whitewater Naiads",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "477a30f3-3cbe-42a5-9fae-fe5885a8cf25",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boon Satyr",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0d82f171-b1f6-4e80-996a-c579a1be252c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Blossoms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "31a147bb-37ef-4a52-82e2-160a53323516",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Dead",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "58c56bad-68ed-4328-a7ea-c528b58dc2fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bruna, Light of Alabaster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed3f19aa-1131-467f-8ae5-065e14aeb153",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos of Meletis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb87532e-9d81-444d-b3ef-69b2528b6311",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bosh, Iron Golem",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7849b360-afad-4f50-b455-3d118f7bfcd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varchild, Betrayer of Kjeldor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "5cf50d41-02ce-4a39-b3a0-82ddd7277fca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea's Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c723c7dc-a452-49ec-a4e5-9e516fe530e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arixmethes, Slumbering Isle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8f6fd4d-7761-482c-a641-97eab1553e6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brudiclad, Telchor Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91585912-038d-4d26-b552-0e7c48ba1e4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gyrus, Waker of Corpses",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "6d49d5e5-fca7-47ec-89f0-282641413245",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kestia, the Cultivator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a031a6c1-d7d1-4980-ac8e-30440ff4408f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos, Urza's Apprentice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91c54ac0-0edc-406f-8a22-f2996f604f36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thantis, the Warweaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bdda07ac-2f9f-4c8e-b3f6-b54d0afd730c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tuvasa the Sunlit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "715af497-ea9d-440e-90eb-5da45a61c1ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varina, Lich Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89b03b9a-7e20-47cb-bc64-23513acea855",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xantcha, Sleeper Agent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb51b2a8-035c-44e6-92db-2e2385066470",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yennett, Cryptic Sovereign",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3bd81ae6-e628-447a-a36b-597e63ede295",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuriko, the Tiger's Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "aad93570-b50a-405a-ad73-03f97594061f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banishing Stroke",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c40cb58f-370f-487a-9a96-bdce173aa3c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestial Archon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "09aa3482-a068-4018-bbbf-8097a8d1482b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "c726193f-e7bf-45b0-8eb5-2e9f62f5e7b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "037b396c-2146-4d86-9d13-757685c850c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Imagination",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "2d493bd6-af71-45be-bd4c-1d8f94bca19e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastation Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-08-10",
+    "setCode" : "c18",
+    "setName" : "Commander 2018",
+    "variation" : false
+  }
+]

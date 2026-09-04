@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6bae30ba-1402-4a42-8dee-a899150fcc6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cerise, Slayer of Fear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-10-10",
+    "setCode" : "ywoe",
+    "setName" : "Alchemy: Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2efa20f2-2ff9-4066-9f3c-ff77afc30494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hex, Kellan's Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-10-10",
+    "setCode" : "ywoe",
+    "setName" : "Alchemy: Wilds of Eldraine",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "577278fb-117b-48b2-b78f-bed99698ef4b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Joshua and Syr Saxon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-10-10",
+    "setCode" : "ywoe",
+    "setName" : "Alchemy: Wilds of Eldraine",
+    "variation" : false
+  }
+]

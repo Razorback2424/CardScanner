@@ -1,0 +1,716 @@
+[
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "541e06cb-5616-40b4-9d36-89471a795ac8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coffin Purge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "47a4e7d0-ff09-4e19-8456-f4845f56dc8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morbid Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "937465ca-4cf7-4412-86eb-264efb0fdddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morgue Theft",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "93e3c013-319f-4a77-a55e-11323468b8ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skull Fracture",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "284d5203-92db-4b1f-af73-fd372c8244cf",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Zombify",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : true,
+    "variationOf" : "6b3c52fd-534a-432b-bf64-3905c11dfa37"
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "694b24de-d7f8-49c6-8ab3-d5fab13b6a8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bash to Bits",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "e2e10742-77c9-4f91-81b2-37b2ac910f09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earth Rift",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "164a92ac-0788-4238-a2ed-1ebd3dd0dd88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Engulfing Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d5e45005-dd81-4d80-b043-02f719aca929",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firebolt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "3f28b2af-7891-49eb-a07f-5552b5fe3d15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ancestral Tribute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0938e686-345e-4411-b564-cf9324ec6b9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reckless Charge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "431145f8-64e9-4e7d-998a-21fe55f49e01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recoup",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "0672960b-4cb5-4ed6-ba3c-6b97290e0330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scorching Missile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "36848fb0-4070-40cf-b24a-2e8f47c5ebc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Embolden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "98d03ec3-2279-4266-a3bd-4cebdcb04d70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seize the Day",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "97daab4b-d934-4a3f-a043-f7c9c1dd32bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Spray",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "4f663979-a778-4fb2-97c4-67ab82926f13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volley of Boulders",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "6a5ebe27-2083-400e-8943-b506be470e3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Attack",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "429a88cc-53db-4c5e-a061-f0f49a38c675",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Call of the Herd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "84273844-7fab-4ff7-afb3-c82153132daf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatter of the Squirrel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "148ce683-3911-4b77-9e07-3985766a3777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deep Reconnaissance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "b4abdf1c-a0a9-4e1d-b448-58742830f767",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elephant Ambush",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "9917cf32-0236-4463-9b1d-e8193754ff97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howling Gale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "40ebe935-ccf9-435e-8fe8-53bcbf3526e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moment's Peace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ddf54317-4c08-4a66-9fd2-9983384e2374",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roar of the Wurm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "576e3ccd-40a3-4ea9-8e76-5e70b2ef9123",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Might",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fb5977c-5009-4d97-82c8-c150a0d41bc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seafloor Debris",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : true,
+    "variationOf" : "9e492399-d514-485a-8cdd-a3797a05e47a"
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "9940f593-021f-44cd-9725-0779a2808b6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ray of Distortion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72†",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ae87f9d-d6eb-4178-a99d-76a9dffacf28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cephalid Looter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : true,
+    "variationOf" : "cb6f1c4e-4fbc-4474-8dd2-5846d417b6ab"
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "04217c17-7c29-4b02-b9b6-bfa1df50d4bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dematerialize",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "ed13fdb4-f28a-43c9-a69f-bab227806c39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fervent Denial",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2001-10-01",
+    "setCode" : "ody",
+    "setName" : "Odyssey",
+    "variation" : false
+  }
+]

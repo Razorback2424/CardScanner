@@ -1,0 +1,399 @@
+[
+  {
+    "collectorNumber" : "13",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac8cd054-99aa-4d6b-aa01-bfd9d25495c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tome of the Infinite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1d38c8b-d3d0-4250-a89a-e6b67a93d5f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "6317573e-d892-48ce-bba4-76f9f632ed2b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Heir of Falkenrath // Heir to the Night",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03648d6b-01a2-4de0-8d2a-c49f45d3d803",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marrow-Gnawer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f902a1cd-d04f-4a8c-9aed-a618d0a2e2fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1712c36-4c40-49b1-a156-c03e31ddda02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Ripley Vance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "495",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7515e5b3-5240-480d-8a0e-5a989c1a906d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pashalik Mons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98b0b01d-0ec7-4f5d-b6b1-fc166fc5a051",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeve, Progenitor Ooze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "543",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39f73116-3dd2-4c87-be0f-8ad5e3b59e4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayula, Queen Among Bears",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "552",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "30310d1c-27b5-4d49-95ea-aad530190974",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "627",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d194c605-86ec-43bc-b60f-57f2aaa82e09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "683",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61093e82-401a-4c56-a627-1455a9a337b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Nightmare Adept",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "691",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f64d033b-8a30-4ba7-b3ae-b67997a396f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The First Sliver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "703",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4b2e6f3-bba8-4ee5-b100-a5d89bd76253",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Cryptozoologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "721",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "75a91b53-8b67-4f0e-b715-1b736fd4493d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm God's Oracle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "722",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "7ddd45f0-b22e-48be-8142-512be7fb3d16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sythis, Harvest's Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "762",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "066f28c3-aedb-488b-bedf-531814c02250",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zabaz, the Glimmerwasp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "7e6b3fb3-897b-4665-b053-a29f25850b25",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hanweir Militia Captain // Westvale Cult Leader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "j21",
+    "setName" : "Jumpstart: Historic Horizons",
+    "variation" : false
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0c05072-b59a-47ce-8beb-f1673c25d6c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hamza, Guardian of Arashin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-03-11",
+    "setCode" : "ha4",
+    "setName" : "Historic Anthology 4",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90f86579-4db0-48f7-a9e5-21c44260329e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abomination of Llanowar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-03-11",
+    "setCode" : "ha4",
+    "setName" : "Historic Anthology 4",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6906f70c-8246-4f88-bb3c-93ab73273293",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marit Lage's Slumber",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-11",
+    "setCode" : "ha4",
+    "setName" : "Historic Anthology 4",
+    "variation" : false
+  }
+]

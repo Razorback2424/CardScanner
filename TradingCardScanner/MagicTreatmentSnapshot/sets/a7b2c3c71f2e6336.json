@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca9de169-fb85-43cc-8527-9829d7cb5bc5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Primo, the Indivisible",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-09-27",
+    "setCode" : "tdsk",
+    "setName" : "Duskmourn: House of Horror Tokens",
+    "variation" : false
+  }
+]

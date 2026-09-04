@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "760dcba4-c0f1-4843-9c39-393c629aae8e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Germ",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46769d11-a7ae-43ac-8c00-e1681955949b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d84926d-5892-4c62-a943-fac9f0ddc569",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Golem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a4c5954-da2b-498a-9e86-eb4d6dc95cb8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Horror",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f4e230e-f604-4803-9cbd-fd08d2863db4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Thopter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92fcdd2b-dd90-458d-9b8b-5b1b9a3f8bd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poison Counter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-02-04",
+    "setCode" : "tmbs",
+    "setName" : "Mirrodin Besieged Tokens",
+    "variation" : false
+  }
+]

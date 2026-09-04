@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b993828-e139-4cb6-a329-487accc1c515",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2019-05-30",
+    "setCode" : "tmh1",
+    "setName" : "Modern Horizons Tokens",
+    "variation" : false
+  }
+]

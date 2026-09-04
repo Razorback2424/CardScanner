@@ -1,0 +1,508 @@
+[
+  {
+    "collectorNumber" : "23†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f77fda65-f70d-44b1-89db-910d2761b81c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atog",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : true,
+    "variationOf" : "2249fc40-4412-48fd-800a-7ea3678aee3f"
+  },
+  {
+    "collectorNumber" : "70†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cca371f0-e7c9-4154-8e1d-47576c0202bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tawnos's Weaponry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : true,
+    "variationOf" : "3035cead-a501-4204-9154-5fd648577d32"
+  },
+  {
+    "collectorNumber" : "80a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a696c5b6-f216-454d-8029-74e84bbd1428",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4047df9c-335c-4c1a-968d-00f40e2e7386",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c44669b2-bf9a-41c3-91c7-d845b0061fbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac09a506-427f-4636-bcfd-b40f8d511905",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e7880157-7f27-4f1b-9cdc-ab36a6252376",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a48bd745-5e9f-4807-97b0-29222a5b838d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "917e98db-a0c4-4836-9e4b-3fda142eedf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0f6a92f-edd8-4cb6-be91-f3ec229b20a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strip Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddf85792-470b-4b42-99ac-9cb43a575523",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27886da1-9161-4bed-81b5-06da21a25f91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da68a5c0-84fe-4a8f-93b2-790eca3cc95c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd8617d2-a0e9-4fb4-85da-2c7e385be3f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94896e0b-859c-47e4-bf27-35ed37b841e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e237d921-6d84-402e-b5e3-6bbdb3028f57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cc02459-83ae-4b6c-85a1-26eeaf7a2ee7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0bbe643-3e07-4541-a2e6-45c63a5133cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ed85655-fc59-4a57-bcf9-75e1899dff78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6aba1f0f-73b0-4898-8d07-43322e43d74e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a03554a-0ee7-4106-b3e4-4bc51f48032d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc78f2e5-c02b-4f58-8510-660ca27d9a71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1994-03-04",
+    "setCode" : "atq",
+    "setName" : "Antiquities",
+    "variation" : false
+  }
+]

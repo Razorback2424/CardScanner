@@ -1,0 +1,2932 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f82f8cab-5039-4e3a-a2ba-cbf829db80ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cadric, Soul Kindler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9eec64e1-a9c9-4a84-bf78-1d8bc5255a04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jazal Goldmane",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2d5c9f2-8f58-40ac-a01c-f4ac4ab4d7f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Odric, Lunarch Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ec9ef7c-88de-4346-a8f9-44beda59fa68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teshar, Ancestor's Apostle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b918993f-2a6c-490d-b639-224f15303630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Ruinous Blast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "77bcb902-70c0-4406-bbcf-49d23fd71a68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dbee85f6-a880-49ce-8139-5c439a202821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drana, Liberator of Malakir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0beb8de5-e54d-4642-b2e4-0e3ffbaa2435",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Josu Vess, Lich Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1070dd6-944f-44a0-8834-02eae93dabaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kothophed, Soul Hoarder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ae9ff8c-1cc8-4b10-9641-2c79648fd6c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Smiles at Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b60633ed-6428-4672-9497-9a17f823b981",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashling the Pilgrim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98a2cd4c-f02e-4a5e-a5f5-1aad52132b90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a03fb3a7-3ef6-4162-aad2-82610492aa72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etali, Primal Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52de8af2-d260-42a8-b8c2-b26b392632d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev, Skyship Raider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3425e774-2b71-46be-9f58-9cbc121384cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Tin Street Kingpin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8cbc3ba-f552-43fd-a59b-f3d8e3edd12f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neheb, Dreadhorde Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "139",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01c2337d-1c3c-4c5e-8b06-dc8a8c56164e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adriana, Captain of the Guard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d45ec78e-6190-46af-8057-834f5ca41ec8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archelos, Lagoon Mystic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b85ed69-bb0b-477b-8600-b2e7f3c95ce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arvad the Cursed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "142",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b8414f7-22c3-4e1c-934b-4a0e7acf951d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atla Palani, Nest Tender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4fdcd559-477f-48cb-a221-23a653b0dde1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bell Borca, Spectral Sergeant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f1182463-348b-45b3-a662-68f06ac53699",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromanticore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "732797d3-59e1-4fff-bcf0-22c2606a7a5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, the Bloodflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0dfec692-66c8-4c90-8afa-095654011c3d",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Illuna, Apex of Wishes",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ca7f49a-ab5a-49de-b07b-96c803daaf7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verrak, Warped Sengir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "04b9b58f-4c01-48a5-afaf-b8a37165a83f",
+    "language" : "en",
+    "layout" : "mutate",
+    "name" : "Nethroi, Apex of Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "07a42ae6-c2ca-4028-a364-70c19ce125b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "O-Kagachi, Vengeful Kami",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e11471f9-6bf4-4b31-8eb6-f5f9e8abd797",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primevals' Glorious Rebirth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "78660bdf-0edb-4fd0-a737-1c95f93cced1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rienne, Angel of Rebirth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bd39ebe5-2725-4cfb-8a94-54e71d55e8b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selvala, Explorer Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e8efe72d-3c01-4dd6-b3dd-0382ac09dc52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surrak Dragonclaw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "580ca958-4df7-4f42-b497-d412d286bd4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gerrard's Hourglass Pendant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eea2cdad-529a-499f-8be7-53f939153b7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajic, Blade of the Legion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "af0db1d6-5cb1-4917-8e8f-69d5dc184404",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xyris, the Writhing Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6dc390da-75f8-490a-a724-c12d21cfe578",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zaxara, the Exemplary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "240448cd-c308-49ae-9e4b-0c35adc59fba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "171a9a3f-6278-4921-9848-2b8459869d6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bontu's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c862fc4-e2fe-4fad-8bc1-a53f1fecc4de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazoret's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b2bee5c-7ea0-4713-a60b-dccaf89c5d48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroes' Podium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a7f1d5a6-bdf2-4b12-b11e-70f58b59dd80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oketra's Monument",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e474c23-22d3-4249-b678-254b178ddf6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Peregrine Dynamo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6de493a9-d1df-4507-b7c3-e775c4c50db9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Chosen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f918d2a-5769-43ce-a8e8-41db6c8f251d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenza, Godo's Maul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8566e91a-5f2c-4854-aeb3-68b3c4344582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traxos, Scourge of Kroog",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b9fa570-770d-45a7-9b87-2def6992a22b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geier Reach Sanitarium",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d80eb098-5433-4b1e-aad5-0fd31bf598dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikokoro, Center of the Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "715284eb-8384-4ad8-910c-8378e954a2b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emperor Mihail II",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3162830-4d06-4c69-8544-876d2fa8ea10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Gorge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "099352e2-38c8-4fb4-a25f-6d928aa20f9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shizo, Death's Storehouse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "013e33d4-7d08-4773-a570-469ae3cf92f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rosnakht, Heir of Rohgahh",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cae4149-d8ef-4772-9db4-cb576bef61b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baru, Wurmspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0969d7f3-cec5-4118-adb1-ff957eedf6ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greensleeves, Maro-Sorcerer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0a6edbf-eabe-44d3-b098-562f3758c005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mana Rig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dab74812-89c9-42e2-8b9d-bf5b35a7cf7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayesha Tanaka, Armorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a67f32c-4c9a-4bda-92f4-037b99999777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jenson Carthalion, Druid Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a17c5b28-e7d1-4ca6-bf6b-0a4c8b757232",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ever-Changing 'Dane",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf2931bd-bedc-45e8-b3f0-e2a220dbac1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Marhault Elsdragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25869cd0-63da-4dfb-8870-221cdba276e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazezon, Shaper of Sand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c1f5bcc4-3ec7-42ae-8e4b-80a9b9135ff0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jasmine Boreal of the Seven",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "914a4923-18a6-4aa5-8510-b02e9dc7bb41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jedit Ojanen, Mercenary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d96a5a00-22a7-4a7b-a7e2-5c055a8384ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lady of Otaria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "82003d72-5138-4341-a53a-62b794f2bce1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ohabi Caleria",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8511fc1e-cff2-4d6c-b9c3-0a7f70ac3528",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orca, Siege Demon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "91f65272-fee1-4076-b5b2-2e04001cf1ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramirez DePietro, Pillager",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e5f168c-4f56-4d06-bef1-db10fdfbe657",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramses, Assassin Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b0fb859-055d-4aa1-814c-0894cd2ccd4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanid, Sleepers' Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f0f171a-2929-4d95-9829-d0e885622e04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasputin, the Oneiromancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84e87400-cc3f-4476-b177-2c36a65f277b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rohgahh, Kher Keep Overlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stangg, Echo Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51c523cd-78b0-438f-bba5-19160f648d5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuo, Imperial Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afcb1feb-e957-42e7-b05a-48f26bda7b76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tobias, Doomed Conqueror",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "adea296b-b320-4588-9d6e-cbb5db7c39e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tor Wauki the Younger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0783b426-a527-42c1-9271-be28b229e1c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torsten, Founder of Benalia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "48e60dff-8ac0-4e70-a7a8-a177e9e6847b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xira, the Golden Sting",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "cea0ea07-6963-4de1-953d-b1ac41d8c6b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dihada, Binder of Wills",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e7efbb9a-e0b3-412c-9ee7-a90123033999",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zeriam, Golden Wind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c4995efb-c952-425f-b8e1-176a6c27ec20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jared Carthalion",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bc6b73c8-a841-4441-9471-6b83f0b03977",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ayesha Tanaka, Armorer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9f82a016-75d4-44bd-9077-9c69753952fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Ever-Changing 'Dane",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4895b46f-7520-4fff-838a-22741f7e5991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Marhault Elsdragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b406271c-7fca-4003-a011-752117e5ba4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazezon, Shaper of Sand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2d5c9c50-9056-4d18-94fb-b9970969dcc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jasmine Boreal of the Seven",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "20bec7f2-7f85-4b2a-a1ec-9eb5da6b8812",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jedit Ojanen, Mercenary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fc35a8c6-f81d-46b1-941f-f0bf05a34649",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Lady of Otaria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bf068962-5372-4f8c-ae10-6457168e5731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ohabi Caleria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "566607ba-24e7-4ff2-8ece-93dc790da845",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orca, Siege Demon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a5c9d99-8fbc-4a74-99a5-32ba71eb2b62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moira, Urborg Haunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1bb50b63-77c8-44cc-a4c5-1e4f4896e67e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramirez DePietro, Pillager",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1c2b0f20-7b6a-4dc5-b1c9-b11554da9a05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramses, Assassin Lord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fc545089-cf48-49e1-99b4-660946260da8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasputin, the Oneiromancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d3488954-e248-40f2-8194-0c5ae78cd6d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rohgahh, Kher Keep Overlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9385b40f-79a7-4d9c-b253-54587a1f28b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stangg, Echo Warrior",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "55cc167d-b701-444b-9eb9-f0ee1bdfa762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sivitri, Dragon Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "99ff0b85-16dc-4388-852f-e6c3ed10f93f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuo, Imperial Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bc32f707-3fa4-4e27-b48f-27b53650a6ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tobias, Doomed Conqueror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "bc3f73f8-1825-4ae2-ade3-29a02bba05f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tor Wauki the Younger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1c9251f0-2c5e-4119-bc2a-473088239dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torsten, Founder of Benalia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ae580392-9fd1-4f51-aa2b-8fdabb177132",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xira, the Golden Sting",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "258218d2-87a1-4d50-ad87-1b1b086e37be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Historian's Boon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1409c364-a3b5-4ce5-bd17-742acc0088fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Robaran Mercenaries",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "29048fa7-8bb7-4763-87ad-6198445add3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emperor Mihail II",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3823b756-f881-4096-bbcb-a5de2aaa6cef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Activated Sleeper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a426020e-bc3d-47ff-a34f-e12ce8825129",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rosnakht, Heir of Rohgahh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "95052dc9-2a67-4186-bb01-4044a4ca1e77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baru, Wurmspeaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "162d5e1b-f725-44b1-be82-8e161a370d7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greensleeves, Maro-Sorcerer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "82f47335-2bf7-46c3-941b-00357e5653da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jenson Carthalion, Druid Exile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2656728b-33b1-4db7-8ad0-f5053fa00286",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanid, Sleepers' Scourge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5bcd1591-b5b9-49fc-9f2a-45f31ed1871e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Reaver Cleaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "0c4f660b-e648-4689-9574-964c7f878554",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mana Rig",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "11302b64-b070-4fd2-957f-b8f7830e1bf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zeriam, Golden Wind",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ad65bd98-9951-449a-a4b3-ee177545e27e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moira, Urborg Haunt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "109de57a-a1a0-4608-81cc-0a104c519b7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Cannons",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a18cf0ef-1720-4bb1-9af2-8d59c2b553f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Reaver Cleaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f50b5176-181f-4109-a6d5-85e9338cc754",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladewing, Deathless Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "00541f77-f1ca-4de5-b080-de2dcdfe17e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cadric, Soul Kindler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0e8435c6-94d4-4204-a196-ececb38a8c61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fallaji Wayfarer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "38fe90c6-1fdd-49d0-9493-ae148a9a835e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iridian Maelstrom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "35489f5f-7430-47f3-af5d-9a66cfc4e234",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primeval Spawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7dcf3b3e-e986-4add-a3c6-4e92a6f72a12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bladewing, Deathless Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1b363509-ddc8-4bf1-8817-acd8345cde4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Two-Headed Hellkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "aafe06ae-1112-414a-877f-570496f0a747",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unite the Coalition",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "b7cbccca-6fa8-45a1-aaa9-f3671b7bc68d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verrak, Warped Sengir",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "091135ec-4f4c-432c-bd6c-e7e2fb7561a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gerrard's Hourglass Pendant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9715aa17-8b51-43dd-9e5f-8f082c27cbda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obsidian Obelisk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6efb61ec-ac16-4acc-b0d3-7b9c6b03ff00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Peregrine Dynamo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "423084cf-5740-4b24-8abd-a097b5793548",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiller Engine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5ba5e8b8-ce9d-450c-8804-2f8e2ef51ff0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "81910ade-a742-4ed7-ab15-bca95850f8b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Circle of Loyalty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56b27e0c-bf8e-43d6-b99d-3e25d4954d34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Day of Destiny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmc",
+    "setName" : "Dominaria United Commander",
+    "variation" : false
+  }
+]

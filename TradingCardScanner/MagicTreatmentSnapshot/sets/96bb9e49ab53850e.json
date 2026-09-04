@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "412af58e-e46e-4346-aa25-6624f0c3d142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-12",
+    "setCode" : "pgru",
+    "setName" : "Guru",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79fe9e5e-3ddc-4b15-81d5-9659cd087649",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-12",
+    "setCode" : "pgru",
+    "setName" : "Guru",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90b3ef81-2c77-4355-afcb-7b419d4bcb2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-12",
+    "setCode" : "pgru",
+    "setName" : "Guru",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5fce146-ac20-4fc2-ba5a-ab135c323d55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-12",
+    "setCode" : "pgru",
+    "setName" : "Guru",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74b109df-ce9e-4448-a5d5-3f53cf892731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-07-12",
+    "setCode" : "pgru",
+    "setName" : "Guru",
+    "variation" : false
+  }
+]

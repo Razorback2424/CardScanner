@@ -1,0 +1,5039 @@
+[
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f3526751-0101-4d91-a496-c53cd92326e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tourach, Dread Cantor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71052204-d35c-4603-9af6-a1691f438d48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Ripley Vance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "667a356c-b10d-42f2-bb2f-c3fd9affa4bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mount Velus Manticore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9738cda-adb1-47fb-9f4c-ecd930228c4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfe9b1b8-dffe-427d-be1e-2c6b8395bd54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeve, Progenitor Ooze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1785cf85-1ac0-4246-9b89-1a8221a8e1b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4d42e22d-f60e-40c5-b069-5e1708f3bebc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum Weaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6172da14-9a87-4cf9-aff5-aca3470a67ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrasta, Tempest's Roar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d99a9a7d-d9ca-4c11-80ab-e39d5943a315",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmoranomardicadaistinaculdacar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e09e9b65-ff0e-4efe-b96a-ede69c96e2ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carth the Lion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "23774462-9f17-4b50-a2ac-b2edd706bbfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "600dca0f-5964-45e7-86df-f16a5b4a0106",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Ferrous Rokiric",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5dfd08da-6717-49ee-94ba-2562224f5baa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Cryptozoologist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e82d946-1efb-4253-84ab-93c88d2d1d84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piru, the Volatile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a6d22f24-f752-4bc8-ba97-061b2c060ec8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm God's Oracle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "0babfe00-9bad-48fc-b3b1-df8280242fd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sythis, Harvest's Hand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bfab9e33-0d07-46e6-be06-1eaffe26cbfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yusri, Fortune's Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2963205e-b181-44d1-809f-6577e29fa812",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87cc2855-6b14-44dd-a398-7dc2bbae081f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaldra Compleat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8c1cce91-7c81-45d9-bbec-b085e794791d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zabaz, the Glimmerwasp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4e4b6e22-93b2-4896-bba5-0ceaa5d8ea3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya, Cradle of Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "27691efa-052d-4afe-b9ef-159858ca660f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Cabal Minion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21f6d49f-1577-4d17-a633-0c282769728a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d8089e7f-7619-43fe-8e0b-31ce5d988a1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Nightmare Adept",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4538baaf-cb79-45f8-a06b-9f5e773920fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dakkon, Shadow Slayer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69ef067b-58ac-4b88-a983-83316d157fcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geyadrone Dihada",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "808a3770-057a-4985-ba5c-870d7b1cd527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grist, the Hunger Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "febad44a-eaf0-4122-87c5-a12d17f28392",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solitude",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c358d75-01ad-4487-8104-425124b96aae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6ade923f-f064-4b5a-a6c0-348ca3e0dbed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subtlety",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "96fc69e6-5973-4e8e-a8d2-33657924d86a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ea859431-c1bf-4d07-9845-430bc217cb91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f5c38dc8-574b-4e53-9b60-8fbb64a29175",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tourach, Dread Cantor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "071daca8-ccc6-4707-843e-adac40dd1588",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fury",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ce0dbf20-bb76-4f4b-960f-68bbb99bde33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Recruiter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b3e685f9-cc0f-4dc6-98dc-4727944de445",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragavan, Nimble Pilferer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "57b819b7-c193-446d-b7cf-75a09e1d58a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1fc6d14a-1328-4032-ad9e-cd85cd365bd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9abf3165-6260-4dcf-8f06-6e808bff0289",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrasta, Tempest's Roar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "58fb9fd5-359e-4da2-8d91-80ef50a8e390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "157ce8f8-625c-407a-b015-3b5326da69a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirari's Wake",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7db7fa4d-5190-4f2b-a8ae-933bdab3bfc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shardless Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e4978ecd-3c2e-49e2-98e0-0172887e4319",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vindicate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b5ec628a-4b66-4ab8-9e00-c1582da722ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion of Draco",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b27d2f06-42ed-42fd-874c-8c278cdb66dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Hearth and Home",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6cd01460-901c-4d75-bc29-e97ed26afc39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Coffers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9d596bc0-c972-4a36-8cf6-cd8f72169021",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d7667b9c-073d-456d-8c43-5e56316cef92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blossoming Calm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "676758ee-dac8-4c97-8a62-fff25bcbb6df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Esper Sentinel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4613fc96-a98d-4ea8-b1e2-0a776dfd4d5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Late to Dinner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "09d044aa-abed-47dd-b3a1-268fab03f8af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lens Flare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "72f6052b-b90b-4630-9cd7-26920897d976",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos Paragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "cdbd1cb1-799e-45aa-acd8-36ef924b0cdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Search the Premises",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8de657fb-e68e-4400-9a12-60aaaa075fc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra's Emissary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1d7dcf74-110c-421f-87db-c2133d7a8281",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dress Down",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b56d6402-a941-46cc-b1d6-352d5aa5cc3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Floodhound",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c2a3b565-2880-48f1-bbfe-1eeafcb76c2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fractured Sanity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ad586c86-6d5b-49ac-8908-098eddae26e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murktide Regent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "57bec76f-243b-41b6-9e47-17a61f18ae53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Redaction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c2484b24-ca5e-421d-8dbf-41df7094c8a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantasmal Dreadmaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f9011c3a-c9db-4e92-89d5-29f139017573",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise and Shine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "55c98ef7-be05-4bcf-be4b-62a437297330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Monitor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c38d9873-f4e9-418f-aee8-8623b2576f6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Cruelty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "20c7b777-c002-45c7-b2bb-d21dab591445",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitchen Imp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fec0c309-5e11-40b2-a38f-66503b357f5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magus of the Bridge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "9beb3062-b3a2-4af5-867c-e6389554c1f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Persist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "91d1d680-9a27-4850-9175-cc71220ea33d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sudden Edict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "735a5082-72f4-4812-adcc-d8095d8eee51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Hermit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f16d9113-d279-4a6d-9cf0-f5e104f77852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World-Weary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2958aa5c-176d-4f6e-be52-ef2afbe8d452",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faithless Salvaging",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e4d35091-c272-4679-aa20-7889e9cdcd41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flametongue Yearling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "88167b74-c25f-4a9b-a4f5-33a51e01d498",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gargadon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "4290d31a-ce74-4a22-8266-9e44d23d506f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonic Prodigy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "89b7a09e-a28f-4153-81b0-c8dbb1aaa0e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obsidian Charmaw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ae42f372-2a17-4905-99d1-3371ca0ed6ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abundant Harvest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3139cce8-3467-4c50-add2-5b78fb33b90a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ignoble Hierarch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "793f5aef-15ad-4ad7-b390-201b3c0c149d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jade Avenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6afd2ecd-c2e5-49f2-bf35-dcec2addcebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Anthem",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8a0f47b0-2254-4df2-b3dc-74c1d3811d2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timeless Witness",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "070a3f30-0839-4678-a37c-475ee189811e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "896eceec-7dcc-48fb-acc2-1ca5ee28ea3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcbound Shikari",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b33ee002-fbd4-4bbe-a17c-876972750646",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcus Acolyte",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "d7ac6ff5-4caa-48ee-a9a4-de7c1300e326",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combine Chrysalis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "05467b80-0781-4f03-8027-59dbb44d8826",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dakkon, Shadow Slayer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "5f3a54c0-98f0-47be-aae1-608479f4b9cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ethersworn Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "c92aed86-4786-42c5-a599-7b3178eed478",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b0a0636e-cf3c-4bf2-8d01-b830bed999ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Ferrous Rokiric",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ed1985f4-f3e4-4ddd-bed9-a0566e411620",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geyadrone Dihada",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6c627c68-c4a9-4579-85f1-6a1a5e6f6fce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grist, the Hunger Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8b3e2d11-0f87-43f2-a961-99a47486f8fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazotep Chancellor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a6baff7b-bdfe-4b64-802d-f73c455dac35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Cryptozoologist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "bcab41d9-e002-4183-bbbe-b1f955217b3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moderation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "96a63c64-bbf4-46cc-bffe-0992bea502cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of Fell Rites",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b27e8b65-16ec-4aef-ac26-8afd78d8bfe5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prophetic Titan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2caad15a-b567-47b5-b055-e52bfed5b889",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Headliner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "505b77d0-8651-4b40-a2e9-6dd00ac3c575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Squirrel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "edf8a080-2327-4ae0-97bc-ed488a619797",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Road // Ruin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "76ebe313-3452-415c-a93f-52c7467531a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sythis, Harvest's Hand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "74c1b32e-e9c3-4245-887c-fe30c5f3148f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dermotaxi",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a5a0ae99-d84a-4f27-bed8-889747c78529",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaldra Compleat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2138dfbb-a4e3-49db-b908-95d0b2b7e82f",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Urza's Saga",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37304f74-a925-444c-bff6-7811f7f06966",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blacksmith's Skill",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e9900b8-da89-433b-ada5-f17c82e60c64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marble Gargoyle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bd77468-7aad-4add-8385-e3310cd5d5cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Out of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4eaa24a9-eece-4067-b7e2-6bc8993cea5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prismatic Ending",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0e60c9e-0b9c-4daa-8a61-52111e03f49f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resurgent Belief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8d4ef76-4d57-40df-93f6-c67c017798ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctifier en-Vec",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e612763-6611-40e7-ab47-3161f8275b9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul Snare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "d476cc60-e59d-4f34-abc9-f3eafdc2890d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timeless Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25de0eb6-94f5-440f-8201-cc7dad2f0805",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeromoeba",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28c015a6-dc4c-49f6-8d39-4c7b598e5a61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inevitable Betrayal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c39d88fd-7762-4d02-af7c-b13e7db5b23e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishadan Dockhand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5688978-1744-4986-bda3-09629541b827",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Step Through",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa7252a6-0add-4bba-a0cc-9068f8701775",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff1fb951-89c2-49c9-9ee9-3c8d0d6c4c86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tide Shaper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15299d85-ee28-41a3-9952-f50e8e1d40eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bone Shards",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23b95b26-0bbf-4fa1-80c1-f621f1a1b947",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d54f0dd-5d27-483b-8af9-92a1c5a785f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauthi Voidwalker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3af4da8-07fe-4781-ad36-375b75012939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrogoyf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb8595c6-5237-4ed1-98e4-8615bb0eb8e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nested Shambler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b92a8dbf-d5b1-4337-8c3e-bc0c8308e426",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Persist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c7f7fdb-9c38-43f8-acb9-6ea1797387a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Profane Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e7caf6c-9f5b-45c4-99ab-2968c3d574e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tourach, Dread Cantor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36590526-2f1b-4959-ba9e-55f3ebcffd1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vile Entomber",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45121709-9f0e-4f60-8dd7-ebc31acdb124",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blazing Rootwalla",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "70d81763-46c0-4e5e-9292-04a8aa461682",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calibrated Blast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad0a4bba-4512-4718-89b5-f02331f3aa5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galvanic Relay",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "988137f8-40a3-4308-b297-a9a4d171181d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse of Tomorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3eeb96a-1e2c-47fa-9cfc-7d1ead1cfab6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mine Collapse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75a03422-4106-4d06-b26a-06b1e3b0cb2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeve, Progenitor Ooze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47ba5ac8-e8fa-4979-9ef9-c3d75ee7f982",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterfang, Squirrel General",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c1b91d8-39c4-4ab1-996b-2a5a78243fd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chatterstorm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9db3283b-e74c-4991-9369-cf3415db41e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0691a6a-bfbd-411b-b147-bf9702e7d149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimmer Bairn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9417f14c-a853-42c6-a992-29139484260a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ignoble Hierarch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d512e5b8-2394-42d9-9dbf-345137710cde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squirrel Sovereign",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bab161d9-45d7-48b7-af47-21e3dbae4d85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e6fac09-34e1-495a-ba70-8110845fbefb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmoranomardicadaistinaculdacar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c7d9b79-bcf8-4c6e-8b0b-6cd71b615d39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carth the Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "875244ac-d129-407a-bd9b-9fb59958bef9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Nightmare Adept",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "662c23f8-feb3-43e3-add5-cf136cd54a1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garth One-Eye",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7f07a80-05b5-4108-9e68-f8da05866acc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Anarchomancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53945b5e-75da-48e5-ac87-5c02f318fdf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piru, the Volatile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27424714-b656-41b8-b19f-022e472afc7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shardless Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ddb6d98-3a3a-4332-a64e-97aec71777a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminal Agony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b25acb5-3bd3-4835-9b6b-32a751c7ce97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Kavu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ef23258-511f-43f8-b84f-bd2256b5c86b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brainstone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4310ee5-a65d-4113-a57c-bb121601e963",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diamond Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b548fdf-7130-4a94-bd7e-09591b395513",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liquimetal Torque",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff376d1a-85b4-4d8d-8862-5de0aae6fa4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monoskelion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23ac45cf-4dc8-47b9-8ca8-e72464f745d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ornithopter of Paradise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24b3983d-93aa-4a33-a064-23c87ab6ed51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion of Draco",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49f81658-4008-45a1-9a3d-a39369b6c96f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Talisman",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c530cf5-601a-4e9c-b81e-5bddff0c1196",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Hearth and Home",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f24504e-b397-4b98-b8e8-8166457f7a2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Underworld Cookbook",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f982bda-3153-4ef7-9eab-a658732b5db7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Mirror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "716c415e-5eb8-4644-ac64-5ba7c3f0ea65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arid Mesa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f19a6f20-8ca1-4a8b-8488-bcb5d86868dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marsh Flats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "438",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6cad746-a1dc-4739-9707-9c12c42e141a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misty Rainforest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17c6ba55-2470-4dde-a7fa-137a60716c96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scalding Tarn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "440",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "981b3a2e-de94-428d-8e5d-5a7ba6afe4a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Catacombs",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "441",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0063a44-6cde-4d7e-81e1-61bae08831ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya, Cradle of Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "442",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d44fbfa3-3698-4b79-a7bd-6b6f86bea82a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Out of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "443",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c2387da7-5372-4533-a632-624dd08120ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resurgent Belief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "444",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c6ed75e0-f016-4c62-b96e-de97f7fdb6d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctifier en-Vec",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "044902aa-29a1-4627-a4fc-0beccd2a10b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timeless Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "adb9a0f9-0af6-42ac-9e42-f315f4882939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inevitable Betrayal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "97f6f1da-ddef-44d0-af1b-e0c4024d9985",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishadan Dockhand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f2b39f1d-6d8b-4d5d-a956-094de5c26ba8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Suspend",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "402060d4-10d6-4cee-aa8b-cd083bf5df43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "29632951-3c3d-478c-8c5a-9a34f30a5c28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauthi Voidwalker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "451",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "11a2d158-d69e-4854-b84f-9f271e36101c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrogoyf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "44989011-7833-42e3-8fae-6ed0c7220e28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Profane Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "453",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4d05400a-862f-4dcc-8ebc-edb0b5deaadd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unmarked Grave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7e3af226-9f55-481a-87ec-da2861ac60e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodbraid Marauder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "62a7da2c-3156-403b-8722-d1fa5eb5192e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breya's Apprentice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1a8284eb-a604-4e86-a140-7c703b52c806",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calibrated Blast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c706922d-c892-43d0-a4f5-91283999d291",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chef's Kiss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "458",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "39d332ab-67bf-4db8-953a-6843efbb455c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse of Tomorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "459",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2009ab97-1d0f-4c59-9357-3ff4952ce3be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aeve, Progenitor Ooze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "460",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2d7687d1-d168-4279-b21d-fcfc7573c7b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chitterspitter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "461",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1ecd084d-20c6-43cf-b5d5-8ba3d692a50a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gaea's Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "462",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "15fd218c-3e14-4b82-9e03-16a0fad1b530",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum Weaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "463",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "2879f780-e17f-4e68-931e-6e45f9df28e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Asmoranomardicadaistinaculdacar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "464",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fbf4ca15-10b9-4dcc-86dc-be15eeda87a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carth the Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "465",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b2c398de-b96d-4fa6-89c4-3ce8183dc27e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Death",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "466",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "064c2f03-5290-4e87-9d2f-cfbd247c9646",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Piru, the Volatile",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "467",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2474c3e8-7b52-477b-ada8-22e221037925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Kavu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "468",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ecc06edb-d7dd-40e4-abbb-03ec2d467193",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yusri, Fortune's Flame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "469",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bdb31a63-a4c9-4432-9029-eb5a50c769b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Manufactor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "470",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2116f1a3-f621-4bef-b5bd-fa4a644f76b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diamond Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "471",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c3f3852d-e99a-418e-a235-da47ed38aabe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nettlecyst",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "472",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "18052761-39c3-4342-b6e6-38dc5b7b05dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol Talisman",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "473",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c1c216e5-856d-4464-96f7-17b5289d5396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Mirror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "474",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5d58a96f-939c-4b9b-a4c2-fb83d896eefb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zabaz, the Glimmerwasp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "475",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "54ced5cf-b51a-4dab-97f7-50fb18e5c463",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arid Mesa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "476",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4e8397e6-d13a-4996-8fde-b8a9895de287",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marsh Flats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "477",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "23d8e67a-5150-4782-98d1-da2ca79607ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misty Rainforest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "478",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "229ecfc9-8d6b-4fdb-9001-64dc3e4e7a3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scalding Tarn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "479",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c7057b04-e22f-4e33-9f08-b9fbd2e54bf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Catacombs",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "480",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ee7c2820-e36e-4024-a542-02ca42bb7e2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya, Cradle of Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5aa2449-6b74-4319-858f-caa9282da5c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e14e6193-f60b-46c8-a7eb-02a437138568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "483",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "423927e6-2419-4d88-b0c4-425e5cac1a3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "484",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95d781a5-2f5e-499f-b210-c4a5c50a180c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "485",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac8546d1-bfea-4cf7-bfa1-48555ea81bd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "486",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "959cb185-a280-493c-b85c-69b74e042c15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4be3032-c55b-43b5-9ae0-f4e7470f4f83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f5a0d49-71ae-42c4-a896-6828dc4f1e85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46e93212-da68-48f8-9aeb-ee5eb92e9a54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "etched",
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17393110-c57e-487b-b07e-dc21a164efa7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9839e4e-94dd-4087-b7a9-3089f1828397",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum Prelate",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f2c332e-a5c9-40fb-a2fa-b4888aecc9c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yusri, Fortune's Flame",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c6f9ece1-669a-47c9-96c3-1e1dbf87421c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-06-18",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-121",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae8024ce-12c9-4139-934d-fb230103daa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Dragon's Rage Channeler",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "mh2",
+    "setName" : "Modern Horizons 2",
+    "variation" : false
+  }
+]

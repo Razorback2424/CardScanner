@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72a6c655-92f8-486d-b56c-9f6753f58512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rancor",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e69f6e05-f39b-4eee-89a3-400ca5adf8a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "394d65a0-0792-43d5-ab09-354cf8984428",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01e70418-53a6-431c-a539-75c76567a5d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icy Manipulator",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ead91e7-5668-4dfa-a55d-e2ee8cf7eff4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seal of Cleansing",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec3f618a-7cf3-45a1-a710-c33609c63ec0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flametongue Kavu",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13a736c5-9bff-4e2f-a150-2133b9c3af89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blastoderm",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "f802ee1b-14d4-4ef3-84be-d9d959ec42d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Therapy",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12359f11-1758-4005-ada4-5e4cfccee2c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fact or Fiction",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "636fa9c2-e9a2-43f4-adaa-49f9a67d9e46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juggernaut",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "771611c7-38a2-4690-9882-9dc8ea2a038b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Circle of Protection: Red",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "911867c3-34d3-4c00-aa6c-7772b8fb05d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kird Ape",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "f05",
+    "setName" : "Friday Night Magic 2005",
+    "variation" : false
+  }
+]

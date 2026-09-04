@@ -1,0 +1,244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f97868f6-a9ce-4ce9-bc3f-b535f3202602",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4d87f38-c342-4186-8768-c3f1aceb680a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wurm",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bd1b0b9-f1bb-4808-be3f-5b3faf185cf1",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Liliana of the Dark Realms Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa0f1de9-464c-4f12-bd1d-a4a5b88fe803",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86272c08-c5f2-413f-87ea-b135aca2d9c5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93679bb9-ee1c-4eea-bcdd-72785d5788af",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Drake",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1966d7e6-cd4a-47ff-bc3e-f8e0db8a3439",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e67efea-8a80-42ec-8e77-07d387d933d4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b43b811-ec0f-4ad7-a152-f7f077bafaa4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Hellion",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c94010f1-cd4b-4f65-8a0e-2df6eec058ec",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd67de8a-3879-4d03-a716-6e907d597b25",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Saproling",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-07-13",
+    "setCode" : "tm13",
+    "setName" : "Magic 2013 Tokens",
+    "variation" : false
+  }
+]

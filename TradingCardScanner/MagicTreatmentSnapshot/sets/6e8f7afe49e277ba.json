@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6071fed-39c1-4f3b-a821-1611aedd8054",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Gremlin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "taer",
+    "setName" : "Aether Revolt Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ebc91a9-23e0-4ca1-bc6d-e710ad2efb31",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ragavan",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "taer",
+    "setName" : "Aether Revolt Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9616ca53-ea6a-4fc1-8e01-94e0fb47e5ed",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Etherium Cell",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "taer",
+    "setName" : "Aether Revolt Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f136537-1ebe-4018-b406-44ef32ceef04",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Tezzeret the Schemer Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-20",
+    "setCode" : "taer",
+    "setName" : "Aether Revolt Tokens",
+    "variation" : false
+  }
+]

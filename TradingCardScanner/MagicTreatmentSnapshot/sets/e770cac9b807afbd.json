@@ -1,0 +1,71 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e20d047-0d43-4709-919c-0b0f714e9903",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Merfolk // Treasure",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-27",
+    "setCode" : "f18",
+    "setName" : "Friday Night Magic 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60ca146d-4e88-4e87-a775-9cfbc9e6b9f2",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "City's Blessing // Elemental",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-27",
+    "setCode" : "f18",
+    "setName" : "Friday Night Magic 2018",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cf70d25-9de9-4c3a-a52f-be17831e5695",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Illusion // Saproling",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-27",
+    "setCode" : "f18",
+    "setName" : "Friday Night Magic 2018",
+    "variation" : false
+  }
+]

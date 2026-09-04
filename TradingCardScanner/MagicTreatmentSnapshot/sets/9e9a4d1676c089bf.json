@@ -1,0 +1,310 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02fccffa-a83b-4ca9-897b-474e333c90f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karador, Ghost Chieftain",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "99577b28-4bfc-4192-bb23-c1f73666295e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96bd83fe-ae97-4c5c-9e1e-3c48f624b24b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greater Good",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "644791df-ac34-45c7-90c1-0ebd9e519840",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e03bb1f-7324-4283-8ee2-799c7b7448c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riku of Two Reflections",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90bc54df-b5a0-43fd-b3e6-3ba3d295d25c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53ed5673-728f-4da3-ad18-3bd72032e815",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af06d83f-1c5a-4eb6-92b4-216acfe20641",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e34e53fc-0c11-4594-b4ca-eaac663040ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hanna, Ship's Navigator",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac2c51de-2ec9-4a38-a117-75e90abf0feb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d239414-fd5a-4e7a-9f53-79fb38e46435",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Feast and Famine",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ee77c7b-0db9-4281-85d6-fe91f3db47ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nekusar, the Mindrazer",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7a4a5cd-96f6-40ce-a7ab-5e1d0e3b4379",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Elesh Norn, Grand Cenobite",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c4114ea-137f-4710-8ee8-69ab445b6918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oloro, Ageless Ascetic",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-01-01",
+    "setCode" : "j14",
+    "setName" : "Judge Gift Cards 2014",
+    "variation" : false
+  }
+]

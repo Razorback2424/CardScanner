@@ -1,0 +1,1865 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c09991cc-94f0-46e2-9365-37db2f260cf6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cosmium Blast // Cosmium Blast",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94a4befd-91bd-4b2c-b796-97a11cfc7657",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Didact Echo // Didact Echo",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bf463bb-57eb-4b30-9729-09911f4b8928",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Eaten by Piranhas // Eaten by Piranhas",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cf86bc7-d186-41e8-9781-e4d0635015f6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Locus of Enlightenment // Locus of Enlightenment",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8b42c71-75fc-409b-ad89-ef2160d344a9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Pakpatiq, Deepest Epoch // Ojer Pakpatiq, Deepest Epoch",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53ba28a6-ea74-494d-a1a4-12feec4269ee",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aclazotz, Deepest Betrayal // Aclazotz, Deepest Betrayal",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04549b64-d803-4f5a-9a24-4ec3bd731643",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bloodletter of Aclazotz // Bloodletter of Aclazotz",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd448c18-9ca8-4ed9-9690-dae2c2d663a7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Deathcap Marionette // Deathcap Marionette",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11c25f81-a1e1-46db-a432-d8e993a2514c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Malicious Eclipse // Malicious Eclipse",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3fbc8acf-9917-4224-bf55-5cfb161221de",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Curator of Sun's Creation // Curator of Sun's Creation",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "694580c1-7e66-41c1-a4e4-8b29c73ec343",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hit the Mother Lode // Hit the Mother Lode",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0b97937-f549-4a63-b532-f460e10cc2aa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Might of the Ancestors // Might of the Ancestors",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4051813-5f49-4777-a517-1e6aaec2b0f8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Axonil, Deepest Might // Ojer Axonil, Deepest Might",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6952772f-a836-4669-ba77-ba356ae79820",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Triumphant Chomp // Triumphant Chomp",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "661ee286-784b-40dd-b55e-c5745a2f68ab",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Basking Capybara // Basking Capybara",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1af575a-8ca1-4b06-84dd-0057152876ae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bedrock Tortoise // Bedrock Tortoise",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e751853-b0ee-42ab-a7be-8d192599b8f6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ghalta, Stampede Tyrant // Ghalta, Stampede Tyrant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "910731d5-3f1a-4d17-8290-1138ec903a64",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Glimpse the Core // Glimpse the Core",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "511d1b92-2e50-47db-80d3-0534208523d3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Growing Rites of Itlimoc // Growing Rites of Itlimoc",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "117d94a8-05cc-4eab-9be4-c307db680978",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Huatli, Poet of Unity // Huatli, Poet of Unity",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a776293-6d64-423b-9376-d515342c2453",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Huatli's Final Strike // Huatli's Final Strike",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4557ab57-91f9-4f80-b796-0f0bc8427625",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Malamet Veteran // Malamet Veteran",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86ea8ec4-6099-4c22-b752-22ba42692dc0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mischievous Pup // Mischievous Pup",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef57d188-b1c8-4354-ad20-f1bfd0ccd960",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Kaslem, Deepest Growth // Ojer Kaslem, Deepest Growth",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15b3a73b-a37d-4228-bfd8-9c24b6b38654",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tendril of the Mycotyrant // Tendril of the Mycotyrant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ae24bb7-f2da-45d9-ba8a-0cfabd772669",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Walk with the Ancestors // Walk with the Ancestors",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e8ce226-9505-43d2-a322-f83483ebbbc3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Amalia Benavides Aguirre // Amalia Benavides Aguirre",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e020126-c3ac-4c1a-98db-6b3e9f4cfe52",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Master's Manufactory // Master's Manufactory",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5295634e-1740-4420-9468-0da945bd39f9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Mycotyrant // The Mycotyrant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e5f2c32-91ea-4459-95f2-3000c8556265",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nicanzil, Current Conductor // Nicanzil, Current Conductor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e257773a-f349-469c-a968-acfeff0d2d24",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quintorius Kand // Quintorius Kand",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9f2e9e3-ec0e-47ea-ba4b-0ce00e40932b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Uchbenbak, the Great Mistake // Uchbenbak, the Great Mistake",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5451fcce-6141-4763-bc4e-2aa8e6914f51",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Vito, Fanatic of Aclazotz // Vito, Fanatic of Aclazotz",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "286a563d-e763-413e-b735-461de7408845",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Taq, Deepest Foundation // Ojer Taq, Deepest Foundation",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e80a9d43-9c6e-45cc-9acf-094ef513adc1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Core // The Core",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b89fada-4106-482a-a822-b835d14ea538",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Grim Captain // The Grim Captain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4bd0a01-0475-4de0-8ca9-2f1b52cdbda7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Restless Anchorage // Restless Anchorage",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f22f918-7ad9-4af5-94fb-632d3d2eab6a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Restless Prairie // Restless Prairie",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25189726-e51b-424a-9418-9f41e71578b5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d3e49c9-21f2-4e83-a836-6e32d8a100e1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b23b24d8-884f-431a-a62e-7b1b2a1a5961",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Akal Pakal, First Among Equals // Akal Pakal, First Among Equals",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1e225fd-e26e-4ad9-a304-6ecd24bd9588",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Inti, Seneschal of the Sun // Inti, Seneschal of the Sun",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6adefccc-63ce-463a-bd06-1a3bc180758c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Amalia Benavides Aguirre // Amalia Benavides Aguirre",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02702ed9-bf33-4722-9c62-369eedc0fead",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bartolomé del Presidio // Bartolomé del Presidio",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c7aefcb-7e6b-40e0-8fb2-d29106edace8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Resplendent Angel // Resplendent Angel",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f757235-6001-4e2c-b244-0a269d84d350",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kutzil, Malamet Exemplar // Kutzil, Malamet Exemplar",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d41ccbe-757d-4888-8d81-2887ce8d8068",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quintorius Kand // Quintorius Kand",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f17ce5d-de07-479a-b697-e6e82cd0addd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Saheeli, the Sun's Brilliance // Saheeli, the Sun's Brilliance",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36e170f4-07ba-4300-96cd-80a28ccf4754",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sovereign Okinec Ahau // Sovereign Okinec Ahau",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8c405cf-f1de-4a78-a354-413dd4335b5b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Zoyowa Lava-Tongue // Zoyowa Lava-Tongue",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b18b25b-862b-42e4-9f3f-7e39fa4cfd01",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Throne of the Grim Captain // Throne of the Grim Captain",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aafd29de-736d-455b-88b4-48f38112dec6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Taq, Deepest Foundation // Ojer Taq, Deepest Foundation",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd1a00bd-9e5f-4d6d-b50c-00bd3a27422f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Pakpatiq, Deepest Epoch // Ojer Pakpatiq, Deepest Epoch",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0438d26f-8e3c-4f05-817b-75c1dd9c2604",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ojer Kaslem, Deepest Growth // Ojer Kaslem, Deepest Growth",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90f45a1a-d6b3-40bb-afa8-ff52cc121b66",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Resplendent Angel // Resplendent Angel",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78af8e74-cd25-4960-b796-5ae7b81eb61a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Barracks of the Thousand // Barracks of the Thousand",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cfa9596-78a3-424b-8542-40ab27b257d1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tishana's Tidebinder // Tishana's Tidebinder",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8324c03b-7be6-4ca1-ad38-a9c72e64e0e8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bloodletter of Aclazotz // Bloodletter of Aclazotz",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50bb0686-3214-44b9-ab40-f3ba8bdb689e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Starving Revenant // Starving Revenant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef4cf86d-fe9f-4544-9e26-4fe6d09f3abf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Roar of the Fifth People // Roar of the Fifth People",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0a5cfc0-06d1-44ed-b570-1b13d85e55dc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Echoing Deeps // Echoing Deeps",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3fa1867-c6f2-4262-94e9-b66001437edb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Quintorius Kand // Quintorius Kand",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4048ca6f-a3d5-4124-a53a-ff2a1e594d5d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Carnage Tyrant // Carnage Tyrant",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6aed076-4db8-4129-94a4-ac23c6fb59e8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Dinosaur // Dinosaur",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8a5a4ca-8f7e-4e49-bc9e-11e7ddcb5310",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Map // Map",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d47a7fb-b8c0-474c-a7c8-b0dfb754fe43",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Admiral Brass, Unsinkable // Admiral Brass, Unsinkable",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6247b642-3014-428e-aacf-44a91653efed",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Warden of the Inner Sky // Warden of the Inner Sky",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1c1b4e2-6f03-454b-9e21-a7d5f5c1d38c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Clavileño, First of the Blessed // Clavileño, First of the Blessed",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5930b62-cf6f-4000-b644-ed2f36a828f8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wayta, Trainer Prodigy // Wayta, Trainer Prodigy",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "889f8f91-0d11-4a61-b932-99044a3e5df6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Contest of Claws // Contest of Claws",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49b2197b-6ddf-4dbe-819d-d76acff0f5d3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Clavileño, First of the Blessed // Clavileño, First of the Blessed",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7ffdf51-7ce2-4040-be0d-297b2a7d1504",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hakbal of the Surging Soul // Hakbal of the Surging Soul",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06bd0884-84db-4626-b6de-6a2ce427a7fa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Pantlaza, Sun-Favored // Pantlaza, Sun-Favored",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80ccd275-0f6c-4d3c-b42b-40ca3b8fdda5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wave Goodbye // Wave Goodbye",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9048251-aa50-425e-b9c7-71a0a71d7954",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Wrathful Raptors // Wrathful Raptors",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4572923-539c-49c9-84e0-578eda7e7485",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sunfrill Imitator // Sunfrill Imitator",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3846d7b-8eb3-4d10-971c-4bcfbdb154ff",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Chalice of the Void // Chalice of the Void",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe4b0825-daa3-49a9-9fd8-5c7b0cbf41b1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Akal Pakal, First Among Equals // Akal Pakal, First Among Equals",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a97d574-83e4-4110-bd35-74a94c67df4a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Whispersilk Cloak // Whispersilk Cloak",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16ebe1c5-b945-472c-88a6-48a60207c2cf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Clifftop Retreat // Clifftop Retreat",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d9399c7-332d-460d-8719-1bc24091316d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ancestral Reminiscence // Ancestral Reminiscence",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "alci",
+    "setName" : "The Lost Caverns of Ixalan Art Series",
+    "variation" : false
+  }
+]

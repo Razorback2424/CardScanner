@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "18★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a08bec1b-6aba-489d-be77-b534a86beb96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiyomaro, First to Stand",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-05-21",
+    "setCode" : "psok",
+    "setName" : "Saviors of Kamigawa Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "244bdd06-bb74-4030-b343-9a764f0f2462",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghost-Lit Raider",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2005-06-03",
+    "setCode" : "psok",
+    "setName" : "Saviors of Kamigawa Promos",
+    "variation" : false
+  }
+]

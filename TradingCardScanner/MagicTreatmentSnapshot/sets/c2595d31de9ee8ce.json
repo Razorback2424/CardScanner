@@ -1,0 +1,163 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e980eddf-92f8-4dc4-8bad-b2f3dcaf03ef",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f67d6b6d-c57e-431f-ae80-a9658d628827",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Illusion Villain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a40f6e1-3545-4503-af3e-f0acfb735e3a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spider",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "398fbcd8-fac7-4396-9c69-5c72695121a9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Citizen",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fb2c5a4-859e-40ac-8091-7ba44f57b878",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Food",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15796c4b-6041-4e0a-bc4f-0518d165549e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Robot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d52efeb3-661d-45e9-97c3-af167f889684",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "tspm",
+    "setName" : "Marvel's Spider-Man Tokens",
+    "variation" : false
+  }
+]

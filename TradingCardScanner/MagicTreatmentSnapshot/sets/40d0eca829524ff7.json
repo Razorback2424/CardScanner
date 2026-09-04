@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "d7c972cf-64f7-4b9d-90ae-1281605ec89c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Construct",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "ptbro",
+    "setName" : "The Brothers' War Southeast Asia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "6be0bdfb-27a7-4f94-ad04-66c4ed934d52",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Urzan Automaton",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "ptbro",
+    "setName" : "The Brothers' War Southeast Asia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a76c642-d1b4-404a-82d6-47dfec8cacd3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Artifact Zombie",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "ptbro",
+    "setName" : "The Brothers' War Southeast Asia Tokens",
+    "variation" : false
+  }
+]

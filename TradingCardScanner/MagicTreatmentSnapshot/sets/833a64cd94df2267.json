@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d34a7671-3c47-4172-ace5-a77e6633c1e9",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Undercity // The Initiative",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-06-10",
+    "setCode" : "oclb",
+    "setName" : "Battle for Baldur's Gate Oversized Cards",
+    "variation" : false
+  }
+]

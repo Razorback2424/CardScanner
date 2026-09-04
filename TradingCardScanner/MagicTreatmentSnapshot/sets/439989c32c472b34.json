@@ -1,0 +1,202 @@
+[
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1c75484-8bd1-49cf-8261-0e420ca89bca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Resurgent Animist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba8fa461-4e9f-4c60-a89b-0bb7ef82ac8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Open the Way",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fd348b96-2555-4f8e-8e4d-fa8a80b48bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Kenriths' Royal Funeral",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95493490-7771-4b4c-8807-f28f643966c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rebuild the City",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "067eed30-8551-42b3-899a-03ffa71c5f11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metropolis Reformer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "524ad98a-0cd1-49d4-b347-c5b87caceef8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drannith Ruins",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fdfd629b-d14d-4f8a-8392-0330289d6f39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tazri, Stalwart Survivor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-11-17",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "997b1945-abd1-4a0b-8f85-960ae889a242",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Training Grounds",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmat",
+    "setName" : "March of the Machine: The Aftermath Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,4412 @@
+[
+  {
+    "collectorNumber" : "10p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d300e93e-e122-4e98-a271-a491c0b800e2",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Uneaten Feast",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "199b1671-b001-4cbe-9811-8b116e36132f",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Uneaten Feast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69daf07b-9cc0-45df-8194-9d6d256be605",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vein Ripper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "653d308a-0fb6-4725-be5a-79345a202b9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vein Ripper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf4ed538-897f-4f12-a2ab-e39000ad84bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anzrag's Rampage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "196cf988-3a69-49f7-8497-3a5b46ce956f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anzrag's Rampage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89a184b5-5a70-470a-86be-d1cba913870b",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Crimson Pulse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7e403a8-605e-459c-8efa-855c7669f949",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Crimson Pulse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "322ddcc2-801a-4a57-aeaf-1bcd7869b677",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Connecting the Dots",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc8b9d96-9b6d-4d9a-9fc9-1bed88aab7b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Connecting the Dots",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d1e5c4e-ec97-4c10-b8ea-82a12c933bff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expedited Inheritance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cdd4c68-454a-4a00-aac1-e1eab3f78f9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Expedited Inheritance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d81c4d9-fd2f-43d0-a588-f80d2b605026",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fugitive Codebreaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41720877-868c-4021-9db8-e2fdfc49435e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fugitive Codebreaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eed14b5f-c23b-4651-9c58-28a88feb3641",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delney, Streetwise Lookout",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f23a27ce-2ab2-44ec-a893-9787117d5b74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delney, Streetwise Lookout",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc90ca5e-720e-4b36-a50e-4948fd356ded",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incinerator of the Guilty",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7d20f54-97f0-46c3-99a9-0bb7cef6393d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incinerator of the Guilty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e8692af-6cfe-4161-8741-f196a4d65881",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Baron of Tin Street",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8fa6db76-0f7b-4172-a72b-6a4a843e5773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Baron of Tin Street",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "355e874e-a5eb-49c3-85f4-5f839ab41afc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko's Buzzcrusher",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68a093a4-7174-4604-9865-e2683651220f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko's Buzzcrusher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d972ec3d-d8e6-4473-8392-fa8e226f3d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lamplight Phoenix",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5540e3f7-ba7e-4582-a222-47903993444f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lamplight Phoenix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5838a9b-6f6b-4558-9db0-2976898723c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doorkeeper Thrull",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef918dfa-1ae3-45a1-bfee-0016d0d8113d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doorkeeper Thrull",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d6d0d84-a35c-401c-95b4-67ddccad67f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrotechnic Performer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50d094c9-cafb-4adc-9f8b-e29d8905310c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyrotechnic Performer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "268646c4-4f53-488a-88e0-674ae4e035d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Analyze the Pollen",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4270e839-4215-4748-bf2b-8eb03a34dc9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Analyze the Pollen",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb44e9eb-2d82-421b-8e53-0bf465aff3d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archdruid's Charm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a2eca5a-3d3e-4347-9637-85ce10340409",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archdruid's Charm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3da30cfc-58a5-4b6a-89eb-acef259ed586",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Audience with Trostani",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40eb1821-ec62-4ba1-8d21-6d368aff70be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Audience with Trostani",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b07627c-5f6d-4879-894c-2199bd175c47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Axebane Ferox",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86b1ecde-9de7-4bd0-936e-268afb693d20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Axebane Ferox",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2332cd42-0918-4987-bd6a-580466b36a93",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Locked Hothouse",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f73b2012-f54d-42ec-b161-776660cf46a3",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Locked Hothouse",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "803a23aa-2b2a-46b8-8d79-524380f244b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hide in Plain Sight",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f0b6e1f9-4990-49c9-aaf5-413d2f493396",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hide in Plain Sight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85e829e3-0b23-4f3f-a370-edeabe543644",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Pride of Hull Clade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34bfab71-1db0-46e7-b1f5-d85fd6d55eff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Pride of Hull Clade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92f2c71a-8034-4337-b356-f126e53ed005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sharp-Eyed Rookie",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bebff5cd-3eeb-4ee4-97d6-0ec6c3b82256",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sharp-Eyed Rookie",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b230ef15-82d0-44d7-84f5-68239f917184",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undergrowth Recon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3bfa2a9d-19e0-47ae-b6f0-e71c1a556366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undergrowth Recon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40993b71-9f96-4bf8-a503-dfe5a09f6eeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agrus Kos, Spirit of Justice",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e8713346-894f-4f5d-9ef3-0be0383ada45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agrus Kos, Spirit of Justice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba7ad940-cc6d-43c5-bc5d-032b11410e5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alquist Proft, Master Sleuth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "94e5ee86-0db0-4805-9c33-9df67fcc7ec6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alquist Proft, Master Sleuth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "38393b85-85e3-4315-a597-be2a235bd3a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anzrag, the Quake-Mole",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5d616e11-b4a4-4f5e-b1da-bb15bf5e7bbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anzrag, the Quake-Mole",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d81f685a-3149-4326-b900-4973a2029415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45bf8a94-5fe9-43bc-9e38-b95ab46f3037",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb397363-1b81-4ab3-8d2e-71c6a668f77c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Law Above",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a323f1d8-6a5f-4f5d-b143-9f20d424d124",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Law Above",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4482cdab-03d0-4bd8-88b4-df82a59bca21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Spatter Analysis",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cd02e76-92d0-4a73-8c89-db4d39f2e3f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Spatter Analysis",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "daa2b214-2b7f-4092-b290-306209459413",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doppelgang",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a999b5ad-668a-4267-a144-461c1eb20482",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doppelgang",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25545d18-3568-488e-bcab-188447654611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drag the Canal",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6541b71-d225-474d-9d07-a13415f9f44f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drag the Canal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "858b11a2-fd89-4ed5-bd7c-6026fe32d854",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etrata, Deadly Fugitive",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ecccd09-8ef4-460c-8e19-e5ce27b747db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etrata, Deadly Fugitive",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffcea933-4441-4fdd-83b9-3da17cd56cbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezrim, Agency Chief",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f257fc85-19e7-4194-b8ca-c588dd84fc96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezrim, Agency Chief",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82839087-8331-41b6-a852-97d06616b95b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ill-Timed Explosion",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5a655bb-1204-42aa-af91-47f318dbd321",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ill-Timed Explosion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87f81ee1-9826-4ac6-b7b1-9633984e7fa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izoni, Center of the Web",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c86970ca-6297-4288-ad18-2c1cae72223b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izoni, Center of the Web",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53d4df17-6bc8-4a45-b417-553b644267f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, Carnage Connoisseur",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ce77857-cde3-44e8-ad29-e2940cafb320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, Carnage Connoisseur",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38910063-8c72-4b9c-95b7-a3c964ec696b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya, Spirits' Justice",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8efb9dba-a0c9-499e-8ddc-928523a937c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya, Spirits' Justice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fe05d718-2306-4e6d-9384-ffa495bc8bd7",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, Inquisitive Prodigy // Tail the Suspect",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0caba3d-e2a7-4ea7-8b75-53c63b892029",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "Kellan, Inquisitive Prodigy // Tail the Suspect",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "15470434-52c6-4928-a8d0-13c9aa43e494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kylox, Visionary Inventor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5871faa4-7a94-4c75-b22d-0b907308126f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kylox, Visionary Inventor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b909dd5c-cd00-4a03-a7a7-a3211a60dc94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kylox's Voltstrider",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c432060-6ee9-4b29-b0b6-60416dbc5630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kylox's Voltstrider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e86cfbf-765f-4311-8b5a-e11ab30cafe0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, Wearer of Faces",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df0d2bca-afe5-48c7-950d-3e867cf86b31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, Wearer of Faces",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92469701-8b22-4ad1-bd82-8e6445d58ca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of the Guildpact",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27dcf616-f5e4-4200-a056-c4db6dbd4112",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline of the Guildpact",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "062e24ed-fd4b-4a30-8b33-7067e68da0fc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Guildpact",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "638033c8-649f-4178-bb5b-6c2af0d45675",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Guildpact",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c66d7ef4-1355-45a4-ba76-b30019663090",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Officious Interrogation",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "052d6c65-8d8b-4d88-8458-b8238f1a8d0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Officious Interrogation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b47cbce-717c-4edc-ac6e-1df5b0f5e678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, Patron of Chaos",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afe9236b-d009-460c-8d5d-289bad3d7078",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, Patron of Chaos",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1709acb-5e20-41db-9c8c-fbe3139469a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relive the Past",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a41a1ee0-3a07-4c35-87ef-d71aeb5fae56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relive the Past",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5807d732-7bd7-41df-85d4-873fab5bb483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa, Opulent Oligarch",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f515b463-7c58-4429-9560-5b1e92292398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teysa, Opulent Oligarch",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d8bb1943-c9e4-4473-8ffe-17f53f463be4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolsimir, Midnight's Light",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db948368-d072-4ea5-83c5-b46235a20a99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolsimir, Midnight's Light",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a185ba8-5a93-4adf-ab4c-b782922a1a8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treacherous Greed",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb513752-f5d7-4fb6-b0e9-66fd43506c83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treacherous Greed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e2ec83ff-d742-4bc6-ad38-0a4ab95e377e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani, Three Whispers",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59bae49c-0326-43ed-9d9c-342463605427",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani, Three Whispers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d212d9d-8933-45b9-b156-d8d13699f064",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urgent Necropsy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4dca32b-b512-46e9-8d30-56913fc434ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urgent Necropsy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f11bbacf-9124-4e91-9822-3779fd247dfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vannifar, Evolved Enigma",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7d09ab9f-6c92-4a7d-8be9-5e589d7817f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vannifar, Evolved Enigma",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ae56788-1274-4214-b01e-26d10b55cde5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warleader's Call",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5351106c-5334-4564-bb5b-1fb616790e00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warleader's Call",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71107317-8623-49b3-8896-d77cdbf50d57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldsoul's Rage",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a116ae42-6d11-4d75-972d-1741e51b363c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldsoul's Rage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2d3b0d1c-2f53-4f72-8bab-4379e0b4f64b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarus, Roar of the Old Gods",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "016cdda5-a772-4a1d-9b1a-88ca75323d8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yarus, Roar of the Old Gods",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "758b5915-ac1d-47e0-932e-8a37b7bce300",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptex",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "396043d7-921a-46ca-a543-1483cd7786f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptex",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83c76a67-db20-422d-8526-37cd39618deb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commercial District",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d6ecc7f-57d4-494e-a51e-5d209ae9a88e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commercial District",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea5bb98e-5438-44eb-adcb-56352c4df589",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elegant Parlor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2eaf4ab9-730e-4bbc-849b-a4bd4ea026ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elegant Parlor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ff20f1b-3a40-4e16-8837-7dc8e5a6457e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Maze",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15cbc81d-e464-4583-a9a8-b8a4931b1521",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Maze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab42ae1a-0c46-4364-b5f1-7688037e9acc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lush Portico",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae57f9da-7d17-432d-b13a-3f55a9a8150a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lush Portico",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "170701a7-2c29-401e-a0be-178c9f469076",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meticulous Archive",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87efcaa0-365a-4b84-93aa-03e62a9514a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meticulous Archive",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "47babae6-c131-4ab5-9eea-6bbb7a76e9ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raucous Theater",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db5d04cb-99cc-41d4-9567-d58229a97647",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raucous Theater",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61824217-bb1b-46f0-9ac0-a720d811d55e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowy Backstreet",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bbec54b-4ec5-4aa8-be53-69b7044d482f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowy Backstreet",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b9915ae-42c2-4de6-b3be-630b5e16bd06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Falls",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30133406-16c0-4e34-b7f8-01bc3f8d3538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Falls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3681d322-bc45-4b2b-9cc8-17929065d097",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Sewers",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c409822f-84d2-4099-ae3a-f0b58ee8ec4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undercity Sewers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "114f10b7-fe2b-4647-aa17-fba39b69af0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground Mortuary",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd77f15a-6365-49dc-bd1a-4703dbc2f35d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underground Mortuary",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "547c5ec3-2397-444c-89b8-fd9c783defed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No Witnesses",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c7faae5-287e-4a96-9f67-8003404f433b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No Witnesses",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d0b810e-04f2-4060-bb5c-e7f3324323e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenth District Hero",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea1897e7-1303-4a6b-a6c0-ecf1a5c4ea02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tenth District Hero",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cbab758d-a21f-4f2c-aa25-8b0f5b16764a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unyielding Gatekeeper",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8aa13186-db71-45d3-b7a2-dd889d25725c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unyielding Gatekeeper",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "091748a0-6a01-40cb-9ab8-015aa8235d3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wojek Investigator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97b2df60-f773-4b61-9101-05642a227cf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wojek Investigator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb5fed73-b216-467a-86da-c62b229398b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assemble the Players",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f413766c-948b-4aec-a9ad-76905bb7dc7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assemble the Players",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6faf668-d7b4-4020-8835-d290ccdabac2",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Ransacked Lab",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2163769-4d51-47ae-aa8b-c993392254b8",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Ransacked Lab",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57b22833-f089-4cdd-bd62-17a28a71bc21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy Unraveler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce355c92-981f-4416-936b-0292dcd60329",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspiracy Unraveler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c704add1-54a0-4053-9a9d-c0a8a8de7c11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coveted Falcon",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "726fc5fb-0928-4898-8b41-4c08b24a5f8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coveted Falcon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a562d19-fad6-4392-916b-0a77f2d846ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia's Vindicator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5013a725-4f6b-44c1-8994-a53751ce262d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia's Vindicator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d41f4c20-424e-45f4-93bb-78fc0536a945",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Coat",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d90cf5f-8bd9-49da-a685-3a0b3876d052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Coat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51ece19a-1dcf-488a-947d-8e80885ac782",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forensic Gadgeteer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a9885f1-981a-475c-a29c-c3b5212fa3b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forensic Gadgeteer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0151f69b-08bb-4f9f-8aa1-573eb87097bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intrude on the Mind",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddc72ba3-137c-4194-beb4-754b30746174",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intrude on the Mind",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19cd2ecc-aef0-41a2-a853-068ce77d0822",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost in the Maze",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0676db8b-a951-42e1-8952-cbed6b13340d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost in the Maze",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0208e215-9dcc-49f5-a7e2-82a02782a777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Proft's Eidetic Memory",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4976c108-313e-42c8-b28a-3e9ea04a4f93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Proft's Eidetic Memory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc3f561d-b0fe-422d-a1d9-64632b41ea6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reenact the Crime",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e3ce8ad-fe9d-4e6f-9921-adba4ee3a1bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reenact the Crime",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cda8152-ca8c-4175-97c9-ac12b485b8f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steamcore Scholar",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4864a38-7307-4d7c-abcc-1f73a29fa320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steamcore Scholar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "85c7ea7a-a4d8-4497-9e1a-33f10be13b1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barbed Servitor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93e7361d-f394-4403-bd79-519eb09ff083",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barbed Servitor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d8ada4f-2f2d-4072-8447-7da0d9664e76",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Stashed Skeleton",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6bef6111-6362-4bc6-92fc-b9844e3f52f5",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Stashed Skeleton",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de5f8dd8-ba55-4ccd-a6b9-d077dcceb45d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Cover-Up",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ebefead-7595-4488-b772-76924f598983",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Cover-Up",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed65a2ba-c1dc-47f6-a3ad-c18ac57a017f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homicide Investigator",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfdb4045-a402-4346-93b8-6d3911f82ca2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homicide Investigator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30d2a4b8-df5f-49fc-86c3-d75adaa12cd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunted Bonebrute",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71878dc1-bcb0-4538-99fa-6f90e1d16ad0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunted Bonebrute",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c5eef7c-3f32-4805-a359-d9335f5574c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Illicit Masquerade",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a06492e6-cf93-4df8-8c7b-e09bbbffc418",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Illicit Masquerade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e5a757b3-067c-40d2-83b7-131113e5b953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl, Known Killer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a974dd1-4ed2-4d71-9324-7dc2405596df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl, Known Killer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed74ee56-0fad-4bac-b417-1cca675d0a8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outrageous Robbery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b73da46-67d0-4a63-a315-c0341859a9d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Outrageous Robbery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "pmkm",
+    "setName" : "Murders at Karlov Manor Promos",
+    "variation" : false
+  }
+]

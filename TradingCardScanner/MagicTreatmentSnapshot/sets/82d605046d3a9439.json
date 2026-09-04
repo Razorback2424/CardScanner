@@ -1,0 +1,2075 @@
+[
+  {
+    "collectorNumber" : "101s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "899fc19d-bd0c-4c3c-a7f0-90337c7fa186",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syndicate Trafficker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f41a2968-8b6c-4652-af52-eec3a702f662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Torch of Defiance",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0972a8fe-f0ec-46c9-a4d2-a36d1d81f592",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combustible Gearhulk",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54105059-f95b-4346-abb7-e1ceed8181e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Combustible Gearhulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef58e615-76aa-46b0-b5e2-9cc2f23290ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Showdown",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be51c18a-048d-4c97-bdf9-d7f85e61c35a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathnu Hellion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0cf053b-81df-4c70-89dd-b01ba7b34aa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Madcap Experiment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "00604865-a6af-4ce1-8010-f9c276c2c945",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pia Nalaar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44aedab6-866a-4524-bde1-ae5130be04f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyship Stalker",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8cf6c559-fe07-4da8-a7b8-abce7b5a1d12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyship Stalker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb895f4d-8d3a-450a-9611-c5704decd444",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Gorger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37836251-f03b-48c5-8d0a-e8300df83569",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Architect of the Untamed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "095ac316-dd28-4e2d-83f9-6e2d05a499a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristling Hydra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d5c00e5-dcde-4650-8cce-9f6d9aa8fb95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bristling Hydra",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-08-01",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c54679d8-88ae-4ffd-9ba7-fe6c198ea496",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivator of Blades",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb9338dc-88a7-4060-bff0-f8439892b0a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivator of Blades",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c2f72f7-69e1-4944-98ad-66d88ee2d727",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dubious Challenge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "085e4b57-495b-41bc-a49d-fa5f00553555",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fumigate",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e961320-a203-4a1d-a505-6396226a293c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fumigate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4e19632-cf78-4131-86c9-ce136dab9f6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Vital Force",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c59a38f3-b7a8-449b-8664-1c6750e81626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Vital Force",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3989519d-44ed-4b14-9182-3f802096481f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oviya Pashiri, Sage Lifecrafter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b96b673f-49c0-40b8-8dc6-bfd7f74d84e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdurous Gearhulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b204a09-7147-4365-841b-e31adceabcd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildest Dreams",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "178s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a3ac86e-c074-4941-8e9d-7ae6d7cfe897",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Depala, Pilot Exemplar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21d14882-e40b-45b6-9f8e-3b5c183c9577",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dovin Baan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "55259ef8-b4d5-495e-ac41-d074bf474bb7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Consul of Allocation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a726e20d-87f5-42d0-9ea7-27c2aac2a49b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi, Eternities Crafter",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de743408-7d72-4f42-9dfe-040dc96269b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rashmi, Eternities Crafter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7edb1395-5c45-4850-aeb1-2c338302ef69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli Rai",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18dff95a-9c76-4ca2-8de6-91e34538f5da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherflux Reservoir",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f92cfc3-7b87-4945-b7d6-b106c9d8bfed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherworks Marvel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8cbbd88-fda3-4a5f-88e8-a709e121a01d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animation Module",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88993193-c5ce-4334-8965-f10b0510210a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bomat Courier",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3063fda2-d67f-43c3-a736-f4fd980efcbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chief of the Foundry",
+    "promoTypes" : [
+      "giftbox",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "402f4d64-7606-40c6-a90a-6e902e39f869",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivator's Caravan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "245610ce-0733-4acd-904b-2912dc480b81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadlock Trap",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "341efd3c-b6c8-4c14-bdef-d00a32383d78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dynavolt Tower",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcb18848-1754-4c2a-adf8-0bb9d4f8673d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Electrostatic Pummeler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44a7234c-a618-457d-b9d0-7482ed1f518c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fleetwheel Cruiser",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74ef0715-104a-44d1-9528-e2f77df4dc6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghirapur Orrery",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14580724-d866-4492-8bf4-1190109be94f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghirapur Orrery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46dc96f6-931f-4434-a29e-294340c6c321",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master Trinketeer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "266ee87a-1bdb-4205-a28f-fd0d7a499f56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Key to the City",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad81858a-e9bc-4483-9629-67daf3d2300c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metalwork Colossus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cb0bf55-49aa-4bcc-b38f-7b66b03b0719",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multiform Wonder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eda8b16f-f72a-46d4-afc8-9cadb16e4d89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Panharmonicon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7b24a91-0f0a-4c83-9d63-a0583626c4ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrapheap Scrounger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d962567-0391-416d-8ece-61aeac2cb73f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skysovereign, Consul Flagship",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b91248e8-9d00-4d42-a05a-21a009204404",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Copter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "03e2b6b3-7705-4afa-832b-ab3fc03be176",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blooming Marsh",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "813ed97e-58d9-4471-9316-cb1db340cd20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Botanical Sanctum",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fd4ac43-ac4a-425a-a5dc-53ddc66c241f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concealed Courtyard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a335832-714c-4c38-bd5d-1703cd24f8f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Vantage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43d5a59d-5e0a-4691-9e0b-41c625e1c011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inventors' Fair",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07a955e7-7fd6-4b62-a6dc-85a64be16773",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirebluff Canal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63166e5f-5c53-4d1b-9ebb-5a5c309ec16b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toolcraft Exemplar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9990681d-b893-46d3-8bf1-6d3bbc4df767",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aethersquall Ancient",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8072c9b1-f0f5-4549-98d6-5f1461743811",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherstorm Roc",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f97953f-0cf9-4a78-b048-ae4d08c0e5de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Confiscation Coup",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72afe4d6-7160-438e-b6bc-b8edc160f36c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Invention",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62752979-9805-493d-9194-44105032b753",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insidious Will",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02de3035-819c-4767-a9c3-5b7f7813c126",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metallurgic Summonings",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7e4b5fc2-7825-4f7f-8534-5fc85170e4c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Padeem, Consul of Innovation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0beef304-8b12-4565-a767-4fa548a81f77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Padeem, Consul of Innovation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2f0977e-98ed-4394-bde0-142591022136",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Authority of the Consuls",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1018db9e-2f41-478a-a163-326d02cc0ec6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Authority of the Consuls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ee9d813-9f7c-4a0e-837e-d3cbc583761f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Paradoxical Outcome",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "422e3475-551f-405e-9467-5d244ce698e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli's Artistry",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcb90cc5-561e-43af-b574-00c219a22e3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saheeli's Artistry",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd5fa5ae-f099-496e-afaa-2a58f34c80a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torrential Gearhulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bcc4b015-648a-44bc-abc9-02db2cd37f03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demon of Dark Schemes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68a13bf0-ab63-420d-a553-988d7019c857",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eliminate the Competition",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3c096f4-3828-429b-8370-0e82f5548d91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Essence Extraction",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7c9909cf-4d59-4bac-beff-d20d1cc4a818",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b54d6a9c-0587-471d-acfd-01e56f6866bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73a45b4c-50b2-4864-ab72-3a8c0b9a7189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lost Legacy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "981a7f17-92cd-4884-bc7a-2a5b8a8debc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captured by the Consulate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87529c82-ff02-48a3-8f10-59e3c90c3dd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marionette Master",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39e80de6-c0a2-4de5-9eac-f5fed1c9421b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Midnight Oil",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1f56192-f9a4-4fb9-937f-7dfc6a83f361",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noxious Gearhulk",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b450cac-67fe-423f-8dcb-8bf74b9e6991",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noxious Gearhulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f49eeca-b98f-4139-8db3-64b94091469d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cataclysmic Gearhulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-09-30",
+    "setCode" : "pkld",
+    "setName" : "Kaladesh Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,7082 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "249db4d4-2542-47ee-a216-e13ffbc2319c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f594562-7e9f-47e6-a033-fb70e3cf1e10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e5067fda-fbee-4e44-aba7-8ab2c0e396f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Smiles at Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c11f5d27-37f3-430a-833c-84e249b5e744",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamshaper Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3dd318d3-3d84-4f3f-a48f-6a242474a4a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros's Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d320f16c-798a-4dbe-875e-6abe7a9b9e6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3da57d0-1ae3-4f05-a52d-eb76ad56cae7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animar, Soul of Elements",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fb83da3-5a8e-4349-bbcc-dcbd3b70264b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arjun, the Shifting Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "177",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53b18981-c0be-455c-baa4-d3f45c55b4e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atla Palani, Nest Tender",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7722682f-952c-4829-b4ef-e52300b7950e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ccc3535f-bf13-442a-b632-590a69cf0ca4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Lunarch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2373625-af3c-4c2a-a1d1-5288c446955d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Child of Alara",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d27cf7b7-7982-46bd-a559-7789c0e74bae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e0ad8e7f-cda0-4529-94fc-dd3709158a94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, the Siege Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4262e71a-b1fa-4b54-b623-34f4a7ccd500",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ee837b8-c280-4a5b-acdf-71247ab096f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Silumgar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25e34147-588b-4fe5-88dd-2dfda567681d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0728027-a1ec-4814-87c4-10c3baced0e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elsha of the Infinite",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6bf721b0-2b5a-4085-b50c-89cbe7420673",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d5edf4f-5695-42fc-9e57-c4faef60fbc3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2be0e99-cf43-423f-974f-02e3313b3aa9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghave, Guru of Spores",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f43748ea-1d65-4ee8-9c66-221412a284c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Arbiter Augustin IV",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35517572-b5d4-4dbf-b090-4e4c4b040a0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intet, the Dreamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "73c18cb4-96b1-4af2-912e-974e22877ede",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, Archmage Eternal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4fc28d1-61d5-4a78-8fbb-6566128486ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93f6631f-f3a6-4d3c-8618-4b4ab4e82483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia of the Vast",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9b8259d-0bfa-4327-ac91-157c0b9e7dfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek the Merciless",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3e47d49-e5b5-487b-a1ec-373dbf89b2ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Consul of Allocation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6200ac79-b166-43d0-9a0b-5b547625ed57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karador, Ghost Chieftain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3242a9f0-2ba3-4852-ac8f-366772ac1c62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa, the Black Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "921b65b1-18bf-4b02-a35d-7eaee1846611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mathas, Fiend Seeker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8173413-0431-4b70-a509-f1bc11a59225",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mimeoplasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "069bf085-3f70-4c85-8e90-609d1d182e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix of the Izmagnus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4125bb0-b104-438e-a6a2-97f9d141243c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "12259d86-f610-47c7-bb81-0da9bb6a2795",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rafiq of the Many",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54e2d6c2-a233-4e37-94c9-673a4a957e0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roon of the Hidden Realm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aa828bdc-221e-4e81-9e71-6f288690ddcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruric Thar, the Unbowed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4e787a7-3721-4ba7-b643-a103488cfc8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sedris, the Traitor King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52a30e27-4c52-4191-8541-e25732a2dd42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shattergang Brothers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32f08fd3-9c0a-476a-9894-1938179824c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Brood Tyrant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3dd0bf11-4e43-43f1-82e3-755beed0ede0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skullbriar, the Walking Grave",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b588dc15-68e6-4cbb-9345-a921c10f862d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tariel, Reckoner of Souls",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8caa7115-1b26-4615-842f-671b24dc96d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teneb, the Harvester",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e7334eb-66c1-4410-966c-4e76c1b9e9a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thraximundar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "002fe870-eae5-42cc-a44c-32906f60719e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulasht, the Hate Seed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca984fdb-aaca-4d8f-af2f-72387122607b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uril, the Miststalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1caccc8-4f33-4ae3-a09a-b41b9c4663a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varina, Lich Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "07790bd5-0d27-490e-b1ae-3b866882461e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasitora, Nekoru Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aeb0160a-dfdc-4b1f-865e-ef905aee65d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9464a820-65de-44f2-9895-46a35e8621a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "b2548ad2-3c62-4ed1-899c-1002b46cdd8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coldsteel Heart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "30879758-841c-46a9-a0b6-179ac163f0ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Bridge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "14adc0af-de61-4872-916c-3cf480dece46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrumming Stone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "309a6684-ecb3-491c-899a-3aa15a51130b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Spires",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c8638c18-f5ea-4e36-9c48-ec1446d0f7a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Last Hope",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "169fcff7-58f2-420b-a5f1-642ad38709b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrenn and Six",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "765fd969-d3da-426a-8bf2-d4e1bb7ae878",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "64b4b6cd-6d0f-4060-b51f-61f481000d51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cbc085e9-bbb2-463a-b35c-bee13008a2c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e3331a24-e4c0-45ca-9b72-ae14d5cd94eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a595d04e-4cdb-49d1-a323-7b6d1e3ccbe9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flickerwisp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9b974f99-28d0-4cd5-87a7-3f9661ddd1b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mentor of the Meek",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6dbb79bb-657d-469d-b3f2-381a82891ccc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seeker of the Way",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ca736b62-9b02-49bf-8abd-5de6c4bf0ab0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smothering Tithe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aab08707-1599-4b3f-9be1-363dfe4ecdbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protection",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "79c9e989-b3fd-43ca-b2a5-d051f3b504b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall of Omens",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d4397224-5e64-4615-8c53-e6672655f2ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consecrated Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5396b405-6fa0-43d7-a8f6-f64154e95e98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Negation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bb51da3a-9058-4817-ae69-d1d02a81b207",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gifts Ungiven",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "456a2f03-8304-4512-804c-76653e30f436",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "99074b05-f252-4626-a96a-6bc286e8d03a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mulldrifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d3c8f1c8-2b57-41a3-abeb-77ac7de62fa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spell Pierce",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4370142f-441b-4e70-bef9-f79e6a877ee9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Scour",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5587191b-b56a-452d-8a18-1622df83c267",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Artist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dca972d7-fcf8-4ac4-a98b-fffb2fbb4dbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damnation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0163dd21-9f9f-4656-b0b2-7774be0b6ada",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Seal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "599cf02f-47a1-47b4-b67e-8f27fa65c151",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inquisition of Kozilek",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b359c884-dfbe-4c16-9c83-f9f906db1f40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgical Extraction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "656127b7-21c4-40ce-8fff-5cc3d38398f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unearth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dedcbd3b-7e30-44cf-b9b7-1bb32c11ef67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anger of the Gods",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "94ba4278-c63e-49b4-bf60-16dfe5c70a0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaos Warp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "47fdac35-d709-4078-8205-ad7c79b6644c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dockside Extortionist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c8c8390f-4072-454f-8dc4-174919187a47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Bolt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3c9899a8-f5b0-427f-ac87-09fc8afe0f23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monastery Swiftspear",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "14da7322-924c-4018-a38a-89f4ea85d435",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seasoned Pyromancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6f10099a-d256-44ec-a7a3-c93b27741d06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Young Pyromancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "543e99bd-04dc-4bf9-87df-86a810135dfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Allosaurus Shepherd",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "200693d6-7164-4b24-8cff-c1f3e407fea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloom Tender",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d0e276fb-3af7-444e-b132-1fe9f2e1fd2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concordant Crossroads",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cf722227-5b90-47e3-9f56-5ba43114c14e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eternal Witness",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b635f1c-1e65-4aec-af23-e75e49665014",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Scales",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "68dce077-4ecd-406a-9052-05d5485ffa6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oracle of Mul Daya",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b4bbf009-0798-4d8b-b375-6d6fde975c34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampant Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0c4f4ff8-efd2-4d22-8491-54bd6e73006c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6031e3f0-0181-4785-9016-574823985a69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodbraid Elf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "78efee5c-970c-4f9b-9a6b-96ef3e79caaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burning-Tree Emissary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "033e6145-cf40-4fa8-98a4-ed8b5e8a66ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coiling Oracle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c6a6236c-0148-48de-be63-6ddbb34f9a2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d129496d-3ae0-4e61-9e20-6259c0754b9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, the Dusk Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "65d6f1ff-7514-4fed-80e9-fd912e21bd26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse the Unthinkable",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0143eb00-b054-4741-8423-66eed0362a30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Arbiter Augustin IV",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "356110b1-9cfe-420c-963a-c12469786e40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Flayer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1e8bdd10-0bdc-4339-bd84-b540606438d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e9975663-3038-4c72-b29c-65635dbe36bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa, the Black Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "eb32086e-47a1-4088-a36b-85025daee5fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mimeoplasm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "76f7d02a-7b83-4444-ac65-1661637183ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a7dd7473-9baa-4410-aeab-3373f3a5ffb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Privileged Position",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b035fa74-7e0d-4bcc-8bd7-4ae0c33db317",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Qasali Pridemage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "811a2deb-034c-4ed8-83cd-b71c2ca36cea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sedris, the Traitor King",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a2b760cc-800a-48a3-97d9-316e1eeafd4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supreme Verdict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "54f3c523-09dc-4f2a-9bd9-7614e061de28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec17fa3c-9033-4eab-a236-3f0068595536",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Year Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93e26409-430b-419b-8cd2-1bce007f12d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Vial",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f66202ab-cd10-4116-8e22-05b45a45fa85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodforged Battle-Axe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0dccb71b-a25a-4ef8-b2ab-716fd38dcc0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crucible of Worlds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a941b1f6-9f18-4c9e-993f-bf8f52bd6f53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Vault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c23c801e-b429-45d3-896e-289ec0497db0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Panharmonicon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "043de2ce-9ee9-414f-9385-6e5260173988",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Altar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e997845-be0e-4130-8d07-5d2963ce8a5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pithing Needle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "696792c7-245a-437e-b495-477b177773ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sensei's Divining Top",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c91adeef-c1d5-4b14-9d79-ddd0dc035786",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vedalken Orrery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "48a944c2-0711-4e0c-9cd5-cfd5ad5f8266",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azorius Chancery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "71cdfa12-e933-4c64-b7d5-c856a6a054ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boros Garrison",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4222863c-c851-4ef7-b29f-7111b05bb843",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "869ec7dc-dbf5-4ed4-a368-328da384ecae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "City of Brass",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7761b314-844a-4ade-a584-f37712cd2293",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dimir Aqueduct",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "36dd80b6-28ff-488a-bc39-fb661da52e30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forbidden Orchard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f6729320-d557-4860-80e4-32afcf6aad34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golgari Rot Farm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8380f74f-aa76-42dc-9596-92d651e1c1f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruul Turf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "891067e9-dd89-4f0e-9ef8-694a831962aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izzet Boilerworks",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b8ee89c5-5504-4b9b-b70e-4b48e4c66c76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orzhov Basilica",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e197d420-fc69-4672-90f0-2264f35d1c61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos Carnarium",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "41907913-2308-4d76-b737-216088ce0d57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selesnya Sanctuary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "896e1b11-1796-4fec-bb1c-111b0f9768f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simic Growth Chamber",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d2c632e1-faa8-40f9-a5b7-8773644516fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8a4358e0-9dad-48dd-aad0-d4a3ab4766c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "942c0703-f745-40bb-b894-8a64e854cd64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "f68a7e08-6af2-4eab-afd4-7eb9db431e9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Visitation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "90ac0230-151f-4079-9963-42b123e4b3fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "46f882a1-a34a-4319-bb75-c11a1193e8e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leonin Arbiter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0bdc0779-8c92-404d-b959-db9f4bd63947",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Lunarch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "cd8208ec-5049-4f9b-a5ea-89097cb1d141",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monastery Mentor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "38befc96-938e-4b7f-97da-ed67ccd8900b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Restoration Angel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4be8ab20-e402-48d9-8a39-7cf09d333374",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reveillark",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4e3b9aac-c5d5-4284-9c7c-67b23748fa45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smothering Tithe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "1802943c-07cc-48bb-a861-f18cb5f2b0ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protection",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "499ac8a0-9f1a-4ece-a1b3-b175bb1e8486",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weathered Wayfarer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "ebda0fb2-ba10-46e0-ab9d-5a2736553b5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "As Foretold",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "2fddeced-9d04-4b4c-bf3f-e9add96f4f5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consecrated Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "1fc1a7bc-03fe-43ae-97b2-f0a63bae7c74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disciple of the Ring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0d840284-ce56-4e4f-822f-8b237a261d1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Negation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "83a69886-8fc7-4f0e-b43e-afa4fc1a0ec5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gifts Ungiven",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d0b178b9-c71b-4f4b-ac0d-ae2a16a19410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kederekt Leviathan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6dc7d280-31be-48b8-aa1e-8de676ca01ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Drain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "7eac20be-9c39-4808-a8bc-d89fe7991dd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pull from Tomorrow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "70aaaffa-4518-466b-9157-7cd41ac28fcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "68409196-abd1-4ac5-87d0-72cb1e4a68fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venser, Shaper Savant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "bb0b3575-c7bd-411d-9aa4-3a986b7876a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bitterblossom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "42c7ad21-2f01-4f9c-8631-7d7e17169ce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damnation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "438",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6b6e96a0-5c2d-44f4-9191-48a6bd27536e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravecrawler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "f6ef9e68-0d77-4b56-b03c-b520f4af4c01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperial Seal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "440",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "50269303-0bd9-474e-bd16-e0d13a5cbb74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Last Hope",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "441",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "870c962b-2c0d-4b17-b951-1a73f17c65f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrotic Ooze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "442",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "971631cc-f2e1-4eaf-8c23-71707489bdfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Unshackled",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "443",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "961ec8de-1029-489c-a8a3-283b5f2bf77c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oona's Prowler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "444",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "67fec89d-a66b-460f-b8dd-96e8c97d8d50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgical Extraction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "09c810eb-1402-428b-850a-72d81f880d8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "355dcac7-120b-4c52-b077-bf36c41c579d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abbot of Keral Keep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c9136885-785f-4b71-a834-d0eb1d2a042a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Smiles at Death",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "1702e178-f67c-4fe8-9dc9-99247f5b9f96",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anger of the Gods",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0d606c86-ea7a-49c8-9afb-778265063113",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Backdraft Hellkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "61828058-6ad2-4788-adfd-a898e25974a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedlam Reveler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "451",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6eebe1a2-5723-4c61-bdb8-4167c244bf6a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaos Warp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "7eea863e-ebc0-4c8e-b464-80b7dbabe30b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dockside Extortionist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "453",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fcc93bbd-db0d-47d2-a079-186a78224136",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Greater Gargadon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "cab0dc75-e883-4428-b65a-bbbc582b3c97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seasoned Pyromancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "af570ca5-4123-4043-a2fc-8b3a7bdfdf38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Twinflame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "00d2af40-f20b-4f78-8ef5-ed33e6f0b835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warrior's Oath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "51661771-f654-418a-8ef9-11b651fce97c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Allosaurus Shepherd",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "458",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "80acde10-c524-428e-b406-23d6644295d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloom Tender",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "459",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "3e99da13-fecb-4468-8786-146be83052c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concordant Crossroads",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "460",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5df9df79-981f-4b45-afd0-00d2e97c958b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Food Chain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "461",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "586fdc7a-add9-4ed6-88f6-188061647c31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Green Sun's Zenith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "462",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "db2a4076-d5cf-494f-bf78-cbe8a689681e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Scales",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "463",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "68a70b17-281a-4f36-ba5e-c2f0d02af848",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impervious Greatwurm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "464",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "048fdbc1-4180-493c-8e99-5bee56647080",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oracle of Mul Daya",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "465",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "235415e7-c900-418c-8848-c70db24e03fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "466",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6bbd6337-784c-4400-ac42-32150bd7fcc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splinterfright",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "467",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0df01c9a-5d2c-4391-99a3-f10e404b7133",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abzan Ascendancy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "468",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "50b6a8db-d855-47c4-867f-349a3260010b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aminatou, the Fateshifter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "469",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "968c7b04-cfab-44d9-929a-3c106b29471a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anguished Unmaking",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "470",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "924e9db3-3f7b-4e07-b523-5ec236f99681",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animar, Soul of Elements",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "471",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1ffd3512-2328-41c7-9c37-7eeda8fa127f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arjun, the Shifting Flame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "472",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4f961e5d-2fd6-4d13-90fa-b8da36ab3785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashen Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "473",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "235b41c7-1e22-42e8-9ea1-a3610576dc3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashenmoor Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "474",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5885c728-67a9-4f8c-943d-1dca22b9d8f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "475",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fa86ff7b-04c7-415a-835b-ae9886f172df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atarka's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "476",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "30d5ac70-cc49-4520-8076-3df237fe7cd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atla Palani, Nest Tender",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "477",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "dd984e2c-7145-4300-8358-ac72e2d16e75",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "478",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d8a8e3de-f953-4ce5-9864-03cfa9e902b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balefire Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "479",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6b8da744-99ef-4f67-82f6-c84a594a4a5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boartusk Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "480",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "049a1e2a-37db-4575-ad63-3de7e664ab33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "481",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ee37f07d-e420-431e-98be-4a68e0416a1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Child of Alara",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d3f5a635-1ebc-4345-84ab-5d6964a32778",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Creakwood Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "483",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "121ea9e6-aebd-4053-9104-339a47a1430a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dack's Duplicate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "484",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "73e85973-b1de-4e7b-816b-fcc0f241a884",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauntless Escort",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "485",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c227c96a-14e1-479b-8e78-6d335394ad10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbringer Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "486",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3e221061-7317-4cac-a909-610533c06b68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doran, the Siege Tower",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "22562492-f77e-4505-81cd-84e473822cdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "488",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7633a9c0-ab4b-4955-888c-3581de297830",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Silumgar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "489",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "a43fffd6-51a1-4a9c-b4f1-86354382aa63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drogskol Reaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "490",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4e5d0d2a-4984-47f9-b791-4055c8298ac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dromoka's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "07f80199-16f9-4190-af96-f07ac9a22363",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elenda, the Dusk Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "492",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "cca1b606-cda9-4394-85af-d6e513699b91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elsha of the Infinite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "493",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "f9487b5a-8280-4854-9d3b-3b030e99eb0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empyrial Archangel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "494",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "80f766a3-ec88-46ee-bf07-b6997cd0f95a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ezuri, Claw of Progress",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "495",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "882e4b67-8082-43de-9a1c-11e0b1983788",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Justice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "496",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "b761b353-1c72-49f9-8c77-3b47ff5c3c4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Figure of Destiny",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "497",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "298f4325-32be-41be-99f3-bd7c27226918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firesong and Sunspeaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "498",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3ca4df5e-14b3-42ed-89dd-d87450cc78f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghave, Guru of Spores",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "499",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6b3486e0-f64b-4b27-9d9a-3f5968f73454",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glen Elendra Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "500",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "45cd3942-f385-493c-b667-e35af7f60b83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glimpse the Unthinkable",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "501",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "51ecdb6c-7456-4941-b51f-5600ec337479",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Arbiter Augustin IV",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "502",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "3ade84c1-80b5-446b-9547-d09d3bf4264a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Flayer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "503",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "800411e2-3fd0-4f5b-9751-5f5609f904e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guided Passage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "504",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "bd17ee7d-dd79-4d77-8873-c44f820ca5b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hellkite Overlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "505",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8d9f66a7-beb2-483b-a155-eed85f878843",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hostage Taker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "506",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "b004684e-bd98-42fc-b90c-9a13a48dd120",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hydroid Krasis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "507",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b4fb99af-853b-4773-877a-ab5efcff9828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Intet, the Dreamer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "508",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "65868ea1-4e80-4871-a93f-66582690869a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Ascendancy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "509",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5c06cb72-ccbc-4efe-9457-dd76f503fa34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, Archmage Eternal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "510",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "95c8784d-22b9-485b-8f35-d33664db45b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Judith, the Scourge Diva",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "511",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "576a670d-4efd-498b-8c53-eda6e18868a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia of the Vast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "512",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "298d3b70-f858-4138-97e4-1442a5b6afb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek the Merciless",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "513",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "67852fca-37a5-414e-bc1f-5256e46483d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kambal, Consul of Allocation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "514",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c4ee1fba-ad5b-41ca-a29f-ecc8cf1edeff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karador, Ghost Chieftain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "515",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "281f190f-7e46-4877-a47e-ae1b28e40a42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan's Command",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "516",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "864f0611-042a-4f71-b92f-ce70c69bc79f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavalanche",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "517",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "257cd42e-c808-41b5-9878-e0c4386eb0c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion's Initiative",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "518",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "e1721464-f9e5-434a-b8e6-9c8157199264",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord of Extinction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "519",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "10f26682-24c8-4990-9ceb-629fdac20036",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Magister Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "520",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "47617780-620d-409a-944c-bc7035826b38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marchesa, the Black Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "521",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8dda584b-0cb4-452e-963a-d6e6bac0e402",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master Biomancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "522",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "f7b95dab-4c26-4eb9-ba2c-bec968fdaea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Cruelties",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "523",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "238bb7a7-cf3a-432a-8c40-d745d7e7cf9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mathas, Fiend Seeker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "524",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5a705820-8a40-4724-9448-d6b219d76c76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mayael's Aria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "525",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4916b0ed-a0cd-4b32-9505-140f98301ed5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mimeoplasm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "526",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "fa9395a0-922c-4062-a917-796786000f2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindwrack Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "527",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a9e2dd0e-b321-4f1a-b7d8-30920e134b62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix of the Izmagnus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "528",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "d0a81b1b-92c1-4ee8-affe-6e1c027c7393",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "529",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "98fcfb7a-2a7c-4ae8-8719-8d1b37d07819",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Murkfiend Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "530",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "37b49a2e-02ac-4b50-b283-dd2c782cd0d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, God-Pharaoh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "531",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "70ceea14-c018-456d-83cd-07f4e3bc5817",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Tyranny",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "532",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "a5656b93-8dcd-4c46-95b4-d5a311d17096",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Privileged Position",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "533",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "54fc296a-6479-42ca-b0a8-c14b3ded1cec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prized Amalgam",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "534",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7593d892-9b9e-450f-84b7-612655af23be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rafiq of the Many",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "535",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0579dea8-3963-403c-b89d-204e007ce3ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roon of the Hidden Realm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "536",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "21a0966f-622c-47d6-a383-f1db19dfb01c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruric Thar, the Unbowed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "537",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3600e910-784e-4b69-86dc-801a1b27288c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sedris, the Traitor King",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "538",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "e21ebe9d-27fd-4b5d-acde-d7648063fd0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shattergang Brothers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "539",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "49c5c9cc-16ae-4274-a52b-9947332ff5a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Brood Tyrant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "540",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3159553d-ab09-4970-8c68-613a9cd56a2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skullbriar, the Walking Grave",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "541",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "c24c37e1-8d3f-4a76-8ea4-242d322794ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Supreme Verdict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "542",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ef9d2753-385e-493a-9f6d-14aa0f392b69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tariel, Reckoner of Souls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "543",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1994667d-19b7-493b-9961-d823d0c92b86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teneb, the Harvester",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "544",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "7fe277b7-e346-4c18-9fcf-1c8469354fed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thistledown Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "545",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "14da9c9a-1778-4eea-ad40-2475fe6fabc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Year Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "546",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "04638352-cb8c-477e-979a-46b4fc69ac98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thraximundar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "547",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8ecb8a87-85d9-48ae-b0b3-84b9420ae082",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulasht, the Hate Seed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "548",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "250c140c-2ac4-40e8-b02c-a64032303666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uril, the Miststalker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "549",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "57b16b28-f628-4d38-b3f8-c9021e322734",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Varina, Lich Queen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "550",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8663bcef-df55-4765-b8a6-7afd1e09c32d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wealth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "551",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8d1605dc-7204-4684-ade3-66e727f4deb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wasitora, Nekoru Queen",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "552",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "ed350949-34b3-485d-99bb-d084006b4dcd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilt-Leaf Liege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "553",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d4282ddd-3e5b-4d4c-b1b7-a48401a3521f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrenn and Six",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "554",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1fb1b3d5-6bd8-42f4-ba36-d345fe4e78ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "555",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "0f1f4f24-f62b-4f52-8168-62b5b9971162",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Vial",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "556",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5205e059-97c5-4cad-ac36-22db3a050784",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodforged Battle-Axe",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "557",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "2428dfa7-da5f-4aaa-9e7b-0e8b236bd15b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conqueror's Flail",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "558",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "43ca51fb-46f9-42c1-8e2f-442c9425adfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crucible of Worlds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "559",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "6251c38d-ad22-4372-b086-5df52cdb153e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darksteel Plate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "560",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d8e44bec-fce8-42e0-9734-8e6dea8b7e04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Vault",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "561",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "75f60690-7625-4c4a-8354-69a30f5fc1a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nim Deathmantle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "562",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "4d68b906-8d37-4952-82e7-faba4effcf22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Panharmonicon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "563",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "49141090-f3b0-4748-a7ee-800093fcf29d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Altar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "564",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "45560d90-fe3a-443e-91f2-2b55ce0255c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pithing Needle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "565",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9847ffd9-7986-4402-b4bc-ecf3dfd2a2f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planar Bridge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "566",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "cef87d80-5a31-4233-a6f2-7c26a9388107",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sensei's Divining Top",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "567",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "87e79372-5ad3-4dea-9dcc-cf20f3b267c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrumming Stone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "568",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "e60306d4-3705-4bcc-84da-4787a65737b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vedalken Orrery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "569",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "5f31ea61-cc66-4dc2-a38c-04e3f8418cb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cavern of Souls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "570",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "d35a4a4d-4b78-4c61-91bd-80c09c82895d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "City of Brass",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "571",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "8eb3e78b-4ca4-444a-9661-c0df4e36226e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forbidden Orchard",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "572",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "etched",
+      "inverted"
+    ],
+    "id" : "02221d76-922a-4ad4-8d40-c279b5a446b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pillar of the Paruns",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "573",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d5e2a410-fca6-4d3d-9b6b-519a968e5e86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Last Hope",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "574",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24b1203f-1f4c-4d02-a79f-1f6486904ea6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrenn and Six",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "575",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "b40f6aed-e18e-4c8e-8e58-b1ed43ad54e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emrakul, the Aeons Torn",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "576",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6c2f9d5b-8a88-443d-8046-2b2a77fd1d64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kozilek, Butcher of Truth",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "577",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "00afe028-fef9-49dd-a062-085fafa8586d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Infinite Gyre",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "578",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a1b6cf0-24b0-43b0-ab95-8bf73710c8ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weathered Wayfarer",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "579",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "467ed050-ed2a-4043-b12b-5d29fb506eb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bring to Light",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ca9530f-ecec-4f12-bc5a-9e211b97be70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "77e19416-aa6c-46f1-b247-a94da5d1a13a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venser, Shaper Savant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6c727f49-833a-4b79-9946-bfbc6b06999c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ob Nixilis, Unshackled",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da4f8f35-5860-4416-b7bb-9ba56540a28c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yahenni, Undying Partisan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-08",
+    "setCode" : "2x2",
+    "setName" : "Double Masters 2022",
+    "variation" : false
+  }
+]

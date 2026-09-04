@@ -1,0 +1,2475 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ec191a2f-12b1-438b-b2fe-f88fb82d9b87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Comeuppance",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "deda48c4-527f-4367-83ed-3b3c30beaab8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lorthos, the Tidemaker",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "908770e0-5927-486a-b99b-64f165da4d90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Fire and Ice",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "75b75aaf-499d-47b0-ab6d-873240b641b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindbreak Trap",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5df07a06-e585-412d-a6db-cb5a78a68b6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Confluence",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ac1042e0-af4d-42b0-9d43-34b3fa5daf92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ponder",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3b4d51b9-f99e-4253-83d7-4dc6ef9bbe41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rite of Replication",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d7706745-60fd-4fdb-9083-931b05a3e2b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traumatize",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cf10e116-d1da-4570-be0e-c597a9e75d72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feed the Swarm",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0db3f148-4ede-4134-b2e0-2bb513d9cefc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hex",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82d69044-8d8c-4ae3-853e-de180f4706ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infernal Grasp",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d7b0a0d5-a9fe-49ea-9250-8825b36accc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opposition Agent",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "5d587b65-8c90-41e3-96e0-ecb3bbfb0ac7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Binding",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e560cb9-3036-46a2-a5c7-edb04d0095b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reanimate",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "eea57be1-032d-40ec-8091-92f89670e4a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saw in Half",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c47d09a5-a6d2-4bc2-bf65-b32e3c897c49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skithiryx, the Blight Dragon",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "7ebd1f51-2db6-4c3f-95cb-8035a410a8e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Bombardment",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "08eb1bef-b00d-490b-a631-2849e0d1fd8e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najeela, the Blade-Blossom",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e473a591-9aae-4af2-9b25-96820b317df8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relentless Assault",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "291ffa45-f395-420f-8862-9a685b65ce69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savage Beating",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8066310c-dcd6-465b-a0ae-44c8602367de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2f8e351a-ce09-4f7d-8b4e-bcffcab66aa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrill of Possibility",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "33ba9e5a-d078-4a47-b181-0ca7d1596919",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unexpected Windfall",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "5a0b9b21-4d7f-4b02-aef1-3598eae2f581",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine Lives",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a6e83b7b-07df-4ff0-8942-8fdb3f1502f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winds of Change",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "77e2f5ac-5c0d-4503-b8ab-fee00eaaa4a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arachnogenesis",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "255544be-db0f-4dcc-8787-f05652cd2684",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7f419a04-7a18-4ea4-9581-bbc35bec4f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Within",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5fb701f6-bfad-4b43-9a0f-85496973d849",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "96c20d6f-6272-42f1-bfda-308ce7c4206a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunter's Insight",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "0c9c514f-f506-4b2c-af58-79922834cde7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Parallel Lives",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dcc41152-ca20-40d6-82ac-6b7fcd471a42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silkguard",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "10c51d68-9a69-4784-9ce1-d6beaafa3ed3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tangle",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5a2f6ccf-af93-4922-973d-6abfeb4d7cfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alibou, Ancient Witness",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3dfddf82-4dc7-4749-aa1c-d58cc6858cc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "71c9ed41-8832-440d-a455-f52f284e8d14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminate",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d393449-bdbe-4638-ba0b-7ec83f81b51e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archangel of Thune",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "6b6b0a9f-0373-43c0-9c84-5c2efe902676",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concerted Effort",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c55e5f0d-8a4b-4b6f-ab43-1268b6fac74e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Don't Move",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "621e3239-b527-4154-bce6-b51241809fc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ephemerate",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a5abbfdb-0460-4f78-be7f-d3e8a4b3afb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final Showdown",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "f78673f6-8173-4d0e-ae50-539cad30aa5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light of Promise",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2e30b25-b710-4566-8b0f-56f6e390a446",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bbc54478-d2f8-4abf-b664-cf014027c0dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Return to the Ranks",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e6a3a9fd-9653-45dd-b592-a36f85af8fc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Righteous Fury",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2bb8ede7-ca50-4df8-aa30-f1b14520163f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reprieve",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "44398c81-593a-4967-acf2-ec9823a10d33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steelshaper's Gift",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c54d5ea1-0cc9-4e84-b712-642d55915dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protection",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "379f4020-a58c-484d-9b44-72b200884079",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9319c91c-fad3-4840-b3ca-5d3d94eb7ddf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyberdrive Awakener",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "87c899c1-401f-4090-8f71-307e7106cdf2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dig Through Time",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cd8c028c-82bb-4d47-a9cb-ed34c25f2599",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbinger of the Seas",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2e26f6c6-c043-4b71-ab90-584dceeec092",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lord of Atlantis",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "27bd54ab-5512-4011-a60f-ec2899b34327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mechanized Production",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0355887d-eec7-4b1c-ada1-014ac7fce5c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset's Reversal",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "875dfbf5-9313-439b-b021-8b92d898baa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reconnaissance Mission",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "4266ac5c-40dc-4fe3-9f42-e03cea5277ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rest in Peace",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aee8a17a-de57-4a76-9613-d3c6b161e378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Show and Tell",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c201946b-0746-4f8b-bd7b-84dc0fa60395",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simulacrum Synthesizer",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c39be5b1-b693-4b1b-b40b-8bf6d1fe986d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Three Steps Ahead",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ee10e249-5000-4348-8e8e-6b9ac879db12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dauthi Voidwalker",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e0f658ff-323e-4e32-beaa-1d5753b4f081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Dispute",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f6bcf690-c532-4d2d-8458-78a5613a6090",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extinction Event",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c3a474a8-b2f0-4392-9f5d-0f78b3fb29e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final Act",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "7cdd99ba-b96c-4808-89fc-ba675c546779",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "8a37de6b-3a92-4a32-a940-e0f303e316c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No Mercy",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2a6c3d3b-93ec-43df-a0cd-ea12ab047d51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaos Warp",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9a581f34-521c-4d28-96d4-be1e8dbc30b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wedding Ring",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "318eb163-fd1d-47bc-976c-89ffd67ee8d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Emancipation",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5eaaca68-47e1-49f8-bf2e-c0eaad721e86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fury of the Horde",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9ebf25f9-844c-40c6-b0f0-d5c82ee04656",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monstrous Rage",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2449983-c54c-49d8-8289-c591e465527e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seize the Day",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "e208d3bc-9a1d-40a5-8ab9-c0cca5d129f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bedlam",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b6b6c66f-e3e0-4904-ae41-2ecc786f70c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Within",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "66fe10bb-9f05-400b-a8b7-6d6affe8c0f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defense of the Heart",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e507e356-6241-4347-bd56-e0609954f378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Vigor",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "12edbdcc-085f-48c8-9605-3c7e3fe63bc7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a51d8579-a99c-417b-ba71-7f2204ebea2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e23cbf2a-c07b-4202-826d-9b3c4a35a02e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clever Impersonator",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4208a5fd-4ca9-4648-883e-5dfe02746e68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "38d16f3a-a20f-4e98-8085-e4e09bc525d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Vigor",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "377792bf-2d72-40eb-9e47-1d4a86980fa4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rancor",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "c443ee78-6bdc-4a74-9cad-93727b9fdbd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steely Resolve",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "6b30090a-17b1-4e4d-a70c-bd232b5b3316",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unnatural Growth",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "7d2f262a-dc38-4414-8c66-0ef5eac7ad20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anthem of Champions",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "ef2efb63-2bc4-4808-9ded-ba93d89dedea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, the Warleader",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "a1b11ef2-2285-40eb-b11c-223c159e3d1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Black Panther, Wakandan King",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "0669ffcf-30c1-4d90-ae5f-3deca0f82526",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain America, First Avenger",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82267f18-ceff-4f98-bf6f-e0cbf94072d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Escape to the Wilds",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "610a7782-ffe4-4b1c-bcc2-b3d89357e3da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "boosterfun",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ee1475d1-4f24-4719-b7a5-c6e3a2a9d63e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fight to the Death",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "20d54b22-62e8-48ac-ba65-0bdbf42d6cad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iron Man, Titan of Innovation",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "05961dad-9fe6-409f-8bfd-c6176072e9b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Privileged Position",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d20ce47d-f08f-475d-a8c3-8a4ebeb0b4f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ravenous Tyrannosaurus",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "08cd4665-9fc3-48f1-a136-41d4585b1bb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm, Force of Nature",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2aa6ff08-efd2-4f51-b899-19ba6815767a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sundering Growth",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "b98c57b1-6138-49a2-884a-995828cf4c50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warleader's Call",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "9976c1a8-ef3d-4911-854d-f53394fd709d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wolverine, Best There Is",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e37487e4-c553-4495-a839-6a96209eaaa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Horn of Greed",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6d3c06a5-a0b2-47a2-a583-d579c24a44c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roaming Throne",
+    "promoTypes" : [
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "mar",
+    "setName" : "Marvel Universe",
+    "variation" : false
+  }
+]

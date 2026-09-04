@@ -1,0 +1,72 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e18f380-320c-4f53-9270-debf3e00914a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Faerie Conclave",
+    "promoTypes" : [
+      "setpromo",
+      "tourney"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "p10e",
+    "setName" : "Tenth Edition Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9c6a303-1f59-4d41-b5b5-ae8739e2e0a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treetop Village",
+    "promoTypes" : [
+      "setpromo",
+      "tourney"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "p10e",
+    "setName" : "Tenth Edition Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a84d055-2afb-4a13-9158-3300a9f7187b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reya Dawnbringer",
+    "promoTypes" : [
+      "gameday",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-07-13",
+    "setCode" : "p10e",
+    "setName" : "Tenth Edition Promos",
+    "variation" : false
+  }
+]

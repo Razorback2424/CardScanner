@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b26ee7b-de1a-4a39-9580-89941c3d0f21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blind Phantasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2007-05-04",
+    "setCode" : "fut",
+    "setName" : "Future Sight",
+    "variation" : false
+  }
+]

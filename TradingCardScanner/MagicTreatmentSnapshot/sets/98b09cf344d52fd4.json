@@ -1,0 +1,973 @@
+[
+  {
+    "collectorNumber" : "107s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "045c06d6-d20d-4aa6-85f8-ed6b75007330",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Raise Dead",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9dfc875c-e79e-435a-906f-fb7e88550f01",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Vampiric Feast",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdc849bf-9c29-41a7-8fc0-ad0137c5724e",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Wicked Pact",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b0d8d48-539e-4eb4-9ac1-025722aae459",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Blaze",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ab9da23-624e-4c33-ab5d-82a30015b0e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blaze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "f175c959-3b5d-46a3-9194-fad2359bbff9"
+  },
+  {
+    "collectorNumber" : "118†s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04095ad2-7308-4e26-b9ef-070a5755d066",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Blaze",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78ca7851-1267-4dcc-ab5d-0ab205624562",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Hulking Cyclops",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c0fa444-5534-4476-8bfa-78b2364f2dd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raging Goblin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "fed57a17-7847-4e60-bc40-4452880f12a3"
+  },
+  {
+    "collectorNumber" : "158†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ffba7a5-8845-46f4-bb86-4722d6cbd4c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anaconda",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "0a2012ad-6425-4935-83af-fc7309ec2ece"
+  },
+  {
+    "collectorNumber" : "160d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fbe115b-ded7-4749-95e2-b69bff26fc74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bull Hippo",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "30dd236b-94fc-4c56-aeae-215c71a009ea"
+  },
+  {
+    "collectorNumber" : "163†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70a4d16b-5bfc-4e35-8a8e-16cf84f54586",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elite Cat Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "7396c4e9-b0d8-4b8f-8c17-6f913a967b17"
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c0b0afb-75c0-4613-be3b-f4b739fa7954",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Elven Cache",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e695fcf4-1eef-4671-a11e-da6b1ff8d466",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Fruition",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0523c816-dddf-4b63-8db8-5e41dc673e5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Monstrous Growth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "1fd2edb9-0b53-432e-bb3b-171d2a85439d"
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a02b90ae-6f52-412f-88fa-1a5585f486bd",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eafc84a2-8892-437e-bbb3-991dbbfe5cdd",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39ee9d25-0f3f-4a50-802a-23122bc4c6b2",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8db83947-3441-4e1d-bd47-dd015ae55d15",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f049121-5daf-4bc6-9431-3ab665a3dc8a",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d494cfbe-8017-41a6-84df-f8f16fb40016",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c29b600a-3a8e-4ae2-a186-b6d5cdcbd496",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7ca67a8-2922-4c12-a888-d89981e28f0e",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c40d24d-a81d-46b9-87ef-d5304d438c0e",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "163c2b6b-d8cd-4a46-b4da-81cbd42e0511",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4641987d-e69e-4399-9b20-f85765ecf5f3",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2dd723ea-66fe-439e-84f7-2b4625fcc22a",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bba2db57-be7f-4963-aef3-aa57fe6c0cdf",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3b36fbc-c2c2-4e17-962b-cd018493ff6f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f776e2ad-5bf8-4b2a-89bd-4f7e7ee723a7",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "620b6d41-562f-4225-bbfc-59655141c4d0",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "90d76e2d-6720-4f0e-a5b1-71a59d47a3fb",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Starlit Angel",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9279d545-28b7-41c5-bb88-6dc4bbbcd71f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warrior's Charge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "8668e4af-ae89-4fab-8015-8dc643c6cd36"
+  },
+  {
+    "collectorNumber" : "46d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88425a48-7b03-4ecf-88cd-d72ef98ca814",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud Pirates",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "9f7386c6-d17a-4c7d-884d-2471b87d8b8e"
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1e5e413-85ea-4528-97b9-e1db5117ec2a",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Horned Turtle",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7dd755a7-914a-4547-8d38-34d8cc3b9a7f",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Prosperity",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0fadc0d-d6de-4634-9c15-d9c9732cdc87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snapping Drake",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "7b49dd4c-ead6-4d94-9acb-0518d1f6426e"
+  },
+  {
+    "collectorNumber" : "69d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5bb2fa5-8f88-4d08-badb-3e52358d21d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm Crow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "dfe87b59-b456-4532-a695-0dea3110d878"
+  },
+  {
+    "collectorNumber" : "6d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f021a79-a182-4914-9ff4-d6fcba7c1d22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Armored Pegasus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "a81b61af-cdb7-468f-9ff0-db82aa084023"
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86ce2daa-8d47-4417-a5bb-3354a7c24bab",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Taunt",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "235f25bf-e079-4957-bbb1-0f90716275ad",
+    "language" : "zhs",
+    "layout" : "normal",
+    "name" : "Assassin's Blade",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "200365f5-05a1-461e-904e-daf99f4b92bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feral Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "c46f4c00-6bf8-440b-9761-b17a0e36c27e"
+  },
+  {
+    "collectorNumber" : "96†",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64afd70a-cde2-4980-9ec9-275e6198b40f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hand of Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "por",
+    "setName" : "Portal",
+    "variation" : true,
+    "variationOf" : "27f136b8-52be-49b9-919b-2b9785254350"
+  }
+]

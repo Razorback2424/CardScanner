@@ -1,0 +1,2664 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2cb33ac-30d3-4f89-957f-9caea3cb4f16",
+    "language" : "en",
+    "layout" : "vanguard",
+    "name" : "Ral's Vanguard",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1cbd1c8e-08d5-4a1d-b6aa-b8343eb5e6a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruff, Underdog Champ",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25d09421-08d5-4ca9-8937-5f937bc9c929",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Smelt // Herd // Saw",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e899b761-2f23-466c-87c5-d98421138ca6",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Start // Fire",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e452e7a-7c35-4b47-8218-8c3b23c84651",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slivdrazi Monstrosity",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a734f1d9-17a1-4dea-bdec-b070ababe31d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of Sod",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cf823a02-3290-4070-98a9-5206ff2a5124",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zyym, Mesmeric Lord",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7492a8f3-a616-4604-b96f-131248bec1bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chronobot",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58080146-9cbb-4872-a348-8fe85848eba1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lantern of Undersight",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d37ec63-8123-4e61-8685-31d7509acfa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirrored Lotus",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "702b315e-ab21-462d-b09a-1d3a2d1741fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pithing Spyglass",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0b10b0e-2b6c-4fa4-ac4b-d1a61a07b50f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Puresteel Angel",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f22406d4-df55-4cbc-b69c-d35483cebc16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarah's Wings",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c71d3bc8-1a93-4632-888a-de66a0afb255",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unicycle",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "015231fd-f1f6-47fe-b577-bc973771848a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weaponized Scrap",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c05f413-e7c7-407f-a563-d1be1706cb09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aggressive Crag",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b1b0cea-d0f4-4caf-b9ea-156d5221bb1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barry's Land",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a7a4abf-4e97-4b6f-9485-f9a81ef5a50c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Domesticated Watercourse",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a84bcdb8-41ae-4a2d-ae64-8718a737539a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enchanted Prairie",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e672729-66f3-469f-a539-0ebd86ea7654",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gold Mine",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a774ba94-fe38-4882-96b5-fcc64f3a70fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jasconian Isle",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40e05c6c-2c40-4174-b5fa-ea3997e2d4a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noxious Bayou",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f24a5d5c-fc10-4c57-8d43-634bfe0a8a4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rift",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f1d28a0-2984-4f5d-a6c2-742bd0d32ecd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scaled Destruction",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2735d4ec-b9b2-45a3-b051-f6a264c1120c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taiga Stadium",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cd72b77-f505-4023-a72d-b9f05b80080c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waste Land",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98bebfdd-359c-4e6c-afc6-1d9647e911e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stack of Paperwork",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ab87cd1c-950c-41bb-9bff-66a27a5e951a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wizened Arbiter",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "64ba431f-567a-4cd8-97f0-336ea38f87e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "You're in Command",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfaa83d7-6b4a-40a9-a90b-7afe1765eccb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animate Spell",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88ac2c7e-a872-4609-89e1-9603770de02c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Biting Remark",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db82c2fd-5418-41d6-8712-e33a2ae200fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command the Chaff",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd119cfd-06af-42d8-ad11-0161518aafa3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Control Win Condition",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b710ff3-1ed9-4be3-99b7-d90c513ed1f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banding Sliver",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7bf0347-98d3-4583-afaf-fd7b34be4b86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Do-Over",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7858fa55-7400-4571-94b6-bfcb28a4d8c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enchantmentize",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07341d4f-f396-42c6-b95c-266f3a58e200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Form of the Mulldrifter",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e71b52f2-d724-4ee0-baa5-71b7fe9ec155",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Innocuous Insect",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a24f917-9683-4d2b-9f5e-f731d4003ded",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Khod, Etlan Shiis Envoy",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d02cbdae-0c28-4f82-8a40-cb967f3e3f9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Learned Learner",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4f45538-712b-4ece-a91f-539040fc805b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loopy Lobster",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c633528-dae9-4401-928b-f4fa572b174b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Bank",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad9204ec-8c49-4ef4-ad08-510c3c6670d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recycla-bird",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f113e92c-ab45-4da2-8884-20ddf71ce494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squidnapper",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2f4752c-85c2-4f30-b881-0b63d5f30870",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baneslayer Aspirant",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c2333a2-878e-4a78-acad-419f77d2135f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Grand Tour",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e72ff65b-a574-49d7-a3e3-d3b4fda6d4a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Sidewalk",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68eb1672-6f14-48da-bb27-3d8e9c22fcc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Truth or Dare",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2af9ddc-cc3d-4093-b1cd-ff2e2268fc32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Visitor from Planet Q",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3783d59-c2cc-4fff-afd7-c32418fa36ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Poet",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5e7b800-df7c-422b-b843-7f86e4fec582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bone Rattler",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "889fa19e-ade9-4be4-9335-a6e2487c1280",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Buried Ogre",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5af1dd0-282f-43a2-800c-4e873a3b6bdc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Celestine Cave Witch",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bc7c2e0-c7ed-4ffd-b055-cc1dc26c60fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chimney Goyf",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b17583f3-a0ca-4b57-bddd-11af745a2a33",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corrupted Key",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f7cac94-1532-4f6d-b122-5b7b96f8b840",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enroll in the Coalition",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfd8d427-f9de-4137-8243-a98ceb0ba904",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cyclopean Titan",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18e1508d-5981-4622-b06c-784aa71dec10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everlasting Lich",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce36f803-d66f-4f3c-99c8-14236beb0a29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frogkin Kidnapper",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49fe6c4e-5c16-4a77-9d2f-e1420be3b9a3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gunk Slug",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8760d23c-01a3-41c5-a681-65692233c027",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Largepox",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e5d8808-c997-4302-82ee-1d179b4976b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "One with Death",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e2a27b4-e4d0-43bf-b9b9-3c4b9173e4c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellmorph Raise Dead",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49634137-950a-4f4f-a348-af51c6579efc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunimret",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33f495ac-19d2-4743-b791-6658f626554f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarm of Locus",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66820ba1-fcea-4fa9-8bbd-09162bbabd54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underdark Beholder",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fe94d19-7daa-4c1a-bc80-f47e29fce848",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Five Kids in a Trenchcoat",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da607ff1-0a6b-4b64-9924-fe1e2aba53c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witty Demon",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2056f09e-2874-4ae7-95d2-8c53513a0648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xyru Specter",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8693341f-4ffd-4e17-ba30-b7ffc8596b50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth's Testament",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2cb68c3-c470-4736-9f73-72805cc39326",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bombardment",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2604a596-fffb-4066-8906-896173de8c27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Troller",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d1465b7-8e1b-4510-ad54-33f13a15fe11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impatient Iguana",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb420d69-cbc4-499a-b203-97748e8ff6fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazier Goblin",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d264897e-3299-4bdf-9474-ed4acf9d9f60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Colt",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a83c165f-a78b-4a89-b868-8128376ff718",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Abundance",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5780cd3-19ba-41ed-bdb9-4e5e3198d383",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Planequake",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14e3a0a1-8c27-461d-bc7f-24f5c0a544c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frontier Explorer",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a274ebf-15c5-4db9-9987-3e3f92f41d47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Problematic Volcano",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3df35f1b-c19c-4faf-81f6-0ffd47054446",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queue of Beetles",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4dd30b7-b4a9-418c-8a31-be04f291838a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Red Herring",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ca18d2e-3661-4484-8b41-8c3ffd4b7b45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seasoned Weaponsmith",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ede410c-8ddc-4658-85a6-9a99df9d655f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Elemental",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d06910b3-2458-4c13-a7d3-8972522a44f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Throat Wolf",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63453715-3743-40bc-879e-2568c2a9628a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tibalt the Chaotic",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e0bac2e-16a8-4dd0-94bd-e849c07e36e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transcantation",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b0059aa-a224-484b-8275-4fa57bcbc91b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trial and Error",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5df055e3-9ebc-4b86-be7b-9a9b43833f68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geometric Weird",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c1a11b2-bcb8-43e2-9aa3-8e964dec1319",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imaginary Friends",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75aeccbb-2356-40c6-8017-16e6b8715ce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whammy Burn",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "368c71ba-9ccd-4b0c-9490-aa88029ee2e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bear with Set's Mechanic",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acee9eb5-b290-4fcb-a0b1-19478edba58e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Domesticated Mammoth",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3533957-103a-43a9-9b97-ec30d1de8340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Experiment Five",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96ba9db6-0617-4147-9212-f15d4a63e559",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frenemy of the Guildpact",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc1ab4f1-5458-46a6-9497-4136d04eb247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generated Horizons",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5e03896-d66a-458c-9b36-1430e9c6d415",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorilla Tactics",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "650b02ae-9b69-4ac8-94bd-e5b8808c51b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Growth Charm",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "deeb35e1-6b46-4300-a802-776abed381db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspirational Antelope",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0da6c46-e4f4-40bd-87d2-14154707131b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Interplanar Brushwagg",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c48fbf2a-354c-4da3-84c5-e6141a5f7203",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Metagamer",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60909727-0e87-4f58-a0e6-424eb81fff4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krosan Adaptation",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "005c5a29-0cf5-4f14-83cc-f8b0ba40e8bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maro's Gone Nuts",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "722b41f0-1f6d-4879-be7a-075eb45faedb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Patient Turtle",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc9fa1d0-93ca-4598-b0f5-e25f6ce4bf8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plane-Merge Elf",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8a71aae-a6a4-492d-9fc8-b87eef4c61cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulmates",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5d9a853f-a076-4547-8901-169029577b5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vazal, the Compleat",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e84a1c2f-482a-42f9-87e9-35a381cad403",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A Good Thing",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9a6cf9c-3560-435c-b0ec-8653a9dc7776",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abian, Luvion Usurper",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0cb9755-c372-479c-ad25-dba35ca51f15",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Bind // Liberate",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d1a6930-067e-4b34-9c84-810a429d845a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bucket List",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c061209-fe7e-4315-a3d9-c71e225be848",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priority Avenger",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22edb7fb-607d-4011-ab09-2ebeb8eaee98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evil Boros Charm",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a99e3267-c7d9-46e0-997f-35ced102a753",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golgari Death Swarm",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39de531d-c238-47b7-8397-5721a8662c5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Graveyard Dig",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a958801-b0cf-4ed4-9fe8-1a53027ae1d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "How to Keep an Izzet Mage Busy",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ca8f8c2-9ee3-43ab-bc1f-220adc1b5472",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaya, Ghost Haunter",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eead1911-1a8d-43c9-90e5-2439b826500c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Louvaq, the Aberrant",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caa7922e-3313-4f12-b91e-95aaa2d76cc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Personal Decoy",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2e41af7-b5bd-4b52-b794-c1d160a3cfc1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pick Your Poison",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b53c9857-3cad-4b61-bfaa-5de2d44dfbc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seek Bolas's Counsel",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "39aab2da-fd0d-4456-b55b-9551c1d1e8d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sliv-Mizzet, Hivemind",
+    "promoTypes" : [
+      "playtest"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-07",
+    "setCode" : "cmb1",
+    "setName" : "Mystery Booster Playtest Cards 2019",
+    "variation" : false
+  }
+]

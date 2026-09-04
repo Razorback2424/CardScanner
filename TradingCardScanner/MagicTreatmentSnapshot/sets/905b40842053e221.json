@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0f829da-09a2-4482-8b04-1b63d3a037ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "pss3",
+    "setName" : "M19 Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06e5646b-28f9-4600-89f4-b23a6d7cf7a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "pss3",
+    "setName" : "M19 Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df5e2dc4-142d-4ee7-8108-b433c4bde53f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "pss3",
+    "setName" : "M19 Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "969054f1-b551-4dee-8fec-f8d8bdc30c35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "pss3",
+    "setName" : "M19 Standard Showdown",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e832d55c-9f00-4cc0-9593-9604ebc807a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "standardshowdown"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-07-13",
+    "setCode" : "pss3",
+    "setName" : "M19 Standard Showdown",
+    "variation" : false
+  }
+]

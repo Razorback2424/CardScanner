@@ -1,0 +1,1262 @@
+[
+  {
+    "collectorNumber" : "112s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d6999c0-7823-45da-b37d-8013e42b5b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pitiless Horde",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6a67a3e-4091-46a6-8526-3718cfb7b5b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Undead Vizier",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f7e2a33-9b0f-4be3-a8d9-0fb36f9ac98a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Undead Vizier",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f763c36a-9d3d-4dc8-98eb-ed4b5e938731",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silumgar Assassin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c03105c8-da23-4a59-b82b-f37805156e1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crater Elemental",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "136p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97dc5b48-5664-4e0e-90ce-c728beb9513c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Tempest",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b28139b0-8517-4674-b93b-93b6a9554e59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ire Shaman",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06287e93-0da9-4526-88a9-7dda7662e777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderbreak Regent",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b0f5ee8-9ee3-45d6-8028-77d9a8c1a401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderbreak Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "167s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a93fc78f-827f-439b-919a-e0d283bb5bef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Vision",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fdf3f74c-1d3c-423c-8a21-ebf8193c95a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo Bellstriker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "175s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8c5b4e3d-88e6-4f94-8674-e7a9960d5c29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar of the Resolute",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "181s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4527056-69f4-45af-a6d7-6af731399f12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Den Protector",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d66be63-ed47-49aa-b006-1658095baeb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foe-Razer Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8b54ece-aec3-4314-b157-5bf8861ea0a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scaleguard Sentinels",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37c48dc1-973e-419e-8219-f9554827cfbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surrak, the Hunt Caller",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff954f7c-3778-4650-9d4f-48beb6e4fda0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arashin Sovereign",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74e11c5b-198a-4ce9-84c2-c1cda4ad2f3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arashin Sovereign",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a08bd9f0-f98d-471c-9c1a-0a548400ce61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atarka's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ed1c3c9-9471-423d-aff8-051cb2587b7b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boltwing Marauder",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "769c1e97-e9d9-4542-b09d-6cb8640604c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boltwing Marauder",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e735ac3f-2aed-4354-ac7c-8129fe2715f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Atarka",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28fad224-4198-48cc-88cd-13bdc0ddcf8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Dromoka",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a0b6be9-edea-4494-909d-34c7d6bcfffd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Kolaghan",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27fd84d7-8b8f-4fe8-a3bc-649f9ae50e8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Ojutai",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d758033f-58d0-4ae6-9c31-58d7bd6e5856",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragonlord Silumgar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4520505c-161f-40c1-bb43-8b9dc5274447",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dromoka's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07b311ec-fa6b-462c-a969-780726fb3d23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbinger of the Hunt",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66caece7-c04b-46c2-b49a-386e742ccb50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harbinger of the Hunt",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79fa9a13-56d4-4269-94c3-ae5a8832750a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kolaghan's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3292fa0f-04dd-4491-82c6-9ca8a5a5e144",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necromaster Dragon",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2435ef2c-7c3d-4d79-a1e1-bb120a6f1b7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necromaster Dragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "939778a2-a10d-4dd4-8f78-0c366b76bf81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ojutai's Command",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c431d18-1d03-46e5-8407-37881d3bad6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ojutai's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e921c01-3cd7-4ff1-a676-043ec4c2bdfd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pristine Skywise",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "890cc1ad-703d-461c-8ae3-b0c1a293f912",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pristine Skywise",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ffba866-71e9-4fd6-a11c-d821ea2c6e1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silumgar's Command",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4124da5c-b20b-42f3-b273-8c0a03003f53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hidden Dragonslayer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1f97568-5543-43df-9155-63038d913451",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Myth Realized",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "200707eb-20c0-45f6-b357-9b65817375de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, Kin-Tree Spirit",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc2a4741-d7fb-4c76-9aef-f0b90116cf50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arashin Foremost",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c01d109-f696-4e05-9a9d-0ffbb7861e4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunscorch Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f17070a-9102-4bfd-86d1-78dff65f6ba2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blessed Reincarnation",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1752991-c7b0-4397-913b-b93a7705bbcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icefall Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12a942d3-fb86-48aa-91c1-1fe41fa95e67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Living Lore",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60de919e-bb7d-473a-a5eb-b2343e5c35ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Profaner of the Dead",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcad2eba-deca-4eaf-bed6-2d64d6690db9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stratus Dancer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a52ce799-90b1-42f2-b3f3-310c848ce28e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood-Chin Fanatic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3f3a2f5-12ac-45ef-9ff3-076b40643692",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damnable Pact",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84f8273b-dc19-4739-8c9c-e5d6500134cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbringer Regent",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef1a0f3a-0a6b-4005-8cf1-95e410fd9c6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbringer Regent",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2015-03-27",
+    "setCode" : "pdtk",
+    "setName" : "Dragons of Tarkir Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "140★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48ccc561-5726-45df-b27a-e101ea9c0bac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avatar of Discord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-04-22",
+    "setCode" : "pdis",
+    "setName" : "Dissension Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d35674a0-2704-46d0-8eba-dd06251abfea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azorius Guildmage",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-05-05",
+    "setCode" : "pdis",
+    "setName" : "Dissension Promos",
+    "variation" : false
+  }
+]

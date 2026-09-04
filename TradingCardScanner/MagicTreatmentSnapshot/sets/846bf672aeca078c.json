@@ -1,0 +1,1137 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b86b538-0766-440d-a2cd-f5d5bfcfb010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Millicent, Restless Revenant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd420010-6eaf-4853-8b7b-11de1157416b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kami of the Crescent Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b8630ae1-8fe9-4d6e-899b-a28d86d4d729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anowon, the Ruin Sage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "155",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "541b9d55-f237-4ff2-9e47-c58a381f0633",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Geist of Saint Traft",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3d4102e-b48c-4da8-b181-092c7ab1849a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timin, Youthful Geist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2e932f7-1a72-44e7-89f7-b853eada74f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamber, the Plunderer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f54c6ce-fde4-47ef-a106-5c68b4397f99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strefan, Maurer Progenitor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "909b3afa-a836-4b8a-9ceb-67559fe42420",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laurine, the Diversion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "70cf8d2b-5220-4fe9-b39d-6700f0b27cca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donal, Herald of Wings",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7aead6a8-bada-42cf-b7cc-0b730f564582",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umbris, Fear Manifest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "520904b2-6358-4419-b66b-62566c2b49b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Millicent, Restless Revenant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a148447f-e3bd-4a49-a802-4d489f3c50d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timothar, Baron of Bats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "6d37e626-1f2e-4c26-a6a3-93eaddee1233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Strefan, Maurer Progenitor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f728a965-f567-44fe-aea3-e643cc1a1cf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Donal, Herald of Wings",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "44c86ba6-20ae-405f-8fe0-a636d75bc8d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timothar, Baron of Bats",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1f7116ff-8afa-429f-a868-8766d4a0dd18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drogskol Reinforcements",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "72015ce0-0579-4776-a6a3-251f40c218ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunted Library",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6fbc9abd-8719-4cea-8bf4-1a3d78e3f00b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Priest of the Blessed Graf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "aae81a4a-652d-45fe-b702-6541bf0971de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhoda, Geist Avenger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b310be64-4b00-49df-84d5-30b227055378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Souls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7cbeb9bc-5731-4976-b59f-62935760b917",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sudden Salvation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "30fb3567-f473-4131-a849-0cc0ec7be53e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breath of the Sleepless",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e6d09b61-5529-4906-91a6-5259fb180442",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ethereal Investigator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a5fce5c9-e706-46ee-989b-db48a5dd36ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haunting Imitation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "add661e7-b337-44e4-9614-ca958e20e86f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Occult Epiphany",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8ac3ee2e-455e-4cf9-b1ec-6d260098574a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spectral Arcanist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8d58a295-f5cc-4d32-b314-a66a7c4a4636",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timin, Youthful Geist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "74b7a5dc-da8f-49dd-8182-45b851335be4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crossway Troublemakers",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3dd488b6-40c0-47c4-9bed-c071f7b2f508",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glass-Cast Heart",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "c5a1e6ec-89fc-4a57-afaf-2a7a9672da68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamber, the Plunderer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fd9fbe48-56c2-4812-8009-f71dac26c1ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olivia's Wrath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dba88d51-6a3a-4b5d-8404-0ad588939cb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Predators' Hour",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "598bf482-99ce-4b39-a969-7685752382ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowgrange Archfiend",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "37f1279a-4dc1-469b-9fbe-62f51eb8db24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arterial Alchemy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d12a2296-2c5c-45af-910e-c066cd0a33e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imposing Grandeur",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "999942af-b894-44b7-837a-195a92790a17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laurine, the Diversion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "84bc03a6-a154-448f-9d49-372bb6be5631",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Markov Enforcer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "470ab356-71bc-44f2-a51b-dc5568edf24b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Midnight Arsonist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "95db3c0a-30d3-46af-b28d-cf8c4990233a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion of Opulence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ddc10f1e-b264-4445-93a3-16f393c91df1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disorder in the Court",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "96a126e3-af18-48b9-8fe5-bf981637aa94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinister Waltz",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ead9b7bb-39c2-4a7f-8849-923df6ae2c24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breathkeeper Seraph",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b3df33ee-0db7-4240-a6fe-9a9e130353ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wedding Ring",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "087a444a-5907-44f6-812b-cfe342e472e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imperious Mindbreaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d0ac7745-901b-4e26-896b-7f5014d9454d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doom Weaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a3afe70a-7c99-446d-8443-5643660674cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mirage Phalanx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "be92b992-afbd-4625-95e6-dba5c0338c40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hollowhenge Overlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "91e9f626-5d9b-42f5-ad33-c05690441d10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Mightmare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "90bb3cd2-e472-4552-a31e-f7d8e8cd5bc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umbris, Fear Manifest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c434e774-c908-46b9-ba18-52e1efe092de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhoda, Geist Avenger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8f279602-024a-44b6-9a36-465c16363cb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oyobi, Who Split the Heavens",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-11-19",
+    "setCode" : "voc",
+    "setName" : "Crimson Vow Commander",
+    "variation" : false
+  }
+]

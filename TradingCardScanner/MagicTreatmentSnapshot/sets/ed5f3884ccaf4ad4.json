@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40afb383-0453-4e27-82a7-5712ef5b39c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hammer of Bogardan",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "g02",
+    "setName" : "Judge Gift Cards 2002",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "417d6751-6c77-4886-9d6a-5e5c9773825c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tradewind Rider",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-01-01",
+    "setCode" : "g02",
+    "setName" : "Judge Gift Cards 2002",
+    "variation" : false
+  }
+]

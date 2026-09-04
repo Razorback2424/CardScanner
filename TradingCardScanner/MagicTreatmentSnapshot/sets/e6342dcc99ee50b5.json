@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "48",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b77adc93-9d3c-423c-9432-cee70a78ddb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadwick, the Wizened",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-17",
+    "setCode" : "ajmp",
+    "setName" : "Jumpstart Arena Exclusives",
+    "variation" : false
+  }
+]

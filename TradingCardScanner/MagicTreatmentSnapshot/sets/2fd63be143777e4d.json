@@ -1,0 +1,1634 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea531418-6c7c-4e23-b681-6bfdd4a3eb79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agrus Kos, Eternal Soldier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "snow"
+    ],
+    "id" : "1e1d50c3-3219-49cb-8f63-c1faff93215c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isu the Abominable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0ba97da8-0106-4e8b-b58b-8f2d63e3d618",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kenessos, Priest of Thassa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "d291d064-b191-4ff6-940a-c9cfc4289ff8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ruin in Their Wake",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "06dbfdac-059c-411c-aeac-6d849ee54212",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alseid of Life's Bounty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "29a37ed7-223e-4e19-b318-83cac54f6b16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Circle of Loyalty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5569b514-9049-4b44-b69e-78552a7bbf97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6d2aec96-a679-475c-9c71-4fe06a890880",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emiel the Blessed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fce5989-a2a0-4825-b90a-a1f78659b6e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashcoat of the Shadow Swarm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9a0f1eb3-379d-4dc0-a3c8-618cfd3414b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory Bearers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e66b0f2-262e-4feb-8ae5-ad1f60b6611c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isamaru, Hound of Konda",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ff87191-2325-4230-8af1-ebbfdff56a0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6a395674-3b3e-43bf-8384-2ffc63fe84dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a4124fc-c9c5-4752-9618-dfe722c38d0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Michiko Konda, Truth Seeker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f2d28a16-e119-456d-ad8b-c37cec069ab0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9afd47b-ff94-4fdd-bb04-bdf9b8b61a6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rodolf Duskbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "252",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f3b2d3b-a1aa-435d-b46d-0cecd1ef1c40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Alin, the Lion's Claw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "623be150-7440-428f-9f57-73cf46189205",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taranika, Akroan Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "39830f8b-3c92-4bce-9ddc-e71d402f599a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transcendent Envoy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "22e20032-685c-47e0-98cd-f48ddc2de90e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avalanche Caller",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1ba45332-1231-41be-ae79-454674b70ff4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrin, Tolarian Archmage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "e27b52dd-bbdf-4f00-b070-1b12a1f4d650",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Berg Strider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "5ae18cc3-af8d-458c-8441-a3f661d38505",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chillerpillar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2a012f05-0009-42cf-8a69-07140b2a2aef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ardoz, Cobbler of War",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85c18d01-62cd-45c2-94b8-a63a4239311d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Auntie Blyte, Bad Influence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "328aade2-6196-48df-a19b-e61845c5d3a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frostpeak Yeti",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "d99a4bbc-660f-442b-9300-69c4141348f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icebind Pillar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "snow"
+    ],
+    "id" : "a8538685-e36b-43ee-b756-7a89bc24f330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marit Lage's Slumber",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "21d98bb7-911b-410b-a4d3-54d411900717",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pilfering Hawk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8faf1d83-3b6b-4e07-a024-3dfd37c29814",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mizzix, Replica Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "36fc6a86-d778-4407-8db2-1c15ce827e01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinging Lionfish",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a7369d6-54bb-4070-b5fb-fd6fe5886820",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Svyelun of Sea and Sky",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "66a2b141-b7bb-4033-aed8-a521fcd76d4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Elenora, the Discerning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0208c551-a4de-43c7-bd4c-12d24ae179c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vendilion Clique",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d1d0b6f3-d2c7-441a-9b8f-3269d196a106",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wavebreak Hippocamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "1c4a71ea-ac26-4f61-96fc-bb7152cb5341",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winter's Rest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8b71345a-c3e8-4b35-beb7-6347e41d7626",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kibo, Uktabi Prince",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e0f3414d-3c79-4771-a6ba-812608855922",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kothophed, Soul Hoarder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f4f5500f-e82c-44f3-8be8-cee4c86824b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runadi, Behemoth Caller",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "463",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "690c472e-98a9-464a-84de-78dda6d111c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seizan, Perverter of Truth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4eafc507-973a-4aec-91b9-c29d70b0e25d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zask, Skittering Swarmlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "474",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "754baf3f-4bad-4739-9f55-65040c96825c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Konrad, the Grim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "476",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f930f102-ad69-4b70-ae0f-641f5c05f40c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tivash, Gloom Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "487",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c61e0ef-4dc7-4acc-a4a1-e63c35a854ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "491",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51a4a591-92e0-4318-a71c-376fbfe2b14f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "509",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d33d910f-f378-4b55-9587-2101faefe0fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d7f6da2e-3759-4550-999f-2c0fa6c76c73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balan, Wandering Knight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "538",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cbb13721-e6f7-439c-8993-a896de5d6892",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8f9ad5c0-a343-4d1a-9a85-1f4d5fa64079",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Rhetoric",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "554",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d09f9597-c2a9-4c1a-8375-ab06b1a21ee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ib Halfheart, Goblin Tactician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "562",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9638a43f-6b61-4455-8e0f-4142652c4b54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kari Zev, Skyship Raider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "564",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b9c68ff-1fe4-42ef-8d1f-43120de5c1ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Mob Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "566",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8435c03c-b9a2-40fa-a979-879bd120a011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "575",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de974053-a1b2-4ee6-96be-3b5e9f9b290a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muxus, Goblin Grandee",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f3a5a044-d474-43f4-95a9-e67808908e6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lita, Mechanical Engineer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "625",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "45d00a73-4699-4a94-b121-159a0d17c817",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yidaro, Wandering Monster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "632",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "8db1cc35-8901-4528-9100-38f12d89540c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blisterpod",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "637",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "cf5a6be1-f706-4681-9f95-512381be123e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brood Monitor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "641",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cccc9e96-b3dd-4443-935e-621ec37f595b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courser of Kruphix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "668",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6367056d-c066-40a3-b744-21a921bccc2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goreclaw, Terror of Qal Sisma",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "719",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bd0bd038-727f-4e7e-8b87-fccc7b2ca0a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rhonas the Indomitable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "725",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "e709bf1f-9bbb-4da7-a1ea-7deb94858b8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scion Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "733",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "0301cb90-5b50-4ea6-968c-3641baccb140",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stalking Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "737",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "3785a6d2-4120-4190-b398-d63ab1eb36fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unnatural Aggression",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "789",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "b504fd00-f71d-4675-8f11-b19ea7b27739",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Ironfoot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0e6fc996-17ba-4090-bf82-0c2eba93a81e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kiki-Jiki, Mirror Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "952cb0b3-a6b7-4279-8833-3d8890b2d005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Preston, the Vanisher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "800",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b623e860-febb-4e30-9423-e8b1fadd5ee2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "821",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "d42a5b62-f0db-41de-b3f4-aa6d7a51d376",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shimmerdrift Vale",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "833",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "fe6b4706-5452-4c50-872d-2d04f96407a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snow-Covered Island",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "835",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "da105c2f-017e-4df0-b45e-a9482c02a29d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kibo, Uktabi Prince",
+    "promoTypes" : [
+      "boosterfun",
+      "release"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61561585-f4fb-4e47-a65a-0c43a855ebcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alandra, Sky Dreamer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "e2979d4b-2a95-4178-a204-b2df09042135",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "World Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "snow"
+    ],
+    "id" : "2599b027-1ff8-48b8-8a90-8ac1fac7ed63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coldsteel Heart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-12-02",
+    "setCode" : "j22",
+    "setName" : "Jumpstart 2022",
+    "variation" : false
+  }
+]

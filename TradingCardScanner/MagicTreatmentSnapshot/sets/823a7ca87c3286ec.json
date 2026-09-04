@@ -1,0 +1,4977 @@
+[
+  {
+    "collectorNumber" : "110",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b5a79f5d-d0df-4799-ac3a-84305e3af0c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "475ba0c3-237e-4349-85e9-c31b016f609b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lieutenant Kirtar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2e0c8c5-ea0e-4347-b5cb-b7b1801a523b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca20a650-65b0-4714-b7ce-0481af3db377",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pashalik Mons",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eba207cd-b22e-4c82-b2b0-0ef57afa1117",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65852aa0-98f4-4b38-89f1-96062677e590",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c960672d-06ad-4d41-8904-9c007f824756",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl, Fist of Krosa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "175695bb-2630-4269-a407-9138c7008e81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcades Sabboth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ecb7c19a-b4af-405d-b016-a546ed12a99d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heir to Keld",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e1a75961-39a3-4221-9367-a763cf871d42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rith, the Awakener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88b4cb6a-ac4f-48ac-8c94-ba2b8e6b32a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol'kanar the Swamp King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8953672-b1ae-4f0a-8107-e28322fc16b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Benthic Druid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8030dc33-bead-4b1a-9270-fe19809044b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiana, Ship's Caretaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce050d13-7897-4889-a514-a7617a1ed686",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xira Arien",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "561cfc04-65ea-49a4-8638-b4631a7cf828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afd35d5c-7f28-4842-85e8-692d6c391c3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legacy Weapon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "snow"
+    ],
+    "id" : "3a8b11ad-d077-40b6-988c-0462e118fe3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27840eab-9262-49d8-8007-033d42afcad7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Sacrament",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ecea08d-7d65-4d61-a34d-2f8976af5f5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "60ada52e-073c-4775-a190-310d51569682",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f40d25a-6966-4a5c-83d8-01d37a8379c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lieutenant Kirtar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4da75521-e2f0-4064-8abe-0565353df7c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "811043f5-b2eb-4983-a8d6-85c3912e6d99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mesa Enchantress",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "3dfd5aa4-b920-4aff-ba0d-2d4777ebbf66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Momentary Blink",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1df3e4d-d8a5-417b-a765-351564f0c38f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renewed Faith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e79d52e0-dfa6-4ac0-909e-81d1a16b84b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savannah Lions",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e430b8c9-9439-4256-9066-e9b57f257fe7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "248f0108-e936-4286-95a9-f11b679ebaa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Avatar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "02ec5dc4-a40d-41d4-ba50-47c494632037",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sevinne's Reclamation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6aa4e90-1bb0-445f-a321-caaa69372d53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit Link",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ae3067d-768b-40e7-80d6-08cc42f162b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40b65824-f3d8-4f01-ad8a-ebd19ce5062e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Test of Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fbe919e-13c8-44de-a778-8e6ce0b16a58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whitemane Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44c1649d-85c9-4f69-8850-2e4df6f8fc9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windborn Muse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8603c3b-9a10-4a04-b417-284a8e3925a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of God",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a2c1c92-3da1-4f7e-a02c-831311115a5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcanis the Omnipotent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d14d5ff3-40c0-4f22-91ad-d6c8447cb9e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89882438-6357-4ef9-9a52-f1ff49952c10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Denizen of the Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45c3e09f-f9a1-4618-9ec6-ee91e1398522",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fact or Fiction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83240eaa-edb4-4bd3-b193-29470cf46828",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ad4d49f-2505-43b7-b5fb-58bf1b8fcc71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frantic Search",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2f3e6df-33c0-4d0d-b382-58d00be2051a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4880c0ca-7127-4d8d-ade7-2459e4acd706",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impulse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f87c041-c516-4911-ad28-1fb961c0d3dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Remora",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7331aade-3b7f-4b4d-b198-2e0b6b80895c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystical Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de069a00-be1f-4762-b511-bb9211bf2cc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opposition",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d72f51a-3615-4b98-acaa-7d55aabb6c10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ovinize",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86eb4952-593b-4cdf-97b8-d3cdbe424ba6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peregrine Drake",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "906569a3-1750-41af-8d83-a5354500c850",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stroke of Genius",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa810491-ce45-4a87-b3ec-85ec340e33a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Stretch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22702a76-f8ed-4a73-ba9d-f928add32d85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turnabout",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81329329-0154-4f89-a476-a54112dfa0b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67a53a7e-f54c-410c-8cd2-7d3e0347bc6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vexing Sphinx",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bd51f0b-3c8a-4b2e-a0b6-7fa98c3ba678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body Snatcher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f85a4be-fa18-47ce-b24d-8cac718227ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Dementia Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "63416b41-7791-48ff-bcdc-54101afbea31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abc427d9-2697-4e60-b1eb-948a6556f1ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Withering",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "977dc1ce-a224-4271-86f1-31b3fe53405c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dread Return",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e533c49-35a5-4c78-a27c-d3e6f9355d37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "750820a5-b03f-46ee-970a-b66845176853",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entomb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e93e4486-aaf3-4f56-ab34-1ff1aeebb021",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindslicer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a48375e7-46b6-45a7-9d19-f7b7de85fe55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nantuko Shade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "541f7677-5f35-4cb9-a938-dba13fb7863a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrosavant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2598da4-0764-440a-9e9d-0161e68667fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No Mercy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f17f95c0-1470-4282-ba26-4908ed36a557",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oversold Cemetery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0035cade-d84c-4978-8c9f-560893f07c27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Royal Assassin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86a06831-0cbd-48f9-a817-4c5a36fa782a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Street Wraith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9040f60a-03a5-4410-b6f8-92620ff91af4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "530ca0c3-3308-4ebd-a0ce-f90eb605b0f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Undead Gladiator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77ad722a-d6f3-483e-bd13-e0923cc8a265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ef603c2-b09c-40e9-b3ab-fceb4964aafd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4dfc299-0cf5-40ab-9f50-11408ff82282",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chain Lightning",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4190f2d1-e7e5-4cf7-8227-c2690568d159",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Whelp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fbd81c2e-9c0d-47b2-ba02-6f1dca1d96dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Empty the Warrens",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7d80d765-70bf-4eb5-ae55-fe459e96caf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fireblast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f601db5-e522-48d2-a0df-ff3192f8d38d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flametongue Kavu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fa5f934-5407-4844-9cd5-9ba5fa7c4748",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gamble",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1ce01c9-f6f3-49e3-ac2c-10613eba0ed6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gempalm Incinerator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60ec4b08-6df1-4e92-8b7c-1450a4d033bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Matron",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59035b53-e374-49f6-8b02-8b54f6df45d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Lavamancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "585be7c2-b303-4612-bafa-ca7a555212aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Chance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc027246-1dd3-4be0-bea6-3a7476a833ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogg War Marshal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3725a437-d853-4231-b669-c97f6a6666e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overmaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a62b7671-efde-40b2-9cb1-76339d614d29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pashalik Mons",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b5f8025-95ff-431a-a33c-4e2e7366633f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16bea810-1566-4132-bfb3-611f9b6b3333",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege-Gang Commander",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2418b3d-574a-40e7-9b6b-1bc4a8199105",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sneak Attack",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1d446b8b-1b09-4fef-8454-95ad272503c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sulfuric Vortex",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9abfd4d-8f7d-4739-8416-2c03bc1c7a04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ed63bcc-4cdd-4b4e-af7f-f5ff71a4ef14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldgorger Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b15b991e-b5c1-4d23-ba3a-4554c272a41f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arboria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82ef6d6c-db50-4d24-8ebd-311613ddef06",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birds of Paradise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6a39ab84-1f0f-4b4f-a13d-301960bbc971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadwood Treefolk",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02805527-943c-4d88-9d80-50ed71a14af2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elvish Spirit Guide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d1cbcd04-aabf-420e-9bc8-4270f78e25d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Exploration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a095eda4-7a9c-4161-a775-4dbfac32dbab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fa'adiyah Seer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8afea4ea-02f2-47ca-b690-864a5663eecc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forgotten Ancient",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13286ebf-e4dd-48be-82e7-9057755027ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Invigorating Boon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3888c4cd-8cdf-442f-838c-dc1e4d696998",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11ef4c48-978c-41f5-b347-230433326f7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl, Fist of Krosa",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f9cbb7f-8745-4ec4-8d8a-efd1f7e93b1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lull",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed3e1d00-effa-46ac-a899-030c0eb149ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nature's Lore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fa53cbd-efe8-4ca8-8c1c-664de27d1b69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nut Collector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8253dab6-d6a7-4a1c-b5f6-5a2ee051a128",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Saproling Symbiosis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4112147-5609-484f-b303-c34df2f315ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squirrel Nest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17788434-47c5-4290-8555-adc8171d55cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Library",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "33ea0b6a-c0f1-49f8-bbd1-fed61ef0c0f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Dogs",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7246bde-9298-4386-ac4f-1d79f7f0cca5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba6706ed-f05b-411f-afa5-f6154f718c80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldly Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a5f70fa-7f96-4b7e-a1cf-56a053f0bff6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Absorb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f75fe15-5499-4dfe-917d-adfeccd6838a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcades Sabboth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18445778-6176-40f6-a396-05e85579e85e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decimate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af46db87-f1b2-4c04-a9f2-642571a8d81b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dralnu's Crusade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4057a41-c8d1-40dd-ac38-abfe6564c8bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gerrard's Verdict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21c0d5a1-1a2e-449f-a9b5-14bf2061529c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunting Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31318a5f-6758-45a6-930f-ba6b1e812af1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Enforcer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2000f904-be97-4ad6-825a-0b05c31c3362",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantom Nishoba",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "8279d133-ae1a-4389-8c20-1d7ca2f121b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyre Zombie",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07be7455-7ead-4ba5-b694-e021b28687d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksilver Dagger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27600b4d-ade5-428a-8eb7-d7c387573a91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heir to Keld",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0669ad7e-8366-4fec-8151-ded41a9c4548",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recoil",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c0a3c92-826e-491a-8e80-7861e5b199c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rith, the Awakener",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f856897c-fb63-4ba2-a1ce-9a8a0bf67072",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sawtooth Loon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b989b3f-2eec-4593-ac39-daa8e9ca0daa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol'kanar the Swamp King",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa304be0-3944-42c3-94cd-6568db8a661e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spinal Embrace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "888e366f-6c64-423d-92fc-1a1e2806e4c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiritmonger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f32efed1-73ed-49bc-a1e1-53520ddd5d43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Benthic Druid",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f58dcad2-2e38-46d1-bab7-beddd3600a1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiana, Ship's Caretaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3e5de65-5b64-4a32-8c7c-8a7c84f406a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xira Arien",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17188ab9-0fd1-43af-be3b-6e37c55cda9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "202c628d-ae86-4a87-94bb-d06574cda9ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crawlspace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "60b7280d-3727-4c96-bd7a-ae699d007469",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Gateway",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c178d4c-bce9-4165-af1c-6075a94c84e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damping Sphere",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b9649b3-0159-426c-838d-d649c6dbe147",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gauntlet of Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13571bf6-44e1-4975-999d-c44e6709dd5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of Awakening",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e416c68f-433c-44f9-8fcc-043b3919a312",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icy Manipulator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6f036d2-81ce-490c-b8a0-ab5dc29148ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jester's Cap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3468f8d1-4373-4df4-9bbe-3c61a840b23b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juggernaut",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e17f9e1-341f-4649-9e8a-728ef67f875c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legacy Weapon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67680b01-648a-4056-b117-3ba22ee00051",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Blossom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb3d470d-e0f0-44c2-97f7-f31c02cdfbd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Stone",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "051386e0-4c1c-48ed-8883-664c719cf0fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ornithopter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3ee8a2a-7ee8-4017-97b6-799fdb3ce4f7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Golem",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a23814c0-f9da-49c4-bfff-69786a5d651b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tormod's Crypt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5adfe0f-496a-4d56-8c8b-6b58cc827339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triskelion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2074ed36-fbae-4886-b3ad-360fdfbb69cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcanis the Omnipotent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a79c5666-5373-4c81-802a-782a150d70ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Umbilicus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "421c2c48-c1ad-4148-bf68-803d2c33ee0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Blueprints",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd254044-2b66-4fd8-9f72-3c30226c2a9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Incubator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c177316-31b5-4b73-8cab-eef9d8cbb2d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clifftop Retreat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f78398af-06b7-41f8-8aaa-81800f490121",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0961cc70-6069-41b1-8fd4-befc4efa5143",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Mine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0678705f-708e-44ab-9e85-76df13bea694",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinterland Harbor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afc6c906-9013-4840-9cda-d85ad72c04b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isolated Chapel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6202554-88a7-4b7f-b20f-d034997dbd02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maze of Ith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e88a1690-111e-4e8f-a896-890e793e8a9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Factory",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a4ee66c-1c3f-4ece-8c0a-4f0c259c5142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sulfur Falls",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16761d3b-3507-47ee-acff-54b426164d89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Cemetery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bac23c5e-a489-4fba-b14f-a968b202ac22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e8b581b-5177-4cea-8021-42f4d21583ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9c4ab8b-9f84-4b92-a114-93b082c15080",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0473605a-6c6a-433e-b828-933544472a3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "689cf978-7492-4bf9-9b20-a91c21008841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01c46b9a-07ea-40ab-9a2b-5bee8e7d3496",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89ad7ef0-101c-436e-a41a-cdc8e91d2f2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bd5fb3d-2c9e-4cdb-a202-ad5955eae42c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "941546b8-8540-40dd-bacc-9b11f3d63033",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eae0bd2b-6875-4823-b596-f5c7c0a0809e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f690bd2a-e565-4316-8312-3d0386c8ba36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "44899568-7aac-47ae-9f7d-b5414f65625b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6f5bfae8-f789-445e-bc60-a4eead19caec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Test of Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6939e631-91b7-4d58-b15d-ae588e73259c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Windborn Muse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09b24aeb-afba-4215-bf3e-61e581eb412c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrath of God",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ccd2427a-9b63-4345-af20-46e2f530bab0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Denizen of the Deep",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e7b0e29-09d9-4b3e-ab94-f1f4a61d9159",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Force of Will",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1f2400cc-987b-49de-8ac7-3d4b12c4200a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Tide",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ff393aab-0b02-496c-97df-0ffa0f8b1ec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Remora",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "000a5154-90ba-459e-b122-d6893dfdb56f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystical Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b8318aa5-6a08-4e92-afae-ff07a3f0ae5e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Time Stretch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "f0e626cc-b01a-4e20-9414-8ba6347041f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "46958867-db3b-416f-afc5-fbf241c29b7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Dementia Master",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7ecc1962-f4ad-4d76-a00a-f363e102018e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer's Edict",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "baede1c0-5bd0-4a3b-af3c-32fbb14033e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entomb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7295eb82-8785-4a5f-ba64-0a0b5cb77d3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "No Mercy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "29220f44-aa0f-4819-8873-c7a313a8d159",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oversold Cemetery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d645f8b-8aad-4633-b021-dc8ed870d8e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Street Wraith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3c04bbbe-cae0-4ac5-8bd3-ecc95a2b6bd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vampiric Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "09ed98e1-898b-494b-a27d-7c1ab28cd9f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth, Thran Physician",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "150047e1-32f8-4aff-b311-0f6d58ce36fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flametongue Kavu",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f7bc7576-233f-4267-9943-d831a5b2c233",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gamble",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e2ae5aec-1341-439b-aae7-83cb69e8c1d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Lavamancer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7c76b986-30e5-440c-a30c-ef3d77cace1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Last Chance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "edf33009-b795-4097-a77c-08be7dce90cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege-Gang Commander",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "437",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2f3b30d4-5f8b-40fe-b446-b929a1b1e368",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldgorger Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "438",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a834bdb8-6c4f-4ca4-a097-27411d66e797",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arboria",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "439",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a97a0e2b-1ff1-494a-8bc9-9741d6bb5590",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birds of Paradise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "440",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b61af26f-bab1-412d-8849-0d7c3c304950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nut Collector",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "441",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "49129453-1fe8-47de-b6aa-5b92d3d74c99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Library",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "442",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "16b4d0a8-3270-4e53-9f1d-90f995c3b712",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldly Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "443",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "87a7ff06-32b7-48cd-99bb-a91f7f43538d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Absorb",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "444",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ad3fc84d-dbae-40a2-bb95-abedbc83c0cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Decimate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "445",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aea268a6-cf0a-4912-b1eb-47a99ff8c10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hunting Grounds",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "446",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "6accaee3-8941-4409-bc1e-46a5b653d411",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heir to Keld",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "447",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1b98e9c2-8843-4b59-828c-af54e1628e98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gauntlet of Power",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "448",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3b94aed3-a5c0-4573-a6d5-29a04ac522b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of Awakening",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "449",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2ffa2589-006a-4f60-a7e9-3a1e00d8fa91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jester's Cap",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "450",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "fbecc305-a35a-47b2-a825-f48ce1171b79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legacy Weapon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "451",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f45d36d0-7706-4e36-a5ed-d32c22c67eae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Blossom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "452",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6c3e03a3-0082-4d4e-8891-8c8dcc8f1cbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Triskelion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "453",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c87830ee-c6b9-4c68-bc04-74987b03858d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Incubator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "454",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "3e6ebe92-1ea2-4bfa-8464-851b808fef0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Depths",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "455",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e65b459e-2756-4f66-b80d-4bdc1c1c9bae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gemstone Mine",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "456",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7286bd95-0d8e-4b1a-b319-052fe2ae1951",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maze of Ith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "457",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b73577a-8ca1-41d7-9b2b-7300286fde43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "18b26e53-1fc2-4d07-a56f-9000ed25580d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza, Lord High Artificer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c294695b-a096-441a-9034-91ca74763903",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chainer, Dementia Master",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "dmr",
+    "setName" : "Dominaria Remastered",
+    "variation" : false
+  }
+]

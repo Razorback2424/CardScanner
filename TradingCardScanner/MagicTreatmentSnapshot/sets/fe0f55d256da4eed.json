@@ -1,0 +1,442 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdb975fe-ac30-4249-bb55-7efb64645e4d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94ed2eca-1579-411d-af6f-c7359c65de30",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Cleric",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2c859e1-181e-44d1-afbd-bbd6e52cf42a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f1241c3-d960-4eb4-a726-ca474209645b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "271afa7e-2126-4497-b871-9795b7355d69",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "291e6490-6727-45ae-90ba-de2ff8f63162",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2d16818-7812-4d36-b1bf-fb954e5ac958",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d66ec9c-7e5d-47ca-bce4-46798152d1f4",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7aa30438-3733-467e-aa31-f8e8ad2e62f3",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Jace, Unraveler of Secrets Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb0686c3-a44a-449d-ab12-eeb9c0c25489",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Arlinn, Embraced by the Moon Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9cbf36e-4044-4f08-9bae-f0dcb2455716",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Soldier",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a53a7c6-6b32-4491-8c96-e564abea8880",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spirit",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8989fdb4-723b-4c80-89b4-930ccac13b22",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vampire Knight",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0a12a72-5cd9-4f1b-997d-7dabb65e9f51",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e78c4b8-371b-43d7-a315-fb299704aa60",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Devil",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0057f94e-c2be-44e1-a93b-e31432f4ffa5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "623a7905-3a10-4d23-96fa-4960cac8f4e3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ooze",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a5ac360-dc47-4bc5-a4cc-ff223abc3ffc",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wolf",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "CH1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d323ead-24f5-42e4-9e23-aa14eb66264d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shadows Over Innistrad Checklist 1",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "CH2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4825c59d-9e27-4a12-ba84-642b8540e573",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shadows Over Innistrad Checklist 2",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "tsoi",
+    "setName" : "Shadows over Innistrad Tokens",
+    "variation" : false
+  }
+]

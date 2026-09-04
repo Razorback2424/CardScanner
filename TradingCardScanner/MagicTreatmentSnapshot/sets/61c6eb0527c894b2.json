@@ -1,0 +1,1946 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37799e29-ae53-462e-93a0-209e88c96a71",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Boromir, Warden of the Tower // Boromir, Warden of the Tower",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bbe3a165-5b1c-4c17-870f-ea2461e1fab5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gimli, Counter of Kills // Gimli, Counter of Kills",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ec8af8b-70ac-46a6-8759-7c694719b377",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Generous Ent // Generous Ent",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f1e616b-c999-4930-8f9f-70374d36c69b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mirrormere Guardian // Mirrormere Guardian",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b9216c7-5531-491a-bbeb-249f02204b77",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Arwen Undómiel // Arwen Undómiel",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3a22547-1bb9-4c87-bb8f-cb97ae6a6965",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bilbo, Retired Burglar // Bilbo, Retired Burglar",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01672157-7cf5-4bc2-90ba-080842625ea7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Éowyn, Fearless Knight // Éowyn, Fearless Knight",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b291c96-8d71-4290-9b19-4fee6645be17",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Frodo Baggins // Frodo Baggins",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12c9346e-67da-4f6e-99bb-0442c206a8af",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Legolas, Counter of Kills // Legolas, Counter of Kills",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff56d66d-503c-450f-a642-8597ad73c8b4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Mouth of Sauron // The Mouth of Sauron",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "994393d5-6690-4bbb-b007-08aeb46ff49f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Samwise Gamgee // Samwise Gamgee",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba63cd57-36c6-481c-83a3-e01f77f114de",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fog on the Barrow-Downs // Fog on the Barrow-Downs",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2abcba05-e175-4268-8466-e2188f5a267d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Saruman of Many Colors // Saruman of Many Colors",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6a0546d-ea3b-49b3-b5f6-49ed4fc0ead1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sauron, the Dark Lord // Sauron, the Dark Lord",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4abdab96-ccd8-48fc-9381-34ab498ed2b4",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sharkey, Tyrant of the Shire // Sharkey, Tyrant of the Shire",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "794b525c-f0c2-47e3-8b90-45b63cb5795e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shelob, Child of Ungoliant // Shelob, Child of Ungoliant",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01f3f42a-913a-4d24-9d1f-cba3b4c7d393",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sméagol, Helpful Guide // Sméagol, Helpful Guide",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48540f1b-58db-4934-8939-b9ccb4c149fb",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Théoden, King of Rohan // Théoden, King of Rohan",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d927796-97d5-4648-ad88-6169115dd0fd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tom Bombadil // Tom Bombadil",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c260118e-540b-4dd5-aff0-4aa889de2601",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Uglúk of the White Hand // Uglúk of the White Hand",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c454952-df79-46b8-8646-283f0c102a88",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Andúril, Flame of the West // Andúril, Flame of the West",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cf85cd5-eb91-4f4b-a55a-274c1d2f2997",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Horn of Gondor // Horn of Gondor",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fea88ee7-5d5a-4e56-ac1c-05578379b22d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gandalf the White // Gandalf the White",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "777af978-5af3-4f79-823f-78e775113da9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Plains // Plains",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23c5b8b9-6ba4-490c-b9c8-ed8f97529fe1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mountain // Mountain",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3bc3328b-326f-42e8-9544-e0e099f74061",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Elanor Gardner // Elanor Gardner",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c54012ae-cd58-4544-8e7f-ff343bb3ff71",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aragorn and Arwen, Wed // Aragorn and Arwen, Wed",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98233e94-90c2-4232-88d2-717b338ac0b5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Witch-king, Bringer of Ruin // Witch-king, Bringer of Ruin",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41a7cbe3-75d6-4f5b-8e07-76d707ab63b8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Galadriel, Gift-Giver // Galadriel, Gift-Giver",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30c28159-ada9-4aec-af93-e8382e8e2b35",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Balrog, Flame of Udûn // The Balrog, Flame of Udûn",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5edc63f-518e-4600-9f75-9a691656d105",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Bilbo's Ring // Bilbo's Ring",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d9afc72-958e-4918-96c9-52b02a87d30f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Faramir, Field Commander // Faramir, Field Commander",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9da248d7-bac4-4017-8a22-70f292759da2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Samwise the Stouthearted // Samwise the Stouthearted",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "499c7a97-1ea6-4c43-96cb-d2c34e1d3304",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Took Reaper // Took Reaper",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa9fa919-7f49-41be-9993-426bc314f7df",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Elrond, Lord of Rivendell // Elrond, Lord of Rivendell",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aeb2235b-175d-4f3c-a561-842042d16734",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gollum, Patient Plotter // Gollum, Patient Plotter",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c5dbb288-da32-4e9f-b731-9bb62df5acb6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sauron, the Necromancer // Sauron, the Necromancer",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "739e8218-115f-49f2-81ab-0e9248ef7ebd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Witch-king of Angmar // Witch-king of Angmar",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3d0631c-750b-4a07-bbcd-6d6244c7f2aa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gimli, Counter of Kills // Gimli, Counter of Kills",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "744cd76d-8326-4c2a-9144-ededc570c2be",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Legolas, Master Archer // Legolas, Master Archer",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d36f7876-fbe2-44a1-bf4d-204544b2f7d7",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aragorn, the Uniter // Aragorn, the Uniter",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b6a94d9-5d91-419e-98a6-d9bc6bf49de6",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Frodo Baggins // Frodo Baggins",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e630fa9-be41-433c-acc0-5e56260ef45d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Galadriel of Lothlórien // Galadriel of Lothlórien",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81adcd2c-004b-4b20-84bc-5ad88c4ff2bc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gandalf the Grey // Gandalf the Grey",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cb0108b9-781d-45bd-976b-a9b4c890c583",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gandalf, Friend of the Shire // Gandalf, Friend of the Shire",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce325c45-4ae9-43f3-9652-ce21c11a0143",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Merry, Esquire of Rohan // Merry, Esquire of Rohan",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b88c947-5aac-4931-ab9e-63447c26f3b2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Pippin, Guard of the Citadel // Pippin, Guard of the Citadel",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26db2fe3-7238-48fb-baa8-a9b1fbcef030",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Samwise Gamgee // Samwise Gamgee",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed492c1d-4448-4dff-a6eb-900d72c72e27",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Nazgûl // Nazgûl",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e9c1ec25-8b75-40ed-8d9e-1a785bee86fd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Barad-dûr // Barad-dûr",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba67a995-c2c7-4d52-9a3a-8ad6c8f89a0e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Minas Tirith // Minas Tirith",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c37cd99c-0a7c-4420-9179-bf19007f9b15",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Mines of Moria // Mines of Moria",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2be8448-aaab-4ccf-ab88-683508dde6f1",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aragorn, King of Gondor // Aragorn, King of Gondor",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e09169f-e7a1-492a-b0f6-ea3a5ed91bc0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sam, Loyal Attendant // Sam, Loyal Attendant",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3cbe58b-a516-438e-a27e-32a9d2f1e275",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gwaihir, Greatest of the Eagles // Gwaihir, Greatest of the Eagles",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f3b6a28-9f61-4c8e-a47c-20f74cdde67d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Goldberry, River-Daughter // Goldberry, River-Daughter",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b61c318d-c7bd-4e09-8c87-6e9369c35743",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Call for Aid // Call for Aid",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8b616838-a6bb-4aad-9e01-ea32af74c8c9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Cavern-Hoard Dragon // Cavern-Hoard Dragon",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "579c8b67-6ac2-4676-b2d2-115e5f854d3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Faramir, Steward of Gondor // Faramir, Steward of Gondor",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a3eb7d7f-7548-47e8-a4a7-09385a4777e9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Gríma, Saruman's Footman // Gríma, Saruman's Footman",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28c12540-44b4-4169-86f5-fec530b93ad3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Lord of the Nazgûl // Lord of the Nazgûl",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ac57551-0080-4374-afeb-18b443c8a2bc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Merry, Warden of Isengard // Merry, Warden of Isengard",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21597495-8dd8-43a9-8a51-d730c437a753",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Pippin, Warden of Isengard // Pippin, Warden of Isengard",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6012c72b-4ad6-48e2-9907-ad96235be6ce",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Treebeard, Gracious Host // Treebeard, Gracious Host",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08f70fd9-9f13-4155-9469-006ea1317fd5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Marshal's Anthem // Marshal's Anthem",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6273a59d-8ae2-4569-b145-517819ff9a7f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Boon of the Wish-Giver // Boon of the Wish-Giver",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae89ea8b-c8d8-4451-a5c7-4acbea254efd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Watcher in the Water // The Watcher in the Water",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acbad680-a292-40d8-bdb1-05a747b8ddba",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Learn from the Past // Learn from the Past",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f90a8c4-a67e-4e64-8bd0-094aaef71116",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thrill of Possibility // Thrill of Possibility",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e249f76-5f8f-4fd1-bcfa-6c6f8612f646",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Asceticism // Asceticism",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d102507-0e57-40e5-a13d-ff2b12fc62ed",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Heroic Intervention // Heroic Intervention",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8170ef25-bd23-4cd6-830e-fdf4a4057878",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Realm Seekers // Realm Seekers",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15acd4ce-e2ce-46be-9212-727b67a1ac90",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Commander's Sphere // Commander's Sphere",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9323645-8601-4206-b635-219d8ef66ec0",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Sol Ring // Sol Ring",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "525a1f95-5b5c-438d-8ec7-88cec3f632ad",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Field of Ruin // Field of Ruin",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ad0ff87-81cf-494c-8690-e8602c0a930c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ghost Quarter // Ghost Quarter",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eee84885-31a5-457b-9895-2b9dd149a0c3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "The Dead Marshes // The Dead Marshes",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d6f19b7-57e4-4af6-8e4e-8500001f113a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Shadow of the Enemy // Shadow of the Enemy",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08d533f4-c630-463c-b0d8-adff89381242",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Valley of Gorgoroth // Valley of Gorgoroth",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cfd05912-5c86-4e2a-94c0-667f2a9761f5",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Treefolk // Treefolk",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe1a9d3e-c55e-40c6-9911-c1e5f311276a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Éomer of the Riddermark // Éomer of the Riddermark",
+    "promoTypes" : [
+      "stamped",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-06-23",
+    "setCode" : "altr",
+    "setName" : "Tales of Middle-earth Art Series",
+    "variation" : false
+  }
+]

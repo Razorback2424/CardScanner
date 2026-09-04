@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "78fa0a70-986a-4f92-99c6-0d325dad7d08",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "ptdmu",
+    "setName" : "Dominaria United Southeast Asia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "2709c1bc-c5bd-42b8-9157-cb6e798d99be",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "ptdmu",
+    "setName" : "Dominaria United Southeast Asia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart"
+    ],
+    "id" : "4568fc06-bd4f-40d3-9daf-c97ea2e33427",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "plastic"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "ptdmu",
+    "setName" : "Dominaria United Southeast Asia Tokens",
+    "variation" : false
+  }
+]

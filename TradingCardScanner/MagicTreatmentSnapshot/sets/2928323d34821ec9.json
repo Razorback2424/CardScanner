@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c5823bb-d56d-4bed-ba3f-09bdd93c52dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damnation",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68d77020-b313-429f-9005-a36ecf8caa05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tidings",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f09dd696-8dff-41dd-b510-b2ad4c5d6c36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incinerate",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "652b0ce3-293d-4599-8a04-9df01b9bc678",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Tithe",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "509cfb76-ab85-4473-ab81-83f6f62eb54c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harmonize",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15813b4a-9eee-4724-97f3-c1b845cba330",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ponder",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b5549fa-ff74-44a9-8709-c407b1b89062",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Corrupt",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "p08",
+    "setName" : "Magic Player Rewards 2008",
+    "variation" : false
+  }
+]

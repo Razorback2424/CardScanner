@@ -1,0 +1,2483 @@
+[
+  {
+    "collectorNumber" : "1995-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a450153-45b5-4aea-aa27-8ffe6301e8b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fireball",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1995-2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27f7db50-05b9-48f6-9086-f5b0788f9972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blue Elemental Blast",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-08-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1996-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "53d668ab-8cfd-422a-9497-0158c836c2e8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sandbar Crocodile",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1996-11-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1996-2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb5b0fcb-c170-4d12-8761-de833e944e2f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Zhalfirin Knight",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1996-11-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1996-3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a30df3d3-17b3-4bd0-b566-ed4d32a921f2",
+    "language" : "de",
+    "layout" : "normal",
+    "name" : "Jamuraan Lion",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1996-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1997-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1526a1e7-b874-4409-8c84-81996fbc8d12",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Talruum Champion",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-02-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1997-2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dae31023-2649-4f37-b1ec-d9f650d53f09",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shrieking Drake",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-02-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1997-3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd47205e-7053-436f-8192-b64fbaa3487f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shield Wall",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-04-19",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1997-4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e1ead259-73fa-4556-8149-ea80a379f59f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Stream of Life",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1997-05-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1999-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d083fcdc-1e1f-4ad3-82d1-11f0b84dd74d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scent of Cinder",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1999-08-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1999-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c4077d6-d98c-4fdd-ba57-0781aa21f68b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warmonger",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1999-10-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9565a78-c6c4-4a32-8e0e-b1fda6bf879d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Hounds",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "726aa407-dadd-4575-aee2-b7888e67a722",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver Drake",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-01-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12711a8f-91e5-4bb7-bbc5-3f8f644988ee",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Thorn Elemental",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-02-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e40d5c20-c599-4aa0-b214-48df40236b12",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Archangel",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-02-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c0a29ba4-fe8b-442f-a8b5-8cce7c765011",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Rager",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-05-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5eed50e7-c07b-415e-a847-535d08fcd8ca",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Parallax Dementia",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2000-06-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2000-7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e1cf470-f2af-469d-914b-e250652c861d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ascendant Evincar",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2000-06-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2001-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0c70431-d1d1-494c-a75e-54734e489c02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spined Wurm",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2001-01-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2001-2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e70868a4-3971-431d-a614-604aca110fe4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-09-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2009-1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39a89c44-1aa7-4f2e-909b-d821ec2b7948",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace Beleren",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2009-01-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95ea30b2-654b-4892-ba58-e52334efb953",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Darksteel Juggernaut",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bdf3665-beb0-461b-9ce3-b678e625ead2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Cunning Sparkmage",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2010-02-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b00553c7-d3f9-4d77-8433-2f425361516f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Chandra's Outrage",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2010-06-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af1d86fc-385c-498b-9aa6-c97cd7f884f0",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Chandra's Spitfire",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2010-09-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2010-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0610102f-bfc0-45f9-9b9c-cdade744e470",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Kuldotha Phoenix",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2010-11-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2011-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "652c09cb-9af2-4173-9db5-b1179cff838c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Phantasmal Dragon",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2011-06-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9731641c-f0c3-46eb-9fc2-155f9bc041a2",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Cast Down",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-04-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2cda4b2-50c2-4442-9ca2-1c668cc07b0e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Diabolic Edict",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-05-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "843f290b-8c1d-4124-99c7-e11b8b4481cf",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-05",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e165d16a-06c7-4373-9c36-89e127e669dd",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Lava Coil",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2019-07-13",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74417059-a6d0-4810-8b4d-6b0f26d73783",
+    "language" : "ja",
+    "layout" : "adventure",
+    "name" : "Hypnotic Sprite // Mesmeric Glare",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2019-6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e77dfac9-2de7-460e-9561-20db16baa4c5",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-11-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02efd6cf-1ed0-44b3-b3b9-94a45696e1f3",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Voltaic Key",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-03-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "94355044-e67a-4605-a37b-e879784fc9e5",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-03-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a96f2a9-3f53-457d-ad1b-691babb1539f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Staggering Insight",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-03-12",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b464bf34-d651-496c-9a92-bee839af1fa6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-22",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29ce8e10-1db2-4cfd-ace3-c6b418e00007",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Sprite Dragon",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-13",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a1e5ad3-00fa-4b6b-a0a3-d52fcbe897ac",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Heliod's Pilgrim",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-03-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f8b6160-84cc-4052-8c19-6184a72c16a6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-11-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2020-8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61daf058-37ec-4a20-89e1-4fcfa6bd5b3e",
+    "language" : "ja",
+    "layout" : "modal_dfc",
+    "name" : "Tangled Florahedron // Tangled Vale",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "791cc2f2-2ec6-4df0-8c59-a31dee319729",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-04-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76a525da-aa38-4359-8eaf-90c70d98024e",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Bone Shredder",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-08-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2021-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2329557d-cbb1-427e-bb63-1905fe68ee88",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Harald, King of Skemfar",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2021-03-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de20e1a3-2073-4ef5-821c-b35fb6bbbba7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Disenchant",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-01-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b87f2d2c-d6ad-4639-b8c3-e75569c5373f",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-06-24",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "172b167b-52ec-45af-b68a-dc6ce3effa43",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Usher of the Fallen",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-08-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2022-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2487ebf-d023-473f-8d16-e22d93f6c33d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Frantic Search",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3161968d-df23-42c0-8e16-b5746cf8f1d1",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Mental Misstep",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7401bbe1-492d-45c1-80e8-214a016dc712",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Worn Powerstone",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-05-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a39f9b77-d2ab-4980-877a-4aa4687a4a4b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Gingerbrute",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-08-04",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c90e4e7-a60c-479b-93ae-5209761b7c7c",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ruin Crab",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-08-04",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6c861db-8107-4a0d-ab24-25e0c1d3576b",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Avalanche Riders",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17658f16-14af-4d13-aef0-52fcce175583",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyromancer's Gauntlet",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-10-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48809443-27e0-4885-9d14-345a0ce8ed77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Winged Boots",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2023-8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e792e15-ec0a-4220-a8a1-3c57e99494a5",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Culling the Weak",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-12-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdb4bdc5-2533-4e6d-ab69-ccbf3d497748",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Snuff Out",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6337d185-17cf-4c17-9bad-0265831001de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duress",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f142d95-6978-4970-a853-432f9a29dfcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Voltaic Key",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-12",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b1f3b789-4833-43f0-a5fc-f7aeed08acd4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Memory Adept",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-20",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4acc59c-8405-4d1e-8452-913399fd0f31",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Mentor of Heroes",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-08-20",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5f4475e-d97c-412d-8c8e-ec73f69dbb81",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Gush",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-24",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59f3b17f-6de9-4638-8104-e742d9f56f2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Diabolic Edict",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-09-12",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36034cb5-3d39-49f5-9e30-8d78ec2ae65f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Patchwork Banner",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eaa13097-3a89-4358-b851-9a115947fb14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Dark Realms",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-12-01",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2024-9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6cd4201c-af68-4157-935b-d66428fef8e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shock",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-10",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc05da83-c3ec-4a60-a205-3c0f537d55b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nicol Bolas, Planeswalker",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-03-07",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "166f9d06-c390-4cc8-ad33-3fd14e499527",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ultimecia, Temporal Threat",
+    "promoTypes" : [
+      "ffviii",
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-07-03",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df5d6271-5318-42b7-99cf-a3b041b79f3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning, Security Sergeant",
+    "promoTypes" : [
+      "ffxiii",
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-07-03",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fac06752-6c16-47dc-83a5-14ddc8185653",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud, Planet's Champion",
+    "promoTypes" : [
+      "ffvii",
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-07-03",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-14",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "361f3cbb-5a9e-4b77-9180-742f25d954cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sephiroth, Planet's Heir",
+    "promoTypes" : [
+      "ffvii",
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-07-03",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-15",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f97c640-c580-420d-8454-7ea2a257d343",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Counterspell",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e43fb014-8fae-4b12-a54f-f9104a8cc567",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bone Shredder",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-10-09",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d95ce840-b583-4c48-8a58-b85a4e2b9b2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disenchant",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "819a21b1-ec52-4c83-85b4-491600b2e434",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaalia of the Vast",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b1373ef0-fbd9-4992-997d-b4147f6df5e7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Ancestral Mask",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-01-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a09a19c4-f572-4921-89f4-1515da9fccde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chrome Host Seedshark",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2903fbcf-1f10-4518-9f7f-6b61d9b6552d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud, Midgar Mercenary",
+    "promoTypes" : [
+      "ffvii",
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-12-05",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f3d9e8f7-0727-48cb-adf0-5cede170118d",
+    "language" : "en",
+    "layout" : "modal_dfc",
+    "name" : "Peter Parker // Amazing Spider-Man",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-09-19",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c28aa7be-0e9c-4978-9f1e-d95c71704d24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Miles Morales",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-11-07",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "4d7d6623-52c4-473f-91db-55c78aae5512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Iroh, Grand Lotus",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7818c58-47f1-4031-8f7f-80b4b8c75530",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aang, Air Nomad",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-11-21",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40b66faa-abcb-45e4-85cc-997d29907b4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zidane, Tantalus Thief",
+    "promoTypes" : [
+      "ffix",
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-06-20",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "919ff87a-ac98-4bfb-a745-8ffec7c299dd",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Wrath of God",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-04-02",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f9183acb-edb7-4a59-9890-ae0455d8e024",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Ritual",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-25",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2025-9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29dd649c-86b5-40a1-94b0-5859d03be9cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crop Rotation",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-09-11",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "946d0f6d-9ecd-4b26-88c7-12528021d20f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-07",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c8ae59a3-23ae-4a7c-8c80-ffc5c86fce3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Goose Mother",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-23",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9385a039-bd13-4646-9b4c-f8de7544d141",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zetalpa, Primal Dawn",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-05-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05533bc2-9045-43ab-82e9-dbe541537f0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turtle Lair",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-05-21",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-13",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a16e23bf-cff8-4a88-b27e-9de3d5b8703d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-19",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-14",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ccd9eec2-87d1-4372-a308-8dcb17cdafc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Loki, God of Mischief",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-19",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-15",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "423623dd-b80a-49ac-a65d-af8ed0045a46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shuri, Wakandan Inventor",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-16",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "76c988a2-b631-4294-91e5-bb25f0625b3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain America, Living Legend",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3891ea4-d6ae-49b2-9a91-3e4727e81f70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sazh's Chocobo",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-16",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "74326947-b3b9-4a58-936c-905803e125a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dáin Ironfoot",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-08-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b525b89a-f188-4d06-a784-c35130893d32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avengers Tower",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-07-28",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7f108272-d3dd-455b-b704-90f03edc08a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wild Growth",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-15",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1919d98c-4d5a-4ba0-a65d-a1a176f55fd3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frantic Search",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-01-22",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ca6e7f4-fb01-41e7-bdc7-dbf1bcf3070d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worn Powerstone",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-02-26",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1b870d02-bb55-4c4d-9c32-2c322f5a4d15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Picard, Steadfast Captain",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-04",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55fac713-7136-4ea4-9f21-0f6a821af22c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spock, Logical Choice",
+    "promoTypes" : [
+      "mediainsert"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-09-04",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "1a27b552-a6ad-47d4-b96e-05a8c782b4ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zack Fair",
+    "promoTypes" : [
+      "ffvii",
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-03",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d7a7b791-47c4-4274-80d6-8d8815cf8e37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swords to Plowshares",
+    "promoTypes" : [
+      "mediainsert",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-14",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ec9fce0-aa23-4c77-a2fb-c74b31d36f92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gishath, Sun's Avatar",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-03-27",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "80afdcf9-728e-4514-baa7-a373360094af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Warstorm Surge",
+    "promoTypes" : [
+      "mediainsert",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-06-10",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f2e5c81f-1c82-4378-bfd0-db35796f7390",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hulking Raptor",
+    "promoTypes" : [
+      "mediainsert",
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-04-23",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc65327b-7fe4-461c-b2d1-faac95ecae88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Appa, Aang's Companion",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-03-21",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2026-9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f881a20b-505d-4255-b5c2-d48457f9b5b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spider-Man, Peter Parker",
+    "promoTypes" : [
+      "mediainsert",
+      "resale",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-07-20",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2027-1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "daa7842a-5c04-4a35-8df2-f88a6f305df0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Final Showdown",
+    "promoTypes" : [
+      "ffvii",
+      "mediainsert",
+      "sourcematerial",
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2027-04-08",
+    "setCode" : "pmei",
+    "setName" : "Media and Collaboration Promos",
+    "variation" : false
+  }
+]

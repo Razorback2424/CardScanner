@@ -1,0 +1,324 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab2b349a-1555-4aaa-8302-28667404e630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvia Brightspear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a7241f5-4d69-47fe-b037-95037008184c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pir, Imaginative Rascal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ebdf2f50-f69a-47c4-a75f-ff55781bb0c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Toothy, Imaginary Friend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "da097d1a-6e51-41d7-8dfe-f26acfb0038f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gwafa Hazid, Profiteer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0c2bf475-9845-40ed-9f55-669325fb6183",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Regna, the Redeemer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "67bd3c49-ff73-4630-a4ee-c782f03e511d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krav, the Unredeemed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "76c33402-a022-4d2f-9a83-4b8ddc04e971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zndrsplt, Eye of Wisdom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d53ee8c0-b27c-4556-b610-ff64edb7a18f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Okaun, Eye of Chaos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cb1d1da-6077-46b5-8c63-39882b8016f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najeela, the Blade-Blossom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a45a631-f899-4414-8e0a-64d987e9ba8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Virtus the Veiled",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ab8935b1-ec87-4330-9952-9ef8cd344531",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grothama, All-Devouring",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41603938-9527-42fc-a870-b662c3871ae3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorm the Great",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fa0404b-757a-4aee-bcd8-6150938d0fba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Khorvath Brightflame",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ec68ca8-a7d3-47d5-91cf-6806f3709e7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara of Corondor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-06-08",
+    "setCode" : "bbd",
+    "setName" : "Battlebond",
+    "variation" : false
+  }
+]

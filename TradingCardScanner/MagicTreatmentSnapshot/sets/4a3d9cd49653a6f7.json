@@ -1,0 +1,2122 @@
+[
+  {
+    "collectorNumber" : "109p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23675d49-0ddf-414c-9bf5-5f0e480c479d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Warboss",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7090971-f4da-445f-a99c-3fd5809ef3eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Legion Warboss",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eebe0431-ab06-46dc-8bc5-e20d8c2de437",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Visitation",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c5a49ca-7d5c-47e0-a8cc-6f75085910eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risk Factor",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "daee6fa5-6522-4175-884f-938cfc7b2871",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Risk Factor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbdbc518-ab95-4708-b611-d2b88f7daebb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runaway Steam-Kin",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "849a9676-26d2-4cfd-8e3e-76c01db79398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runaway Steam-Kin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ced02ab-018d-432b-a8c2-102dde57aa91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Whisperer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52c1d288-f8a7-49b5-9ddc-400e2705a54e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Whisperer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c01d2a9-5ac5-439a-9596-29ffd611aecd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast Whisperer",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-07-01",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db217a40-4a67-499f-9183-9e3562fccef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bounty of Might",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bb060d8-dfb1-42b3-8a3d-0256673054f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hatchery Spider",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "141p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54d00de9-049f-40dd-8e54-5c3212b856f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pelt Collector",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b47ab9dc-7af4-4c2c-907c-d352de8ab67f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivid Revival",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2a40582-790e-4629-ba13-7ae96f825dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e114fdd-693f-4294-afb8-f522d786387a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Assassin's Trophy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8a230f8e-08c2-4d3e-af01-ea37fe212d8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, Exemplar of Justice",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "153s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b9ee435d-0d98-4fb8-a829-26bd91eb4c29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, Exemplar of Justice",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d04c0902-7882-46c2-b228-0aa6c63b6684",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boros Challenger",
+    "promoTypes" : [
+      "openhouse",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "273374ed-6828-401b-982b-adaae235bf77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deafening Clarion",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14e2f0da-3e26-4be4-b023-a7a0338f2cd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deafening Clarion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4eed0bcf-cef3-4f09-8070-6866072b38fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara, Soul of the Accord",
+    "promoTypes" : [
+      "setpromo",
+      "storechampionship"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6041feeb-8cbb-444d-91e3-68096b336bc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara, Soul of the Accord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e092d0ca-4e44-49bc-8875-8a7e69f3b836",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etrata, the Silencer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd318e8f-418a-4e17-bf0e-a4bfc0fb8ebf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firemind's Research",
+    "promoTypes" : [
+      "draftweekend",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0567941-5b4c-4a68-baa2-7af5d29a3185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firemind's Research",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b9dacdb-f9df-41e5-97ea-11dfa37f1b49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ionize",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bdff27a-e2dc-4b12-a67d-9b28128ec15c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ionize",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8789443a-d7d7-41c3-8981-60961b194f18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izoni, Thousand-Eyed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "354376ee-8537-4a51-bbd2-cd6f65a71b64",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of Autumn",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e6fa0c99-04d5-4bba-a864-0c8350175e36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of Autumn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40d0040e-1a03-4869-a485-93cfeb939969",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, the Multifarious",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c102220d-9d6a-4946-b47f-3d3ff67a20dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Parun",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0de50e7-5b3f-4576-9063-619da3b26da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Parun",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83afa9d3-7a8d-4baa-942e-39fdf7407e47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Light of the Legion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a424577-f1b7-4250-a4ed-7ceebdb45d51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftblade Vindicator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "13efde5b-3e91-4717-9e26-6a2cc99b6554",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajic, Legion's Edge",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "54decc5b-b385-4080-a19b-5bb1a309653f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajic, Legion's Edge",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bb28ab18-5044-41b4-84a7-1df7d267f968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thief of Sanity",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d95b77d-382d-4787-bf17-db99c4b2a548",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thief of Sanity",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e8783e7e-d294-4e62-9e1d-fc1c67f6fb45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought Erasure",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c1fbb7bb-88c1-4164-88f3-59832ab5627d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Year Storm",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-02-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a881187-a98b-47ac-849b-d3930aa5eeca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand-Year Storm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3da184fe-34fa-40e4-9fa8-b8868e998f39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani Discordant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27df0036-8155-459f-a1cf-da83f3a78114",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underrealm Lich",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97da1362-1eaf-4e4d-9184-4f35e6ad8926",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underrealm Lich",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5f2d9899-e141-42cf-8b2a-bec6fba1dbd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unmoored Ego",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d70ea49-8911-4361-8515-a78f34f6e721",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, Golgari Queen",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05307822-0891-4de8-a962-e91e60ba5b65",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Assure // Assemble",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9374771-c737-4cc8-b379-19039e66a525",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Connive // Concoct",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3d179f9-36dd-4510-9b34-7033a6496c03",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Expansion // Explosion",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7680bab7-6ee8-4093-8bbc-74df018b1e9e",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Expansion // Explosion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27446bd7-74d6-4831-8bb9-1c71b19aecf7",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Find // Finality",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "437d7378-fad5-496e-a264-d4ea3819ade1",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Response // Resurgence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a910c14-d95d-4365-a983-c3c356620446",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Lantern",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "253p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f19704c8-d37d-4a7f-b4e3-16d5b653bedc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overgrown Tomb",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "254p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f14106d-13e5-4d38-b22d-a6c466b757bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "135a7cf6-0bea-4f5b-b768-e7b6a8b78508",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steam Vents",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19706d19-414e-4221-8e46-b389e3bb3c2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Garden",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "38604307-021f-4e17-8f5b-43350726471b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ec82a4e-e945-4a2a-b8fc-a4426157defd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venerated Loxodon",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b8bae9b-3ff4-47bf-9843-5ee1d655dbdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venerated Loxodon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "396873f9-3709-4046-ac2f-00054b58653e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drowned Secrets",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3eb77813-7ab9-46b5-9aab-c87292776b9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mission Briefing",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d7829a5-b85f-4395-ab63-c4e8388c672e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mission Briefing",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "09cd1219-f6e1-47ba-bc05-4f0603d56835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narcomoeba",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8469c788-5c11-40e3-b825-8b14dc5c5575",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Citywide Bust",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb57b3c4-1b38-430a-82fe-202ef1bf0c63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quasiduplicate",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "766f72ce-ece9-4f26-903a-ad699fcec0b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quasiduplicate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "278d505f-3abd-42cc-a405-349e9523f0d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinister Sabotage",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a9472d25-9c11-4a18-be05-96c7fd434370",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conclave Tribunal",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04d182e5-78c3-45a3-b719-2b3a522de925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Operative",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6caa9e3-efff-4936-bc64-57adb8fc44b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doom Whisperer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c6cdcc2-b5f1-4bf9-95d7-224e2deef86a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gruesome Menagerie",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b73eebf5-5373-42a8-ab39-bbd17cf6e36b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mausoleum Secrets",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9269228c-56d6-48a8-b6be-9c20360878dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mausoleum Secrets",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18481e53-2c54-465a-8f01-bbca50bd9197",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Midnight Reaper",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96cd4dc4-f99d-4b4b-a038-b63198179343",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necrotic Wound",
+    "promoTypes" : [
+      "league",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfffaef0-a12c-4c52-9b89-7c5cdeb134ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ritual of Soot",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d1f84f3-4bd1-4505-a395-9933d1ad279e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ritual of Soot",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be4057b5-c290-4323-916e-4849cdeeda32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawn of Hope",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a90cde9-0a15-42c5-bc4b-369879a1e0cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawn of Hope",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4fc5577f-7eb6-4f7e-b5c1-91f9c498cc91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arclight Phoenix",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a7cee8be-589c-4661-88a6-966095844b50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Experimental Frenzy",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "pgrn",
+    "setName" : "Guilds of Ravnica Promos",
+    "variation" : false
+  }
+]

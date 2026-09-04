@@ -1,0 +1,255 @@
+[
+  {
+    "collectorNumber" : "129",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "e60610fe-891d-46de-b556-d03b637dccec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bonfire of the Damned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "36506caa-2630-46ec-9aa0-e1885749ad90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reforge the Soul",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "daa39826-7f89-41cb-a7fe-7f7be817d5cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderous Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "d16453f1-c6ca-4288-ab72-315ed9bb0ab0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blessings of Nature",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "36f7d663-115c-4ad0-a072-633df054cce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Revenge of the Hunted",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "31292616-70e6-4d19-a883-e63ad860f50c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Entreat the Angels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "0982ea7e-05a4-4e40-98ab-ea9aa6c7342e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terminus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "23b62be6-1a80-4f16-a94a-374203052662",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Devastation Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "238d8437-1abd-4bb7-8b5b-54f959bc2c79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Banishing Stroke",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "266e5267-2288-4bb0-8c54-0c556521cec3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Mastery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "miracle"
+    ],
+    "id" : "dece40c1-790c-4471-a790-1d356b345603",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vanishment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2012-05-04",
+    "setCode" : "avr",
+    "setName" : "Avacyn Restored",
+    "variation" : false
+  }
+]

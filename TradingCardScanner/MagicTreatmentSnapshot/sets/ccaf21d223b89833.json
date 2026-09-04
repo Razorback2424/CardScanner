@@ -1,0 +1,354 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44a93838-caea-41da-bf00-163b40cfb758",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aegis Angel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98485e9e-dbac-44dd-a446-ef3ef81830c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Walking Corpse",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "41eaedf2-38be-4825-a711-3cc0f7659ae3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Borderland Marauder",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b434a60-0875-47f4-a626-2c9bfa3c9b3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cone of Flame",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca25d8fe-93b3-4d2c-96df-ca6e4f528543",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e90aaa61-3281-4e8f-9eb3-548896d0c14d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incremental Growth",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ff4b431-3ca6-436f-aa44-911174538e04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oakenform",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6794f92-1895-41fe-931f-42b0744e9f2e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of the Harvest",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e944e39b-5268-47c0-8b09-2e666315e209",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marked by Honor",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8752c1db-b924-4dda-8b71-4c254d0ef2de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01007d7f-e29b-49d5-bc60-44b2fb77ed3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Air Servant",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c8017c06-82ea-4661-b422-e5b9089842e2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Disperse",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da35e1ce-cbfa-499d-b4e0-5857b1587506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of Magosi",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8363865b-23f9-4cca-beb4-a5d467caff4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind Rot",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "afc8ec11-78cc-438f-9e49-50089fd247e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3e28d7bb-4520-4cf4-85c9-c56f5da40d82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir Vampire",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "w16",
+    "setName" : "Welcome Deck 2016",
+    "variation" : false
+  }
+]

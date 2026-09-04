@@ -1,0 +1,69 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "waxingandwaningmoondfc"
+    ],
+    "id" : "5646ea19-0025-4f88-ad22-36968a1d3b89",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Nightmare Moon // Princess Luna",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-10-22",
+    "setCode" : "ptg",
+    "setName" : "Ponies: The Galloping",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a4e07b3-b095-4335-b636-2d1c34c7db9b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Princess Twilight Sparkle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-10-22",
+    "setCode" : "ptg",
+    "setName" : "Ponies: The Galloping",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ad30de4-8299-4252-99f9-866719ec047d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rarity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-10-22",
+    "setCode" : "ptg",
+    "setName" : "Ponies: The Galloping",
+    "variation" : false
+  }
+]

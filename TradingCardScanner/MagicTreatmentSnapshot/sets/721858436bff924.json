@@ -1,0 +1,352 @@
+[
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27083f9c-25c0-4f32-947a-08b976d0b06c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Generous Plunderer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1083552e-8002-486d-b23c-93f2c317a6f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Molten Duplication",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "61f4a9a5-ef16-41d0-af79-fe470912ad91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omenpath Journey",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20619a08-1d10-4e55-a174-20d6b8097538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sandstorm Salvager",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ff26cbe-eb5d-444b-9de2-51dd85d0a492",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vaultborn Tyrant",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0a378317-92de-4117-b3b5-70773fc17a6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lotus Ring",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c801275-226e-43a0-8440-cfe8ef717b03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Wealth and Power",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "922ff3b1-abd5-47e8-a930-49ade8299eae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torpor Orb",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf5c3883-ca22-4850-9721-d1acb16acbd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fomori Vault",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7527e053-ce28-4979-9cec-267e4e17e28d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Abolisher",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-01-23",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6ef413a-467a-4f54-a2c7-06baecd5f310",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tarnation Vista",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d55b6a43-8961-4bbb-bd4a-c6c7d29f7234",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Simulacrum Synthesizer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54a5deb8-7439-40b2-84bc-95dbde805d22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldwalker Helm",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-01",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "25214514-61db-4c0c-b472-98d8860b8617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Harvester of Misery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2026-04-24",
+    "setCode" : "pbig",
+    "setName" : "The Big Score Promos",
+    "variation" : false
+  }
+]

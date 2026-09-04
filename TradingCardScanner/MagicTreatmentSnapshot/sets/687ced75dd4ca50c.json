@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16b7620d-cd27-4ee3-b44d-b26d69307a56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Dreams",
+    "promoTypes" : [
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-12-09",
+    "setCode" : "p2hg",
+    "setName" : "Two-Headed Giant Tournament",
+    "variation" : false
+  }
+]

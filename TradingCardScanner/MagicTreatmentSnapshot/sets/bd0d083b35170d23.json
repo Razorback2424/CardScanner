@@ -1,0 +1,186 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a31d4312-08cd-4f1e-9d8f-72cbe4abb285",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d20ad1e6-d698-4a0a-8ed5-903e1d463004",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shapeshifter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05946b39-0b54-4f63-b521-4d5deb238541",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Rogue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "19cb2062-86f0-4ce3-b5fb-d3c310f36ec3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Assassin",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "447bd736-6b47-440c-86ed-db54bd655274",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Phobos",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "536a82d3-f5e2-46b7-969e-84683f937b38",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05402b51-8cf9-4f69-aa12-8a9d5981f8b1",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "The Capitoline Triad Emblem",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c76a6163-6fd9-4cdf-9b14-07f75c2f0fa1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "A Mysterious Creature",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-07-05",
+    "setCode" : "tacr",
+    "setName" : "Assassin's Creed Tokens",
+    "variation" : false
+  }
+]

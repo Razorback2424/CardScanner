@@ -1,0 +1,1152 @@
+[
+  {
+    "collectorNumber" : "10a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c2c7004-691b-4385-ad9b-60b93d474ebd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mesa Falcon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "04d2f5e2-fb95-48b0-b7bf-689d45fa8970",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mesa Falcon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "68224871-d4c2-4b43-9ab8-c0685588b035",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samite Alchemist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0545fc43-9c67-4ad4-b1d9-6b57b53321af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Samite Alchemist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fdcc821b-8125-4585-ba44-4bf8c1873fbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trade Caravan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e60ddb1e-e607-4080-849c-3e1a79052729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trade Caravan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c20a8ed9-db1e-4ce8-bfb3-92604a577df7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Maze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3d68a76-c843-4c67-90a7-2f79295798d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dark Maze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bce05870-74d3-43f1-92d0-dc1744c0138d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Albatross",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e26334fc-d8ee-4b8c-ac50-5a304fae6c60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Albatross",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "158caa84-da2e-4c4c-b24d-0c035c900e20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abbey Matron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd950ddc-28f4-47a5-8fc1-d6f70002fceb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abbey Matron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb8c1786-a2c1-43f9-9cef-8c4542833093",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Labyrinth Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0663c756-9db9-4298-8a6e-a1af935286a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Labyrinth Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d2cc591-3a81-468a-91a4-3c3aac83a21a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Lapse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c8b5df3-6153-470e-be9c-f38d3cf66081",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Lapse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5b742d75-860d-4b90-89cb-4292f18aed39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reef Pirates",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7c5e641-0276-4321-b486-ef8602a5f185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reef Pirates",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91170faf-3143-4fa8-88d6-eef72e1f5459",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aysen Bureaucrats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ca3fa70-50b3-4157-afda-fe58bf72ee16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aysen Bureaucrats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c6f0614-06dc-4bd2-b8b9-d951ae27db21",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cemetery Gate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a7b2cc1-cb0b-4cb8-963f-453a1d5b0e3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cemetery Gate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "547c10ea-8ace-4496-8b99-61863c0cec1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dry Spell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "997ea663-40a1-49b7-80f1-2e1febc1b6fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dry Spell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "096e41d6-79c3-463f-ae63-872c3d8729a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of the Unicorn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f05a2735-0f0d-46b5-9c2e-6c0ed8d8944d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feast of the Unicorn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c745c2c-4311-412d-a137-02bf6d106e46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir Bats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ddb981a-d9e3-4efe-a383-5c98ee3b0b84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir Bats",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2cb8cc6c-7e24-4629-a9ce-5f717f236c37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torture",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4c7e94a3-192f-483b-9a62-b94904ba3464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torture",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f711ea8-a73a-42da-8bf7-101ba588f203",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aliban's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d66e94b9-23f6-45a8-97bd-602e3aaa6711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aliban's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87e24788-cc7c-4f5d-84d8-dcb35e10626f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambush Party",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea200e93-e5bd-4777-b47e-e53849a89fe7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambush Party",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "882e3c69-dca7-4c0a-8f8c-984250e6a867",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anaba Bodyguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "56a54048-4640-499b-a1c3-192917c25169",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anaba Bodyguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c55d086a-d848-43bc-8c1e-de96d10877e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anaba Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4b456355-9f73-45c2-9554-6e6b20d949a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anaba Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4db9aa47-f42b-41e9-948c-8b012c3809fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Trader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e6d9318-30d6-473f-b576-cc249454440f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dwarven Trader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07159586-270e-4a3e-9b21-0d74cf3e49d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carapace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6d51d61e-c010-4b4e-a337-20ba5eb845e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Carapace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f4a595e-51f6-4e84-aa3a-5d9c18dc8b3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Folk of An-Havva",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4118c563-08a7-4654-973e-ab9c454f00f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Folk of An-Havva",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "085973eb-56cd-4bb5-aefd-bdf36f2d2a3e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hungry Mist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a486eab3-3a09-4bd5-ad97-8ec620434f7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hungry Mist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "30785867-32f7-46c9-94c2-775078e792ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shrink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9f4eaa1-3c2b-4f5d-8d4e-98d153899873",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shrink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83ce80dc-86d9-4613-af98-c385ca5d1cf4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willow Faerie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e777dfe-44ed-4e73-bf77-ef4c667092d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Willow Faerie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "1995-10-01",
+    "setCode" : "hml",
+    "setName" : "Homelands",
+    "variation" : false
+  }
+]

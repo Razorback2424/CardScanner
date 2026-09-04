@@ -1,0 +1,238 @@
+[
+  {
+    "collectorNumber" : "133★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0357e2ce-da68-46ff-a7e6-86df8a8ce91c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skarrg Goliath",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca2a714e-4254-4138-ad36-4ae11da17289",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consuming Aberration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f67f79ac-f28d-4244-994e-44cb8819db61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fathom Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05607d21-7613-4c28-b81f-995f36ab64f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Firemane Avenger",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e42ff7d-b6f9-4e98-9782-bed98c202253",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foundry Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3422b1bf-c5b6-4d1c-bcea-8e81b83b996e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rubblehulk",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9243a56-3551-454b-ab47-95d461b471b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treasury Thrull",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed0bdf8f-9086-4e30-8865-bb1eb55516f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zameck Guildmage",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd7305f2-6e91-4d30-961b-b74a830d6eb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightveil Specter",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2013-01-26",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50a38cb7-d663-4fca-a462-a0199694aee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Skirmisher",
+    "promoTypes" : [
+      "resale",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-01",
+    "setCode" : "pgtc",
+    "setName" : "Gatecrash Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "114a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ee60a99-762b-4f82-9a26-3d3b5682f46b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "897a79db-ec7a-450c-98ec-53337c564baa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21079a99-690a-459a-b803-19585d8cf5fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4e89152-99a3-45cf-a61a-5635568a0401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df2a9344-38b5-4def-bb6e-87d837e6da54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "18074937-9ad1-4d96-b4c0-96af06cedac4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e01bf216-3e4c-4373-8021-26a7110b5421",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "222dc48a-335d-48e2-ba3d-048ae4c5c925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "530d6fd5-57f2-497d-8144-b3ce64a6c5cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2424487-fffb-4af6-8f0f-b99ebf6360d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52263b78-9829-4778-b7a9-8c4a97d1c6df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fc0146c-3f85-4ed5-b37c-f1eeea04143d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "chr",
+    "setName" : "Chronicles",
+    "variation" : false
+  }
+]

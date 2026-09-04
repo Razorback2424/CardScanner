@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "d9f48118-243b-4780-98a3-389f59e1b5b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dominator Drone",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2015-08-28",
+    "setCode" : "ddp",
+    "setName" : "Duel Decks: Zendikar vs. Eldrazi",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "195b867e-41ca-48af-bbd2-5e2c97411752",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forerunner of Slaughter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2015-08-28",
+    "setCode" : "ddp",
+    "setName" : "Duel Decks: Zendikar vs. Eldrazi",
+    "variation" : false
+  }
+]

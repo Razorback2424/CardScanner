@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d41e8cc0-4e05-412b-8ea3-d5b5c45da601",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Remand",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df09746c-25fa-46d4-98ae-f264dbabfdb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serrated Arrows",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aba8afbf-0403-4d19-8602-d722ca9fa986",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isochron Scepter",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8baa9d1-b45d-4947-9eb6-7f580c83a2c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shrapnel Blast",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c53f2a4-105e-45b4-8bc0-a733f616c9b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tormod's Crypt",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d19ad62d-580e-4453-ba03-e59e660f0069",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eternal Witness",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22f00439-93b7-4ade-b8c9-9b7ca7e274fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tendrils of Agony",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8e362ed-4a3d-4b5e-848a-44c362095835",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pendelhaven",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1115170-10a4-4b77-b6e6-35f4a10141a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resurrection",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "000619be-f2b4-407d-a76c-7245d8cab7bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wall of Roots",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b94cad14-1324-4611-9024-3839d01a82d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Desert",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "17dddc25-5ce2-4c7f-a4fc-1e6c8f94af0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thirst for Knowledge",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-01-01",
+    "setCode" : "f08",
+    "setName" : "Friday Night Magic 2008",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3001822e-56ed-4090-b6c1-ca4e2e728bee",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tiny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "tmkc",
+    "setName" : "Murders at Karlov Manor Commander Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb2b4b69-c026-46fa-b41b-ad1e62d880f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Galea, Kindler of Hope",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "oafc",
+    "setName" : "Forgotten Realms Commander Display Commanders",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9a0f304-2cbd-4f7d-9219-976ad4811ae0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosper, Tome-Bound",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "oafc",
+    "setName" : "Forgotten Realms Commander Display Commanders",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87464c37-09cf-4fc7-ad71-9c35c3b7ff76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sefris of the Hidden Ways",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "oafc",
+    "setName" : "Forgotten Realms Commander Display Commanders",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "etched"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64d9699b-d90f-482f-89eb-f3d06af94997",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vrondiss, Rage of Ancients",
+    "promoTypes" : [
+      "thick"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-07-23",
+    "setCode" : "oafc",
+    "setName" : "Forgotten Realms Commander Display Commanders",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2c8730fb-59ca-4cf7-96a4-d6ba3f6f2fbe",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Avacyn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-08-04",
+    "setCode" : "tcmm",
+    "setName" : "Commander Masters Tokens",
+    "variation" : false
+  }
+]

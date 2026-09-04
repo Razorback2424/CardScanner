@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "100",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ae5a4cc-eb0f-4195-847f-d5464a086c82",
+    "language" : "sa",
+    "layout" : "normal",
+    "name" : "Fungal Shambler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2001-05-26",
+    "setCode" : "papc",
+    "setName" : "Apocalypse Promos",
+    "variation" : false
+  }
+]

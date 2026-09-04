@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25fca5a7-3b61-4e1e-83a3-a312c06fd922",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-06-14",
+    "setCode" : "tm3c",
+    "setName" : "Modern Horizons 3 Commander Tokens",
+    "variation" : false
+  }
+]

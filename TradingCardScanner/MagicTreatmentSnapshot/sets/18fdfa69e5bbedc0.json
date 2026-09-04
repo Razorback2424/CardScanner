@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57733946-5a1f-469d-a933-9507bdbf9d74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Memory Lapse",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "g99",
+    "setName" : "Judge Gift Cards 1999",
+    "variation" : false
+  }
+]

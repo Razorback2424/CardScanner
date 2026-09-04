@@ -1,0 +1,134 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4d067fb-f3c9-4fe0-8330-da5e566eae9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psychatog",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba9d4863-75f2-4894-8033-e4ffebe0547a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7c11fcd9-abad-47c8-ae47-55750bc1c9de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fireball",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96837aad-424c-4d25-9ec1-b3121e6ac9a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oxidize",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dea41eb7-5828-4735-bca1-0dbb0fda04e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mana Leak",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f55274a-54f1-4ab2-90ae-8634073baf5f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reciprocate",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2005-01-01",
+    "setCode" : "p05",
+    "setName" : "Magic Player Rewards 2005",
+    "variation" : false
+  }
+]

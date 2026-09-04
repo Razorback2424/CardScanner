@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "852da9d9-5c88-4375-a756-511c5df00053",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulamog, the Ceaseless Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e18d108f-4f5c-4453-84c7-901829aa56f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honden of Night's Reach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aabede8a-12f5-4b24-b4a4-a888702b20e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honden of Infinite Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "484b11b8-d420-4da6-996c-4b6316389c37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honden of Cleansing Fire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "84241b2e-fed0-4bf4-8a1c-4d1814c2eb8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honden of Life's Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4058b207-c698-4721-b6fc-f0bbedb2ded4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Akroma's Memorial",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "deab016b-b92e-4a7a-9dea-90aff4de0044",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Honden of Seeing Winds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-05-21",
+    "setCode" : "ha3",
+    "setName" : "Historic Anthology 3",
+    "variation" : false
+  }
+]

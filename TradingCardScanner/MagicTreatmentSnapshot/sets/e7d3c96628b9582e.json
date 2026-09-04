@@ -1,0 +1,201 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3f10f07-7cfe-4a6f-8de6-373e367a731b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "1996 World Champion",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-08-14",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a934c126-2db2-4468-8f70-b8f688d782da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shichifukujin Dragon",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1996-01-01",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d183cc80-a9ce-4290-bf65-f8202f508ac0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Proposal",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1993-11-01",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f62e8120-7aca-49c2-91b2-2622e27cf281",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Splendid Genesis",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1997-09-01",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c3490c9-7c41-4eaa-8987-d81f05e63122",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fraternal Exaltation",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-01-01",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "503cfef1-2b23-4130-834d-73f7e280a901",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Robot Chicken",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2010-02-21",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf56619f-3dbb-484d-8d9c-0412fc944067",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phoenix Heart",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-12-01",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "050e8f17-7b51-40a4-b76c-2f3b1eb4b389",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur the Enchanter",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-08-16",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29f9fa2f-71eb-4579-93a2-31423bd48596",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deb Thomas",
+    "promoTypes" : [
+      "event"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-05-10",
+    "setCode" : "pcel",
+    "setName" : "Celebration Cards",
+    "variation" : false
+  }
+]

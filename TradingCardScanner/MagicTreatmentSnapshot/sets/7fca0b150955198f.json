@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "131★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d8cfd4a-a001-4e87-a8db-31a61e3d7d27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of Kaldra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2004-05-22",
+    "setCode" : "p5dn",
+    "setName" : "Fifth Dawn Promos",
+    "variation" : false
+  }
+]

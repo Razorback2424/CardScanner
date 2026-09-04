@@ -1,0 +1,844 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "4fedf84e-55ca-4334-a2c1-6e991112bb68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Apothecary White",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1d39504f-09bb-4e05-a46c-daab87edf34a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knife",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "daaf464b-70bf-475b-8591-1504d530cd3f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rope",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e982bf8-382f-4987-bc39-28e1ce290340",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ballroom",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dc2a3de1-01ac-4425-8534-e5019e01f2cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Billiard Room",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8bab22c5-4742-4f2e-bda1-26c72b09cd9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conservatory",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1bf8dcb2-6fe7-4ab3-b290-fb427d116c74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dining Room",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ab3d0e50-630a-4ccc-aa79-1db912ea801e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4388ae8f-a2c4-4e0d-a6a1-0204ff3f469b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kitchen",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "442cf173-8042-40fa-98d6-6ca93caa3e03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Library",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4b197079-488d-47c6-a494-8baf36c48667",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lounge",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "58907d3b-9deb-4485-8ae2-c4e97c519212",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia of the Tenth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8778b33c-efab-4b65-b6e3-f0e3d1d8f937",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Senator Peacock",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6b35ede8-e882-46fd-9eda-9d6f64c73ea1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Passage",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "210d07ab-7608-4fda-adb6-562cf194192f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakdos, the Showstopper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c694bc39-3eae-4b40-8f85-34785f9e75f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Study",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "79d61bba-4404-4336-8290-51d1576f728d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani Discordant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "634f6f70-347e-436f-abf9-4a573472e2c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amzu, Swarm's Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a01e1e92-feb3-4880-bcf3-9e1ac90911b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blood Crypt",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5656d6f2-ca19-452d-870c-d5e7a3dc9432",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breeding Pool",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e221e498-d9b1-47f0-b4dd-05e1105ce9f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godless Shrine",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1316daf8-f9ac-4918-998e-d3780f7dd49f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallowed Fountain",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c92e23a-329e-41f9-b5ca-577050be0b7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overgrown Tomb",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "83893cda-546c-445e-b32c-c972354ccec2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sacred Foundry",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a8619bc1-04e8-4395-aff5-6ac5917fd4f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steam Vents",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3c54b71a-f4cb-4418-b886-5253151ad36a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stomping Ground",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "027df6ad-7677-4daf-b14d-0fb773b48263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple Garden",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "057dd01a-65f5-4cb1-995c-27d70b9ec8cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Watery Grave",
+    "promoTypes" : [
+      "boxtopper"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f1b47ed-e935-44a4-b654-a32c0bf5dd19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia, Foil to Conspiracy",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "df81568b-c66a-49c6-bd48-7df98ea00117",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mastermind Plum",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5435866-d48b-496a-ba07-438163b71ae8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lavinia, Foil to Conspiracy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "59813845-48c9-4af2-8beb-91d58aac09ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lonis, Genetics Expert",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "be77b98a-dd79-477c-8ab2-7ebf5637a89e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Headliner Scarlett",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "323e9430-b87c-4b02-9ade-c4c65343147b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emissary Green",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "c1fa8c23-5501-476f-9614-162d7bd95b23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Commander Mustard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0b3b16b8-2fc7-4bc5-99b1-6d50a503a943",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wrench",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf9cdbb5-559a-41cc-a89c-cb7458b23f83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Candlestick",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e450f3e6-a3ee-4e50-b939-c1e678f77c2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lead Pipe",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-02-23",
+    "setCode" : "clu",
+    "setName" : "Ravnica: Clue Edition",
+    "variation" : false
+  }
+]

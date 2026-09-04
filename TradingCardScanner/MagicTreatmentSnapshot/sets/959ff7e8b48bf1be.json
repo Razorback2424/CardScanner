@@ -1,0 +1,140 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0e9b20a-fcc7-4506-995e-be80199c1202",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Consider",
+    "promoTypes" : [
+      "gameday",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-05",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "83e3dff5-4ffc-49e3-9b40-b9c6e1c864ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fateful Absence",
+    "promoTypes" : [
+      "gameday",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-05",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b3c5734c-b32f-419e-82e6-f8d45b7201b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atsushi, the Blazing Sky",
+    "promoTypes" : [
+      "gameday",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-03-05",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01ba455b-9cd4-4ba2-9bbf-d83b84dcc891",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftfoot Boots",
+    "promoTypes" : [
+      "release",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "212b39d9-1090-4fec-ab1a-62bb8330eaa2",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Dismember",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-05",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aeb5eb6f-adb1-4535-abf0-d4791151bab3",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Psychosis Crawler",
+    "promoTypes" : [
+      "commanderparty",
+      "wizardsplaynetwork"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-03-05",
+    "setCode" : "pw22",
+    "setName" : "Wizards Play Network 2022",
+    "variation" : false
+  }
+]

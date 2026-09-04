@@ -1,0 +1,1537 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "fullart",
+      "inverted",
+      "legendary"
+    ],
+    "id" : "03a7e79f-625a-49ac-9cb1-e1fe5f51f5a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Canny Acquisitor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9591647-bad3-4015-90d1-1646a9eb4d14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Octavia, Living Thesis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1be3ed47-072e-481a-b3d9-dc232ac4b24f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Talrand, Sky Summoner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f1ff9e5-3d69-43a9-965c-2d87951cfd2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fain, the Broker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "135",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbbb3aef-af1f-4b77-b7d6-64cfd706a9d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gonti, Lord of Luxury",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "137",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc7714b3-bcbd-4a63-b517-53166e3facb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamber, the Plunderer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b4b3c1a-671c-422d-a98c-7d750760ca46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mari, the Killing Quill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "140",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fab14e57-8e49-49fd-ad3f-ac669318bb14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Girl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1e62de3b-6a41-43e3-93ad-9a1e3894be3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nashi, Moon Sage's Scion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4821d865-2a46-4611-ab93-1a9fdde08302",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rankle, Master of Pranks",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60a457e2-6cc7-47f0-9a24-df5459395358",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Captain Lannery Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5fc99c9d-66f5-4858-91f7-425d4248a0b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grenzo, Havoc Raiser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ca2b008e-e144-45b1-9bc7-eb49e03a8a8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Laurine, the Diversion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "188",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ee4fda8-07cd-4091-8850-a6925080b464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cazur, Ruthless Stalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "55e6c31b-f9e9-4e42-a875-985d99300d9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olivia, Opulent Outlaw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba7c2249-878b-428a-8670-005c6fbcb516",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Titania, Protector of Argoth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "devoid"
+    ],
+    "id" : "b3ccc905-bd43-4925-8eb9-fb9abcc81e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Void Attendant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0adb0c2-d45f-4c51-a4df-05f75c83e46a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Breena, the Demagogue",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "22d6a4c9-4bdd-4e70-8481-95260e6aa7ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Edric, Spymaster of Trest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "37dd84b4-0b8d-4303-8405-45e2c144f691",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hazezon, Shaper of Sand",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "080585c6-d946-4435-954a-0ada936dc3f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaza, Roil Chaser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "998b86f3-e53f-4ebb-b111-6f14577fded1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Mimeoplasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "86c5c337-d25f-4c3e-9762-09ed0c2d36d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Parun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a0a9d3f-cd75-419b-840f-88b468f71f4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Omnath, Locus of Rage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0fdae05f-7bdc-45fb-b9b9-e5ec3766f965",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Marchesa",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c66b452b-9c49-4c58-9966-6bafbfa34c36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ukkima, Stalking Shadow",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f34cd711-55b2-4802-9878-d22314c0cc9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veyran, Voice of Duality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2a8a7696-b5d9-4378-9d5c-2c9007e4df63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stella Lee, Wild Card",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "18df72be-07d2-4412-b36d-a45119763db3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yuma, Proud Protector",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e2b33794-d124-4c12-ad5a-efef24a0851b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eris, Roar of the Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "5058b049-98fb-4f20-ab0c-a50377582789",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felix Five-Boots",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "e7a99c7b-93f6-4596-836e-28e443c4481e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirri, Talented Sprout",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7b09ab3a-344c-42d0-9f71-e8374214cda1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vihaan, Goldwaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "816ee5e5-c833-437b-b031-1abd72269149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel of Indemnity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "813d0297-fa9b-43e7-94b6-9c63402d9fee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Sell-Sword",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5dd3a550-de5c-4f4f-a55f-07c84d8c45f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sand Scout",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "62cd82da-badb-420b-8ea8-681db86afbbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "We Ride at Dawn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cf91adbb-08cd-4c37-8777-9883ce09a222",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arcane Heist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1adce281-4d5a-44d2-8cfa-25f860b015ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eris, Roar of the Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4ac1b6e1-f606-46a4-8f0e-efbbabe88185",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forger's Foundry",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3a24979d-a090-4153-9461-ac1aa1f69b74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lock and Load",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "bff6761e-8353-4725-95ed-3d8400de98ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smirking Spelljacker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c7299c7c-25a2-449c-ba09-0d5e95e97c55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thunderclap Drake",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c295dea3-2d15-4f78-9ccb-d96334cd7ecb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Back in Town",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d6b9865a-c11a-4e7d-a7f4-02f20e819981",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Charred Graverobber",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "93c60cd8-00c9-4bbd-9c12-c111fae64149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Discreet Retreat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8a69bd18-495f-4948-a3c9-b718bafa6750",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartless Conscription",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ba1d8a7-2249-4c74-adb7-d13a9b347571",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Orochi Soul-Reaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2b8189ad-6b00-49b3-be39-b98cf6bfa2a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieving Varmint",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6800e935-d327-464c-ab88-7c0193827da3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Felix Five-Boots",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cb2b9ee7-2a42-48cd-b7a1-661e082b6483",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cataclysmic Prospecting",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "86d1c74c-90d9-451e-bfbb-18b60e185308",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackling Spellslinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5e80936a-e2b2-4bc7-ba8d-7aecd822a6eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dead Before Sunrise",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6eed4fed-e3e9-43fb-970f-424fc72600d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elemental Eruption",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0ae6bfbf-b453-4138-9589-92ef6343b9ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Embrace the Unknown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "42a46e37-ada5-4067-9144-97c4e050bc56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyretic Charge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "30e02250-a6e5-4bcc-a9c1-3634d39c0c83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smoldering Stagecoach",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ffce5bcd-79a8-41ba-9235-4e17f57f1928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dune Chanter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4d33ea4-c31c-426d-9659-1fa7bdd430fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rumbleweed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8532635e-a5f3-465d-9aac-54e1ba25f3d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Savvy Trader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "22cc9c49-54d7-4989-8d7d-651b17b84b4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kirri, Talented Sprout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ad03209f-568a-40f5-8470-a083080e6831",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tower Winder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3df6b46d-1079-4c32-b22c-ecd21132209a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vengeful Regrowth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d9e3ebb0-0294-4f50-b65e-359fb3e7ab53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Graywater's Fixer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c1645ffb-1679-4b56-864f-92f1915ad829",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bounty Board",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a245a978-8072-4b4b-94d4-237050ba4526",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream-Thief's Bandana",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "48759d1e-5963-4942-8093-cb14e5dbae97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Dowser",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fd87c805-0903-4ff0-aa6a-e57551f7b512",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cactus Preserve",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b549690-72eb-4244-bb66-996a2bd1027e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vihaan, Goldwaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "otc",
+    "setName" : "Outlaws of Thunder Junction Commander",
+    "variation" : false
+  }
+]

@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "387e7f85-cdd0-42ad-9205-1932fa0c8230",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xiahou Dun, the One-Eyed",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7393a74a-5bf4-468f-a40e-3ad1b99bb701",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flusterstorm",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02b642ff-eb7d-4c10-9d5b-477af2e52e59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Hierarch",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9743a8f4-8eea-49c1-b533-b2aa40152260",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karmic Guide",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ff4de87-f871-4edc-9abb-b91053195bac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sneak Attack",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da940567-0585-45c5-89b4-fbdaf39192ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karakas",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d22437d0-b6e1-4175-b4bb-c2d67141ac84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Light and Shadow",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a10140e7-90a2-49fa-b47e-61214e35f9b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Command Tower",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f27302e5-70eb-4c7a-a758-f37a6af98e12",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Centaur",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2012-01-01",
+    "setCode" : "j12",
+    "setName" : "Judge Gift Cards 2012",
+    "variation" : false
+  }
+]

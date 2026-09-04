@@ -1,0 +1,2959 @@
+[
+  {
+    "collectorNumber" : "100s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "26f48567-ca76-47c4-915c-d1495489c0e0",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Phyrexian Scriptures",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "da97eb9c-8768-42d1-a80e-c88bccc4c9b3",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Rite of Belzenlok",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d4dcf0b6-7fcd-4e02-bdec-5987c9faa568",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Torgaar, Famine Incarnate",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85e248df-b431-4738-a692-0b5704fc75b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urgoros, the Empty One",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "caf4328e-f694-46e0-9663-1070fda101b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whisper, Blood Liturgist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09b135c7-b6e7-4772-bd7c-e03716ea03f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yargle, Glutton of Urborg",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3774222c-8a24-4002-ad78-fb28f4cd13a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yawgmoth's Vile Offering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3c3b0d9d-843b-4eae-861e-554b13f6807e",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The First Eruption",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6fdba005-b798-4ac3-a847-685393458c3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Chainwhirler",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "08ca01f2-7706-4cf4-b111-0dade88653b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Chainwhirler",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ea2b6f0-8c40-4dae-9846-c2b0152b6e4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "243bd39f-ad96-449f-8f77-e204356ae972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haphazard Bombardment",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "132s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "007f1787-0d40-4fbd-b774-df891a0e5620",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya Ballard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d4033a1-bc36-4336-a64c-d579203f719f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya's Immolating Inferno",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7defe0ab-181a-4288-9274-bfb48cfd3b7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daring Archaeologist",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "422eaf21-2d64-4957-b33d-9e4b99f568e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege-Gang Commander",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "143s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "31633ee1-d13d-4abf-bff4-20baa26f3b89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege-Gang Commander",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f6061d61-c410-48db-a101-9882ae26c31f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4ca2097-0a82-40e9-8687-7d939383ff19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, the Immortal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "478fb341-d177-4372-a7ce-c4bc67bfbbb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Two-Headed Giant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9593d82-3b42-4b5b-a233-30d09a82855e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valduk, Keeper of the Flame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ae6e078-2539-4e90-8172-220df1119e4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verix Bladewing",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fbd8f98d-6b33-44c6-983a-e84ad712e039",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grunn, the Lonely King",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25b93f07-53bc-4fe7-8ac9-8df01dfd6398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kamahl's Druidic Vow",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27a21d19-5631-43f8-817d-51ccb5aa0f05",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Elves",
+    "promoTypes" : [
+      "openhouse",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9f8e0d6e-6dbe-41d4-a251-c54e7d5cf2ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evra, Halcyon Witness",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60a879e0-e2c7-46bd-8319-abbc5c44248a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marwyn, the Nurturer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "172s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "722b130d-1766-4052-9e0c-2a6f0c5fcbb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marwyn, the Nurturer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a0d245f0-7e26-492a-95e4-0ea665226986",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Mending of Dominaria",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3196a94b-5fd1-46b6-931e-b0f53b6f3112",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Multani, Yavimaya's Avatar",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c86a925-fb0e-479e-b11e-eb7cd1d30c63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steel Leaf Champion",
+    "promoTypes" : [
+      "setpromo",
+      "storechampionship"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0edb24fe-5299-4594-b060-d0a610ba2436",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steel Leaf Champion",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ea03857-5fa8-45ed-9522-043a2ce8c911",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Steel Leaf Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "183s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0651efa-75a5-41d3-a5b9-9c5109d6ce44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Awakening",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf5c7436-870f-41ff-ba7e-4b3e0840ea13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Territorial Allosaurus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "187s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69fee412-edc3-4edb-ab82-e8fbfe24c9c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdant Force",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf18f4fb-77d1-4f39-a961-50a318cd74e8",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "Fall of the Thran",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2622a06f-decc-4b8e-911c-ff106051bc36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adeliz, the Cinder Wind",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf9d5d4f-3ad3-45d2-b826-b3c0ef24e234",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arvad the Cursed",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eec96d0e-f2b4-47f2-ada0-873ff33bcce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aryel, Knight of Windgrace",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e685bf21-5ee2-431c-9685-c60b1114ab08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Darigaaz Reincarnated",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c98ba8f-7380-4d9a-ba2c-db4b64c78b2d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, the Bloodflame",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75d57c2c-147f-4d78-b990-bca9d7b697a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Warlord Radha",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "133aef24-e71b-42c0-806d-ac89d78e6ef6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hallar, the Firefletcher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21001560-a222-452f-8006-ba656c10a9e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Weatherlight Captain",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99d07bba-cb5b-4d1f-bab5-8a6e49cd0bdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, Archmage Eternal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9d6933d6-e652-4562-ac9b-580533a081ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Muldrotha, the Gravetide",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6f5ba46d-9178-41c8-b877-484c3d746109",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Scion of Urza",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "652ed9e7-b188-4903-b6a5-227dd66bcb6f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Scion of Urza",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "67efde09-2d25-4f00-9ac0-c4b0e52cd56f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oath of Teferi",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8a58c19e-fd85-428f-9a76-f81c4c52c9c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primevals' Glorious Rebirth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ef5c2489-a8fd-4ec6-accf-fb96776ccb44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff Capashen, Ship's Mage",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "650e498b-0214-4ad1-b46d-b7ba1b36774c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Disciple of Gix",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "2c86aae8-08bb-4acc-b39b-10e5b2ac40d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "297bfdee-54b3-4102-bb2b-e1088cb5d70e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Sisay's Legacy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b373739b-95e8-4142-aa4b-1590a7791b4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slimefoot, the Stowaway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7be895ac-5a45-4195-99df-386197d6b106",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Benthic Druid",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5704318-8902-4f0b-91e3-179ad88db0a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Hero of Dominaria",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fdefab69-4c4e-4e1a-baa0-3f7210f2f0d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tiana, Ship's Caretaker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fd4fbb8a-0709-426b-8f9a-f2608494e5fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cca496a4-c650-46e4-8159-37f9385eea43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "628fe051-a7ec-444f-9741-ad0df7a89ebf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forebear's Blade",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c346d936-727c-4930-a166-1d7df386e164",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forebear's Blade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3beaa74-3538-4ccf-9087-cbef37ce1cfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Lotus",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0fd21fac-91eb-47cc-bedc-06ab38c396ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Lotus",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a0fd50b-ccde-4098-bd37-feb6038c53a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of the Host",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5aa30590-943e-4442-814a-20a524ab5bb2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of the Host",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8614579a-0a82-4329-8066-2d9cdf87d691",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "History of Benalia",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c771770e-d917-4073-9afa-02953e49c11d",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "History of Benalia",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ae1b89f-5377-4f48-b6aa-2ddbf2f55aaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Self-Replicator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "08827428-b258-405e-8055-462e61fc155d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Amber",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a97dfa1c-8f9a-4699-9575-867e9de622d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Temporal Gateway",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1bf72eef-363c-4317-827f-18d8edc231e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Traxos, Scourge of Kroog",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9e41242c-cd23-40ae-84dc-afdb6a3a3a52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weatherlight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "309119c4-acf7-4f95-abf9-707b4da02301",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Stronghold",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8f2f6f2-7bce-4ede-8973-8b495a5dd825",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabal Stronghold",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2ee1dd21-6126-4156-b1c1-c51e39d8d39b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clifftop Retreat",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67bce815-4307-4ece-ad35-8d42d6341dde",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clifftop Retreat",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51f1c677-581e-469f-860f-a6079128049a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinterland Harbor",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e79aeaac-3381-49b8-b6e8-ead423b2ec62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinterland Harbor",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "087a3535-7897-4db9-a9b5-35447cde8d9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isolated Chapel",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d28a0493-04aa-4842-ad04-fc451d5ff531",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isolated Chapel",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0575f714-8efa-430e-80ed-c5a23bc9665a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sulfur Falls",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42892615-27a1-42d1-af71-cd9a3eb064dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sulfur Falls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ac7b9979-7bf6-4e06-8f50-2228b586690c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Cemetery",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef03c77e-9ba6-474d-9dff-753ba598729f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Cemetery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d1851b2-c291-41ac-8985-e72988de1dbe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zhalfirin Void",
+    "promoTypes" : [
+      "league",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4def5e17-f695-4c4b-84fb-42bc8880a1f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kwende, Pride of Femeref",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "afd49f70-88f4-40eb-8d58-27ca92d7db2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4cbe8af0-c66a-4fbf-be94-ffb8de7f0d45",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyra Dawnbringer",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed2e3b59-ddbe-4e82-ad67-dd21302a31cb",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d439c406-5822-47fe-96d2-6fb9ed828aea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shalai, Voice of Plenty",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c9d5618a-d69a-40b0-9453-48697b118293",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shalai, Voice of Plenty",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "19d10bdc-197d-44fd-83ca-5726465c912d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teshar, Ancestor's Apostle",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d4ccd7ff-525a-485f-8c29-17a3a963f4ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urza's Ruinous Blast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b2e978f-56c6-4854-95e8-c23518cd4172",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Antiquities War",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b92e93e2-eb9d-4964-ac68-0a79c8e9fdfa",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Antiquities War",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "72168ec2-e520-4c14-b94d-c5ff03179498",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baird, Steward of Argive",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3248e0c2-fe6b-4db9-8f61-be94ab68c8da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn's Temporal Sundering",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b5037df-c089-4dcd-ae40-cc10a0c0fbaa",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Mirari Conjecture",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9efb7b9a-a288-49fb-b89b-c3b21154f759",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naban, Dean of Iteration",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d078cd5a-2ea5-4949-9867-51ffcc4d8faf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naru Meha, Master Wizard",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c255e9f7-9fd7-437a-be14-e35957a89168",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Opt",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5fad7465-30ab-41b8-a50b-0f09156ffb56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Precognition Field",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "404fb67f-b9b8-4d61-8266-f5ab0a85f9ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slinn Voda, the Rising Deep",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "435e16cf-8a1d-434f-b0b2-24f50868b5f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempest Djinn",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9ef01d2d-63dc-40b1-a6d6-b03be9064996",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tempest Djinn",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2dda9fa0-46b3-4e42-95d9-5d1d2de51925",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tetsuko Umezawa, Fugitive",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fca09e2-5744-4adc-82c8-72ba3ae48a8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Benalish Marshal",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cff0dc85-704a-4da2-9d4e-cf422cd71196",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Benalish Marshal",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c0caa74-3ffa-499a-80f2-03f7d0e9d821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahid, Djinn of the Lamp",
+    "promoTypes" : [
+      "draftweekend",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7a814912-fb2a-4a30-b8fd-3ac7910a0e53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zahid, Djinn of the Lamp",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a41150b2-44a6-4e80-8b32-afc6ea744fb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cast Down",
+    "promoTypes" : [
+      "fnm",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "56df8fa8-a9a1-45f1-82b4-5b22d1b0a2f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonlord Belzenlok",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdc00740-cef6-4019-85a2-ea02cf9509f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dread Shade",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4db6011-26e8-46d8-bf04-790a2988ce1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Josu Vess, Lich Knight",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "954bfe1e-e4b3-4f3b-be8e-8eb6c69e4d86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kazarov, Sengir Pureblood",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ffb7b2d-55ea-4a6b-a40c-be707ce51729",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lich's Mastery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-04-27",
+    "setCode" : "pdom",
+    "setName" : "Dominaria Promos",
+    "variation" : false
+  }
+]

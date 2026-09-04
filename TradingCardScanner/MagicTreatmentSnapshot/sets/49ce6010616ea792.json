@@ -1,0 +1,3997 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51dbd7e4-51f9-4995-8cb1-78ae302cdbbb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Novice Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0a6e81c8-7118-4c54-93b2-f1e8134446d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Sharran Cleric",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e9f4bd3-cd02-45bd-baa3-c8eb4eea73fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Cleric of Graves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aaa5398c-bf87-4788-8901-23fd3f03fa80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Cleric of Twilight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0f312f26-3715-4a5d-874a-2ccfd3346027",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Cleric of War",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8426b3ef-ece4-43bc-b341-c2b1eb260aaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Cleric of Trickery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41221cb3-5cb8-4f34-9f2b-3adff592e052",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowheart, Cleric of Order",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b965f765-35a8-471b-b9e1-d7d539b9ae1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Nightsinger's Disciple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4731154-ca3c-4bd9-8698-44284b3426e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Disciple of Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "88d1871c-5cc8-4ab6-8284-e884cc56554d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Disciple of Strength",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "106227c3-2226-4be7-9fc6-59d676c677e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Disciple of Violence",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a453d3e-3329-4d11-985e-83ec48065fa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Disciple of Arcana",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09e86aad-5f99-404b-b66f-39e791c3a53f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Viconia, Disciple of Rebirth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "09044a22-8b27-4402-bf58-04ad9ef898a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Citadel Agent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "35c08f45-b0fb-4899-b737-89016bf5f508",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Agent of Tyranny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "36efde69-b544-4fe4-b336-7a4ae66b9ffd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Agent of Balance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d932fe6d-b362-4225-9d75-40f4ae670de7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Agent of Destruction",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "79a37d51-bfd4-44a0-8a71-8a641ce384c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Agent of Progress",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60e885d1-36ac-40b0-86e7-3d6cb8fe73d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ambergris, Agent of Law",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c0dcebc8-d992-4902-94bc-5623d4d78d36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Fanatical Priestess",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e6c9922d-3625-430f-a529-d0a3fc51f3c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Brutal Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be529434-df25-45e5-8134-7cb2c449bd8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Bestial Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e364a80b-1ea7-4021-b647-be86eb181c10",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Furious Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a013239e-c3cf-478c-b60e-4c64b810a7d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Devious Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40356753-eb95-4310-b778-5eceb9810b0b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gut, Zealous Fanatic",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8baf28ee-22d3-4bfe-84ee-ec3d2ad34179",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Raging Tiefling",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f9897d6-04f0-4b2e-97c0-1aa8bbb7d127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Tiefling Punisher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "502099d2-6471-4581-8171-fa9014f142fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Tiefling Guardian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5328c835-f988-4943-a911-146723e04bd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Tiefling Berserker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1373d9c9-3b5a-4bd7-afe5-a3b780dd26f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Tiefling Spellrager",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "27506729-da1b-4e2c-9511-c8c70c90bdce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karlach, Tiefling Zealot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8d50ed97-3580-4808-9f91-4e2cd596552e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll, Pact-Bound Duelist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "de0ebe17-2d7a-4764-9862-689ac2815321",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll of the Fiend Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "90356fd8-c16b-432a-a215-5051b40d4850",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll of the Fey Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a152383d-f98d-496f-8221-d9cbf161e431",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll of the Blade Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0d69e24-5406-4914-86e7-ddad528b9f18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll of the Elder Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b499fb56-f014-4480-ad1d-09d7a8790c4a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wyll of the Celestial Pact",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c26f4277-8807-4c15-8680-172aa3f0d984",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Harper Emissary",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ab5f191-9c2c-4a6a-bda7-58dd818ad88a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Ruthless Harper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "25629956-02b4-41b1-b80b-b28c84015214",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Merciful Harper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c03f1096-740b-40ce-bb3b-534bff9ac852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Stirring Harper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "232d6a0b-1026-484f-ba48-f45920cb4f32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Insightful Harper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6b0dd028-0107-4c49-854f-72bde6890add",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaheira, Heroic Harper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "acaeef14-b606-42a4-8966-636b45e01b72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Moon Druid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98756620-8f76-42f5-a83b-e9f300c7d202",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wand of Orcus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c33634f8-deb3-4dc3-a9d7-932916e6d33b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Scorpion Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2fec673f-3dc6-4626-916d-f2a959791295",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Bear Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4501c6a1-37b8-4009-9c9b-69f0661ca730",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Wolf Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df1f6be7-9aa0-42c5-b656-9f46e33af706",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Crocodile Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e9a11811-ed74-4a5f-b80a-e74fb31e7e7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lukamina, Hawk Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "60af8bda-e92f-400d-aedf-00a534184e20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7e965f4-38f0-4ee6-a01c-d094f0ea0f41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, Black Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d3a776df-de88-42c3-a7fd-babe9f925fd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, Green Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a0be170-3734-4de1-8748-5bfd02dbb073",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, Red Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5c2fd980-65d8-461c-a836-c32df3afebb4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, Blue Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4eb04331-bd83-4543-a9b8-9212f95822d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skanos, White Dragon Vassal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eb78e3ad-7fc1-4478-8c32-1bc7c3dbe70a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Bear Comrade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4be9aaf7-9d96-4287-8ac1-0100ec23bf8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Fearsome Bear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40611bda-6655-4903-a4af-35513bd2ae80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Majestic Bear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c67edbe9-ee9f-41a7-b479-943392fbfbc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Ardent Bear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3b882768-d93c-48a9-9923-0c3047f73513",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Subtle Bear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5c5c11f-1d9e-48ba-be8b-b518aec31280",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wilson, Urbane Bear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9122efb8-c9f2-46e3-8cb0-2917a60c99d3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Death Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "783a7e1a-2ff2-4c0f-bfcc-f08ffcb07f0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Nature Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2e5dab8-3a04-4c14-815a-df2de7e81a57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Tempest Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "053606f1-9abd-4b74-a858-d702afcc491d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Knowledge Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "647a26b0-931c-4751-8bd1-1da6a18f42f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klement, Life Acolyte",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e6a54aff-1282-4881-b10f-c1a811a20a00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Githyanki Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a35114cd-94a6-4a43-ace6-de509b1ab784",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alaundo the Seer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c993df3-9ecf-471b-b27f-1204f6892dd9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astarion, the Decadent",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "232",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "884565bb-ed33-4372-8c81-487c2ee2f73c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baba Lysaga, Night Witch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "233",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f1f4b0c-d014-4550-b213-4b82cf637509",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Catti-brie of Mithral Hall",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7aef62d5-7af3-4df5-8bd4-40442bded9d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorion, Wise Mentor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ba9aeb8-2a2c-4057-9648-277dce7032ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jan Jansen, Chaos Crafter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4dd1ea5-6587-44af-abe8-7651fb70f0b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kagha, Shadow Archdruid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "237",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b13143d7-cdc0-4703-a1b4-d4563f03b964",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalain, Reclusive Painter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "238",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "291690bd-840a-4520-9e3f-a2fd12d16a79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Korlessa, Scale Singer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bd295b4a-0b9b-43d3-bc85-ee894e3eb42f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krydle of Baldur's Gate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "240",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0112998-d67d-4c3b-8814-079fc86a3416",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lozhan, Dragons' Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "241",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "740ae8f7-d7bc-4280-b536-7f3b80ec00da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazzy, Truesword Paladin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3a855c5e-f272-4597-bac5-a42ddc493140",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miirym, Sentinel Wyrm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2654cf2b-d200-44f7-9b4a-21babfc35bb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nalia de'Arnise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "245",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47734f39-04fb-4786-8d80-a21a1830ab49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neera, Wild Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "246",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "593b7480-0215-485b-90ca-e95ca0bd555d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oji, the Exquisite Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "247",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eecb1a63-26e5-45e9-9b2f-2789d66f12f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosper, Tome-Bound",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "248",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c848e32d-4de9-4800-9365-3f6449cb3fa8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raggadragga, Goreguts Boss",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "249",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a82a5d8-e940-4bae-9d78-0485bd6c427e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raphael, Fiendish Savior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "250",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "279d5c9f-4bfb-472c-a418-0b981c180767",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrakkus the Butcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "251",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "630aa833-d4a2-4912-aee6-f28c9c486d77",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trelasarra, Moon Dancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "64728dfb-540c-4440-be7f-e9cc09830c95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baldur's Gate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "448d47a4-3b5c-4994-b9ea-56f5c48e8e0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Callous Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89d8db65-55fd-463a-96c6-53941bef2e0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Primal Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee954e4b-0870-4978-af7c-a25667301f8c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Wrathful Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "71d93fbd-9c6f-4abb-852c-af49f0a4abfe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Illithid Thrall",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fb57b2c7-d519-49e2-9604-706c0436ac3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lae'zel, Blessed Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b833fa8-515b-47fa-868e-ee854a51d384",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Forgetful Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b84d1c57-f7b9-4d98-a155-6c3ad7fe9b9d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vladimir and Godfrey",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "669ffaf7-8b6d-46b4-a790-1715918e6e29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calim, Djinn Emperor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "abe0e5d1-efd5-4b1e-b0d1-3279c5b07c1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Vengeful Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3f025777-5aff-4b2f-ada2-bfe2c0ce0a35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Wild Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "220484e0-29fb-4f7a-abf1-a22381ac5d3b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Inspiring Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b7bc9dde-489f-4406-bd17-a11173af8b78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Curious Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfeb2ffb-8690-45b9-a1cf-5dc00534cbea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lulu, Helpful Hollyphant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bbac57a-c5ce-4221-93b8-4fa5efe7220a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Monk of Selûne",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "17857be0-5192-45b6-a893-2675cde25937",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Hourglass Coven",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96aa9530-5404-4890-8bd0-40b39393afdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Shadow Monk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e26b4c00-cc85-41a2-8864-4688bef175aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Sylvan Monk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "154ad44b-0a15-4564-890a-12517d81948f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Warrior Monk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b544ed7-0df1-4fa0-b62c-d4b4a79bc121",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Dragon Monk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3698db0-1578-4d22-bd80-beca66e86766",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rasaad, Radiant Monk",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "85746149-1119-4238-a8ca-3cc6873cf6e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Rogue Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "89c0227a-df80-47d1-9400-5f1fb6b71a00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kardum, Patron of Flames",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7b9912d-f21d-4442-8878-16743fbc0fc0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Cheerful Assassin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f7057698-98bc-4eff-822c-7a0fc6e91036",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Cheerful Scout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9167bcc-e0cd-4320-911f-3fa33fd561da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Cheerful Swashbuckler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e01b93ba-77f2-44d8-8eea-00b39c1fd7f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Cheerful Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96a934fb-3a10-4d1c-984a-02df58e0fb2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alora, Cheerful Mastermind",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "476144ef-fda4-4b93-b4ed-5acee54a1b65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Conduit of the Arcane",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a2b767ec-3e0f-473b-b81d-e3f912c464e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oyaminartok, Polar Werebear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ce7df96-096c-4ee1-9a0c-1972c26e7be7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Abyssal Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5325ea46-0323-4aef-9b5b-791da2d6f28a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Primeval Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a5af138b-5ca3-4427-b58d-e701b6894752",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Storm Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c15ce9e3-133d-4001-9687-d699a3333f28",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Temporal Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ce2f7090-10a9-401a-a125-c7fb805b518c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gale, Holy Conduit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6835928a-4483-4324-8cae-a5b477649453",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Trickster Friend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8360840b-3edc-4d44-b604-61ae8c99e885",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jon Irenicus, the Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98209130-a72f-4946-a1d4-3a437cd9a0b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liara of the Flaming Fist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9d3cc82d-06e8-4c0e-bc01-babbf3f9f844",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Minthara of the Absolute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c379cb69-a57e-4450-a93a-32e1105f330a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ulder Ravengard, Marshal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5275f73e-a5ac-48ff-816b-934764dd359e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Occult Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7a92caf8-557c-4988-b1e2-ff06a05773e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Wise Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa233b9e-d4db-4cda-b540-788263841234",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Chaotic Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dde0bced-8348-4f65-a18b-ed58ac656599",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Wily Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dfbe16dc-4add-413f-9448-630fad34cad2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Imoen, Honorable Trickster",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ff0f80c-97fc-44e5-ae78-71ba0720550c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Eager Scholar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2e9d1559-d4c5-4159-8728-08d7c3ea1297",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Scholar of Mortality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c1c5f151-205e-4adc-a18c-37387cf2e26e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Scholar of Creation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "df6b9c9e-94cf-45db-98a8-940e85117c2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Scholar of Elements",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "38e3a033-f512-47ab-8965-7c2f3bdb302b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Scholar of Prophecy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ceda0f03-eb50-4a4a-98a2-854ee9ab74ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vhal, Scholar of Tactics",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c41156c8-ddd1-4492-ab0f-02c4a7423181",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok the Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "907",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d5db42a4-ad35-4026-a41e-d6f1b86f9f8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nezahal, Primal Tide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "915",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "37a6abd0-d250-4b5e-89d4-4284fa7d4514",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinging Lionfish",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "53989d3d-ebde-41b3-ac83-013bfa5fb50e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok, Deadly Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9g",
+    "collectorNumberSuffix" : "g",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "be03bbfb-daa4-4213-8a9c-31253abf7d15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok, Mighty Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9r",
+    "collectorNumberSuffix" : "r",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "682967a2-0f16-460c-8ad8-cb79bf500e23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok, Ferocious Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9u",
+    "collectorNumberSuffix" : "u",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fc3c6c19-b384-4b37-9846-32a654e9bbdb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok, Deceitful Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9w",
+    "collectorNumberSuffix" : "w",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d687863-5e33-4401-9da2-d573ada490aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sarevok, Divine Usurper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-104",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "69d47930-c13f-47bd-a0a6-c61bb51e4607",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Steadfast Unicorn",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-117",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e372f2d-92dd-487e-bb69-3dce1110dac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Dragonborn Looter",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-120",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d31de7f-b21f-4c31-89a9-f27875f7aee1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Goggles of Night",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-125",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "50f79bde-10eb-467d-8d56-d4d9a2e15d9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Kenku Artificer",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-127",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cea79097-b56a-4cbf-9c80-2dfe0c67368b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Lapis Orb of Dragonkind",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-128",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c75b084-8077-4576-b2f3-3ce47545f899",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Pseudodragon Familiar",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-136",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d162b232-ae71-42f5-a5da-cc7e74515db4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-You Come to a River",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-138",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "087c13b7-1641-4902-b595-f730068e33cc",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "A-Young Blue Dragon // A-Sand Augury",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-143",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a7df52e-fa91-4c2b-a465-47274bf7e6aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Baleful Beholder",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-154",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a361530-24eb-43df-b731-106788504973",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Eyes of the Beholder",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-160",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e3137e38-e509-4d3f-9e20-44271a7fdf47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Guildsworn Prowler",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-163",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8096dbc-5568-4509-b2c8-93c84411f2dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Manticore",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-166",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bada6831-55b9-499e-afb5-9d0232aece13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Sepulcher Ghoul",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-168",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7cc1570e-f212-41cc-99cb-8366ccf2faea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Sigil of Myrkul",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-177",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e11103a3-95dc-4453-a3f3-975fcff5fba0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Carnelian Orb of Dragonkind",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-197",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b9a6c085-80d5-4bdf-ba4f-b1bed9fa10c5",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "A-Young Red Dragon // A-Bathe in Gold",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-203",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0790fb0e-1db0-4edc-a287-8b1684310a67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Circle of the Land Druid",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-208",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1e9f765-374b-4006-a161-a19409d42d34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Druidic Ritual",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-209",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5cbda07-53a0-4526-9955-36f902073cf1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Earthquake Dragon",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-210",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7d0e041-ec44-4d6c-9a35-173340f1bed7",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "A-Emerald Dragon // A-Dissonant Wave",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-215",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ece9da7-7116-4b59-a37c-6f295204970a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Jade Orb of Dragonkind",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-223",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49341a2f-18c8-4f89-a83f-9676cdaed886",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Split the Spoils",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-239",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75269794-9938-4f30-ab0e-4c10f4307631",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Krydle of Baldur's Gate",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-243",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2e28dd8-77f0-40b1-ad03-0d5671d41f0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Minsc & Boo, Timeless Heroes",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75a58618-51ef-4394-aa51-b78aee69c8e1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Lantern of Revealing",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-262",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5078488d-517d-4926-b4f5-fe078f9bcd36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Navigation Orb",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-85",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "024c82c5-611e-48bd-ad56-9d31e4adda0e",
+    "language" : "en",
+    "layout" : "adventure",
+    "name" : "A-Blessed Hippogriff // A-Tyr's Blessing",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-08-11",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-87",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba4aa596-253a-4b9b-95c9-106af42f0d5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Dawnbringer Cleric",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-07-07",
+    "setCode" : "hbg",
+    "setName" : "Alchemy Horizons: Baldur's Gate",
+    "variation" : false
+  }
+]

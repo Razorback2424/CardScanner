@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "28a3f78c-f7c1-4257-95cc-09d10022abba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silent Specter",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-09-28",
+    "setCode" : "pons",
+    "setName" : "Onslaught Promos",
+    "variation" : false
+  }
+]

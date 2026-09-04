@@ -1,0 +1,1542 @@
+[
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fd62f1de-853e-4fc3-9137-8f419c5972f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Astral Winds",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "04ad66f3-92ef-4f97-b9d7-62a48cc073b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory Bearers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c4abc34b-809d-440a-8f20-acc720b76356",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Godsend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d3505174-b157-4baa-8e59-8dff774f70d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golden-Tail Disciple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d2e132e-9698-4bf4-927e-994015ec0410",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mikaeus, the Lunarch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8885ac9f-5dfd-4a3b-847e-90252a2ef631",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nykthos Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "231",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "550c6402-5a9b-4318-9883-8ffacd61eba1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx-Fleece Ram",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "99c27e8e-1a9b-4175-a7fb-c8224bc08e68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirited Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9f1a7077-ea1f-4b8a-970a-027daf09e0bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunblade Samurai",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "20ecadef-8aa3-4bca-8744-adbc809083c3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brigone, Soldier of Meletis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "431258f5-705e-411d-b396-6992bc84d816",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psemilla, Meletian Poet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3cf1e9ab-343d-462c-a71e-e12b101aa0b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Qala, Ajani's Pridemate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "670760bf-1fed-4e99-91ae-8dac8ade16dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Moon-Circuit Hacker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "aad65c60-b9e8-4a8f-92e8-3dff63232102",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thurid, Mare of Destiny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a44d388d-251f-4927-a393-c1f56f567248",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naiad of Hidden Coves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f239682a-2b81-4f62-a474-60e8db343200",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urdnan, Dromoka Warrior",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8810b817-7349-468b-bcca-ba0843bbc852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cynette, Jelly Drover",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "070e0081-b0fe-4417-b943-d0496e3b8cd7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Neerdiv, Devious Diver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cd8f628e-d49e-4ea8-824b-9b79282e04a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinging Lionfish",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f8a6bfe-6033-4f6b-ab45-6b553f8b51a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plagon, Lord of the Beach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4077e58-a497-4c8f-8e58-919c3204ad52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63e806ee-3c32-48bf-97a1-160a74765e76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pol Jamaar, Illusionist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8deeb2b0-9bcb-439c-870a-8f46cf6fd995",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wavebreak Hippocamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65b815a1-98d8-47b9-8d6b-b30e0a5f087c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taeko, the Patient Avalanche",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a0867be-a861-4fb4-b8ff-cb2966193755",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aphelia, Viper Whisperer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f9c9c0be-8c69-45e5-bdcb-e62ddb05e532",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evereth, Viceroy of Plunder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ee5e47c2-7648-4218-b42c-ed9650e12914",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fumulus, the Infestation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "743f4b46-c04d-4431-9510-bc84726d7fd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nazar, the Velvet Fang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02cf5079-9da8-470d-8eea-00d6aac68d04",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ozox, the Clattering King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8bf88010-799d-4217-8e79-308bec7ad2ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rev, Tithe Extractor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "295658c4-7ab8-473d-abe1-0b6303b6850f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anep, Vizier of Hazoret",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e793fae6-ca9a-49e7-b90d-fe7e9c72de0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cleon, Merry Champion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "226fc101-abcc-4ed4-8c0b-3677dc8d8f0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "General Kreat, the Boltbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "482",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0bfb808d-46a7-4711-b237-f7f5321ea142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rodolf Duskbringer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c80a88ae-f2f2-426a-88f3-76b5d598c25f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gornog, the Red Reaper",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ba70366-b6ae-423a-a8d8-29d2b8afd939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivora, Insatiable Heir",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01789cb2-a93d-4197-a40a-612423635125",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braulios of Pheres Band",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a3dfd71-9ec0-4842-b99d-c1833679f0c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dionus, Elvish Archdruid",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "00841818-d46a-4865-a41c-daf627d10d1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hurska Sweet-Tooth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d29839f0-afe0-4caa-9628-655738aecce4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shroofus Sproutsire",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c442742-902c-49ae-813e-38a21ff8a78f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Slinza, the Spiked Stampede",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b794170-4ffd-4628-ba5a-b9293bb364dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sutina, Speaker of the Tajuru",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21a0e852-7855-4a6b-8eca-191a8e83023a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adeline, Resplendent Cathar",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "572",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0c7d8714-a0ef-4ae8-909b-60f3319c646c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Krenko, Tin Street Kingpin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f2fd4bf5-7ed6-4a90-b0ba-ba886342859a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brimaz, King of Oreskos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "21b78c55-20cf-4a65-b50b-2f8093465646",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha Capashen, Paragon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "724c26fb-6908-47e3-bc81-6c369b043d3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giada, Font of Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ea4a20e1-4d45-46ee-a1ea-206743b98acc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naban, Dean of Iteration",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3aae2ff2-5bd3-4f8f-9726-c81035c16137",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Padeem, Consul of Innovation",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a1091e0e-a179-4241-8be0-ea92d86f4c08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sai, Master Thopterist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0ab6308-f54a-4196-a2ce-b18ea08d6fb6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Elenora, the Discerning",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f5f1809c-fadb-4974-ae94-292e5d97afb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thryx, the Sudden Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "61c1b191-e471-479b-96a8-6d0325965767",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Venser, Shaper Savant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7231c1b0-0352-4dfd-9f29-143ae6d49b76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorex, the Tombshell",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a129db8-e2ba-4a40-b218-e43d3b9e59f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Isareth the Awakener",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "687",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4c92e444-2a33-4e67-a8be-8cf5d564e589",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Marwyn, the Nurturer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "505ffef6-511b-4eca-85e1-195a56004611",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taborax, Hope's Demise",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d68ce39b-0847-4132-b3b5-8bc25f2e7be9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vilis, Broker of Blood",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "708",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e81eddc2-8311-4618-849d-3717cdf83681",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rishkar, Peema Renegade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5deb74ff-15df-4894-b074-9a98731bd2c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bcc67204-59dc-4cd9-8809-e85fba85fd7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brothers Yamazaki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8e44f75c-adf0-410c-96f8-ac3ec1148da2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brothers Yamazaki",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "737",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Verdeloth the Ancient",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c7db2091-2888-46d4-8f4a-49f55dc80cd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lathliss, Dragon Queen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c101b5a-30f8-4496-994a-de017cb294b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rionya, Fire Dancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d582b933-adbe-4706-a3c9-c19b6c52fd72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zada, Hedron Grinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3584c119-8302-40ed-8949-1a8de4b15e0d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghalta, Primal Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a4f53a56-eb8e-44cd-ab13-8ac068052c68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kodama of the West Tree",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "790377ad-2b1b-48b7-8ca1-49d56a907162",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mowu, Loyal Companion",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d6094b0-72a1-4f1b-9067-b1c97238d005",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Averna, the Chaos Bloom",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-11-15",
+    "setCode" : "j25",
+    "setName" : "Foundations Jumpstart",
+    "variation" : false
+  }
+]

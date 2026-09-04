@@ -1,0 +1,77 @@
+[
+  {
+    "collectorNumber" : "198p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d554c5c-33b7-4605-b7ab-14f92892ed4d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wheel of Fate",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "ptsr",
+    "setName" : "Time Spiral Remastered Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8fb0c910-0059-42bc-9ab1-384005653a15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swarmyard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "ptsr",
+    "setName" : "Time Spiral Remastered Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48f06104-ee08-4935-a1d9-08f36542705a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angel's Grace",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2023-09-08",
+    "setCode" : "ptsr",
+    "setName" : "Time Spiral Remastered Promos",
+    "variation" : false
+  }
+]

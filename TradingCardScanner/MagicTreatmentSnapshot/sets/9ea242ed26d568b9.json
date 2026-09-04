@@ -1,0 +1,201 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36c71043-1c11-4377-ab33-41d19927143a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Power Word Kill",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95be5b75-5cef-45e2-8a51-1418e302f13b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyclave Apparition",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfc831bf-be32-42e4-b266-285b685abf90",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "All-Seeing Arbiter",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5d02afc8-0192-4e7d-9d10-60a4434ed8db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Touch the Spirit Realm",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d70fc472-a4b4-426e-ab86-87d1a7e52623",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Workshop Warchief",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "beadc5fe-1c55-4707-a3c8-2ba318cc8846",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Devastator",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "29c63c32-ec2d-49fa-9c81-ab9e1abc8494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Recruitment Officer",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bcad78f4-2e16-4817-8ede-b8d1fd3945f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "538c4a9d-5733-4abd-a7a1-1514c8d33100",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surge Engine",
+    "promoTypes" : [
+      "gameday"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-04-08",
+    "setCode" : "gdy",
+    "setName" : "Game Day Promos",
+    "variation" : false
+  }
+]

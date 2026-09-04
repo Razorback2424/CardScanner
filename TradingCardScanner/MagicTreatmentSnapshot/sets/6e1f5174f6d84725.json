@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3b4675c4-c8e7-4f11-9a51-7b9630753339",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noose Constrictor",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05934d59-7e98-4fff-8ccb-70cd1a61c6fd",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Vampire // Treasure",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21f5880d-6272-4ba8-bdf8-f9a7e54a3336",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Dinosaur // Treasure",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "46bf5e2b-869f-480e-ac37-1bdb40a92f8c",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Pirate // Treasure",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d4f96980-c40a-4ec0-adc5-116a8eb07fcb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fortune's Favor",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae93a313-c265-435f-b745-7b7a7ed6208e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Incendiary Flow",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "256f0b63-ff50-4b4b-9598-d76c4aa9ee4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Servo Exhibition",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74843584-d6b1-4ee6-bedb-999ab0a42bb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unlicensed Disintegration",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a4a9c5ae-c6f2-4189-bf0e-2bd698caff0c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Hub",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9307ffe1-a24c-4a33-8948-a88cc1c7dc32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reverse Engineer",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86d1119d-7585-4699-8649-e3743c02d7a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fatal Push",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d33e2f5-c2f5-4e69-924f-c8c9ed1ae1a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renegade Rallier",
+    "promoTypes" : [
+      "fnm",
+      "tourney"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-01-01",
+    "setCode" : "f17",
+    "setName" : "Friday Night Magic 2017",
+    "variation" : false
+  }
+]

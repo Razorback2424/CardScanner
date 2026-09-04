@@ -1,0 +1,222 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acabfe00-5224-485e-a6eb-c4b9fdf690f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arena Rector",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "927596bc-4c9f-404a-97f2-89db53826f6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eye of Ugin",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e940fd9f-f1f5-455e-b141-b70dde6cb89d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enlightened Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cda8633-2661-4fa7-81b0-3ae535619a3c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellseeker",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fdbe0cf7-38e2-4b2e-8fcb-c08f160caf19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "531ad3ed-0657-4203-affd-33915ba363ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Infernal Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa613b38-988c-48b5-99a0-5a11acfc76e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gamble",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "96d8b133-6431-4dd8-bb41-60f0e2cb67d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Birthing Pod",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "011a086d-f832-4e07-939b-cb453425dda8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sylvan Tutor",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3bd56d8b-fcb9-42fb-b2fd-65b7fa852378",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sterling Grove",
+    "promoTypes" : [
+      "judgegift"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "j20",
+    "setName" : "Judge Gift Cards 2020",
+    "variation" : false
+  }
+]

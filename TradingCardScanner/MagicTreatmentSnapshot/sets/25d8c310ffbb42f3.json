@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2175200f-3ed4-4b39-ac76-a7d25967aa8a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Voja Fenstalker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "tmkm",
+    "setName" : "Murders at Karlov Manor Tokens",
+    "variation" : false
+  }
+]

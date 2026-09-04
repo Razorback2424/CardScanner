@@ -1,0 +1,662 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a27ecc9b-1c6b-4ba9-8614-924bce2d98b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrutiny of the Guildpact",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f8da1cd-8773-4907-bf64-1d34bd4c3325",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurking Spinecrawler",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "020857bc-f016-4d91-aa2d-2f84d7f2c905",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perforator Crocodile",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6010d06b-33b6-4631-9b3f-192d8c6b96e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Snarlfang Vermin",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "277801e8-f464-4712-bf71-586330af1a62",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Market Melee",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cdb9c966-4752-4c9a-b37a-fbe972a5bee1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Concert Kaboomist",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f4e750e-481f-487f-b89b-3a1a6ba0e3bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Construction Arsonist",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e6dcb06-c660-4821-aa21-bc33ff7ac4f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shove Aside",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "461aa394-6632-424a-b5bd-f724048da3b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guildpact Greenwalker",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "980b1e19-6427-44ae-81d9-ec7df875bbab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rampaging Ursaguana",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84d0bf8f-cb2d-4909-a140-2556e0c79ab0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Relics of the Rubblebelt",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "14211720-b724-451e-9b49-949a5f9e962a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sleuth Instructor",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f1ca1221-e6d7-46b9-a1ba-8bc5969c6765",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sproutwatch Dryad",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76ea4245-ca1a-45c2-a393-fe3f2c7bd2e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woodland Investigation",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa288e07-2fa4-4cf4-8bdd-d92a66827382",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara, Voice of the Conclave",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "32e5ddf3-d132-408e-a082-6a3fcf19bfc8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Furgul, Quag Nurturer",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "310ff920-31a7-4534-a356-18ff1495de88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izzet Polarizer",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1537d789-536c-4da4-81e0-45628dc17aa2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Juggle the Performance",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7db0acbc-1208-4c03-a9d9-2a480a228ef4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Roalesk, Prime Specimen",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d534958b-8264-4b7e-a5fd-1b5c082289a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scour the Scene",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7b838cfc-e8fd-4258-aa5f-afbde461c37c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajic, Legion's Valor",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82023dae-2457-4abb-8899-b980412cb2cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thought-String Analyst",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0331d326-36b3-47fd-b6bd-c87a241f1995",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spotlight Falcon",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4aadbe15-8d91-4c61-bdee-5341a1794335",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Veko, Death's Doorkeeper",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebf67000-a68a-4305-a6f7-9ed75bbddf9b",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Lost Witness",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f1cde8b-e73e-4cca-973c-93f3936e70e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emporium Thopterist",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01e84fa1-17d2-4068-96a6-0bed3c1e8fb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Excogitator Sphinx",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72d958b7-8596-409b-bf3c-de0ca613c48e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mapping the Maze",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2744ac79-7543-464f-a4ac-7627276a8b89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ominous Lockbox",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b2d29d6-1f2c-451c-a00b-73c1776849a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cackling Observer",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-03-05",
+    "setCode" : "ymkm",
+    "setName" : "Alchemy: Murders at Karlov Manor",
+    "variation" : false
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34db5e62-4792-4207-b008-7d62bae683a7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Marit Lage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2023-01-13",
+    "setCode" : "tdmr",
+    "setName" : "Dominaria Remastered Tokens",
+    "variation" : false
+  }
+]

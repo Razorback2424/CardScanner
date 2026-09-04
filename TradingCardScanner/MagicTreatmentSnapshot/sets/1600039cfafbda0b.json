@@ -1,0 +1,876 @@
+[
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "a32ce90d-9138-4aca-aa3c-a558dd16fad8",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Elusive Tormentor // Insidious Mist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "cf2ad186-4d85-4628-ae84-3c58c88d34cb",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Heir of Falkenrath // Heir to the Night",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "e326d5f4-63e1-45fa-8c48-6fdc05709c52",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kindly Stranger // Demon-Possessed Witch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "fe9f85e8-1e4c-4478-8344-71fae357b694",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Breakneck Rider // Neck Breaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "149",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "f43f5f02-1b29-4e75-a6af-378dcc88c3df",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Convicted Killer // Branded Howler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "158",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "6ab67098-d3d5-4799-ae03-c734244f370e",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Gatstaf Arsonists // Gatstaf Ravagers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "159",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "4570117d-c04b-4bdc-b804-21d49154721b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Geier Reach Bandit // Vildin-Pack Alpha",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "33e542ce-1106-489d-9563-bd62886b8ed3",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Kessig Forgemaster // Flameheart Werewolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "c0243401-e3ae-41c6-a3a0-9cd4b330c200",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Skin Invasion // Skin Shedder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "44deb8cf-b9d1-4a14-aeaf-e62cf3dc9ef2",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Village Messenger // Moonrise Intruder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "d41b07c8-f0c8-4654-bcc2-00c785c8c628",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Autumnal Gloom // Ancient of the Equinox",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "e1915d93-c7dd-4bb7-bd5c-63a359a02b97",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Duskwatch Recruiter // Krallenhorde Howler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "d5e84d80-b5a6-4cd1-9f31-f6ca46bf2c0c",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hermit of the Natterknolls // Lone Wolf of the Natterknolls",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "7e137566-5033-48e8-88ba-65e3821b3cec",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hanweir Militia Captain // Westvale Cult Leader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "14529bed-9632-4d58-8edc-c5a1359f6604",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Hinterland Logger // Timber Shredder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "23f3fa96-6276-463e-8033-a64c8f06c933",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Lambholt Pacifist // Lambholt Butcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "94c5f7fe-9ca6-4040-bf7c-062ab22e6a02",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Sage of Ancient Lore // Werewolf of Ancient Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "6c200ef1-ea08-48d4-ab50-77940a0e08c3",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Solitary Hunter // One of the Pack",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "243",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "b37aa12c-a6b3-4cf8-b5a4-0a999ff12d02",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Arlinn Kord // Arlinn, Embraced by the Moon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "0d200f98-3377-46a3-9197-3cbd95d03dbf",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Harvest Hand // Scrounged Scythe",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "5cc2ac21-d31f-4a0d-956a-dabb6e1f3b5a",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Neglected Heirloom // Ashmouth Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265†a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45242fd6-6e36-468c-b9ef-140fc969d343",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : true,
+    "variationOf" : "b474378c-5fa8-418f-8d76-23e78003ed18"
+  },
+  {
+    "collectorNumber" : "265†b",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eaae5c06-b8da-4f74-9ee6-dbcba6d638ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : true,
+    "variationOf" : "b474378c-5fa8-418f-8d76-23e78003ed18"
+  },
+  {
+    "collectorNumber" : "265†c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "761f4323-525f-440f-b7bd-3363f2180971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : true,
+    "variationOf" : "b474378c-5fa8-418f-8d76-23e78003ed18"
+  },
+  {
+    "collectorNumber" : "265†d",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "240c4920-09a8-452a-8fa3-784f3d00d434",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : true,
+    "variationOf" : "b474378c-5fa8-418f-8d76-23e78003ed18"
+  },
+  {
+    "collectorNumber" : "265†e",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f732c92e-8e0a-4c77-a3c0-d9b9384e363f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tamiyo's Journal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : true,
+    "variationOf" : "b474378c-5fa8-418f-8d76-23e78003ed18"
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "f2687683-2986-4e22-97d9-7820c870475b",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thraben Gargoyle // Stonewing Antagonizer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "c1f53d7a-9dad-46e8-b686-cd1362867445",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Westvale Abbey // Ormendahl, Profane Prince",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "7ac2a5aa-71c3-482b-9431-5f0b228cf64d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Pious Evangel // Wayward Disciple",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "d238d324-8c88-43ca-b203-133830d29447",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Town Gossipmonger // Incited Rabble",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "b5c9649e-9ae5-4926-bf08-71ba23aa37f1",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Aberrant Researcher // Perfected Form",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "ae155ee2-008f-4dc6-82bf-476be7baa224",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Archangel Avacyn // Avacyn, the Purifier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "440f9f10-6999-4cff-ab98-8aed77813b07",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Daring Sleuth // Bearer of Overwhelming Truths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "1001e708-e4f9-456a-8b9d-3421a2a3833d",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Avacynian Missionaries // Lunarch Inquisitors",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "e630fc56-a96f-4abf-be8d-f0f40d5a9edf",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Startled Awake // Persistent Nightmare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "359d1b13-6156-43b0-a9a7-6bfff36c1a91",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Thing in the Ice // Awoken Horror",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "4dea7c9f-ce66-447b-9f1b-d9bca5806153",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Uninvited Geist // Unimpeded Trespasser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "sunmoondfc"
+    ],
+    "id" : "8093f8b0-5d50-48ca-b616-e92535a47138",
+    "language" : "en",
+    "layout" : "transform",
+    "name" : "Accursed Witch // Infectious Curse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2016-04-08",
+    "setCode" : "soi",
+    "setName" : "Shadows over Innistrad",
+    "variation" : false
+  }
+]

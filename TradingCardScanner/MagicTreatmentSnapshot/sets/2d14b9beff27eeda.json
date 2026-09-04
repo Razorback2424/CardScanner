@@ -1,0 +1,5042 @@
+[
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6e761fb2-ae4f-4d72-a142-f7e9bd681303",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Raven Man",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d67be074-cdd4-41d9-ac89-0a0456c4e4b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3cd907ed-9c68-4bd6-af92-6244909fdf8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Dubious Monarch",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "845e5663-2959-44ae-b4c6-d6ea41f01d6e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, Benalia's Hope",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1f8bf98-8911-4c86-978a-427377700544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aron, Benalia's Ruin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "194",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "40f3a0ba-b917-488b-adbf-60a0d3c58a56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astor, Bearer of Blades",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1f643d78-d8d8-4645-9357-a68ebd0d3517",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baird, Argivian Recruiter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "959ba62e-bb3a-49ad-8b1b-e787e413e5d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balmor, Battlemage Captain",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "197",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a25855f-abfc-482d-a36b-088b023a7df6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bortuk Bonerattle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "198",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1c3f0ffe-cf51-4c30-8cd5-9e3c7e92c019",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elas il-Kor, Sadistic Pilgrim",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f7e780e-fbc5-4dc0-b5c7-efcb8645c7c6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ertai Resurrected",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "294c5f08-08e7-458f-8838-ff321dc5d9f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, Bloodfist of Keld",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "201",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d94c15b7-6c8f-45a6-8734-975e3e3b790c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivy, Gleeful Spellthief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd911900-1f5f-4420-96b8-1e4fe67e59f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Ageless Innovator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e4b1aa1e-b4e3-4346-8937-76b312501c70",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, the Unifier",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "10eca3b1-f35a-4984-bfc0-818e619b1ece",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "King Darien XLVIII",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "205",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1a6bb0c2-1e3c-48cd-8f10-49f047e0514c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lagomos, Hand of Hatred",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3eedd979-783d-4721-92de-965b77c20576",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meria, Scholar of Antiquity",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5da59e8f-cbe5-4c14-a5a9-28d56048dc23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nael, Avizoa Aeronaut",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9017ee70-761b-434e-bc44-705cf14336fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najal, the Storm Runner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "adcd556d-351f-4faf-9456-0e47def69a69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nemata, Primeval Warden",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b44b4e8b-7675-4c6a-a16a-92f8b6a0259f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Allenal of Ruadach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2cec235e-7ce0-4947-b221-a555b2c865bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cc0cba4c-d9f0-421f-acf4-ab1adcd59c80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "213",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9315812d-03e8-4eb4-a693-e7adf281f7fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratadrabik of Urborg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac148784-b7b6-4aae-bffb-a4cf09f56971",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rith, Liberated Primeval",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "215",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a47573a-601e-4738-acef-16118289f939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rivaz of the Claw",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cc8331ab-adc9-45c6-9728-66afc72d901c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3fa49711-473d-4774-99b8-2bfbabc6b735",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rulik Mons, Warren Chief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7261c443-8d27-4d85-8027-2a0271b85e07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Purifying Blade",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3027347d-5fd3-47cd-83d4-8c834e00794c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol'Kanar the Tainted",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e775a2e6-e701-4cb8-8c0b-718d3508f6b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Windgrace",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "07177a8e-5ded-4084-a22f-2d8fe933de7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stenn, Paranoid Partisan",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d446cb9-519a-4889-b057-029db9400021",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Steward of Tides",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c873c5b-61f6-49b9-8993-2d5e9823de62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tori D'Avenant, Fury Rider",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c839d302-bf85-4a30-a49a-dbbd48695b5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tura Kennerüd, Skyknight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dd3fc36c-682b-4352-a66f-eddd2baf0bf6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uurg, Spawn of Turg",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "807c7812-c108-45a7-a5b2-08cc693bc500",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vohar, Vodalian Desecrator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "227",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "65c903e3-d622-415e-9144-a5b2f3f7b9ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zar Ojanen, Scion of Efrava",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4d987435-2403-4e0f-b19d-693da923ba50",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur, Eternal Schemer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "230",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f8611a53-e54e-4625-8e28-03511f1550e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golden Argosy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "234",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "673a8676-0a93-4ca3-a786-63f138027e8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn's Sylex",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "239",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f566387-3342-4325-ba4c-eee7626072ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Timeless Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "242",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "976fd9d9-a9b5-40b6-ad38-4b3b263e1ebc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weatherlight Compleated",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1d9609d8-4dcf-4b70-b947-a4d62275f34a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, Benalia's Hope",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f2559ff7-a97c-40c6-942f-36998eafb050",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "bd9f4cca-90fa-4f53-8243-09d99823add3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Raven Man",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fc5be7df-16e0-494c-b960-19fd64d57b35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0f39ecc9-0a4c-47e7-b8e6-7e00d4cb61e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Dubious Monarch",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "861f36b9-9f43-4ace-8e60-4ba671b2655a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aron, Benalia's Ruin",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "87ab2cad-ac4c-4b04-8724-c824b45db4d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astor, Bearer of Blades",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6b7acac3-cb41-46bb-ae5e-98dc60620e53",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baird, Argivian Recruiter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "25e3ba0f-0879-4eea-9911-14b874f039b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balmor, Battlemage Captain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "6f342de7-f179-4894-96e4-56339d32f801",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bortuk Bonerattle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "552fbde6-515d-457e-81c9-d67157eaaf37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elas il-Kor, Sadistic Pilgrim",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b2185d26-05b7-4e8b-ab0a-4f9d1541d4c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ertai Resurrected",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "18b8721c-371b-454c-8ccd-5e57779fc4d0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, Bloodfist of Keld",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "45cba0d0-ca77-47c0-8f77-7beedb6c557b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivy, Gleeful Spellthief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "538eb568-23e7-49c6-855a-543a65fdae46",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Ageless Innovator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "416429e0-4b7e-43d1-8126-16ab679b6e39",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, the Unifier",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b47698a3-f7eb-42e4-8246-b657f487a5df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "King Darien XLVIII",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "93dd512f-9f77-4f54-9081-f14ae0aa8c7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lagomos, Hand of Hatred",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "378b99b7-9b7b-4596-b41e-641ff4630d99",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meria, Scholar of Antiquity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d0f81814-2870-4aab-9c50-bad78aad4e36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nael, Avizoa Aeronaut",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "edf2ec7b-7cac-49aa-8fab-f9280548573b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najal, the Storm Runner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "706bc2aa-bc63-42b0-8735-486f80aaee17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nemata, Primeval Warden",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d4101cf9-4e05-414a-843e-b2fda0db917c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Allenal of Ruadach",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "86a42355-ead5-48b9-813a-1e9be9a45747",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3d1ed3b1-9c7d-44ff-8f0a-2a7a08313863",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "50ebcd93-672f-404a-8e4d-28713e9e611b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratadrabik of Urborg",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ca9d804a-09ea-4339-aa89-0ff2a5f5d4eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rith, Liberated Primeval",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "fc6e2336-5bb6-4ea8-9c0a-961777176464",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rivaz of the Claw",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "af90bf02-5732-4666-8dfd-50370e478711",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "be69f87e-3fbb-4b37-953f-623443573fca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rulik Mons, Warren Chief",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9a8d5e4c-bc67-47a1-85d9-cf862a38edf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Purifying Blade",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3a2ea06b-dd6f-472b-85db-e8474deee8c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol'Kanar the Tainted",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f92b23d2-d18a-41f9-9f1e-6809e7e02342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Windgrace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4f73077b-ab99-4008-b49f-0cac4754f2ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stenn, Paranoid Partisan",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "74c3f2dd-8745-4e2e-b01c-6b692c6ff8af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Steward of Tides",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "676bc62e-f685-45cb-bcdd-d8adbe9c4ccb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tori D'Avenant, Fury Rider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d710ba7b-b0c9-4372-8f6e-1938bd114ac4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tura Kennerüd, Skyknight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "216b4613-9b2a-472b-bc9a-49ad6c9b9f03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uurg, Spawn of Turg",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a573c574-754a-4994-881c-ca5177727775",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vohar, Vodalian Desecrator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a15e0c8b-3609-4a59-8e9b-bf2ce93d775f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zar Ojanen, Scion of Efrava",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "10bf4693-668e-4498-a652-a9d5eb77f9b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur, Eternal Schemer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "26070716-4860-4137-8316-083baef1faad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Danitha, Benalia's Hope",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1e20d56c-20df-4fe9-a329-df5768a180af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "eee62bdd-3e29-442b-9ce4-1c66d12a5877",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Raven Man",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a9494e5f-bfd2-45b0-b324-fd1407d9b644",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "897a6d17-d48d-409c-abf7-40b0526eae7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squee, Dubious Monarch",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9f83110c-d6d3-4824-8acd-96b068b7f0a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aron, Benalia's Ruin",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "14e390bd-a1ad-4abe-b6a2-ab9ce8059193",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astor, Bearer of Blades",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "14ba3078-c06e-41d1-a574-1a2ff09c63d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baird, Argivian Recruiter",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "07452998-e70a-4c15-9b09-6f33aa0d933d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balmor, Battlemage Captain",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "b01f1f1f-e0b9-4640-ab5e-c2af4bf9df51",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bortuk Bonerattle",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4e03e38f-cfbf-4e59-8639-d9f015714058",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elas il-Kor, Sadistic Pilgrim",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2c46a2ca-27fd-44d4-80d0-7c83ed0a564e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ertai Resurrected",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a7ab0eb2-1c6d-4117-b620-81ba324dd4c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garna, Bloodfist of Keld",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9187f4ea-27f2-4f94-b783-6992087d64a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivy, Gleeful Spellthief",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "63c24b7f-256b-4759-8627-a07c5cde52ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jhoira, Ageless Innovator",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "9fb2313a-e002-4b37-9ecb-20bfe1799157",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jodah, the Unifier",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f19b1257-2766-45d3-abc9-97f0d85d7010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "King Darien XLVIII",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f175746b-e98e-448c-b3ca-bcbcdf2817cf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lagomos, Hand of Hatred",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "962d4f9f-3a32-4bab-baa4-baf8102a8787",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meria, Scholar of Antiquity",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "5cd2081c-d53b-4a5e-976b-0b28465c0be8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nael, Avizoa Aeronaut",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "686ec9c3-9549-42e6-8cb5-d00f8cae0f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Najal, the Storm Runner",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "739f7a27-93a6-4ebf-bc3c-e3caf49fce5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nemata, Primeval Warden",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "82d66aab-d99c-46de-ba72-b6b5fa0847c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Queen Allenal of Ruadach",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0336da59-a51a-4b23-965c-06532d1f3a23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Coalition Warlord",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "ecf938c0-b32f-4780-b628-457874eae638",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raff, Weatherlight Stalwart",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "acce0c81-1c30-4971-ae6f-a9c6a4dd017d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ratadrabik of Urborg",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a5370c07-5158-4cd8-87d2-433f4b1f6e02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rith, Liberated Primeval",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0a8218a4-1861-4ac6-9e36-4d6ff4199f55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rivaz of the Claw",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "02ed0d3c-def9-4ba5-98d4-5bf35d711ec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rona, Sheoldred's Faithful",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f0c79f75-0389-4514-b86f-5ee353965c02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rulik Mons, Warren Chief",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "8b9b31f4-600c-4be6-a6db-b991447527ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shanna, Purifying Blade",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "0bccbe5e-4076-429d-96e4-a6dd14adcfa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol'Kanar the Tainted",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4a9ce534-4bd4-4ba1-b875-7f74dd5f712c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul of Windgrace",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1cb5bd07-b456-4f0e-9e39-2c4a89b32327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stenn, Paranoid Partisan",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "3296c85f-01f6-42b4-96d6-0c576617dbd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tatyova, Steward of Tides",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "80bd8ea0-05be-4db1-8f7b-bccbb484d552",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tori D'Avenant, Fury Rider",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "efaef59b-639c-4f97-addd-a32a523dd961",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tura Kennerüd, Skyknight",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "d98cc9a0-8c7e-435d-b041-63717e57ce1f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uurg, Spawn of Turg",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2124e308-091c-4a0d-8631-e3106636b59b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vohar, Vodalian Desecrator",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "a9afd7c2-fe9b-4ccd-bd55-a0f91c52fd29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zar Ojanen, Scion of Efrava",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "95979e43-7f1d-4c06-8f28-5ea378633c14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zur, Eternal Schemer",
+    "promoTypes" : [
+      "boosterfun",
+      "textured"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "95ebbb6d-04f8-42ec-a1b7-6ca67994b8d3",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "7e2af6c1-fdf1-4d04-bd74-f07da939110a",
+    "language" : "ph",
+    "layout" : "normal",
+    "name" : "Ajani, Sleeper Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ea352f02-de67-4da6-8049-d3031c0877ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Sleeper Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "493341c3-1f59-4d7e-b852-1449a2333be9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karn, Living Legacy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a18b8768-4126-4636-990e-21b4308740dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana of the Veil",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e4a532c-94c3-4302-9fba-af8396329890",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jaya, Fiery Negotiator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d14829d-3119-4c65-8e9a-5281771bbaf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Sleeper Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6894a44e-ac13-453f-b45a-ab6bec574197",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ajani, Sleeper Agent",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ed5764bd-712b-4e6b-b71e-5767d5613b1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adarkar Wastes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7328a565-966d-4053-b32b-25bdce031d9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caves of Koilos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2a83eca4-b6ad-4ec4-91f2-b2a62b32b056",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karplusan Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "72c11164-e98c-4f09-9840-825bd1f91247",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Reef",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0ba5d3e7-afd9-40c5-8ee9-238ba47f0841",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sulfurous Springs",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "79aa9c09-5eeb-466f-a8f5-9898de6e7c88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yavimaya Coast",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1aba15c0-fbc6-473f-8da9-522aa582b2bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anointed Peacekeeper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "caf9e837-a1eb-48d9-a8bd-94dd54ad97d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archangel of Wrath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f1fa16ec-b4ab-4da8-a1fa-cf6c303edc7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiler of Faith",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d75168c8-6798-46cd-8dd7-22115203cb2b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Guardian of New Benalia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "32da8479-7d0e-4eb1-b18c-66eb170e31a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leyline Binding",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "69284b53-f712-418c-94a0-4e5638117256",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Paragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b9672bc7-ccc9-4f89-ad92-60e130369336",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporary Lockdown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "90492217-d6c1-4fc0-87b8-f66dc49c3265",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valiant Veteran",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9a2aaf56-5597-47f3-bc7c-49943799d4de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Academy Loremaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2026190a-1463-4b55-923c-bc00c85ef3e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aether Channeler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8640da59-6ff1-4171-9723-5ef56dc59fbc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiler of Dreams",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d8e127cb-1d35-4851-93e2-66b42d58da8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haughty Djinn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "90cedd68-c170-4b97-9035-e0a6398482f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silver Scrutiny",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2abf41d9-d44c-46f8-86e5-f4491541cea4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of Clear Skies",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "47ab9af3-718e-49fa-96d3-da67bc55c7d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vesuvan Duplimancy",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "398",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1198e0f9-7240-4eae-85d1-4b8ee5d61458",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Hexcatcher",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "399",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2fb97507-e332-410c-8f8c-3aa77c235742",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vodalian Mindsinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "400",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2c27d94e-7dc8-45b4-aac6-b30a677b8ad5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiler of Flesh",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "401",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6f72da0d-f48d-438d-8bc8-23e509a47149",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drag to the Bottom",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "402",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "57c7253c-eb58-4b89-b1ae-a025e8ad1c20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Evolved Sleeper",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "403",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cac9e1a7-544b-4c13-8c41-8fecc0232446",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadow-Rite Priest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "404",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b3c48497-7ef8-4b45-b160-8af28d8e61ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stronghold Arena",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "405",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c8995e45-3ff3-48d5-97ac-7c982f80f640",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chaotic Transformation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "406",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c0cadcc4-ed5e-4396-9034-ffcce3a3ed82",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiler of Instinct",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "407",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9dacef18-5c0d-4c99-8273-1f9c896552bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keldon Flamesage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "408",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1d20e461-2850-4404-838a-ad2c810100b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha's Firebrand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "409",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "060d14a4-e903-4c89-9c3a-baa91f125c4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rundvelt Hordemaster",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "410",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "beaca6ca-58e0-4846-b9b7-5ac9547bcde5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Devastator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "411",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3affc335-ebb4-46e4-8f84-ba204804100e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temporal Firestorm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "412",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d644ec3b-fa6e-4642-8367-35a3ba1f88de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defiler of Vigor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "413",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f4f2ff77-09ac-4833-9d3a-47bac7428086",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herd Migration",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "414",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ea7bc1f4-a0f5-42ee-b9ee-499fed12f884",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Leaf-Crowned Visionary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "415",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8236d62a-bce3-4c5d-8224-f717188e34c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Greenwidow",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "416",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5fdb1dfd-6394-414f-959e-9f129a3ab1a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Loamspeaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "417",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ba11bcd6-7ce1-410e-95df-7ab63116503a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quirion Beastcaller",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "418",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ff8efd65-65d0-47b9-beb3-dc895993af9a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverback Elder",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "419",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6d2bdf21-fad4-4c86-ba74-d5d262e46228",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Threats Undetected",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "420",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3c569975-5b7c-448a-889e-877f28989642",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Urborg Lhurgoyf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "421",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ea9fc6ee-2205-4f77-8e14-313bfbe68c1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plaza of Heroes",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "422",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "eba2995e-f255-46da-abcf-9a6f3996edb1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thran Portal",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "423",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f6395960-c48a-4098-91da-4ccfeddbaace",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Redeemer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "424",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fcefb7a2-95f9-4aa7-b2ef-8b91c018c504",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cosmic Epiphany",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "425",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "59038c02-d792-407d-8aa6-8d279009a1cb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tyrannical Pitlord",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "426",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5e2a8ebf-f882-43fa-9749-8b78fa7b5e41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ragefire Hellkite",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "427",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "df437db0-5f18-43ff-b0ff-e9cac4a6ee81",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Briar Hydra",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "428",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5d0a1c0d-23cf-472e-a6b3-fd0c3905b4e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Loamspeaker",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "429",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8b91c26-26f3-45d6-bf7d-35a2963dde37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herd Migration",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "430",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a25a8991-99ac-4fc5-97e2-4631ff234f65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resolute Reinforcements",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "431",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3287e20f-a161-4522-8a72-3f2b914019b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Micromancer",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "432",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c2fdde82-6c4d-4e34-a15c-9756c834e9a0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cut Down",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "433",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d93d0972-4043-4d86-8707-9f9ec5b6e770",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Strike",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "434",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "49ed86e0-91d9-4ba3-8fd4-0f27d3095412",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nishoba Brawler",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "435",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "8df6603a-38c1-4d18-8b84-6211e9a7cc09",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "boosterfun",
+      "concept",
+      "setextension"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-03",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "436",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "5ee7c1b3-36c3-4f81-a45d-f34331db5b18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sheoldred, the Apocalypse",
+    "promoTypes" : [
+      "boosterfun",
+      "concept",
+      "setextension",
+      "stepandcompleat"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-02-03",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4ff97c69-6a6b-401c-b0a1-55fa81045d19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Braids, Arisen Nightmare",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-09-09",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c96e084-88b9-4390-bca2-5d1b7a459abc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Karn, Living Legacy",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-138",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29bc8e99-bfdc-4ee9-a7f6-61b7d8c1f5e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Meria's Outrider",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-141",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d63d37c-34a3-4b63-a6bf-c0f403a3f709",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Radha's Firebrand",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-145",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89a96429-4352-4dad-82c4-9ef8787573de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Sprouting Goblin",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-169",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "833ac211-356b-4679-8205-4277678a13d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Llanowar Greenwidow",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-170",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acf4f164-d441-4604-ad08-2033db89d84b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Llanowar Loamspeaker",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-176",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2b0f8ee9-9db6-4648-97ab-a49a16359c80",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Scout the Wilderness",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-181",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16ef0889-bf28-44c4-b0fd-04bbef15cda5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Sunbathing Rootwalla",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-207",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "62ac0052-dd03-4b48-a3a8-15a84fed66d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Nael, Avizoa Aeronaut",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-211",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a9209d7f-7a3f-4ffa-bb31-04d2a2b422d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Radha, Coalition Warlord",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-217",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "200fa865-88a4-4f50-9435-4e240fb5fd4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Rulik Mons, Warren Chief",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-220",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44245ae4-aa37-42d4-872a-08bd1f1ca385",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Soul of Windgrace",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-222",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "367b8b17-3881-4bc4-aa2f-0376b614dca7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Tatyova, Steward of Tides",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-225",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "63758c04-6dd9-4461-b227-924c04118a20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Uurg, Spawn of Turg",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-227",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7306a895-c78d-4f78-a58e-a818e4c4016c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Zar Ojanen, Scion of Efrava",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-259",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4505c11-6971-4f9d-af52-8204f4e1323f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Thran Portal",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A-286",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "71165520-9471-40dd-a45b-2955b006c7d2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "A-Briar Hydra",
+    "promoTypes" : [
+      "alchemy",
+      "rebalanced"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-01-12",
+    "setCode" : "dmu",
+    "setName" : "Dominaria United",
+    "variation" : false
+  }
+]

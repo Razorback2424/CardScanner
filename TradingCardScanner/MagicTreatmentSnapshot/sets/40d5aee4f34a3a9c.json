@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1032c8be-3de4-47e4-8885-38dba8d90de0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xyris, the Writhing Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pl25",
+    "setName" : "Year of the Snake 2025",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "47a334c3-87e0-42db-b7ed-8e0644efb928",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaseto, Orochi Archmage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-02-14",
+    "setCode" : "pl25",
+    "setName" : "Year of the Snake 2025",
+    "variation" : false
+  }
+]

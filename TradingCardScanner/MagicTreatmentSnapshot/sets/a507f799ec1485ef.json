@@ -1,0 +1,662 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6686a8d-9cf9-4787-9cf4-1aff8366f7ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Divine Verdict",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95233b5e-9401-4d6d-8ec4-959ca22270ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiration",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4177c849-f366-4435-9060-d8785f235388",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sleep Paralysis",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2b4f70d-e922-4ecb-9d5a-6253f7a7716c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx of Magosi",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02acbe9b-fac7-4135-8318-5f3dc93a9e58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stealer of Secrets",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7860cf3-c3ea-4055-8c95-6d1c8d50e69d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tricks of the Trade",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3ded635c-ab7c-4bb4-a771-481c4d66381e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodhunter Bat",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6f7a23a-0966-4060-8034-734df6f0f29f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Certain Death",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "052022ff-795f-4f50-a45c-91cf8be9fbe9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4950c3c2-80c1-4447-ac38-cf40f76b9545",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Raise Dead",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cc232770-2cbb-4fff-95d0-3acad5b79ae6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sengir Vampire",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2bd51dd3-ce49-41cf-85ef-a5a1428bc71b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory Seeker",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caccbba0-80b1-461c-b548-33d7f3a48342",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Untamed Hunger",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7b5913e-a103-4e4a-9281-8b88c1fb746e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Falkenrath Reaver",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2160284c-2ece-43ba-ab67-5c184f81fe0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shivan Dragon",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ddbcc6e9-b5f4-4f20-9c15-b690b4f64304",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thundering Giant",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b501b60-e541-430e-b7e2-b51c287093db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Horde",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aae3e893-cc4c-46a2-882f-a3126ef39c57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oakenform",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f97a0098-baa4-4ccf-a0da-fb57e7848024",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rabid Bite",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5177a97-cf3b-4a82-adc4-14835152880d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rootwalla",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2048b66a-586f-49ad-bd2b-7fce1eb45ce6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stalking Tiger",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd02ae80-4af6-4da1-ba3b-b56068c49785",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stampeding Rhino",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "350c41af-18e5-4ce8-b3b1-64baa85b1acb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serra Angel",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a58e1c71-b0e1-4c03-97cc-330e3ef94e52",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wing Snare",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75091277-99fe-428b-95bd-5cba9e0146ef",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Standing Troops",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2e03297-3124-4f83-98ef-772fa213a422",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormfront Pegasus",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cd99e32-cbe4-44a7-82ef-7c2d86d6d013",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Victory's Herald",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8ecd6f4-d48f-4427-9ca4-bf414283a583",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Air Elemental",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "63b2cdfe-31ef-43d7-b4ca-e2505d613244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Coral Merfolk",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75eacac3-cba4-4c30-b1df-19fcc5f96076",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Drag Under",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-04-15",
+    "setCode" : "w17",
+    "setName" : "Welcome Deck 2017",
+    "variation" : false
+  }
+]

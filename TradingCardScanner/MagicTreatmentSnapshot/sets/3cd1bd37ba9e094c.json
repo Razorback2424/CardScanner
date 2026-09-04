@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "151★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "colorshifted"
+    ],
+    "id" : "078e67bb-aaae-4d3c-a5b2-1e95b741d187",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hedge Troll",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-02-02",
+    "setCode" : "pplc",
+    "setName" : "Planar Chaos Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "161★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c287d593-cfd0-46b6-bde0-0c04a83d828b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oros, the Avenger",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-01-20",
+    "setCode" : "pplc",
+    "setName" : "Planar Chaos Promos",
+    "variation" : false
+  }
+]

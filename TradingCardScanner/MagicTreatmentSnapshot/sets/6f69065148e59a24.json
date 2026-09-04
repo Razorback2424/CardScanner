@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "20298a61-2739-4254-b102-51a2a74b5ddc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Path to Exile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-01",
+    "setCode" : "pf20",
+    "setName" : "MagicFest 2020",
+    "variation" : false
+  }
+]

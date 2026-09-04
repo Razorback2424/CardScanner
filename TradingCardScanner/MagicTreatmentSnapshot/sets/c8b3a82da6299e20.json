@@ -1,0 +1,238 @@
+[
+  {
+    "collectorNumber" : "112★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "402a302a-4ba5-44a8-b291-afe74f3d0e67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spawn of Thraxes",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "bb2d43eb-a72f-4721-82b5-121a7c4d2ffa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Blossoms",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4fed10c-74f8-49af-8daa-b9c081f549f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroes' Bane",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2e60397c-5d21-4b8c-be4e-38554b8b405c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hall of Triumph",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6306f45-36fd-42b1-88b1-31b915410879",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dictate of Kruphix",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "005be4aa-9800-4f68-b341-90328dc34d13",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scourge of Fleets",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "95ca8091-5282-4c87-88a8-cc84717e9d41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Doomwake Giant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9bfeda36-26ee-41c2-935d-07d02cf3e940",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawnbringer Charioteers",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b564f16b-c212-4788-84a5-a95e4a748372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Squelching Leeches",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be67e7aa-25ca-409f-9382-aa6b259cfa41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dictate of the Twin Gods",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-04-26",
+    "setCode" : "pjou",
+    "setName" : "Journey into Nyx Promos",
+    "variation" : false
+  }
+]

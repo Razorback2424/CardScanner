@@ -1,0 +1,114 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8dd4d771-366c-4d81-875d-7ba9f1f00320",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kharis & The Beholder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-01",
+    "setCode" : "ph18",
+    "setName" : "2018 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "eac33481-3c68-4b29-92bf-c448368a5793",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Optimus Prime, Inspiring Leader",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-01",
+    "setCode" : "ph18",
+    "setName" : "2018 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "711ccbf2-1cd6-4881-b020-a71bedb8f664",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sol, Advocate Eternal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-01",
+    "setCode" : "ph18",
+    "setName" : "2018 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9acbbb54-f08d-4926-acdb-db376d4b46cd",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Legend of Arena",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-01",
+    "setCode" : "ph18",
+    "setName" : "2018 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4†",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "52e39cb4-2f92-42cc-bd15-75b01bb66252",
+    "language" : "en",
+    "layout" : "saga",
+    "name" : "The Legend of Arena",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2019-08-01",
+    "setCode" : "ph18",
+    "setName" : "2018 Heroes of the Realm",
+    "variation" : true,
+    "variationOf" : "9acbbb54-f08d-4926-acdb-db376d4b46cd"
+  }
+]

@@ -1,0 +1,278 @@
+[
+  {
+    "collectorNumber" : "114a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a295b97-85c5-4673-aea5-81e3d6379345",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a503f38-8117-4f17-9cf8-e92149b4ba44",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84a9cb92-438f-46d7-a8bd-a263f540bd88",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "97def2ea-97b5-4739-81cb-f7b299da76c7",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Mine",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7aa1e9c9-3522-4944-8e01-6988b33a9bb8",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1080d56c-ff6c-4ef6-b3af-707c238d5442",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c9fd7ce9-1fe4-4668-b421-ce3f06d637e9",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5deeb24b-4c91-456c-be93-4a5b1935514d",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Power Plant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b6a4d336-8138-4119-afdb-7f4be68c3079",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6bc2492-f8b6-446e-b848-0669ca0d88b4",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e62d0539-242c-48b3-b611-6b0413e93068",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "035cc927-7b24-4a18-98bd-6fc0a0d65cba",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Urza's Tower",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "1995-07-01",
+    "setCode" : "bchr",
+    "setName" : "Chronicles Foreign Black Border",
+    "variation" : false
+  }
+]

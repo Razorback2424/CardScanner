@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "319724d5-8937-4470-a880-a65e674f7b3b",
+    "language" : "he",
+    "layout" : "normal",
+    "name" : "Glory",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2002-05-18",
+    "setCode" : "pjud",
+    "setName" : "Judgment Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,692 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d9662108-7a01-48d4-bb5d-edcbf1ed5a0d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Astartes Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5d319cb-4982-4fb9-93d4-1cc846b03c30",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vanguard Suppressor",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "acb3325d-0b43-471b-9311-1c5ba14b06cf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Arco-Flagellant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "93bc9e79-88c8-436b-94f7-17b349baf306",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Astartes Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "065e30fe-03e5-4558-8f41-42992b07712e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Cherubael",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "542b3490-1247-4f47-98b6-c67cabae53cb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Necron Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0b7f1064-04aa-4b32-adc5-f7733e056287",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Necron Warrior",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b19d2866-87e7-40ab-9684-0593caeb223e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Plaguebearer of Nurgle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9e458d71-3b76-4088-93f6-b87649615f3c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Plaguebearer of Nurgle",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bc938f2e-2d6e-4afd-9a88-34eeaf0b51e3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spawn",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eea89316-1205-4a73-be33-ac2a433edb41",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spawn",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21e0620b-0498-407f-a609-79c7bc393e76",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tyranid",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3671216a-4184-4a35-a603-6eff963d09b1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tyranid",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21afb029-9aef-4e6e-a646-3343605b4bb7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tyranid",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "691979ab-e0d7-4e74-84da-77d09dc038a3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tyranid Warrior",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "1★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2077e1c1-744b-4379-b4ab-220642873c2d",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Astartes Warrior",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e546fbc7-4493-46dc-89f1-88333fdc8cfa",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a3d2013-e10c-49aa-adf6-4a3a141e48ce",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Blue Horror",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43eab560-8ead-4383-afb9-9180a214704b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9af00a97-9938-4ab2-938a-669cdfe4332a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Insect",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "319aaaae-1efb-412c-8839-c575a2694485",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Robot",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "01b7b4c9-3d39-40c6-a337-33b20c6d3f57",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c9295e9-222f-4e7d-91c3-84479d5ec568",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c3e4d0f-6dac-4994-9348-9aa427acd9b2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e90ca5c1-a76a-4bc4-a223-87e8df30c6de",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f633b8c5-2cd1-4599-bfce-543ca5439b41",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Soldier",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa796e45-1d95-44f7-927d-0cdd2f67da78",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Space Marine Devastator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f7d6c117-0924-404a-9b06-5c28b830d316",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ultramarines Honour Guard",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "88be9551-c8d9-4486-b8f1-810f5dae12c8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zephyrim",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58784a4f-8190-4751-b42c-fff188ad3ce5",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Sicarian Infiltrator",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20171707-0670-42dd-a6c4-f0aa56fc0cd1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Tyranid Gargoyle",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "t40k",
+    "setName" : "Warhammer 40,000 Tokens",
+    "variation" : false
+  }
+]

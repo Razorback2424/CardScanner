@@ -1,0 +1,1129 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d8d35bb0-b302-48b2-87a3-9b80c75b5392",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aurelia's Vindicator // Aurelia's Vindicator",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "3e4a00fb-2f3f-4e0b-ae62-2828362abbef",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rot Farm Mortipede // Rot Farm Mortipede",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bd470386-5279-4e15-a59a-d378660fce83",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Convenient Target // Convenient Target",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a0d02535-246d-4644-ad82-218cc69666d8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Expedited Inheritance // Expedited Inheritance",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "9f7b2c39-64c1-4edf-a912-8b8bd3a24557",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Axebane Ferox // Axebane Ferox",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "bf73aea6-3e27-499b-bdc9-9b3455d23351",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hedge Whisperer // Hedge Whisperer",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4e7d50ba-254d-40df-80ce-86978862125d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Loxodon Eavesdropper // Loxodon Eavesdropper",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "09f3a9c3-6228-4da0-bb8f-d3d0de9379ad",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Undergrowth Recon // Undergrowth Recon",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a9b8ee5c-5934-4426-80f5-2b2bfed4b3ca",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Coerced to Kill // Coerced to Kill",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "811aabed-be21-409f-8a4c-0d86b1c13bac",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Deadly Complication // Deadly Complication",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4dbee6ed-cd56-40f6-8f7c-70df1e0a7a25",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Drag the Canal // Drag the Canal",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0d1fabcc-e8a2-4b57-9951-f66426b77527",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Auspicious Arrival // Auspicious Arrival",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "92e1362f-0897-426e-8520-275a95410539",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Ezrim, Agency Chief // Ezrim, Agency Chief",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "f612728b-3d67-42f7-bff8-177181499b89",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Niv-Mizzet, Guildpact // Niv-Mizzet, Guildpact",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ef70bc3c-ca71-4067-b40b-c4ba739b80a3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rakdos, Patron of Chaos // Rakdos, Patron of Chaos",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "605ab969-c770-4228-a133-81dcd689c8f2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Warleader's Call // Warleader's Call",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "1442e78d-03bb-40b1-a1b0-0765d27e5e9a",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yarus, Roar of the Old Gods // Yarus, Roar of the Old Gods",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dc29ca64-f556-4a51-8c05-0e6ad53aaef3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Branch of Vitu-Ghazi // Branch of Vitu-Ghazi",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "2c6df3f8-5f99-46c3-831d-0254da62b040",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Raucous Theater // Raucous Theater",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "240c15e8-7215-46ca-99ba-0c123c297212",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Thundering Falls // Thundering Falls",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "4c73d847-edea-4569-959d-5c777426fd3f",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Call a Surprise Witness // Call a Surprise Witness",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0fe9be54-e5f6-4288-ae0e-530fbaef794c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Deduce // Deduce",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d6b712ef-602a-4bfc-a5f1-45615a613aae",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Case File Auditor // Case File Auditor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "c1a92400-f56d-4280-b533-425905fbdb2b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Unauthorized Exit // Unauthorized Exit",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "95e38f50-3fd8-47ed-be01-9df43ba133e9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Demand Answers // Demand Answers",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "dcc26e83-1cd8-47f2-86df-086ee3741f32",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fanatical Strength // Fanatical Strength",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d42be3cd-2d42-4990-bf40-eba19f0023b2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Deadly Complication // Deadly Complication",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5c350ff5-58d7-4efe-a4a9-02c25645cdf9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Insidious Roots // Insidious Roots",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "866c4e19-3a17-49af-8399-50aae1bdc576",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Warleader's Call // Warleader's Call",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "59ef188b-0ff7-43bf-8f6b-b7d7c9fd461b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aurelia, the Law Above // Aurelia, the Law Above",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "afa8cd77-c6bf-4402-8e9a-5d43a74e77bc",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Trostani, Three Whispers // Trostani, Three Whispers",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "82df6c04-4495-4df6-989a-a5ff61d21bb9",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Vannifar, Evolved Enigma // Vannifar, Evolved Enigma",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "041568cd-35c6-4cd4-a0ed-be526db2db02",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Fugitive Codebreaker // Fugitive Codebreaker",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "aa5c8392-6ad7-4177-b4f3-35262edb6cde",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Tenth District Hero // Tenth District Hero",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "468cf9eb-3f12-4ba8-9adf-5568b0bfe0cd",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Krenko, Baron of Tin Street // Krenko, Baron of Tin Street",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "49d9d2fb-5947-48c7-ad9f-3e4dc44563b2",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Aurelia, the Law Above // Aurelia, the Law Above",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "e835d547-299a-453d-8cbb-a4d00627581d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kraul Whipcracker // Kraul Whipcracker",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "7d2b9452-eb44-4ac3-8d65-ee11dc7ec69d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Kylox, Visionary Inventor // Kylox, Visionary Inventor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0bb052d6-07f5-4504-9122-b8ce94c6e61c",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Niv-Mizzet, Guildpact // Niv-Mizzet, Guildpact",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "76e0468e-ee66-4f2e-b7b7-0601321cd2a8",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Rakdos, Patron of Chaos // Rakdos, Patron of Chaos",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "564765b6-a019-4539-8f65-12bf869d410b",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Yarus, Roar of the Old Gods // Yarus, Roar of the Old Gods",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "993c3c77-53c0-49c4-8ab1-a7a382fbdf5e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Redemption Arc // Redemption Arc",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "ff6e67dd-a00e-483f-be0a-afff4cc288fa",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Havoc Eater // Havoc Eater",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "6e110ddb-397b-4c2c-8014-47d544de5fbf",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Panoptic Projektor // Panoptic Projektor",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "710cbf89-d357-43e4-86f4-487e0fb39dd3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Hotshot Investigators // Hotshot Investigators",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "38c66650-8d3f-4430-947a-240fb2ed1c3e",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Intrude on the Mind // Intrude on the Mind",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "b308fa07-346a-42ce-9cb1-227348eaca72",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Extract a Confession // Extract a Confession",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "93cc17e3-193d-45f6-b462-dfabec90e2d3",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Illicit Masquerade // Illicit Masquerade",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fe630362-e382-4606-9c36-03d87625616d",
+    "language" : "en",
+    "layout" : "art_series",
+    "name" : "Macabre Reconstruction // Macabre Reconstruction",
+    "promoTypes" : [
+      "stamped"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-02-09",
+    "setCode" : "amkm",
+    "setName" : "Murders at Karlov Manor Art Series",
+    "variation" : false
+  }
+]

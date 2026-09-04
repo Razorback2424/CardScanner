@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f1751016-9461-4250-ac07-afe4f5b41095",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beau",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2024-04-19",
+    "setCode" : "totj",
+    "setName" : "Outlaws of Thunder Junction Tokens",
+    "variation" : false
+  }
+]

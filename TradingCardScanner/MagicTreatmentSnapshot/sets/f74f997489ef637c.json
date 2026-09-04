@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2879010f-b752-4808-8531-d24e612de0d9",
+    "language" : "en",
+    "layout" : "double_faced_token",
+    "name" : "Voja // Saproling",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-11-02",
+    "setCode" : "tgk1",
+    "setName" : "GRN Guild Kit Tokens",
+    "variation" : false
+  }
+]

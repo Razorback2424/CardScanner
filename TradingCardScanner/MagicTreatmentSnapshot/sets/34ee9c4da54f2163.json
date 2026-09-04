@@ -1,0 +1,3170 @@
+[
+  {
+    "collectorNumber" : "106",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b0fd1009-cd3d-4b53-b9f1-dbc47e8708ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Spiteful",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d1439412-618c-483d-89b9-5ea37f0f1edc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Stone Fangs",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "127",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0fe79ee4-c3f3-4a6b-a967-203ca3b70ee5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "44b83bb7-00c8-4078-b27f-42a830a544b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "157",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "482ae7f4-3950-4766-8392-eea753e29426",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Shattered Heights",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "162",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "034b8d6d-95ea-434a-967a-e6675a7ce88a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subira, Tulzidi Caravanner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0b8aff2c-1f7b-4507-b914-53f8c4706b3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7dcdcfce-3f32-48f9-83f8-87b9ccbf92e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5ca28cfd-1a1b-4176-8b07-993d3d7b7ae4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Fruitful Harvest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e21827eb-fa49-4784-a86b-aef164a5018e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niambi, Esteemed Speaker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2bbd37b1-49cb-4295-9a1f-fb85368a8f12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heart of Keld",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "225",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ba91338c-1f6c-4b83-851f-98c3e9dea17b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of All",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "228",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3af78d76-ad5c-44ba-880d-b834bcde5398",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9b4e628f-5fc5-4c17-a07d-448d361d7e7c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d605c780-a42a-4816-8fb9-63e3114a8246",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rin and Seri, Inseparable",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bacda35-bb91-4537-a14d-846650fa85f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Spirit Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ed3906ea-df06-4299-a305-32e6ef476507",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri Ket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ba95c4fc-f0fc-4bfe-bef7-694c3d82a6c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2edac86-02d4-4201-9b72-2ec64f163a72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Waker of the Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e494793-ec53-46dc-a5db-90dadc8cc015",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Heart of Fire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd16e1a6-0ece-44d5-8221-25892178e927",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Unleashed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "showcase"
+    ],
+    "id" : "a11e75a0-17f0-429a-a77a-268fe6257010",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ugin, the Spirit Dragon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ca854101-5a9b-455d-bf47-ad8f3d57afa7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri Ket",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "1f6e3c8d-66c2-4e9d-a7c2-290b5695eec2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Acolyte",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "26439775-7880-4e12-81eb-92185daca3fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Lieutenant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aa6daf0d-d581-434e-9b5f-cea1e7fd7967",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Solidarity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "f802369f-bd9f-4c2f-835b-b0b9c1ea61a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c0ba42c9-480c-4236-b217-01910e51b290",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "20a271b3-c3a9-47c6-bc8b-b580ede1968b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "a8fda4c0-d576-40e5-8e26-fc212c09691f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Master of Time",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2c5a3d8f-5513-42b1-a3d7-09cf781eaf94",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "72d63891-366b-473e-85c6-53886e26ca7a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Protege",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aefc721d-7c0b-4b3a-8131-f466bf3e7949",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Tutelage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "e8dd3fda-d778-4be6-abd4-6cf704e352ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Waker of the Dead",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "68d242d3-a817-4cdb-a51e-5f8202233743",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Devotee",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "3bd1c4b4-57b3-4779-9c7c-b23e73e6a74b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Standard Bearer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "aa9ab339-5f1a-425d-abfd-0b65a33d5c85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Steward",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "94e6a6bc-73ac-4000-967e-c37450665e03",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Heart of Fire",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b906cdb4-6a82-4611-abde-43566f9d01eb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Incinerator",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "ec4ebe97-730c-43bb-86da-6ef0b34c104b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Magmutt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8b807033-2273-4415-95b8-eb2dafed2967",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Pyreling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "c5e92f14-776d-4fa6-b872-1acadca1e372",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Unleashed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "dd5c6492-4934-4d61-85ef-3dd64677dee3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Gorehorn",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "6faee64c-2338-4b01-8e26-7b68539a998b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Harbinger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "8dce84db-d331-4e5b-bdd8-9b1b3bec50cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Uprising",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "2f6778ff-6c1c-498a-bbfa-46c35b77a72a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "24aa9fd2-54d9-40d9-9279-abd5bd6ff727",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "fa3b8665-31f2-4142-a076-54bccdaf5a15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "0162885d-3f55-4440-b40d-e38d378c4567",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "showcase"
+    ],
+    "id" : "b6e049ae-bb12-41af-bbe4-ceded30bad67",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d51bacdd-040e-45f7-9256-85f93801a10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Containment Priest",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fbf0dded-552a-4ad2-bb62-f1bfabad9bac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "a0523c0a-b9b6-4946-b90d-ed8e13cf1915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massacre Wurm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "31233339-c5ec-40fb-badd-94ef7f0ff7c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cultivate",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "0a91920a-7de3-4e9b-9cce-ff43ce0157b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scavenging Ooze",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "25eab51a-8dad-4a37-9551-c6bf0dc6ecf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Solemn Simulacrum",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2688b45d-9d74-4d9f-9a63-29c82b48d64f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri, Devoted Paladin",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce2bc7ad-458d-445e-a0a9-7897b596fdd0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adherent of Hope",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "577657ed-162f-4104-b0af-ee9733e90f20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Basri's Aegis",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5ba81e67-8fa5-441c-bf14-2d75c168a617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigiled Contender",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62d05287-ad7f-4de8-9f68-8f36c62fae72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi, Timeless Voyager",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ae981da0-f32c-49d5-bcb0-2b9255a4e1fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Historian of Zhalfir",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0002ab72-834b-4c81-82b1-0d2760ea96b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Skyfish",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d67e4c42-a44f-456b-87e7-21ca56dc4630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Wavecaster",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "921e3dc3-f8eb-4498-a6a8-b424952230cd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, Death Mage",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b231f941-4acb-46f2-81ae-16e5a28e65af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Scorn",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34a5478a-1a2c-4117-b543-da083ed2b562",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Tranquil Light",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5a64625f-937a-449e-b1fc-cd0f25b033f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana's Scrounger",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf3765b7-11e2-4837-b5e5-ca24adc0e33c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit of Malevolence",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1e49ce44-5286-4310-88c2-f8a1402b113b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Flame's Catalyst",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76cf0b50-155f-4e65-9e48-88b378ad93a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra's Firemaw",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b862e46-f5a2-4fce-98b5-2c5aa49ec648",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keral Keep Disciples",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b6d123c-c16d-43fa-b183-8a59c7e1a11e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm Caller",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48133629-4a5b-4c91-b496-2ee94f6cbc4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk, Savage Herald",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d6099863-8d3d-44bf-8d3b-dc3602119617",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garruk's Warsteed",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4073cbc6-11de-4d4a-bcd7-792f9b7c5219",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Predatory Wurm",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cceaf927-261e-4d61-9fac-eb8abbe87593",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wildwood Patrol",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0b0974b4-b306-4026-b0a8-22bd9da3e384",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baneslayer Angel",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a3ba79d6-7da0-46ba-a26a-dc484bdae41d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glorious Anthem",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e811c396-8992-4c3c-b2f6-c866f1aefcc5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Idol of Endurance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "011cfa46-6827-4418-881b-686eb34e06ce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mangara, the Diplomat",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dada448c-6431-4172-b458-efa49c302dfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nine Lives",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "13f7a7ef-aa18-4738-97db-97e50ec3b801",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pack Leader",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1223eaa0-dee9-4bff-a4d5-3b30aa973b84",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runed Halo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e300294d-0bbd-4d28-b2bd-c5a976de212a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Speaker of the Heavens",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "fc3765b7-bd99-4c66-8761-1c9cc5bd8666",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrin, Tolarian Archmage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0b2f8208-0dba-49e0-ae53-b1c9347b92b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Discontinuity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e4f96dc6-65ff-4527-8fe6-ff508da5b8b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostly Pilferer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "143052f0-4fcc-4703-9147-75b65ddb8e0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pursued Whale",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "de27dfa8-5790-4b42-ae57-b68814d66e34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "See the Truth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7d6d0c71-d1c8-4eb0-96e7-b3325d5fb4c0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shacklegeist",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4c45b9d2-e49d-4ac1-abda-88a83b58dc30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stormwing Entity",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "324c8712-0cfa-465c-a712-2bd1385d8049",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sublime Epiphany",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "496cf6c9-7e73-448c-abc1-35758d269472",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demonic Embrace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3becd8e2-677a-4e54-8839-2b9f80573aa1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hooded Blightfang",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "358",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "85082679-360f-48a2-a131-ce939f774749",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kaervek, the Spiteful",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "359",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "9350ab9a-263b-4698-b4e7-2beb01c39134",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necromentia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "360",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a46820e5-67a4-4b28-bd0c-7ed9443d7dfb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Peer into the Abyss",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "361",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a8962e7d-b14d-41b5-8805-17490b6c32bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thieves' Guild Enforcer",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "362",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f8a52a83-0087-4df3-995a-45e15bf664b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vito, Thorn of the Dusk Rose",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "363",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "5ea0d236-bfd2-4f47-8592-2669834d01f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brash Taunter",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "364",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f6e3cb0a-3a23-4b00-9a79-bd2d16d0b1b2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Conspicuous Snoop",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "365",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d4955455-c708-4f96-ba21-0a6de0e74336",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Double Vision",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "366",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "33957ca8-babe-45d2-bcf2-15ed1add5ec9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fiery Emancipation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "367",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "333228c5-af16-4ebd-acfc-3776b21ef044",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gadrak, the Crown-Scourge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "368",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7380fd52-8fee-4956-a9fa-986019bcb423",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Subira, Tulzidi Caravanner",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "369",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ac35ea21-fef4-4000-9b22-c8d07420827b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of the Peaks",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "370",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7f6252e7-aa4f-4d7b-a655-6564c5c124e6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transmogrify",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "371",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "55a95e99-4398-4263-90bc-1b0c544b18b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volcanic Salvo",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "372",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "1507b7bc-cf3d-42c7-a4c8-e5b22cea9ec0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Azusa, Lost but Seeking",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "373",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8ee9b3ad-0774-4952-b49b-be390182b245",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elder Gargaroth",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "374",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "fbea5a3c-03b7-44da-b8f7-534a962b8e1e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Feline Sovereign",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "375",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "cf9fb88e-d13d-46d0-a3c5-da886f43ffb9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heroic Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "376",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f1ccd23e-c883-474b-93e5-4131aa1e6e8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolrael, Mwonvuli Recluse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "377",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "dffcaab7-674b-4e34-b09d-41414bd0022e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Primal Might",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "378",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6e999a48-27ab-429c-95cc-249d931bbbd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sporeweb Weaver",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "379",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "50b942b9-fcf4-421d-a470-73a90f0408a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niambi, Esteemed Speaker",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "380",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7777bc17-88cf-41fb-9169-77149c01eec8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Radha, Heart of Keld",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "381",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "9b401c8b-dea9-4df7-8929-52370d47bf91",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of All",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "382",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "d5d9ddf6-9283-4c93-9932-70362068ce72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Orrery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "383",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "59a202f3-23e3-490a-bae9-42f2fe267ce7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazemind Tome",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "384",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c29d9617-734a-4516-882e-661b3effb569",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sparkhunter Masticore",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "385",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b0ec7b76-4e97-4f47-b7af-ef9c2435b20e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Animal Sanctuary",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "386",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3eb5cd32-3e9e-407e-a501-a56793017324",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fabled Passage",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "387",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b16b63d6-09d6-44d9-ba57-fa6c576507c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Epiphany",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "388",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e34fc9f2-05ed-462b-922e-75531bccacca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Malady",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "389",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "0a11a16d-25c9-43e7-8776-313347bab820",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Mystery",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "390",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ed6a3602-8e44-4df6-9607-ba5ce2d2e733",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Silence",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "391",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "097d7449-235f-43f0-b75d-e1b0e98c3a7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Triumph",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "392",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7be82997-ad17-4977-b3a9-099889fb0aa3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pack Leader",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "393",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5a129ff7-72f9-4171-902d-a1b49eebfb62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selfless Savior",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "394",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "5474d7e8-6b34-4d88-bb78-c43c24d5eb58",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frantic Inventory",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "395",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "753d3152-da9d-48af-98b0-34efb990205d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eliminate",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "396",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "13406fc3-4061-46b4-8738-09494c85550f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heartfire Immolator",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "397",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "880c9523-717e-4903-a09e-d6c47614383d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Llanowar Visionary",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cb078fbb-beb9-4c0b-be93-ed1e73e6f8d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Barrin, Tolarian Archmage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "80b2fb65-5868-4cab-b45d-e103558ce7dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sanctum of Calm Waters",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c38d1722-96b0-4756-9da9-fe18b1c80649",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Teferi's Ageless Insight",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-03",
+    "setCode" : "m21",
+    "setName" : "Core Set 2021",
+    "variation" : false
+  }
+]

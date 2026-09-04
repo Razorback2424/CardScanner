@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "42db4cd3-6351-498e-944a-4b93e32e1494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast of Burden",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-02-06",
+    "setCode" : "pulg",
+    "setName" : "Urza's Legacy Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122†",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "78caa5db-cfd2-4b59-bcea-ef1e2b899506",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast of Burden",
+    "promoTypes" : [
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "1999-02-06",
+    "setCode" : "pulg",
+    "setName" : "Urza's Legacy Promos",
+    "variation" : true,
+    "variationOf" : "42db4cd3-6351-498e-944a-4b93e32e1494"
+  }
+]

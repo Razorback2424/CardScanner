@@ -1,0 +1,1389 @@
+[
+  {
+    "collectorNumber" : "106s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc8d5e1c-f3d5-4af3-bae0-c40d54dd67dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crater's Claws",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "52b876cb-2f75-44c1-a417-4a48f151e172",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon-Style Twins",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcb88a0f-d823-4dd5-82b2-de19dd46be63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeering Instigator",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "54b04f03-28a8-4c9b-91ac-26880679b96a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herald of Anafenza",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0e432884-3b38-42ae-80bf-d4d2fec4316d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Scales",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "133s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "eb11b49a-5d99-4e58-936a-be5926d69b98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hardened Scales",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "134",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f18d7e24-3ba9-458e-a8e1-05a9834e0cce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heir of the Wilds",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "abd163f9-5510-47e2-a47a-a34d0bb14855",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "High Sentinels of Arashin",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c92ac95d-7a5e-4e5e-960b-9d2bf39f0179",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rattleclaw Mystic",
+    "promoTypes" : [
+      "buyabox",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1b29c166-7a58-4963-b846-02bf3c8988a4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rattleclaw Mystic",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "154s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "580f1461-60da-4801-80f5-d422c02c8c8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trail of Mystery",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "160s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59e9daee-46fa-4d3c-b90d-c395fccfef8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Abzan Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "163s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a891b322-74e6-4a88-aa84-2d1cbe972e07",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anafenza, the Foremost",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4705beb8-2c8b-4a15-aff1-580af3698fcf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ankle Shanker",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "164s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "410e4550-edc1-418f-9b4a-95f6c71028f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ankle Shanker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd8d74ee-a0e6-4111-bb74-9059fbc4b354",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avalanche Tusker",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "166s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a386d18-69f6-4c78-87b1-b9805b73b140",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Avalanche Tusker",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1a920210-42e1-4d27-a9ea-5d91674eb8fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Butcher of the Horde",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "171s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1fe147c8-d983-44fc-8498-c14b2a1b5d72",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crackling Doom",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "173s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06c23520-34b1-44ec-a80f-81820449912b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deflecting Palm",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "174s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e3fba5b-b4cd-4050-b9f0-d8eabe82e7d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Duneblast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "176s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "86fdb261-dcf8-44b8-95b1-d03ce1453ed0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flying Crane Technique",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "61bf8fd7-a0bd-43f2-85c0-9b4ea06edcfc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivorytusk Fortress",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "179s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7e9d681-dfc5-4213-b384-79932eeabcc4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivorytusk Fortress",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a29161fc-b8a2-498e-a949-5fdf9c37e90d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jeskai Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "182s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "84434d6d-7649-4562-8427-e9de5af43257",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kheru Lich Lord",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b95749d7-5967-4e49-9de0-74e156650095",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mardu Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "24decff2-6fb5-4666-83b6-b1860649bc0e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Pearls",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0eb00508-afc5-4c54-aa93-bce93583a8be",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Narset, Enlightened Master",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d219feb0-81d2-496a-8c70-0edbf75cbf27",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa Vizier",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "193s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ebba7a8-de3e-42ce-b8be-96281c2c175d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rakshasa Vizier",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb14f0bb-3ee7-4ff0-b9dc-1c2ab22283e0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sage of the Inward Eye",
+    "promoTypes" : [
+      "intropack",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "195s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fca25454-6b18-4d37-a069-7d53f5ebdb14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sage of the Inward Eye",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "199s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cf8280f-463a-43a5-9c92-d9e7f54b2a32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sidisi, Brood Tyrant",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "200s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fcfb4ea4-2bcc-496b-9d02-6cce1dbb8b1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siege Rhino",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "203s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "878f7e89-d9a0-47da-bd38-6e4f0f97600c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sultai Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c72495e-3c03-4dff-b671-47764af5058d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sultai Charm",
+    "promoTypes" : [
+      "giftbox",
+      "setpromo"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "206s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9fa09f29-7647-4a26-aea5-8174bd2075b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surrak Dragonclaw",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80ac4542-1852-46d7-9f9d-eea8158297fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Ascendancy",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-07-04",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "207s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "43ff1c10-78b2-4e12-bd98-81a5d3d61e9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temur Ascendancy",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c063b2b8-5243-43a8-8cb0-927116003bda",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trap Essence",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "af9bcca2-8ab6-4169-81c7-a3e7c8320028",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Utter End",
+    "promoTypes" : [
+      "gameday",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c70215f0-5a45-427e-8570-fbede0ecaeb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Utter End",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "210s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be5ffbc1-973b-4a30-988e-f97f76f97d0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Utter End",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5f43eec-d158-4060-9235-9b8128a48dca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wealth",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "211s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0af8e0df-718f-4d75-ac8c-447d685bf51c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Villainous Wealth",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "214s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc4dff3c-849e-4ba1-92d4-e48d3d56695a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zurgo Helmsmasher",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "497c8a84-2f1f-447f-9a52-a0b97d85f5ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon Throne of Tarkir",
+    "promoTypes" : [
+      "datestamped",
+      "release",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3889b4d6-2541-484d-88dd-d67800545327",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Clever Impersonator",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b62554b0-595e-4ad0-a4e3-e281624ed9c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dig Through Time",
+    "promoTypes" : [
+      "promopack",
+      "setpromo",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-09-25",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32fb5109-432c-4dc9-88c5-95cdcb7fbf60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dig Through Time",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a40a0023-127e-471d-9a22-252d20a25880",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Icy Blast",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75b8256e-4d47-4a1b-8356-5902eaca5e7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thousand Winds",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb4a63e6-2e00-44ee-b8a2-6f2bba66b457",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bloodsoaked Champion",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7df716ed-c767-426e-81d9-e660f1f9fe3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grim Haruspex",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "758807f0-162c-4724-8029-b93f1fd73cce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Necropolis Fiend",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease",
+      "setpromo"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-09-26",
+    "setCode" : "pktk",
+    "setName" : "Khans of Tarkir Promos",
+    "variation" : false
+  }
+]

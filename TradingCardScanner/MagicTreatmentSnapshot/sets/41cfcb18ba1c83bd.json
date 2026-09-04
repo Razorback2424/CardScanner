@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c7188d0f-0329-4ecc-ab2e-dea7c5f39852",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Earl of Squirrel",
+    "promoTypes" : [
+      "draftweekend"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "pust",
+    "setName" : "Unstable Promos",
+    "variation" : false
+  }
+]

@@ -1,0 +1,156 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b433633-42a1-4474-a9b8-2ff5e541f6d1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hypnotic Specter",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "679d6226-7ec1-44f3-ac90-30b123501aa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hinder",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e0581322-d901-465e-b22c-cd99ddbb4839",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pyroclasm",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df150832-0b2c-4811-a117-1f4a6f40eaa8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Growth",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "236f46d9-276b-4418-a959-39b0963fc525",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Putrefy",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0c6d4039-dc57-4c89-b02c-2f3147292127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zombify",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4ec9e67b-1b4e-4e4e-9758-be697d308f16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lightning Helix",
+    "promoTypes" : [
+      "playerrewards"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "p06",
+    "setName" : "Magic Player Rewards 2006",
+    "variation" : false
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4a4039bd-ed03-4eef-8a3d-97f134475974",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Euroakus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "ph20",
+    "setName" : "2020 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted",
+      "legendary"
+    ],
+    "id" : "60522839-bcf5-4da9-bab5-ff436269c4a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Secret Lair",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-01",
+    "setCode" : "ph20",
+    "setName" : "2020 Heroes of the Realm",
+    "variation" : false
+  }
+]

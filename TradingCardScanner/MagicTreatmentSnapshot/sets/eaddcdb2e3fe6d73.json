@@ -1,0 +1,420 @@
+[
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1b23f587-8815-4134-b7ea-30bdd6fb382c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alexander Clamilton",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a3b1bcf1-fb6a-4f53-9457-8dfffd550184",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Richard Garfield, Ph.D.",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e488eeec-5a9d-4c4d-8c20-fffe9f37e101",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Acornelia, Fashionable Filcher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f43e702d-eca0-49a6-8ef8-9eea1d0fd022",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spike, Tournament Grinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "93500a3f-86a6-4eab-9fa3-d1ec2c224a49",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Big Idea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "dc0741ad-83c2-4ee5-a712-529787e532ba",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blast from the Past",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf287d09-80ec-467d-a0fd-dfe8f91d5896",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Frankie Peanuts",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "74b1af60-4245-4d4e-bc9c-c6d1b7134494",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pippa, Duchess of Dice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "30fbe62f-ee24-43d9-9fdd-279c4ee0e57c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Surgeon General Commander",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "e2f53d48-15ea-404f-880b-f786f55dfc7e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Baron Von Count",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "98401ff5-14b4-49d5-a43c-a1edf40fcfae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dr. Julius Jumblemorph",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "06a0e612-5ac1-4b04-9d90-a5325dafee29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Grand Calcutron",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "448f80af-ca6c-4901-a841-1b858afa54b4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grusilda, Monster Masher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "8ed3aea6-d774-4924-adf4-7d5c6986954c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mary O'Kill",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bf500ab4-6fc6-496c-b067-0fbf15acd2aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ol' Buzzbark",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3ff7d6b4-4992-42ad-bf14-49bcfed57a14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phoebe, Head of S.N.E.A.K.",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "055ddc8b-d230-4675-9741-138429e48a8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "X",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b4751014-8b86-4d74-b236-080fd70fb374",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kindslaver",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6bdd8645-aee9-44cb-acaa-2674f55cdf2f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syr Cadian, Knight Owl",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-10-07",
+    "setCode" : "ulst",
+    "setName" : "The List (Unfinity Foil Edition)",
+    "variation" : false
+  }
+]

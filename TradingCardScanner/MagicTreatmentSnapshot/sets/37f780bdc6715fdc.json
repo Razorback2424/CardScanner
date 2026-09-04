@@ -1,0 +1,200 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ada990f9-c8df-4fa3-be3a-14ee9937f3ed",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Candela, Aegis of Adagia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0764566-617b-45cb-8aad-5a9f606348ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thendar, the Overminer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "085854f5-e2bd-4d61-a2d9-b299907655d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Worldweave",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "265307a7-3e8e-485c-a8e8-35435b45237f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Axavar, Fate Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "03955937-efe5-48a8-9372-540ba6e71da9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prototype X-8",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b655bd72-e1b1-4d39-aa44-7f38c78b55c4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sliver Weftwinder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a28c5f1e-0f72-46c2-a2da-9162532a3995",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Val, Marooned Surveyor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ebe1e3d3-67c3-47d2-9163-2e3962a4bedd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Volatile Orbit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bee4c40d-f04c-4be0-8938-a56b19a6543a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vv'viza, Orbital Overseer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2025-08-19",
+    "setCode" : "yeoe",
+    "setName" : "Alchemy: Edge of Eternities",
+    "variation" : false
+  }
+]

@@ -1,0 +1,3851 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "36c8c075-9597-412e-9fc4-9d73b4405d12",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alseid of Life's Bounty",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "812d0f15-f738-4644-9d29-2589d7e66915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hateful Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "e8c9ada9-ea25-4a96-a4be-e4cf8f7a014f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lampad of Death's Vigil",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4a46eec7-bb79-441c-959f-eea599e5c341",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare Shepherd",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fd2a923a-1f9c-4a29-9c6b-344ae4d5ae8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Marauder",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "55e2f383-d2a0-4424-bf7a-79e82d6f691f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soulreaper of Mogis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "14b28eae-e8ed-4b99-b6ec-86d0716ec473",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2f48f802-df9d-45b2-afea-98699bcdf0d6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Obstruction",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "a07285b4-77c5-4a38-8810-20d7e49593ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anax, Hardened in the Forge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f6b04ec8-68c9-468c-b137-707db994af68",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamshaper Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ee10eaa0-dbe0-45ee-9a7d-395ec5d27e08",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dreamstalker Manticore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "05bc4236-566f-401b-b9d7-f58126fa228b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Brute",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "146",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0f9bb73a-5b4e-4c9b-b0a6-8e531dc27394",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oread of Mountain's Blaze",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "150",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "af3af5c4-0960-44a2-976e-abdf7803c436",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros, Bronze-Blooded",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "7c38833a-96c5-48b5-8dd8-23f10e798537",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "ba264166-948b-47d4-b302-64476acc1a55",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Destiny Spinner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "169",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6d964876-194b-49f1-8e74-cfe9269f2c62",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dryad of the Ilysian Grove",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8a70e1be-f04a-43c1-8fca-205a24e3db38",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glory Bearers",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "01a8576e-cadc-4521-aadd-3a05f0bc4d20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod, Sun-Crowned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "185",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "bdf894d4-1a06-4952-a481-22786ab87a73",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea, Keen-Eyed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "186",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2cf2b6be-80a8-4464-a909-8cc658196a14",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea's Forerunner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "189",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "866dcef0-8d3e-4126-963a-05598d8a9e79",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Herald",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "190",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a391da36-0b40-46ea-b771-50d2b920207e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxbloom Ancient",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "191",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8b4f003c-1e99-4e53-ad6d-81ff3c592b2c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Colossus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "196",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "2b27e6b2-13ad-42b2-a121-70935913723d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "202",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "076ec900-345d-4720-96b6-441bce01618a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skola Grovedancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "209",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db6c91ec-df14-460f-967c-f182562fe7d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "212",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "57ea0ba2-3ccf-4313-ad1d-161272c48851",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dalakos, Crafter of Wonders",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "216",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c2159949-3d21-448d-bc34-a3dbaf219476",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eutropia the Twice-Favored",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "217",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0744f08e-a588-4efe-ad56-5e9ed91dda40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gallia of the Endless Dance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "218",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6fe5cbef-0f4e-4d05-9a94-4739e09d7a9c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haktos the Unscarred",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "219",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9854e673-1816-4a76-b9db-bb399ac7489f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Hero of the Nyxborn",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "220",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "5b3c393c-3596-4bd9-a553-e0b03c2eb950",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klothys, God of Destiny",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "221",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cee0459b-9aac-4d2f-abe4-4d5fedde7eb8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "222",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dbc0d2c3-8060-4155-b10e-d641648a4e6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kunoros, Hound of Athreos",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "223",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f8a3df0e-4ee8-458b-adf5-56aca20493e9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mischievous Chimera",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "224",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87858278-632c-4d82-b3a3-adfc6f2f4fc6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polukranos, Unchained",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "226",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2b1d890f-7ef8-47b9-9ec8-f3884a1d09db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Siona, Captain of the Pyleas",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "229",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0b6a71e-56cb-4d25-8f2b-7a4f1b60900d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uro, Titan of Nature's Wrath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "235",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5bd6353f-d119-40e6-895c-030a11a7a2fe",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Lotus",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "236",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "939c6e19-4b27-4023-bb9c-ae440f91e21c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowspear",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "255",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fedff53b-b5c7-470e-bb66-797d5d20b983",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth, Sun's Nemesis",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "256",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c18d2a4a-cfde-434e-85eb-f9aae0da9dce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok, Nightmare Muse",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "257",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11529e37-0558-4ba9-ad04-3ddda05d25f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Calix, Destiny's Hand",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "258",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "f5770e8a-045d-42bc-b6aa-17b89488c9d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "259",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "e11cf760-da35-41f2-8cf5-a5141103eeb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod, Sun-Crowned",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "69641e64-d4f5-4654-8da8-9eb9a71e51c8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Callaphe, Beloved of the Sea",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "27b52628-de05-4ec1-9978-e998cf17bb26",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa, Deep-Dwelling",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "68f3c60d-2fcb-476f-bcc6-eec5879b08ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos, Bleak-Hearted",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "1bcb02d3-dcf4-41a6-8b9a-f8ad477faea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tymaret, Chosen from Death",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "badac9b4-bfaf-4b02-a48a-ec141393566c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Anax, Hardened in the Forge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "176596fd-fc6d-46ae-a64d-d9147430fe0f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros, Bronze-Blooded",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "2a022e36-5074-4875-ac30-aaa09b7ef421",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea, Keen-Eyed",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "97ce113d-6757-45ac-8517-5fd531079ff9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Renata, Called to the Hunt",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted",
+      "legendary",
+      "showcase"
+    ],
+    "id" : "4d747889-04db-4e7a-ad4c-7549514b5112",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Klothys, God of Destiny",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "871c19fc-7d99-4022-9e13-d679a9e3547e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Athreos, Shroud-Veiled",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf9867e5-9d69-400c-a84f-3b085a4fd510",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth, Undaunted Hero",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "53343a0c-d97c-4d6f-b696-5343a962e3dd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Inspiration",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0f82064c-b335-454c-9be6-9fbcb21aa8e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elspeth's Devotee",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2f89cf0f-f682-44f8-879c-ed1e22f849b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sunlit Hoplite",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "274",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36a5fc37-e7bd-41a9-88ac-74a3f14fea8b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok, Sculptor of Fears",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "275",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebc6b5ee-e764-444e-8b27-26e00f4b2074",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swimmer in Nightmares",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "276",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6c5ce79a-fcbd-46ab-8911-480f967ca57f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mindwrack Harpy",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "277",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "781bfbae-acd9-4583-88d2-d31978eef565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok's Forerunner",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "278",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40aca5ca-a37b-4919-aef6-2510b4779161",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "279",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "db68b6a3-10e5-42d1-9325-94a4a821782a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "280",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "92daaa39-cd2f-4c03-8f41-92d99d0a3366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "281",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b82c12c2-2ebf-470b-b0d2-92ccc5faa056",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "282",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "66bb5192-58bc-4efe-a145-2e804fd3483d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "283",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e54a44f2-70bf-4782-bd13-9d03e109d60d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "284",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dc3f4154-9347-4ceb-8744-9f1ace90d33f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "285",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d10d759b-db5b-4a59-840c-05bcbf2381f3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "286",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4be31c4-9cb3-4a07-865b-5621127df660",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "287",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6af0c659-f182-4ad4-bca7-e6c3377f808d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "288",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a238aa9c-661e-449a-8f05-70b7954e544f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grasping Giant",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "289",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e7fa9e2-4c16-4e94-9b0e-09657303132c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Victory's Envoy",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0fd32240-c003-4e18-adf1-e2e992c702b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Courser",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "290",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d70c50ce-48f0-49a6-9653-42b8ccb9a647",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sphinx Mindbreaker",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "291",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a4ac18ae-0d1e-43f5-9cc9-722fa6e36fe5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Serpent of Yawning Depths",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "292",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "57564f6f-7c99-4325-8a0e-22342e73767b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Demon of Loathing",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "293",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8c7aa89-3777-49ec-a6d0-c568150864e8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Sentinel",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "294",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf0f58ac-88ef-445c-a12b-0bb1cf482298",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deathbellow War Cry",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "295",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "332dc6c3-7802-4bde-aa4e-0feab70c216f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Terror of Mount Velus",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "296",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0215cbbf-7bac-4ff7-bceb-23d728797848",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ironscale Hydra",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "297",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "456627ec-81a4-40db-91dc-d25a59cd2837",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treeshaker Chimera",
+    "promoTypes" : [
+      "themepack"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "298",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e146a721-8655-496c-97c0-d6691fa2043e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archon of Sun's Grace",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "299",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "02694fb6-7695-4296-b5d6-cfe60829f1e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Obstruction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "300",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6c0674c3-4e6c-4dbb-a4b0-a5607fcfc3f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Heliod's Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "301",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "3ef062a2-8664-49fd-92d6-413fcf2b9dae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Idyllic Tutor",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "302",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "349ca9f3-f8d4-4fd3-b6dd-1a1d56ffd97c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shatter the Sky",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "303",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "ef670df9-0dda-4542-b1c1-3e8963e5f5a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taranika, Akroan Veteran",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "304",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "62a0d2ba-c75b-4f40-a03b-914a10c35939",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashiok's Erasure",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "305",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "f0c5d004-78bd-4564-9f4a-fcf463f3a76a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nadir Kraken",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "306",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8206247e-43e6-4936-9ef5-42b174ff57c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Protean Thaumaturge",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "307",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "8688bfcb-4d31-423f-bee3-de8f6ca2f99d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa's Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "308",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "13d7e352-4d01-4947-a76f-f8a01dd876cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa's Oracle",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "309",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "3044489e-84e0-453e-9248-a200d27ad17c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thryx, the Sudden Storm",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "310",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "543356bc-d4ab-4250-80c8-5ca69c11af87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wavebreak Hippocamp",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "311",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a7f0dd24-d28c-4f94-8131-3061a1b92e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aphemia, the Cacophony",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "312",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "24c06877-a78b-470d-82ab-9d93d5c5e189",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eat to Extinction",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "313",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a5e0691a-7a97-497c-9b57-6a8afa156d87",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos's Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "314",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "a1f75fdb-1559-4f4e-b14b-0dfb7305f55b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravebreaker Lamia",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "315",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "210d25be-7766-4994-9ae5-dce945449d98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nightmare Shepherd",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "316",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7cde9bcb-1c60-4f3f-af07-7db3f8baf1cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Treacherous Blessing",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "317",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "05500b14-d36d-49b3-82b0-d0c533d4ec00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Woe Strider",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "318",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "38beac66-fab1-4999-b43c-524e3225d70c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ox of Agonas",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "319",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7d2be6f0-1cc1-4153-bdcf-528d49a474f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phoenix of Ash",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "320",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "d7b23ba3-0b20-492d-a529-c6e4aeafd5aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Purphoros's Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "321",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "af4d50d7-6b7c-4109-8f47-443bce9c4451",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm Herald",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "322",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "6f774b26-7b8b-4d06-bec8-764429445e93",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm's Wrath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "323",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a270521e-5db7-480b-9320-abd64c589f3d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tectonic Giant",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "324",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "18e1bdc9-be60-4abd-9756-d3e70e2fcdb5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Underworld Breach",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "325",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "03b9304c-9993-4539-9165-48568eb81db1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "326",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "36adefc7-44a8-40d0-8bdf-ad12d010b0bd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dryad of the Ilysian Grove",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "327",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "168614ac-0126-47f6-a491-5a57490c74a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mantle of the Wolf",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "328",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "a12df807-f100-4a22-b75c-ae7f69431b61",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nessian Boar",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "329",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "4cadcc3a-653d-48f3-8f0f-13c9bb502f37",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nylea's Intervention",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "330",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "extendedart"
+    ],
+    "id" : "c8a8e37b-0b97-4355-8e00-169a82c38ea0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxbloom Ancient",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "331",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "e8b2168d-38e5-429f-8663-f0d258c9c441",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Setessan Champion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "332",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c543e785-2c6b-4347-a9c3-25940bbadcff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Allure of the Unknown",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "333",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a3085763-e65b-49cb-a4e0-2cbad2658a1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Atris, Oracle of Half-Truths",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "334",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c65f4d9d-aa87-439c-8db5-3789cabcce4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bronzehide Lion",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "335",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "7dadfb33-7082-47b8-a498-f3bb963a8d78",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dalakos, Crafter of Wonders",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "336",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "ea1072d6-afda-4282-8dff-06a76ceb447d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dream Trawler",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "337",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "1059102b-d094-47ea-b39c-8627a50f5bbf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enigmatic Incarnation",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "338",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f721cc84-8d76-4c57-b4ba-e384c67aeef7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gallia of the Endless Dance",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "339",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "426919af-93d1-4825-ac38-98c0d6b5f62e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Haktos the Unscarred",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "340",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "050ff430-2ad8-46d0-bfdc-cc7323b87101",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kroxa, Titan of Death's Hunger",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "341",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "a6ee5698-1a40-434c-937b-9462825a752b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kunoros, Hound of Athreos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "342",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "8dab2674-7882-46b5-9b99-3a13b434a2a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Polukranos, Unchained",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "343",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "bcf6e4d1-1b4f-450c-a0fc-2d02313979ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uro, Titan of Nature's Wrath",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "344",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "f3e73185-afdf-4fae-82c3-b5ea355c1572",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyx Lotus",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "345",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart",
+      "legendary"
+    ],
+    "id" : "131cb967-9569-4fbf-8143-c410d3a94538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shadowspear",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "346",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "44c49891-3972-4af8-a86a-f37320a280ae",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Labyrinth of Skophos",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "2a4471a4-efcf-46a9-87df-62af9d616bd1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Abandon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "347★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "b543f825-dc15-4267-8579-5d07c771dd95",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Abandon",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "348",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "80c6be18-356e-4e8b-899c-4a82f5d41a41",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Deceit",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "349",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "7b705a44-b1b6-491b-aaab-53e0577fdde3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Enlightenment",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "350",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "c7f80f4d-0858-46ff-9305-ee6e380eb521",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Malice",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "351",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "extendedart"
+    ],
+    "id" : "61dc9a80-850c-4945-b84a-85381cc3ee85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Temple of Plenty",
+    "promoTypes" : [
+      "boosterfun"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "352",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "55a5ea68-b77d-4fe0-a277-b20d55bc78a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arasta of the Endless Web",
+    "promoTypes" : [
+      "bundle"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "353",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "inverted"
+    ],
+    "id" : "0ad40aed-f247-41b3-8198-6367fdeee953",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alseid of Life's Bounty",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "354",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "fb95d4e0-02e6-4159-8cc0-c8da27edf2f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thirst for Meaning",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "355",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "d794d0a4-4041-43c0-aedb-e2a76611a3ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gray Merchant of Asphodel",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "356",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "8a38a0c3-0e1d-487d-99c8-4504d327c64d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thrill of Possibility",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "357",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "inverted"
+    ],
+    "id" : "cfc4be7b-a948-464d-8327-575ccb7dccf3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wolfwillow Haven",
+    "promoTypes" : [
+      "promopack"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8edd707-5ba3-4978-9a0b-efd0cda367c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Taranika, Akroan Veteran",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a9241289-28d2-4827-970e-81bdecbb5c16",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Transcendent Envoy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "26f9ebbe-3791-4d19-88d2-d5de95faff48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alirios, Enraptured",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "c5d433f2-0a3b-4f45-83a3-ed600a6d10b1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Callaphe, Beloved of the Sea",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d2897635-b387-485d-932f-5655244a381f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Philosophy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "dc6ae489-658b-4c12-b204-f7b58ce84375",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Naiad of Hidden Coves",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9ad0c7d7-0e44-496f-a2fc-fafc604cb1f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Seaguard",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f3b54bea-f2c5-4000-9cbd-04c03a1d2ea2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shimmerwing Chimera",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "0162a0b8-a2d1-4664-a445-331aee6d5175",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Stinging Lionfish",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "c83ed3e0-82d0-4410-a6ca-b0f923eadf83",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thassa, Deep-Dwelling",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "4238b089-c6d8-4e4b-b6a1-a0f89e3b4968",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thryx, the Sudden Storm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f7e152ae-43ec-4b9d-a43f-786c2f6c7366",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dawn Evangel",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d900dff5-1196-443f-b9b0-b8e75c67c868",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wavebreak Hippocamp",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "64cd9d60-826c-4b35-9684-dccb0880399e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Witness of Tomorrows",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "5b359607-d699-4ba9-a438-48f0dd8f1bf5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aphemia, the Cacophony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "0fd2adb3-a6f4-448e-af2a-15ca92b1de63",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Daxos, Blessed by the Sun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "28bf15e0-f61b-43b9-9113-39bd341a0163",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enemy of Enlightenment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment",
+      "legendary"
+    ],
+    "id" : "e340df19-b89a-403f-9736-4bd30b65de74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Erebos, Bleak-Hearted",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "408a2073-d068-44bc-b596-5a3a3a446ee1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gravebreaker Lamia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2020-01-24",
+    "setCode" : "thb",
+    "setName" : "Theros Beyond Death",
+    "variation" : false
+  }
+]

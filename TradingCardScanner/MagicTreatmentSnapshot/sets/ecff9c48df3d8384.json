@@ -1,0 +1,646 @@
+[
+  {
+    "collectorNumber" : "102",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "b2081bf0-09f5-4c95-b4cc-48a8784294d4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Rollicker",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7fc6a735-cbf5-4af2-b15c-7ced82f0d9da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Satyr Firedancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3145ca68-7a9d-4161-9456-518591251b56",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Endurance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "da5a807f-58e8-4d92-a61c-47bb9b28977f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Courser of Kruphix",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "73b1e720-c7cd-450a-a8af-61fcbca7eb24",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ghostblade Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "130",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "cd8447c3-4fce-4971-a3d7-e5671fe269f5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Noble Quarry",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "131",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "91a78895-5e09-46a5-8a74-a07f0befc4e5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Wolf",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "144",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8d171b46-69e7-4e39-b3b2-97ed022cd933",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromanticore",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6832e495-7ee9-43e0-94ea-03c88344080e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ephara, God of the Polis",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "148",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "74050cb3-ba99-475d-9124-726e498fb68e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Karametra, God of Harvests",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "151",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "2a0417bf-b735-46d7-9985-2d991051020f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mogis, God of Slaughter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "152",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8dfcb129-4665-40e4-b5cb-a79f3f40ae5c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phenax, God of Deception",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "156",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3184b138-1109-4195-9d96-4f190164e98b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xenagos, God of Revels",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "64204816-6e1d-4bf8-acd0-8f83ca7eb8c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Shieldmate",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f44e5128-e146-4e46-b313-a40d82719d1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spirit of the Labyrinth",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "3de0f770-b62b-4a9d-bea7-6bb7bc2020ad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Imagination",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8e6c4afb-6a94-4519-91c6-9824fed2892c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Courage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "9a79cee0-6023-42bc-a934-69b99fd5fb02",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flitterstep Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "65371de6-13a2-401f-9334-ae9e19619487",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Triton",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f9cff40b-9cae-47d0-8df4-c287a17a33e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perplexing Chimera",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f326b9c5-063b-4c53-a696-11cd89fc88d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Finality",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "f15cd233-e27b-4cfd-aa4e-18040d1de22f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fate Unraveler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4d16283b-b5bb-48e8-8c97-db5ad74fd544",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eidolon of Countless Battles",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6bb7e5ab-57d7-4a86-b7c2-262932ac3344",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Herald of Torment",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "76f79804-cd90-472b-9d09-3c71e4c6be22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nyxborn Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "017e8cfb-7cb0-403c-b8be-abee22369661",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spiteful Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "13946413-c76d-41a8-a699-404fd56b2067",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Archetype of Aggression",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a018d5ea-5229-40ca-b7c5-31d3e8ebb894",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everflame Eidolon",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2014-02-07",
+    "setCode" : "bng",
+    "setName" : "Born of the Gods",
+    "variation" : false
+  }
+]

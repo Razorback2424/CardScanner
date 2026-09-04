@@ -1,0 +1,48 @@
+[
+  {
+    "collectorNumber" : "32a",
+    "collectorNumberSuffix" : "a",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d0d899e1-bded-4e16-8ecc-cc07784af4bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shorecomber Crab",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "anb",
+    "setName" : "Arena Beginner Set",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56b",
+    "collectorNumberSuffix" : "b",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4139383e-6c7c-4053-8e89-8b601e4ae98e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rise from the Grave",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2020-08-13",
+    "setCode" : "anb",
+    "setName" : "Arena Beginner Set",
+    "variation" : false
+  }
+]

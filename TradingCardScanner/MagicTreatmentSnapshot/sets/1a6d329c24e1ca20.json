@@ -1,0 +1,739 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b2a03ba1-2182-4074-99f5-f3952c1d37ec",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c3679a02-b514-44ef-9950-c350069ac389",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ape Villain",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4296d26c-3ba6-49e8-986c-76f875a0498c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e2030e94-c186-4b7d-9924-6d53440244fe",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62ba25b3-fbf5-40b8-9dbd-66215a31a258",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rhino",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "530c7ad1-1127-40ad-86b4-cb959eb297cb",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Construct",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f9e9b3a-c515-449a-95da-ee3f5175b74f",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vibranium",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fca6ceed-a7d3-47a2-bb0d-7582e596c1f6",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "The Monarch",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f4e87a11-b3b1-47b2-bd73-f4c78d6fbe6c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Copy",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b66aadb2-cbbb-4150-b4b4-bb0dc5327394",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shapeshifter",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a503235b-1213-4da5-967a-e8159dc313d9",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wall",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "049048af-9945-4b73-9aa3-7f09bf4c22b3",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Shapeshifter",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9864812a-b3b1-4e12-8737-0795cdff994c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "456832f6-60b5-46d7-b37e-4fb44e60e792",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa815976-a443-4d8b-acd5-cd3b5202654e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "67be7a72-b7dc-47db-9b30-ebf70e4aaf81",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ox",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7f625f8c-e842-4090-8e9a-3d0367d44635",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Council of Reeds",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8f37ef2b-e390-4c0e-abf2-482623581d47",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rogue",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b0212004-3d0b-4dcd-b166-e5f80cb150a1",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ape Villain",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "62facbb8-1a83-4731-b515-0f7759ee8c3b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e96f22c0-b9c8-418a-8224-e7d0b2841bd2",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Elephant",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d3f65365-03a7-48a4-9e9e-018330966124",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rhino",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "424d7099-8842-4700-8366-093e7b176d1a",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Wall",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0910f9ee-755f-4a94-a2ab-20df2d7f7f27",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Construct",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "252ff4c7-758e-4ceb-aed1-ef15a94e245e",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Vibranium",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "952d0fa0-86fe-4ddc-84e8-48dc96f9dcda",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Robot Hero",
+    "promoTypes" : [
+      "surgefoil",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "75378703-7c80-4a4b-87ef-203eb74edc21",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Angel",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "95181e08-33c2-4df9-97bd-34fb5f78b820",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Bird",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "72387c9a-e50b-4606-a3e1-b640b9eaaf6c",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goat",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4db2ad28-a2d9-41ba-811b-bde40a870675",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Ox",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b1776802-c1d7-4d4d-926f-ab3748942b62",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Council of Reeds",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "064dec90-75ae-4afe-a5d5-a878e9fd9f34",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Rogue",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2026-06-26",
+    "setCode" : "tmsc",
+    "setName" : "Marvel Super Heroes Commander Tokens",
+    "variation" : false
+  }
+]

@@ -1,0 +1,69 @@
+[
+  {
+    "collectorNumber" : "139★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6c61bd2c-1c73-42f6-aa8b-449aee7e5ddd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shriekmaw",
+    "promoTypes" : [
+      "release"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-10-12",
+    "setCode" : "plrw",
+    "setName" : "Lorwyn Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "244★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dacea068-102c-44d7-93dc-93fcda9b8d43",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wren's Run Packmaster",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2007-09-27",
+    "setCode" : "plrw",
+    "setName" : "Lorwyn Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "A2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79d68ed0-1397-4381-afb5-c594fd40ee00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brion Stoutarm",
+    "promoTypes" : [
+      "resale"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2008-08-01",
+    "setCode" : "plrw",
+    "setName" : "Lorwyn Promos",
+    "variation" : false
+  }
+]

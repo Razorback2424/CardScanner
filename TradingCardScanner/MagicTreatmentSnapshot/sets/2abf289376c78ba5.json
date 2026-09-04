@@ -1,0 +1,251 @@
+[
+  {
+    "collectorNumber" : "121s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8bae0ce4-8fb6-415b-8689-62ac06ffcdcd",
+    "language" : "zht",
+    "layout" : "normal",
+    "name" : "Carrion Wall",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9b1228d2-f835-4725-91f2-01f865d0fa2e",
+    "language" : "zht",
+    "layout" : "normal",
+    "name" : "Death Pits of Rath",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "129s",
+    "collectorNumberSuffix" : "s",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ead266ab-36c7-4ebd-a9b6-b6f5b20d70be",
+    "language" : "zht",
+    "layout" : "normal",
+    "name" : "Drudge Skeletons",
+    "promoTypes" : [
+      "schinesealtart"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "81a5ec5a-b490-456a-98e8-36cf4b836d2a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eager Cadet",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15a680ae-aa4f-4030-8032-113b2b80e1fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vengeance",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5131c74-a81b-4927-a1b9-98d2c714ab71",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Giant Octopus",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7e8cacd1-51e7-48af-a7ae-48832dc34a92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sea Eagle",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "168821ce-d77c-4294-a9fd-2a30852801ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vizzerdrix",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S5a",
+    "digital" : true,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4d04e124-5504-43c9-8bf3-c4c66c291a40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vizzerdrix",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : true,
+    "variationOf" : "168821ce-d77c-4294-a9fd-2a30852801ab"
+  },
+  {
+    "collectorNumber" : "S6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a9256cc2-d4b5-4103-bda8-2d9c98c4fd7d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enormous Baloth",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "S7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "025b3156-975d-4f64-b19c-172cb21266c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Silverback Ape",
+    "promoTypes" : [
+      "starterdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2003-07-28",
+    "setCode" : "8ed",
+    "setName" : "Eighth Edition",
+    "variation" : false
+  }
+]

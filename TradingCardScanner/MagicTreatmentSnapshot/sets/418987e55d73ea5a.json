@@ -1,0 +1,1285 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "967e3120-a12b-4051-a8fc-98e9cdd987f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ekthi, Contaminator Priest",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9ff02aab-9532-445e-915c-3ccf71147c76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gustha Ebbasdotter",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "11",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "7ee28c45-01c4-4f15-83d5-ede29f05a256",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sash and Waistcoat, Unmen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "f42c02c2-e3d8-4690-8a93-7c7a4c96bdd6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tolabow, Loch Rascal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "17b3e50c-c878-4131-a1ff-250d62699f4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boss Uramon, Shadow's Reach",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b30b1577-6b04-4ab5-92bc-ab54fdd5a621",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Istvan, Butcher of Eln",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "95a0a609-216b-42e1-83fa-6570c08a4a11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kuroki, Thief of Talents",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5b00ba77-e409-4410-a47a-7fd0a81b27f1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Miss Highwater",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ed522096-8db5-4205-b49f-d41230cce4d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olinda the Oblivious",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "87e0781e-7e69-4914-8387-b34190187401",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sahir, Visitor in Darkness",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "992a9202-c094-4624-9f7c-fc395dc918ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grakk the Pacifist",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "02d08142-59a3-48e3-8897-5aeeb803dc4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Balefang the Unslayable",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9128e3f8-12c7-412f-be94-0c6cbcbd1ee0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chira, All In",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3c771c10-0b1c-4a03-9d91-83dab069410f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dragon's Smile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jabs, Mistress of Mockery",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3555172f-2015-450e-bcc1-94c4a2cff194",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Joven and Chandler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9acfac7e-11c9-4b5b-8cad-03923024d837",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Matoc, Lavamancer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "838ca991-a2b6-4bd2-8168-31bdb61b55ff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Autumn Willow, Harmony",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c2239e5-cdbd-4d3d-81a1-5e18174f1209",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blor the Impervious",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8862e68-432f-4374-bd33-474d7349a0bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Glava, Five-Advents Mage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9a845742-a20d-4332-aaa8-d6cd2d5f482b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nivea, Beloved Battlemage",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac8d307f-5340-4419-95b4-b0ca09f9fd89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maular, the Next Evolution",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9121582e-5a24-45c6-8c81-c296e379b3fb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Meatsqueak, Hoard Lord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "16b6c397-6843-4a8c-86c7-9dadaa51a1c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashaya's Enduring Bond",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chief Magistrate of Mercadia",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9c8bf856-e7a6-4c58-b001-5ed27c7570ec",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Davvol, Evincar of Rath",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "96a12028-cf12-4d3d-af5f-a161cb2b7d97",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elda, Conjurer of Spectacle",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "9aa1869b-4a5a-4f95-8a45-7a671be1c127",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grizzlegom, Hurloon Hero",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1eb501cc-0f83-40ca-8987-424bbee5f584",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seluma, Light of Aysen",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d9934129-11b4-4e91-b81c-9d8e5bb14523",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Homer, the Hermit",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "414c5fd9-e1be-4b82-9aec-85c19ca0f480",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Itazura, Lingering Wick",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "05c31120-7d4a-42d9-adad-53970fdf566e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jandor, Fortuned Traveler",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "b2b98671-737d-4d83-9287-60c51d145821",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lyna, Veil of Vengeance",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa3a7a06-bec1-47d6-9b62-7a343a2d3d22",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Madcap Jester",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "bed6b0c6-6e25-4129-9d11-3e80157ddb42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Massimo, the Magician",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "99e4f6ac-c998-4ab3-a554-0503b16e936e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Muckslinger Gang",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "0d2ca6c6-f94f-4a2a-b9df-d67f9c8aae76",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nephilim Epochal",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d77ee4fa-1e10-4668-8666-86d37471a1b6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Olag and Miau, New Friends",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "01f1ab6c-446d-4a38-b40d-39ea04f5977d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rikala, Homarid King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2733a3cf-624a-430c-97c3-1c521c9a4d57",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Selenia, the Cursed Heart",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d58e9893-c05d-4ab0-93b8-b2754ed24e5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tresserhorn's Lord, Returned",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "2ac9f9f1-fa80-4f56-8184-dadfe1a81d4c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tsagan, Raider Warlord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "caa3e9e4-e1d9-4896-9a66-493e7446aca0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Uugguu, the Omniplasm",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "34390921-6fe4-463a-af1c-2aa5f0bfe82a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Weaver King",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "726f8ac7-d7a3-442c-adb6-82836e4490a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Whtz, the Bibliophile",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "c1a428e0-2e96-4c38-9ea5-ae4de39c3bce",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Zagorka, Mother of Sanctum",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1d1a4c67-630c-42de-b37c-1188451d4b20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "The Everforger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1aea14a7-ef88-4d88-9b9b-a450d3507414",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Yume, Chronicler of Valor",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a0b51fb8-6e5a-479d-aa3a-17cf603dd05c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valko Indorian",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62",
+    "digital" : true,
+    "finishes" : [
+
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "4c2abf39-90f5-46c2-b52c-49f2f43fce22",
+    "language" : "en",
+    "layout" : "case",
+    "name" : "Case of the Lost Witness",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64",
+    "digital" : true,
+    "finishes" : [
+
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f51d8822-1d4d-417c-a281-8b011b978de2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oracle of the Alpha",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66",
+    "digital" : true,
+    "finishes" : [
+
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b21ff8d7-4c3e-4634-bb6b-835ded25a6c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perforator Crocodile",
+    "promoTypes" : [
+      "alchemy"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "fdfdf736-45c5-4ce7-838c-dd9900627fa5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Overcooked",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "dc63c971-458a-4be9-aaa0-18df47547d59",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Euru, Acorn Scrounger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "82f58bb5-5838-4862-a3a3-69c6f05a0cd8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flitwing, Lyev Detective",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d4133c12-436c-49d2-b1b2-30103d073168",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grandmother Goby",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2026-11-09",
+    "setCode" : "mbc",
+    "setName" : "Mystery Booster Commander Edition",
+    "variation" : false
+  }
+]

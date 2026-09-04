@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7b226475-c85c-4b78-9d6a-70cc9545bc31",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Beast",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-05-13",
+    "setCode" : "tnph",
+    "setName" : "New Phyrexia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "feeae905-e456-4598-b3de-b339397983bf",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Goblin",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-05-13",
+    "setCode" : "tnph",
+    "setName" : "New Phyrexia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fe9e8d3b-ebc0-448b-bd14-a9f418e196e7",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Golem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-05-13",
+    "setCode" : "tnph",
+    "setName" : "New Phyrexia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5c087beb-99c0-403e-bb44-33cfc549a831",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Myr",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-05-13",
+    "setCode" : "tnph",
+    "setName" : "New Phyrexia Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "470618f6-f67f-44c6-a086-285632508915",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Poison Counter",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2011-05-13",
+    "setCode" : "tnph",
+    "setName" : "New Phyrexia Tokens",
+    "variation" : false
+  }
+]

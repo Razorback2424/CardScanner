@@ -1,0 +1,50 @@
+[
+  {
+    "collectorNumber" : "1p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5a089eb9-2034-423a-862c-d96e2d280972",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Morophon, the Boundless",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-08-25",
+    "setCode" : "pmh1",
+    "setName" : "Modern Horizons Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f3acc9b9-b89c-4a45-b49e-c414cfa9db48",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astral Drift",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2019-06-14",
+    "setCode" : "pmh1",
+    "setName" : "Modern Horizons Promos",
+    "variation" : false
+  }
+]

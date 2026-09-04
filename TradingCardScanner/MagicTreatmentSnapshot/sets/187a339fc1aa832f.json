@@ -1,0 +1,499 @@
+[
+  {
+    "collectorNumber" : "153",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "a8e9f4d2-bba5-4061-8ae7-a68b912f2c11",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aurelia, Exemplar of Justice",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "168",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "41b930ee-e16b-4612-87de-c03ecc6ff6db",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Emmara, Soul of the Accord",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "170",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa36b142-e67e-49da-9080-c5994e275266",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Etrata, the Silencer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "180",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "75955b0e-12d6-40ba-aab5-b7b7e2bde121",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Izoni, Thousand-Eyed",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "184",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "24c1e710-f61c-4dd6-b620-6d2e1ecab689",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lazav, the Multifarious",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "192",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6f3d2dc5-7b9d-4af6-9f3b-4de90fbf63c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Niv-Mizzet, Parun",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "204",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "5e669a01-84d3-4fcc-8396-9e987bd89b4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Tajic, Legion's Edge",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "208",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "fa1190a4-3d7e-4500-991f-e36ec3d1d9dc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Trostani Discordant",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "260",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b983acda-68b6-468b-b0c1-aad8b53db49c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "261",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "29bfbf3e-3a6c-40d4-8e1b-255f429de6cc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "262",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdd5a7f0-5ad3-44e8-a103-07739fd53630",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "263",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f918a49-a046-4115-80b8-13490ed5cd0a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "264",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d85892ae-dacd-4a55-a557-9db3c16017c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "265",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c44f0c60-5732-4c25-9ba9-4829f1891762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral, Caller of Storms",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "266",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2660fae-6459-446d-85dc-3c9126c81cb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral's Dispersal",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "267",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a59b4e5b-e9e0-4507-b9e7-8fba7e3a54f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Precision Bolt",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "268",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "adfa16dc-03b3-4533-884c-a23b992b8d86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ral's Staticaster",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "269",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4299dbe6-c94d-4ecc-8bfd-741d2649cba1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska, Regal Gorgon",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "270",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "133d9d56-d906-4252-9954-e34cc8564ced",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kraul Raider",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "271",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7f4840f1-3db3-4ba6-b75b-bbd87251a3af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Attendant of Vraska",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "272",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "27fc4db6-a5f5-4254-ae64-c8eaf2c98030",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vraska's Stoneglare",
+    "promoTypes" : [
+      "planeswalkerdeck"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "273",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5e6dc5f-fd83-4166-a5da-cd953722642a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Impervious Greatwurm",
+    "promoTypes" : [
+      "buyabox"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2018-10-05",
+    "setCode" : "grn",
+    "setName" : "Guilds of Ravnica",
+    "variation" : false
+  }
+]

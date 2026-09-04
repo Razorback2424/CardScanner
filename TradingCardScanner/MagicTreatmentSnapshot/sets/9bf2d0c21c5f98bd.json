@@ -1,0 +1,288 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d31a8561-84a0-49a2-9e05-d6bd72b35385",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ethrimik, Imagined Fiend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8f34e050-5549-4088-ae81-b8f33bb0c6fd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Eager Flameguide",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "461a7f23-ad51-4706-80b5-60d2bb40881f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chittering Illuminator",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d0f6f30f-82f7-4f29-a3fd-467cc8ff8b6b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Effie, Fast Learner",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7500c174-c4c5-4bcd-82bf-f705ebe68812",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enduring Friendship",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d6da2a3a-2f1d-47de-8f60-77b6d9661b01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Change",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "49711f3a-2903-4075-b11d-bc77700ab6f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Ambusher",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "d48b7d48-b6c4-4d67-973c-d43e619f05e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Golden Sidekick",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "7c441b04-fac8-4ac7-848b-967a96d66244",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mischievous Lookout",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "c2343a08-6e40-4333-a181-b289f1436fb0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Valiant Emberkin",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "6151380b-8204-4725-9621-b962951ec62a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wingbright Thief",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "8eeb02d2-cf6d-4896-94e9-73fe93683aa0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lurker in the Deep",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "enchantment"
+    ],
+    "id" : "a563a1fb-3621-4bc9-b8cb-2bf7df1c7d60",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Fear of Ridicule",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2024-10-15",
+    "setCode" : "ydsk",
+    "setName" : "Alchemy: Duskmourn",
+    "variation" : false
+  }
+]

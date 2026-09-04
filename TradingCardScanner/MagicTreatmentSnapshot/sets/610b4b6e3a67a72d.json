@@ -1,0 +1,1802 @@
+[
+  {
+    "collectorNumber" : "11p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2f44253-ce51-4253-96c7-afb3ea128dbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aerial Extortionist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3a9af808-5739-4eec-b64d-c88aff13a193",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Angelic Sleuth",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "13p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c68871d-1e4d-447d-931a-c2d9114e677a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Boss's Chauffeur",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "14p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5cc932f3-de94-42f6-842c-0d7c94544a9f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Contractual Safeguard",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "15p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ff779b50-e11d-46c9-aa7f-c3c1797bfe20",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Damning Verdict",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "16p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "87abd7e2-175b-4905-a6c7-38a2ed1f6eff",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grand Crescendo",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "17p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c552b2e9-b5c4-4d0f-b04c-802f8e6a86ac",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jailbreak",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "18p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "262c9e86-2fdd-4f44-a90e-18155fbcb7a8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Master of Ceremonies",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "19p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec613a66-9594-446c-9be5-99a65044f3b7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Resourceful Defense",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "20p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "45f7457f-c513-4e33-8827-e440ca12078e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyboon Evangelist",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "21p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8e0482e3-7723-4854-a078-f93d08dabb8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Share",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "22p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8d30838f-1bd5-4d9b-91cd-337494d08b69",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aven Courier",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "23p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a6771bd5-8d11-4b0b-af41-53c9e63e296f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cephalid Facetaker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "24p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6bcf9e9d-e735-44e4-aef3-589ac7f967ee",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Change of Plans",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "25p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "447f3f85-cc95-410a-a76b-4e9708c0db66",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extravagant Replication",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "26p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6639904c-6bf2-48bd-80cb-fcccdcf6ba1c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Flawless Forgery",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "27p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "44639d1a-a67c-4ec4-8a7d-518825b3313b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "In Too Deep",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "28p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dfa1f50a-a311-4d98-8626-4a8a6abf5fdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mask of the Schemer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ed682d3-a1c2-4b29-b5df-a49df5bd4a01",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Shield Broker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22512ace-0699-4756-b6ba-e899eb88d7b8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sinister Concierge",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "31p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "270c4881-47fa-4f1f-9e16-943747b051e3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Skyway Robber",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "32p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec8f4923-90d4-4d08-ad13-07f2d0671263",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Storm of Forms",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "33p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4e6d7e25-d762-4f9f-8566-53636d88a3d8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bellowing Mauler",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "34p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df9aa3dd-9666-4236-96b2-e20e6f7da1ab",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Body Count",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "35p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "becdd4eb-731a-4ba4-86e5-3c4e8e87d41d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dogged Detective",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "36p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef618c8e-9635-4b99-a563-e88b5265437a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lethal Scheme",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "37p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd6f3105-50d3-4067-a823-7603b75d8c8f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Make an Example",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "38p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8ba3fca8-2001-4f62-8209-8dfa292395f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Misfortune Teller",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "39p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "76be9a78-9c34-4932-bc2c-b0f85f691ac1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Protection Racket",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "40p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb3d318b-e6c1-4493-9dd6-1700baea9f6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Waste Management",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ea099118-c4a1-4649-8e94-bf8ef1a9697a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wave of Rats",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "42p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebc83809-5829-42b1-ab20-7ba250ae4956",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Writ of Return",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "43p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "22071e2a-3955-4382-9f14-6b41d551a27f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Xander's Pact",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8197deca-1222-4ab4-a41c-e5d621cfb6d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Audacious Swap",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "45p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd85ec0c-3ad5-400c-9224-3bac4fee307e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Determined Iteration",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "46p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a373c602-13e9-4184-bdc0-47469d271169",
+    "language" : "en",
+    "layout" : "split",
+    "name" : "Indulge // Excess",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "47p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "adffe20a-d5df-4659-ac01-939c78c53479",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Industrial Advancement",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "48p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "89478efa-0440-4390-8337-e094f4cd8553",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life of the Party",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "21b207ec-64ad-4d30-ba26-1eb9d01b6723",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mezzio Mugger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "50p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bfe0c4c2-c40d-4f27-be02-b730e644d637",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rain of Riches",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "129bb381-c0a3-4f17-be80-bd7a798a1c54",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Rose Room Treasurer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "52p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc3de9a9-439b-4198-9bb1-9d3f1da8b37c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Seize the Spotlight",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "53p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e7ecd1a-73be-4586-aecc-69d7d4672c8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Spellbinding Soprano",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0ce3a22c-a9e1-4518-8937-7c30b92e2273",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Turf War",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "55p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5bc362b9-81a8-4c7b-ab89-207d514f839a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bribe Taker",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "56p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "771257d2-64be-4a61-9eae-d1a98b14a63f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caldaia Guardian",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9c97e5ce-e134-453e-9abb-d024734a562c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Crash the Party",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "58p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f96927d4-f3be-43a0-afa9-fcb55f4628b3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Dodgy Jalopy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2528890a-18ff-4979-b370-d83ace3d806f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Family's Favor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "60p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "572d0c0e-c19f-4fcc-9c2d-9215b91732f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "First Responder",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "61p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6b425048-c587-40ee-842c-648ffa0d6dd5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Killer Service",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "62p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8a3b1cd5-a46e-4f7f-8ea5-89295b2f1762",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Next of Kin",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "63p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7208ef9e-aa90-4533-b37b-4ca4abbedb29",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Park Heights Maverick",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "937e16a3-95b9-497e-b86f-3322458a27c1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scepter of Celebration",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "289f125b-80d6-4935-9263-508e2452136d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vivien's Stampede",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a3ea13b-2032-4a2c-92bb-6dff0358fc5a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Agent's Toolkit",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "db6c2c95-fce2-4066-adbd-c10cfa5b7ec6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bess, Soul Nourisher",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3cb19d38-27f1-4a5a-899e-7576fa5a3b9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Brokers Confluence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20f2a4c8-ba65-4b4c-8b61-6f56c124c906",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cabaretti Confluence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a17a1f7a-c66d-4fec-a51d-c55361a66f5b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cryptic Pursuit",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "892aeb60-a8aa-4e28-b86f-a66594991cf0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Denry Klin, Editor in Chief",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ec716736-9c07-4dbb-bbf3-e9be9a040dd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Grime Gorger",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "1700a44a-f5b2-452b-89e5-89dfe961e5a7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jolene, the Plunder Queen",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c4748af6-c77a-48cc-8ff0-39c303119c85",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Life Insurance",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b7f9614d-8a3e-405f-b689-e74b543ffbdf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Maestros Confluence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "163a5a68-66ed-4508-9c27-32d81ae913b5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Obscura Confluence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ac13a687-4053-494a-9198-cee65045cf36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Oskar, Rubbish Reclaimer",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "359d4a70-404a-4db2-bf7b-0882223427f9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Prosperous Partnership",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8a7d5c2-2ba0-4dcb-9674-30f560d8ec1a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Riveteers Confluence",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "6ad93c62-f953-4d5e-892b-06fc6e3d030e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Syrix, Carrier of the Flame",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "59e70558-6698-436f-a203-c5ef9f799104",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Currency Converter",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36feb903-079f-409b-9e93-fa7da5657a23",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "False Floor",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "23459e7a-5d9b-4d13-af69-b13ed1c73be1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gavel of the Righteous",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8cf3fbb-af22-400d-bf8e-21c113f4f515",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Smuggler's Buggy",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85p",
+    "collectorNumberSuffix" : "p",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bff5bcae-d83c-40c1-b652-81a70b4e52fa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Weathered Sentinels",
+    "promoTypes" : [
+      "promopack",
+      "stamped"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-04-29",
+    "setCode" : "pncc",
+    "setName" : "New Capenna Commander Promos",
+    "variation" : false
+  }
+]

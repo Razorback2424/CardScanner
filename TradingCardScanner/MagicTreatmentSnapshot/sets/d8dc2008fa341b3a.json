@@ -1,0 +1,25 @@
+[
+  {
+    "collectorNumber" : "251★",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c29907d2-ecd4-4143-8f33-35f9663927da",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of Kaldra",
+    "promoTypes" : [
+      "datestamped",
+      "prerelease"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2003-09-20",
+    "setCode" : "pmrd",
+    "setName" : "Mirrodin Promos",
+    "variation" : false
+  }
+]

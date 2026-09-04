@@ -1,0 +1,1562 @@
+[
+  {
+    "collectorNumber" : "103a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "35ed069c-410f-4b30-afd1-8d04742068e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast in Show",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7693877c-958f-4c67-93d5-7db8f2dd87e7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast in Show",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c90b6269-7406-40c9-8d4c-3448698a1fdd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast in Show",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9f7191d7-2c2c-470e-a2b6-eeb8f3031cc2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Beast in Show",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "be3e867a-208d-4a23-b8a8-a48866889a8d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "80545e3d-aff4-4501-a173-b7fa02ef816c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "91144259-d0a1-4e49-9f9b-9be7e36361d9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bd0d8fc5-5841-403f-96db-2259048ff424",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "962272f8-7cea-4766-9980-da99a503ca6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "65b25c91-892d-48d6-b42e-045d16d35316",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ineffable Blessing",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "39c98931-cad7-4cea-97eb-f5e233ab2b36",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fa78eb3f-cf10-4827-ab37-53383596c7f4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "48b50cba-faa4-4847-90af-6fc20f62843e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "82e3bd17-9928-4e7e-8f68-051aae75725e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e06b6fb8-27fc-4d5b-92b2-1a6a5005a262",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "12f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3d81180a-71c8-403f-90c0-48daf81e43a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Knight of the Kitchen Sink",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "51a2b7e0-1f6c-4c17-9648-2d74d7789442",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Curious Killbot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8aa7a8ac-65ed-4f16-9f31-08183f97da74",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Delighted Killbot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e62acc75-484e-4945-bcd0-cba5e098ef4e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Despondent Killbot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "145d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "205fb956-6e2a-4b5f-bae3-eb547a8838aa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Enraged Killbot",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e09bef24-a186-4697-bd33-446fe6e25376",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b3ab7126-4191-4632-be2b-3e972a96bc30",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ad8a3f9b-8ddd-4bce-95ea-f6ecfe2a5502",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c6870324-16c9-4cb7-8889-8ec49d59f89f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ca90bc5e-e448-47b7-a011-c19ac23c5eaa",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "147f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1c6b55b-2dbb-4740-af86-3fe0e4aa03f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Everythingamajig",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a4306c2-1b92-4ccc-8d92-9f27f1505113",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Base",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1728c905-41b9-438f-a9f4-4a1192c93c42",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Base",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9d836021-9289-4ab2-be85-6362670cb9de",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Base",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb35c658-0a3f-4079-b565-a491061090f0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Base",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "165e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6ba52527-191f-4b6e-a524-f2a7a01813bf",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Secret Base",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f426dc98-daae-4785-8384-d2b2dc2bbaad",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amateur Auteur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9cd9d460-733f-44e5-a174-98b5636dc13c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amateur Auteur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "74b77675-cf32-477f-8fdb-cbfa99c6de17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amateur Auteur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4da8a4f6-91e2-40fd-8fef-bb4deca39b15",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Amateur Auteur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "05c121f3-01cb-4e1c-a8a7-6841de28645b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Novellamental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b946b9bd-501c-4d3c-80f2-aac31aadd083",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Novellamental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73115807-ab27-4c13-928b-dbd6ba990da3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Novellamental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "41d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1bffb474-4f90-47ec-ae45-833ea825049e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Novellamental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9a650610-20e2-4f16-b59c-2ea7779f6e47",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2a90b2b6-d96e-4c13-83be-849d2ec1d845",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2dfc9416-06d6-40af-8b3d-62371b3da7c5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "12272ce6-ab1f-4576-9e50-21d324263c44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8e84dd2-01f9-4fad-8a24-cc86424d09a2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "49f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d41e6c51-d96a-436f-94c5-5d1e19c5e0d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Very Cryptic Command",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "49a2f09c-60b8-4020-a4f6-f3d51600b234",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extremely Slow Zombie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b36cc317-c78f-4941-9a45-541c11efd7af",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extremely Slow Zombie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fc6c930e-a20a-436a-96c4-531c7a4961d7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extremely Slow Zombie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "54d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b23561cc-007c-483a-ae08-9e87ef7774c7",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Extremely Slow Zombie",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5d37a3fc-d652-4c87-892e-bf8b8dc71e35",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e5d4df93-078e-4266-82f2-cf4fc5945ce3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "94008ffb-f0fe-4e83-bf73-d8ade4104d86",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "596ee7af-cc78-41b5-93c5-945189d5e46c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ebc2eae1-8e24-4bef-aa03-a3e428f291a1",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bdaf902f-4139-4a54-a519-a60aea84e669",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sly Spy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d33c84b-3807-430e-8315-5de2d7f6fa32",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "9427b338-42d0-44cc-9594-9e50ccbdd809",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a5579dfb-4e63-4e7b-80c5-56949518c71e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a2c1a004-4d80-481b-8f3f-30cc362556bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82e",
+    "collectorNumberSuffix" : "e",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ef8ae74c-6aba-4ea7-8afd-ce319ef6b047",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82f",
+    "collectorNumberSuffix" : "f",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "de96731b-d4b1-4c6c-8413-f9e00030d11d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Garbage Elemental",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aa3093a4-e115-4d88-b7c0-33dee8a11142",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Target Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "807812cc-74a2-4609-9555-7e0a2463090e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Target Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98c",
+    "collectorNumberSuffix" : "c",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "77b552dd-1e0d-41e6-a79b-5a6c1ff28851",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Target Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98d",
+    "collectorNumberSuffix" : "d",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "20a2cdb5-18a8-4fb2-8eb8-920c95beeea9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Target Minotaur",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2017-12-08",
+    "setCode" : "ust",
+    "setName" : "Unstable",
+    "variation" : false
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "collectorNumber" : "104",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e8df73e7-c8a8-46bc-8448-f4d8179aeb4f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chandra, Flamecaller",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-10-01",
+    "setCode" : "ps16",
+    "setName" : "San Diego Comic-Con 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "138",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "539fcda3-158e-425d-9f00-b9f3420dba18",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Nissa, Voice of Zendikar",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-10-01",
+    "setCode" : "ps16",
+    "setName" : "San Diego Comic-Con 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "29",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b5d66fdf-a5a6-48f2-a097-c389e37dc092",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gideon, Ally of Zendikar",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-10-01",
+    "setCode" : "ps16",
+    "setName" : "San Diego Comic-Con 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "40902291-96ad-410f-9ff9-bdd3d4cdea65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jace, Unraveler of Secrets",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-10-01",
+    "setCode" : "ps16",
+    "setName" : "San Diego Comic-Con 2016",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fb6f35ba-d746-46bc-b68b-be5054c41042",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liliana, the Last Hope",
+    "promoTypes" : [
+      "convention"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2016-10-01",
+    "setCode" : "ps16",
+    "setName" : "San Diego Comic-Con 2016",
+    "variation" : false
+  }
+]

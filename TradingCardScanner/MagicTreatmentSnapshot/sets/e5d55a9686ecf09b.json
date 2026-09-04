@@ -1,0 +1,1560 @@
+[
+  {
+    "collectorNumber" : "100z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bde658c0-cc18-48a7-a440-75cdf3f7fc6d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ornithopter",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "101z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "98c57f6b-d1a3-401e-bc59-7aec481d3353",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Perilous Vault",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "102z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a1d31c43-7d50-4eaf-9016-a679e92abcc9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Processor",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "103z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "614604ec-02a4-4c4d-849c-e9f4c9c1233e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phyrexian Revoker",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "104z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7269e169-8fa0-43ec-b8a4-f889e3379e40",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Platinum Angel",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "105z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "13d8e349-e843-4460-92dc-5f4cbc9c1e92",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Precursor Golem",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "106z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "caf8d689-0e73-4dba-8313-b66244e78140",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Pristine Talisman",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "107z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d7b86a5d-9de7-4870-9225-323e7e63d3b9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Psychosis Crawler",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "108z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "79a3325c-64f0-4f8a-b250-7739b9027f65",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quicksilver Amulet",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "109z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dd0d9d7b-3e9c-4d0e-993b-e0b273f75777",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Quietus Spike",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "110z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf1d0a49-9a36-4d72-9cc7-3e469936b94d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ramos, Dragon Engine",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "111z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "fd99ef4f-40c5-42bb-ac3a-41e089bd9356",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Runechanter's Pike",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "112z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4f2d03d4-32b9-476a-a06f-0e078b0f7603",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Scrap Trawler",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "113z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "32839d7e-bbd0-4a7a-b1f0-2c32fe1634f2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sculpting Steel",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "114z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8881ba3b-e1ac-479c-a5e7-f11e1d39b39e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Self-Assembler",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "115z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "587b9829-b935-4d75-9856-cb614b2aa6df",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Semblance Anvil",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "116z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7906e6c0-3ff3-435c-8ed1-e2fb9318d16e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sigil of Valor",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "117z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1ae68448-04a4-4112-bec9-a353417869ea",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Soul-Guide Lantern",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "118z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d11042e2-4f28-499e-a7db-137694063809",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Springleaf Drum",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "119z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37b43739-1241-4b32-83aa-52936eb76e00",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Staff of Domination",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "120z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0d6245bc-e9c8-43fe-a606-e576e3928e88",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sundering Titan",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "121z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "737d82c9-d8e7-4cdb-a207-8e71678addf8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Swiftfoot Boots",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "74c51f5f-6899-41fb-ad5b-51b272c73112",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Meek",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "122z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "60b86ef6-684b-4ac0-9d57-64928c0aaf44",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Meek",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "123z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "695add14-fd2d-40bb-88f4-c064e010e4e4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Thorn of Amethyst",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "124z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b4a6f48e-e8fd-4eaa-85e5-11076c8862c9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Unwinding Clock",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "125z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "387c054b-a5de-43bd-a29d-e8462dc611a5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Well of Lost Dreams",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "126z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dcdbecfc-fc37-4327-9469-7139e16f7fbd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Wurmcoil Engine",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "59",
+    "digital" : false,
+    "finishes" : [
+      "foil",
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "tombstone"
+    ],
+    "id" : "7668aaf3-194b-49f4-9f79-e51e89e8f2f8",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Sword of the Meek",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "64z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0955a8e9-05ea-4747-a148-8d86a800d850",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Adaptive Automaton",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "65z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a19099ae-23f4-4167-abc6-edea9afc032c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Aetherflux Reservoir",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "66z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d5a92c79-8b65-4bdf-9adb-5aeb678df565",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Altar of Dementia",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "67z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f35ff4b7-c55a-4ede-ae73-b6c648d25613",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ashnod's Altar",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "68z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4a5c8600-af33-4f71-9d2f-a75ee4b3eaeb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Astral Cornucopia",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "69z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "354b94c9-8128-4745-89f3-0d9db6019531",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Blackblade Reforged",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "70z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d2d2d52d-7d86-4056-a6a5-f12844c189bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Bone Saw",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "71z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f5dc8767-847d-4dc6-81e5-261c835c5c89",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Burnished Hart",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2c4583e3-4b1b-4d08-a80e-142578b9487a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Caged Sun",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "73z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1c86df7a-a40c-440d-8d18-1d24b35f49bc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Lantern",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "74z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a04cf4dc-f8d7-4c65-b4b6-df5caf99d918",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Chromatic Star",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "75z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f8f539c4-9b68-49c2-b750-e4afa80d5178",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Cloud Key",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "76z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "086cb106-a755-447d-915b-e0413c0dc7ca",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Defense Grid",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "77z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7fece001-6b77-4bbe-9c05-6fd4afc76fb3",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Door to Nothingness",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "78z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7a40dc2d-bd99-411b-8f98-666a398a71b0",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Elsewhere Flask",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "79z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "73640ec9-4cb2-41cb-9012-bd272a1cb10e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Foundry Inspector",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "80z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "70398b01-0301-4a1c-8768-2f189f12577c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gilded Lotus",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "81z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6e726e71-b9cc-421a-9f0d-22e321e88610",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Goblin Charbelcher",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "82z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "8077f5fe-f22a-4840-9417-526e76282a9e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Helm of the Host",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "83z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f62689d0-5957-41f4-aade-40a0ed4f2468",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Howling Mine",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "84z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "2d40b353-2f12-4514-96f4-9ba6c6b420f6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ichor Wellspring",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "85z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "37d93a3d-3692-4016-844c-5c105d183f6c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Inspiring Statuary",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "df7e7bf6-a9e0-4e16-a7e4-c6b09f58aabc",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Ivory Tower",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "87z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "629cb5ec-75bb-41da-875d-80674eac7196",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Jalum Tome",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "88z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "f821c56c-8abc-4d85-b5f0-8508d76adc1b",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Journeyer's Kite",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "89z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "bf3fcbb0-6c21-4bcb-ba53-330ff1e3409c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Keening Stone",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "90z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "07360a3b-9c01-4ee1-9056-888e420650a9",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Key to the City",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "91z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "02ac3788-f182-49c3-9fb0-616139aa951f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Liquimetal Coating",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "92z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e78a7dd2-6689-4315-a312-080fdc9e1b19",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lodestone Golem",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "93z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "769665a4-8441-4a1a-9e44-a1cc4705480c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mazemind Tome",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "94z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7ebfaf88-d862-4a71-a292-fc79c7c25afd",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mesmeric Orb",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "95z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "58f37809-d9f8-4e71-918f-56d662108e34",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Millstone",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "96z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e188602f-d143-4631-90ab-d82c5fdb29c2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mind's Eye",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "97z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "5e74e9f6-1e35-4c96-b989-1cf9c05a5ca4",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mishra's Bauble",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "uncommon",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "98z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a361c9eb-0a12-4f33-a11d-1d7a40801540",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mox Amber",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "99z",
+    "collectorNumberSuffix" : "z",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "7bf210d8-1a57-40a2-9426-5f7be0cad719",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Mystic Forge",
+    "promoTypes" : [
+      "doublerainbow",
+      "serialized"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-11-18",
+    "setCode" : "brr",
+    "setName" : "The Brothers' War Retro Artifacts",
+    "variation" : false
+  }
+]

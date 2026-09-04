@@ -1,0 +1,68 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "597c73b0-c772-4870-b9e3-9498a70fcc3a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Andrios, Roaming Explorer",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-08-01",
+    "setCode" : "ph21",
+    "setName" : "2021 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "3d71f719-ff43-44cf-88ac-08429c4c33a6",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Arteeoh, Dread Scavenger",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2021-12-25",
+    "setCode" : "ph21",
+    "setName" : "2021 Heroes of the Realm",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "cea94853-1a2c-4b17-b863-d2c130757538",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Byode, Inverse Sun",
+    "promoTypes" : [
+      "universesbeyond"
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-08-01",
+    "setCode" : "ph21",
+    "setName" : "2021 Heroes of the Realm",
+    "variation" : false
+  }
+]

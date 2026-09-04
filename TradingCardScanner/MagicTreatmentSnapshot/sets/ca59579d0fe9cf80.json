@@ -1,0 +1,24 @@
+[
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "ffa876f1-7834-48b7-8051-42f4d9d76b5d",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Vendilion Clique",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2023-07-18",
+    "setCode" : "ha7",
+    "setName" : "Historic Anthology 7",
+    "variation" : false
+  }
+]

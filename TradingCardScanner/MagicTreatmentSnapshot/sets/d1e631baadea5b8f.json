@@ -1,0 +1,46 @@
+[
+  {
+    "collectorNumber" : "5",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "51fb2230-00ed-4664-b7bc-3bd3a8590b8a",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kalitas, Traitor of Ghet",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "mythic",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ea1",
+    "setName" : "Explorer Anthology 1",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : true,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+      "legendary"
+    ],
+    "id" : "d057d918-9ab6-4429-827a-2ee392971c17",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Alesha, Who Smiles at Death",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2022-07-28",
+    "setCode" : "ea1",
+    "setName" : "Explorer Anthology 1",
+    "variation" : false
+  }
+]

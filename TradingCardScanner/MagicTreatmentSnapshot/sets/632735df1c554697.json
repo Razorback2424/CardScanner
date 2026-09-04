@@ -1,0 +1,244 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "11d25bde-a303-4b06-a3e1-4ad642deae58",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldrazi Horror",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "10",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "c2c6e29e-261a-4953-bdbe-cce8790eb5a8",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Tamiyo, Field Researcher Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e4439a8b-ef98-428d-a274-53c660b23afe",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human Wizard",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "15f1f43a-cbdb-4d1b-a254-dadcb2469784",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "06e7f8df-826e-4ba7-9c6c-8c8eb7a61de8",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b8710a30-8314-49ef-b995-bd05454095be",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "6",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e44aa879-b63b-497c-9c1b-2333950161fa",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Zombie",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "7",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "dbd994fc-f3f0-4c81-86bd-14ca63ec229b",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Human",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "8",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "ce90c48f-74fb-4e87-9e46-7f8c3d79cbb0",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Spider",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1512fe7b-5e01-424e-9747-8d4840a5d22a",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Liliana, the Last Hope Emblem",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "CH1",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd8586f9-97e2-438d-b74f-1e53c811f314",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Eldritch Moon Checklist",
+    "promoTypes" : [
+      "setpromo"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2016-07-22",
+    "setCode" : "temn",
+    "setName" : "Eldritch Moon Tokens",
+    "variation" : false
+  }
+]

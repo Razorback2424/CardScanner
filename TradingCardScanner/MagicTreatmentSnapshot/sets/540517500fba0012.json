@@ -1,0 +1,75 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "4129b132-ad42-4cdb-a2fd-0a5b69f203ac",
+    "language" : "en",
+    "layout" : "emblem",
+    "name" : "Sephiroth, One-Winged Angel Emblem",
+    "promoTypes" : [
+      "ffvii",
+      "metal",
+      "thick",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "wfin",
+    "setName" : "FIN Asia WPN Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "16d39733-ebc8-45b3-8846-7b5809772933",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Clue",
+    "promoTypes" : [
+      "metal",
+      "thick",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "wfin",
+    "setName" : "FIN Asia WPN Promo Tokens",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "0600f2b1-922b-45ea-9c4b-86492d5c3077",
+    "language" : "en",
+    "layout" : "token",
+    "name" : "Treasure",
+    "promoTypes" : [
+      "metal",
+      "thick",
+      "universesbeyond"
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2025-06-13",
+    "setCode" : "wfin",
+    "setName" : "FIN Asia WPN Promo Tokens",
+    "variation" : false
+  }
+]

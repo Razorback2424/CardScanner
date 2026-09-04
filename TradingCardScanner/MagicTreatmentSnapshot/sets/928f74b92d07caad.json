@@ -1,0 +1,117 @@
+[
+  {
+    "collectorNumber" : "1",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "b62f67c7-937e-4324-b13d-5d107a563e26",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Plains",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pmps06",
+    "setName" : "Magic Premiere Shop 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "2",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e33910c5-b5f9-432c-9f37-25afed9a6708",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Island",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pmps06",
+    "setName" : "Magic Premiere Shop 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "3",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6628f0e3-bc90-4606-9ab3-9b8befc271a1",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Swamp",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pmps06",
+    "setName" : "Magic Premiere Shop 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "4",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "1f2e5cff-415e-4662-8665-0daf0235ecf6",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Mountain",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pmps06",
+    "setName" : "Magic Premiere Shop 2006",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "5",
+    "digital" : false,
+    "finishes" : [
+      "foil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "e47f85e0-49ee-45ec-ab69-45b9033c82bf",
+    "language" : "ja",
+    "layout" : "normal",
+    "name" : "Forest",
+    "promoTypes" : [
+      "instore",
+      "premiereshop"
+    ],
+    "rarity" : "rare",
+    "releasedAt" : "2006-01-01",
+    "setCode" : "pmps06",
+    "setName" : "Magic Premiere Shop 2006",
+    "variation" : false
+  }
+]

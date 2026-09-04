@@ -1,0 +1,186 @@
+[
+  {
+    "collectorNumber" : "12b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cd7bd7d8-dd3b-4da0-a906-74f7fc1b16bb",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Reinforcements",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "30b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "aaac5b37-20a7-4dae-b0f7-04f5cb1e1532",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Lat-Nam's Legacy",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "44b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "6038cfda-4176-452f-8a9f-4541fe947f98",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Casting of Bones",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "51a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "36b443bf-74d4-4225-97b6-e9c3ca756cd2",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Insidious Bookworms",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "57a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "cf96bea5-6d59-4895-84d0-664b2babb17e",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Phantasmal Fiend",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "72a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "a8ab17ef-a5c4-4485-aa27-0f71782f02d5",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Gorilla Shaman",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "86a",
+    "collectorNumberSuffix" : "a",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "d8222dd3-12fa-4c4c-baf4-46eb6e07289c",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Deadly Insect",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  },
+  {
+    "collectorNumber" : "9b",
+    "collectorNumberSuffix" : "b",
+    "digital" : false,
+    "finishes" : [
+      "nonfoil"
+    ],
+    "frameEffects" : [
+
+    ],
+    "id" : "3f7dd641-6144-470e-b066-6233580c8e7f",
+    "language" : "en",
+    "layout" : "normal",
+    "name" : "Kjeldoran Pride",
+    "promoTypes" : [
+
+    ],
+    "rarity" : "common",
+    "releasedAt" : "2006-07-21",
+    "setCode" : "cst",
+    "setName" : "Coldsnap Theme Decks",
+    "variation" : false
+  }
+]
