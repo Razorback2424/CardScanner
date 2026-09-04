@@ -370,6 +370,199 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertFalse(defects[0].canRepairQuantity)
     }
 
+    func testMagicTreatmentIdentityFollowsActivityAndRemovalSnapshot() throws {
+        let card = CollectedCard(
+            collectionKey: "magic:printing#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+        let activity = CollectionActivity(card: card, source: .scan)
+        let snapshot = RemovedCardSnapshot(card: card)
+        let restored = try JSONDecoder().decode(
+            RemovedCardSnapshot.self,
+            from: JSONEncoder().encode(snapshot)
+        )
+
+        XCTAssertEqual(activity.magicTreatmentIDsRaw, ["surgefoil"])
+        XCTAssertEqual(snapshot.magicTreatmentIDsRaw, ["surgefoil"])
+        XCTAssertEqual(restored.magicTreatmentIDsRaw, ["surgefoil"])
+        XCTAssertEqual(restored.collectionKey, card.collectionKey)
+    }
+
+    func testAddingTreatedPrintingRekeysLegacyCollectionHistoryWithoutDuplicate() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try magicIdentifiedCard()
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let legacyKey = "magic:\(card.providerID)#foil"
+        XCTAssertEqual(
+            canonicalKey,
+            "magic:\(card.providerID)#foil#treatment=surgefoil"
+        )
+
+        let legacyRow = CollectedCard(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: card.providerID,
+            name: card.name,
+            setName: card.setName,
+            setCode: card.setCode,
+            cardNumber: card.cardNumber,
+            rarity: card.rarity,
+            imageURL: card.displayImageURL?.absoluteString,
+            thumbnailURL: card.thumbnailImageURL?.absoluteString,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1
+        )
+        context.insert(legacyRow)
+
+        let acquisitionOperationID = UUID()
+        let ledger = InventoryLedger(context: context)
+        guard case .appended = ledger.record(
+            legacyRow,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            operationID: acquisitionOperationID
+        ) else {
+            return XCTFail("Expected the legacy acquisition event to be appended")
+        }
+        context.insert(
+            CollectionActivity(
+                card: legacyRow,
+                source: .scan,
+                quantity: 1,
+                ledgerOperationIDs: [acquisitionOperationID]
+            )
+        )
+
+        let disposalOperationID = UUID()
+        guard case .appended = ledger.record(
+            legacyRow,
+            kind: .dispose,
+            source: .correction,
+            deltaQuantity: -1,
+            operationID: disposalOperationID
+        ) else {
+            return XCTFail("Expected the legacy disposal event to be appended")
+        }
+        var snapshot = RemovedCardSnapshot(card: legacyRow)
+        snapshot.operationID = disposalOperationID
+        context.insert(
+            CollectionActivity(
+                card: legacyRow,
+                source: .correction,
+                quantity: 1,
+                kind: .removed,
+                deltaQuantity: -1,
+                ledgerOperationIDs: [disposalOperationID],
+                removalSnapshotData: try JSONEncoder().encode(snapshot)
+            )
+        )
+        try context.save()
+
+        let mutation = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .foil, resolution: .userConfirmed),
+            source: .scan
+        )
+
+        XCTAssertFalse(mutation.didInsert)
+        XCTAssertEqual(mutation.collectionKey, canonicalKey)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(cards.count, 1)
+        let stored = try XCTUnwrap(cards.first)
+        XCTAssertEqual(stored.collectionKey, canonicalKey)
+        XCTAssertEqual(stored.quantity, 2)
+        XCTAssertEqual(stored.magicTreatmentIDsRaw, ["surgefoil"])
+
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.count, 3)
+        XCTAssertTrue(activities.allSatisfy { $0.collectionKey == canonicalKey })
+        let rewrittenSnapshotData = try XCTUnwrap(
+            activities.first(where: { $0.kind == .removed })?.removalSnapshotData
+        )
+        let rewrittenSnapshot = try JSONDecoder().decode(
+            RemovedCardSnapshot.self,
+            from: rewrittenSnapshotData
+        )
+        XCTAssertEqual(rewrittenSnapshot.collectionKey, canonicalKey)
+        XCTAssertEqual(rewrittenSnapshot.magicTreatmentIDsRaw, ["surgefoil"])
+
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 3)
+        XCTAssertTrue(events.allSatisfy { $0.collectionKey == canonicalKey })
+        let genericPriceKey = PriceRecord.key(
+            game: .magic,
+            printingID: card.providerID,
+            variantID: PhysicalVariant.foil.id
+        )
+        let treatedPriceKey = PriceRecord.key(
+            game: .magic,
+            printingID: card.providerID,
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["surgefoil"]
+        )
+        XCTAssertEqual(Set(events.map(\.priceStorageKey)), [genericPriceKey, treatedPriceKey])
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testCollectionReadThroughSurfacesCanonicalAndLegacyCollision() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let providerID = "collision-printing"
+        let legacyKey = "magic:\(providerID)#foil"
+        let canonicalKey = "magic:\(providerID)#foil#treatment=surgefoil"
+
+        func row(key: String) -> CollectedCard {
+            CollectedCard(
+                collectionKey: key,
+                game: .magic,
+                providerID: providerID,
+                name: "Fixture",
+                setName: "Fixture Set",
+                setCode: "FIC",
+                cardNumber: "10",
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: .foil,
+                variantResolution: .userConfirmed
+            )
+        }
+
+        context.insert(row(key: legacyKey))
+        context.insert(row(key: canonicalKey))
+        try context.save()
+
+        XCTAssertThrowsError(
+            try store.card(
+                forAnyKey: canonicalKey,
+                magicTreatmentIDsRaw: ["surgefoil"]
+            )
+        ) { error in
+            guard case let .ledgerConflict(detail) = error as? CollectionStoreError else {
+                return XCTFail("Expected a collection-key collision")
+            }
+            XCTAssertTrue(detail.contains("canonical and legacy collection keys"))
+        }
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<CollectedCard>()).map(\.collectionKey).sorted(),
+            [canonicalKey, legacyKey].sorted()
+        )
+    }
+
     private func makeContext() throws -> ModelContext {
         let schema = Schema([
             CollectedCard.self,
@@ -414,5 +607,27 @@ final class CollectionActivityHistoryTests: XCTestCase {
         """#
         let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
         return .pokemon(pokemon, setCode: "PRE")
+    }
+
+    private func magicIdentifiedCard() throws -> IdentifiedCard {
+        let json = #"""
+        {
+          "id": "cb82d614-13d8-40ec-9213-8e6852d37c9c",
+          "name": "Fixture",
+          "set": "fic",
+          "set_name": "Fixture Set",
+          "collector_number": "10",
+          "lang": "en",
+          "digital": false,
+          "layout": "normal",
+          "finishes": ["foil"],
+          "promo_types": ["surgefoil"]
+        }
+        """#
+        let card = try JSONDecoder().decode(
+            ScryfallCard.self,
+            from: Data(json.utf8)
+        )
+        return .magic(card)
     }
 }

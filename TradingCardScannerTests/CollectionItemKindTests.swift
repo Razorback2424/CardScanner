@@ -117,6 +117,115 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertTrue(sealed.hasPrefix("sealed:pokemon:"))
     }
 
+    func testMagicTreatmentIsNamespacedInGradedAndSealedKeys() {
+        let graded = CollectedCard.gradedCollectionKey(
+            game: .magic,
+            underlyingPrintingID: "neo-429",
+            variantUUID: "graded-uuid",
+            magicTreatments: [.neonInk]
+        )
+        let certified = CollectedCard.gradedCollectionKey(
+            game: .magic,
+            underlyingPrintingID: "neo-429",
+            variantUUID: "graded-uuid",
+            certificationNumber: "1234",
+            magicTreatments: [.neonInk]
+        )
+        let sealed = CollectedCard.sealedCollectionKey(
+            game: .magic,
+            productUUID: "product-uuid",
+            variantUUID: "variant-uuid",
+            magicTreatments: [.surgeFoil]
+        )
+
+        XCTAssertEqual(
+            graded,
+            "graded:magic:neo-429:graded-uuid#treatment=neonink"
+        )
+        XCTAssertEqual(
+            certified,
+            "graded:magic:neo-429:graded-uuid:cert:1234#treatment=neonink"
+        )
+        XCTAssertEqual(
+            sealed,
+            "sealed:magic:product-uuid:variant-uuid#treatment=surgefoil"
+        )
+        XCTAssertNotEqual(graded, certified)
+        XCTAssertNotEqual(graded, sealed)
+    }
+
+    func testMagicTreatmentPriceRowsDoNotReadThroughGenericFoilPrice() {
+        let card = CollectedCard(
+            collectionKey: "magic:printing#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+        let genericKey = PriceRecord.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id
+        )
+        let treatmentKey = PriceRecord.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["surgefoil"]
+        )
+
+        XCTAssertEqual(card.priceKey, treatmentKey)
+        XCTAssertTrue(card.legacyPriceKeys.isEmpty)
+        XCTAssertNotEqual(card.priceKey, genericKey)
+        XCTAssertEqual(card.priceLookupKeys, [treatmentKey])
+
+        let genericRecord = PriceRecord(
+            key: genericKey,
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id
+        )
+        genericRecord.unitMarketPriceUSD = 99
+        XCTAssertNil(
+            PriceStore.record(
+                for: card,
+                in: [genericRecord.key: genericRecord]
+            )
+        )
+
+        let nonfoil = CollectedCard(
+            collectionKey: "magic:printing#nonfoil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .nonfoil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+        XCTAssertEqual(
+            nonfoil.priceKey,
+            PriceRecord.key(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.nonfoil.id
+            )
+        )
+    }
+
     /// A certificate identifies one physical slab, so two of them never stack
     /// even at an identical grade from the same grader.
     func testCertifiedSlabsAreSeparateRows() throws {

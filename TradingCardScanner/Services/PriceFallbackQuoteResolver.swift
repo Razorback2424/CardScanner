@@ -66,7 +66,10 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceFallbackQuoteResolution {
-        await resolve(
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: variant)
+        )
+        return await resolve(
             game: card.game,
             printingID: Self.printingID(for: card, pokemonPrintRun: pokemonPrintRun),
             catalogID: card.providerID,
@@ -75,6 +78,7 @@ final class PriceFallbackQuoteResolver {
             cardNumber: card.cardNumber,
             variant: variant,
             pokemonPrintRun: pokemonPrintRun,
+            treatmentIDs: treatmentIDs,
             lookupCandidates: Self.directLookups(card: card, variant: variant)
         )
     }
@@ -87,6 +91,7 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceFallbackQuoteResolution {
+        let treatmentIDs = card.magicTreatmentIDs(for: variant)
         let knownVariantID: String?
         if let variant, card.variantID == variant.id {
             knownVariantID = card.justTCGVariantID
@@ -111,6 +116,7 @@ final class PriceFallbackQuoteResolver {
             cardNumber: card.cardNumber,
             variant: variant,
             pokemonPrintRun: pokemonPrintRun,
+            treatmentIDs: treatmentIDs,
             marketVariantID: knownVariantID,
             lookupCandidates: lookupCandidates
         )
@@ -125,6 +131,7 @@ final class PriceFallbackQuoteResolver {
         cardNumber: String,
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?,
+        treatmentIDs: [String] = [],
         marketVariantID: String? = nil,
         lookupCandidates: [JustTCGBatchLookup] = []
     ) async -> PriceFallbackQuoteResolution {
@@ -135,10 +142,20 @@ final class PriceFallbackQuoteResolver {
             return .failed(.missingCredentials)
         }
         guard !Task.isCancelled else { return .failed(.cancelled) }
-        let key = ProductIdentity.key(game: game, printingID: printingID, variantID: variant?.id)
+        let key = ProductIdentity.key(
+            game: game,
+            printingID: printingID,
+            variantID: variant?.id,
+            treatmentIDs: treatmentIDs
+        )
         let identities = ProductIdentityStore(context: context)
         let recordedVariantID = PriceStore(context: context)
-            .record(forKey: PriceRecord.key(game: game, printingID: printingID, variantID: variant?.id))?
+            .record(forKey: PriceRecord.key(
+                game: game,
+                printingID: printingID,
+                variantID: variant?.id,
+                treatmentIDs: treatmentIDs
+            ))?
             .marketVariantID
         let target = MarketPriceTarget(
             priceKey: key,
@@ -154,7 +171,8 @@ final class PriceFallbackQuoteResolver {
                 ?? identities.cachedVariantID(forKey: key),
             lookupCandidates: lookupCandidates,
             currentAmount: nil,
-            lastCheckedAt: nil
+            lastCheckedAt: nil,
+            magicTreatmentIDsRaw: treatmentIDs
         )
 
         if let lookup = target.lookup {
@@ -190,7 +208,7 @@ final class PriceFallbackQuoteResolver {
         // The expensive search is also the mapping resolution. Persist it
         // before returning the quote so the next Price Check or collection
         // refresh can use a keyed batch request instead of searching again.
-        identities.record(outcome, forKey: key)
+        identities.record(outcome, forKey: key, treatmentIDs: treatmentIDs)
         identities.save()
         switch outcome {
         case let .price(price, _, _):
@@ -325,6 +343,7 @@ final class PriceFallbackQuoteResolver {
                     forKey: identityKey,
                     cardID: card.uuid ?? card.id,
                     variantID: variant.variantId,
+                    treatmentIDs: target.magicTreatmentIDsRaw,
                     at: .now
                 )
                 identities.save()
@@ -351,7 +370,8 @@ final class PriceFallbackQuoteResolver {
                 if let card = Self.card(for: lookup, in: response) {
                     identities.record(
                         .noListingForVariant(vendorCardID: card.uuid ?? card.id),
-                        forKey: identityKey
+                        forKey: identityKey,
+                        treatmentIDs: target.magicTreatmentIDsRaw
                     )
                     identities.save()
                 }

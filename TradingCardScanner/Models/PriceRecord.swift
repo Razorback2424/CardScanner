@@ -54,6 +54,11 @@ final class PriceRecord {
     var game: String = ""
     var printingID: String = ""
     var variantID: String?
+    /// Treatment identity is persisted separately from `variantID`; a Magic
+    /// foil can be ordinary foil or a named foil treatment, and those prices
+    /// must never collapse onto one record. The default preserves rows written
+    /// before treatment identity existed.
+    var magicTreatmentIDsRaw: [String] = []
 
     /// `nil` means the provider exposes no price we are willing to attribute to
     /// this physical variant. It never means zero, and it must never be filled in
@@ -124,16 +129,25 @@ final class PriceRecord {
         key: String,
         game: CardGame,
         printingID: String,
-        variantID: String?
+        variantID: String?,
+        magicTreatmentIDs: [String] = []
     ) {
         self.key = key
         self.game = game.rawValue
         self.printingID = printingID
         self.variantID = variantID
+        self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)
     }
 
-    static func key(game: CardGame, printingID: String, variantID: String?) -> String {
-        "\(game.rawValue):\(printingID):\(variantID ?? "-")"
+    static func key(
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String] = []
+    ) -> String {
+        let base = "\(game.rawValue):\(printingID):\(variantID ?? "-")"
+        guard game == .magic else { return base }
+        return MagicTreatmentKeyCodec.appendPriceSuffix(to: base, rawIDs: treatmentIDs)
     }
 
     var source: PriceSource? {

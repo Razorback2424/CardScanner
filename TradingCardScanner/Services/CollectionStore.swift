@@ -199,6 +199,172 @@ struct CollectionStore {
         )
     }
 
+    /// Resolves a collection row against its canonical identity and every
+    /// treatment-free identity that preceded it. A match on a legacy key is
+    /// repaired in the same context transaction as the caller's mutation, so
+    /// scanning a treated printing increments the old row instead of creating a
+    /// second position.
+    ///
+    /// `magicTreatmentIDsRaw` is supplied by a live provider response when one
+    /// exists. When a caller only has a persisted canonical key, the codec can
+    /// recover the normalized ids from that key; live ids are preferred because
+    /// they preserve the spelling of an unknown future treatment.
+    func card(
+        forAnyKey canonicalKey: String,
+        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = []
+    ) throws -> CollectedCard? {
+        let keys = [canonicalKey]
+            + MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey)
+        let rows = try keys.flatMap(cards(forKey:))
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict(
+                "canonical and legacy collection keys both claim \(canonicalKey)"
+            )
+        }
+        guard let row = rows.first else { return nil }
+
+        let keyTreatmentIDs = MagicTreatmentKeyCodec.collectionTreatmentIDs(
+            from: canonicalKey
+        )
+        let requestedTreatmentIDs = suppliedTreatmentIDs.isEmpty
+            ? keyTreatmentIDs
+            : MagicTreatmentKeyCodec.storedIDs(from: suppliedTreatmentIDs)
+        let keyTreatmentSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: keyTreatmentIDs))
+        let requestedTreatmentSet = Set(
+            MagicTreatmentKeyCodec.canonicalIDs(from: requestedTreatmentIDs)
+        )
+        guard keyTreatmentSet == requestedTreatmentSet else {
+            throw CollectionStoreError.ledgerConflict(
+                "treatment ids do not match canonical collection key \(canonicalKey)"
+            )
+        }
+
+        try repairCollectionIdentity(
+            row,
+            canonicalKey: canonicalKey,
+            treatmentIDs: requestedTreatmentIDs
+        )
+        return row
+    }
+
+    /// Repairs the row, its durable activity projections, removal snapshots,
+    /// and ownership-ledger collection references as one staged identity
+    /// operation. Price keys are intentionally not rewritten here: a generic
+    /// pre-treatment price must not be moved into a treatment-specific price
+    /// identity merely because collection ownership was healed.
+    private func repairCollectionIdentity(
+        _ row: CollectedCard,
+        canonicalKey: String,
+        treatmentIDs requestedTreatmentIDs: [String]
+    ) throws {
+        let oldKey = row.collectionKey
+        let existingTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: row.magicTreatmentIDsRaw
+        )
+        let requestedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: requestedTreatmentIDs
+        )
+        let requestedTreatmentSet = Set(
+            MagicTreatmentKeyCodec.canonicalIDs(from: requestedTreatmentIDs)
+        )
+        let existingTreatmentSet = Set(
+            MagicTreatmentKeyCodec.canonicalIDs(from: existingTreatmentIDs)
+        )
+        guard existingTreatmentSet.isEmpty
+                || existingTreatmentSet == requestedTreatmentSet else {
+            throw CollectionStoreError.ledgerConflict(
+                "stored treatment ids disagree with \(canonicalKey)"
+            )
+        }
+        let finalTreatmentIDs = existingTreatmentIDs.isEmpty
+            ? requestedTreatmentIDs
+            : existingTreatmentIDs
+
+        let relatedActivities = try activities(forKey: oldKey)
+        let activityRewrites = try relatedActivities.map { activity -> (CollectionActivity, RemovedCardSnapshot?) in
+            let activityTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+                from: activity.magicTreatmentIDsRaw
+            )
+            let activityTreatmentSet = Set(
+                MagicTreatmentKeyCodec.canonicalIDs(from: activityTreatmentIDs)
+            )
+            let finalTreatmentSet = Set(
+                MagicTreatmentKeyCodec.canonicalIDs(from: finalTreatmentIDs)
+            )
+            guard activityTreatmentSet.isEmpty
+                    || activityTreatmentSet == finalTreatmentSet else {
+                throw CollectionStoreError.ledgerConflict(
+                    "history treatment ids disagree with \(canonicalKey)"
+                )
+            }
+
+            guard let data = activity.removalSnapshotData else {
+                return (activity, nil)
+            }
+            guard var snapshot = try? JSONDecoder().decode(
+                RemovedCardSnapshot.self,
+                from: data
+            ) else {
+                throw CollectionStoreError.ledgerConflict(
+                    "removal snapshot for history entry \(activity.id.uuidString) could not be decoded"
+                )
+            }
+            guard snapshot.collectionKey == oldKey || snapshot.collectionKey == canonicalKey else {
+                throw CollectionStoreError.ledgerConflict(
+                    "removal snapshot for history entry \(activity.id.uuidString) points at a different collection key"
+                )
+            }
+            let snapshotTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+                from: snapshot.magicTreatmentIDsRaw ?? []
+            )
+            let snapshotTreatmentSet = Set(
+                MagicTreatmentKeyCodec.canonicalIDs(from: snapshotTreatmentIDs)
+            )
+            guard snapshotTreatmentSet.isEmpty
+                    || snapshotTreatmentSet == finalTreatmentSet else {
+                throw CollectionStoreError.ledgerConflict(
+                    "removal snapshot treatment ids disagree with \(canonicalKey)"
+                )
+            }
+            snapshot.collectionKey = canonicalKey
+            if snapshotTreatmentIDs.isEmpty {
+                snapshot.magicTreatmentIDsRaw = finalTreatmentIDs
+            }
+            return (activity, snapshot)
+        }
+
+        let oldEvents = try ledger.events(collectionKey: oldKey)
+        let canonicalEvents = oldKey == canonicalKey
+            ? []
+            : try ledger.events(collectionKey: canonicalKey)
+        guard oldKey == canonicalKey || canonicalEvents.isEmpty else {
+            throw CollectionStoreError.ledgerConflict(
+                "the ledger already contains both \(oldKey) and \(canonicalKey); collection rekey was not applied"
+            )
+        }
+
+        row.collectionKey = canonicalKey
+        if row.magicTreatmentIDsRaw.isEmpty {
+            row.magicTreatmentIDsRaw = finalTreatmentIDs
+        }
+        for (activity, snapshot) in activityRewrites {
+            activity.collectionKey = canonicalKey
+            if activity.magicTreatmentIDsRaw.isEmpty {
+                activity.magicTreatmentIDsRaw = finalTreatmentIDs
+            }
+            if let snapshot {
+                activity.removalSnapshotData = try JSONEncoder().encode(snapshot)
+            }
+        }
+        for event in oldEvents where oldKey != canonicalKey {
+            // This is an ownership-identity repair only. Keeping the old
+            // priceStorageKey preserves the historical generic observation;
+            // the repaired CollectedCard will use its cold treatment key for
+            // all future pricing reads and writes.
+            event.collectionKey = canonicalKey
+        }
+    }
+
     private func activity(id: UUID) throws -> CollectionActivity {
         let descriptor = FetchDescriptor<CollectionActivity>(
             predicate: #Predicate { $0.id == id }
@@ -515,14 +681,21 @@ struct CollectionStore {
         setReleaseOrder: Int? = nil
     ) throws -> CollectionMutation {
         do {
+            let magicTreatments = card.unambiguousMagicTreatments
             let key = CollectedCard.gradedCollectionKey(
                 game: card.game,
                 underlyingPrintingID: card.providerID,
                 variantUUID: variant.id,
-                certificationNumber: certificationNumber
+                certificationNumber: certificationNumber,
+                magicTreatments: magicTreatments
             )
+            let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
 
-            if certificationNumber == nil, let existing = try uniqueCard(forKey: key) {
+            if certificationNumber == nil,
+               let existing = try uniqueCard(
+                   forAnyKey: key,
+                   magicTreatmentIDsRaw: treatmentIDs
+               ) {
             existing.quantity += 1
             existing.dateAdded = .now
             storeMarketPrice(
@@ -573,7 +746,8 @@ struct CollectionStore {
             variant: nil,
             variantResolution: .userConfirmed,
             identityResolution: .catalogSelected,
-            setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder
+            setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
+            magicTreatments: magicTreatments
         )
         row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         row.justTCGVariantID = variant.id
@@ -640,7 +814,7 @@ struct CollectionStore {
                 variantUUID: variantUUID
             )
 
-            if let existing = try uniqueCard(forKey: key) {
+            if let existing = try uniqueCard(forAnyKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
             // Re-adding also heals rows saved before sealed artwork support.
@@ -773,7 +947,8 @@ struct CollectionStore {
             game: card.cardGame,
             printingID: card.priceStorageID,
             variantID: card.variantID,
-            marketVariantID: marketVariantID
+            marketVariantID: marketVariantID,
+            treatmentIDs: card.priceTreatmentIDs
         )
     }
 
@@ -804,8 +979,14 @@ struct CollectionStore {
             let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
             let mutation: CollectionMutation
             let stored: CollectedCard
+            let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+                from: card.magicTreatments(for: resolved.variant)
+            )
 
-            let existing = try uniqueCard(forKey: key) ?? (matchCatalogAliases
+            let existing = try uniqueCard(
+                forAnyKey: key,
+                magicTreatmentIDsRaw: treatmentIDs
+            ) ?? (matchCatalogAliases
                 ? try catalogAliasCard(
                     providerID: card.providerID,
                     variantID: resolved.variant?.id,
@@ -816,6 +997,9 @@ struct CollectionStore {
             if let existing {
                 existing.quantity += quantity
                 existing.dateAdded = .now
+                if existing.magicTreatmentIDsRaw.isEmpty {
+                    existing.magicTreatmentIDsRaw = treatmentIDs
+                }
                 mutation = CollectionMutation(
                     collectionKey: existing.collectionKey,
                     activityID: nil,
@@ -1250,6 +1434,16 @@ struct CollectionStore {
         return rows.first
     }
 
+    private func uniqueCard(
+        forAnyKey key: String,
+        magicTreatmentIDsRaw: [String] = []
+    ) throws -> CollectedCard? {
+        try card(
+            forAnyKey: key,
+            magicTreatmentIDsRaw: magicTreatmentIDsRaw
+        )
+    }
+
     /// Removes every owned card while leaving catalog and price data alone.
     /// Each position gets its own snapshot and history row, while the whole
     /// destructive action still commits once.
@@ -1454,6 +1648,7 @@ struct CollectionStore {
         activityToRetarget.cardNumber = correctedCard.cardNumber
         activityToRetarget.variantID = correctedCard.variantID
         activityToRetarget.variantLabel = correctedCard.variantLabel
+        activityToRetarget.magicTreatmentIDsRaw = correctedCard.magicTreatmentIDsRaw
         activityToRetarget.pokemonPrintRunRaw = correctedCard.pokemonPrintRunRaw
         activityToRetarget.correctedAt = .now
         activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
@@ -1517,7 +1712,13 @@ struct CollectionStore {
             let base = parts.first.map(String.init) ?? previous.collectionKey
             let runSuffix = parts.dropFirst().first.map { "@\($0)" } ?? ""
             let identityBase = base.split(separator: "#", maxSplits: 1).first.map(String.init) ?? base
-            let destinationKey = "\(identityBase)#\(corrected.variant?.id ?? "")\(runSuffix)"
+            let correctedTreatmentIDs = previous.magicTreatmentIDs(for: corrected.variant)
+            let destinationKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: identityBase,
+                game: previous.cardGame,
+                finish: corrected.variant,
+                rawTreatmentIDs: correctedTreatmentIDs
+            ) + runSuffix
             guard destinationKey != previous.collectionKey else {
                 throw CollectionStoreError.invalidActivity(activityID)
             }
@@ -1539,6 +1740,9 @@ struct CollectionStore {
             if let existing = try uniqueCard(forKey: destinationKey) {
                 existing.quantity += quantity
                 existing.dateAdded = .now
+                if existing.magicTreatmentIDsRaw.isEmpty {
+                    existing.magicTreatmentIDsRaw = correctedTreatmentIDs
+                }
                 correctedRow = existing
             } else {
                 let inserted = CollectedCard(
@@ -1556,7 +1760,15 @@ struct CollectionStore {
                     variantResolution: corrected.resolution,
                     identityResolution: previousSnapshot.identityResolution,
                     setReleaseOrder: previousSnapshot.setReleaseOrder,
-                    quantity: quantity
+                    quantity: quantity,
+                    magicTreatments: previous.magicTreatments.filter { treatment in
+                        guard let correctedVariant = corrected.variant else {
+                            return treatment.requiredFinish == nil
+                        }
+                        guard let requiredFinish = treatment.requiredFinish else { return true }
+                        return requiredFinish.id.caseInsensitiveCompare(correctedVariant.id)
+                            == .orderedSame
+                    }
                 )
                 inserted.catalogProviderID = previousSnapshot.catalogProviderID
                 inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
@@ -1573,6 +1785,7 @@ struct CollectionStore {
                 inserted.justTCGVariantID = nil
                 inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
                 inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw
+                inserted.magicTreatmentIDsRaw = correctedTreatmentIDs
                 inserted.catalogMetadataCheckedAt = previousSnapshot.catalogMetadataCheckedAt
                 inserted.catalogMetadataVersion = previousSnapshot.catalogMetadataVersion
                 inserted.gradingCompanyRaw = previousSnapshot.gradingCompanyRaw
@@ -1603,6 +1816,7 @@ struct CollectionStore {
             activityToRetarget.cardNumber = correctedRow.cardNumber
             activityToRetarget.variantID = correctedRow.variantID
             activityToRetarget.variantLabel = correctedRow.variantLabel
+            activityToRetarget.magicTreatmentIDsRaw = correctedRow.magicTreatmentIDsRaw
             activityToRetarget.pokemonPrintRunRaw = correctedRow.pokemonPrintRunRaw
             activityToRetarget.correctedAt = .now
             activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
@@ -1639,7 +1853,7 @@ struct RemovedCardSnapshot: Identifiable, Codable {
     /// exactly that rather than recording a fresh acquisition. `nil` only for a
     /// snapshot taken before the ledger existed.
     var operationID: UUID?
-    let collectionKey: String
+    var collectionKey: String
     let game: CardGame
     let providerID: String
     let catalogProviderID: String?
@@ -1648,6 +1862,9 @@ struct RemovedCardSnapshot: Identifiable, Codable {
     let setCode: String
     let cardNumber: String
     let rarity: String?
+    /// Optional so snapshots written before treatment identity existed decode
+    /// as the empty treatment axis during restore.
+    var magicTreatmentIDsRaw: [String]?
     let imageURL: String?
     let thumbnailURL: String?
     let userArtworkFilename: String?
@@ -1684,6 +1901,7 @@ struct RemovedCardSnapshot: Identifiable, Codable {
         setCode = card.setCode
         cardNumber = card.cardNumber
         rarity = card.rarity
+        magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
         imageURL = card.imageURL
         thumbnailURL = card.thumbnailURL
         userArtworkFilename = card.userArtworkFilename
@@ -1730,6 +1948,11 @@ struct RemovedCardSnapshot: Identifiable, Codable {
         if let existing = rows.first {
             existing.quantity += quantity
             existing.dateAdded = max(existing.dateAdded, dateAdded)
+            if existing.magicTreatmentIDsRaw.isEmpty {
+                existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                    from: magicTreatmentIDsRaw ?? []
+                )
+            }
         } else {
             let restored = CollectedCard(
                 collectionKey: collectionKey,
@@ -1747,7 +1970,8 @@ struct RemovedCardSnapshot: Identifiable, Codable {
                 identityResolution: identityResolution,
                 setReleaseOrder: setReleaseOrder,
                 quantity: quantity,
-                dateAdded: dateAdded
+                dateAdded: dateAdded,
+                magicTreatments: (magicTreatmentIDsRaw ?? []).compactMap(MagicTreatment.init(id:))
             )
             restored.tcgplayerURL = tcgplayerURL
             restored.tcgplayerProductID = tcgplayerProductID

@@ -45,6 +45,10 @@ final class CollectedCard {
     /// none — recorded as unknown rather than filled in with something plausible.
     var variantID: String?
     var variantLabel: String?
+    /// Magic treatment ids are persisted as strings so a newer catalog can
+    /// synchronize a real treatment through CloudKit without requiring an older
+    /// build to know its enum case. `[]` is the lightweight-migration default.
+    var magicTreatmentIDsRaw: [String] = []
     /// WotC print run is independent of finish: a card can be both 1st Edition
     /// and Holo. Kept separate so pricing and master-set routing never have to
     /// overload one mutually exclusive variant field with two physical facts.
@@ -133,6 +137,38 @@ final class CollectedCard {
         return CardGrade(value: gradeRaw, label: gradeLabel, qualifier: gradingQualifier)
     }
 
+    /// Decodes the forward-compatible treatment storage without making an
+    /// unknown future id fatal to the collection row.
+    var magicTreatments: [MagicTreatment] {
+        magicTreatmentIDsRaw.compactMap { MagicTreatment(id: $0) }
+    }
+
+    /// Re-applies the shared finish relationship when a history correction
+    /// changes the selected finish but has no live provider response available.
+    func magicTreatmentIDs(for finish: PhysicalVariant?) -> [String] {
+        guard cardGame == .magic else { return [] }
+        // A raw row with no selected finish must retain the legacy bare
+        // identity. This also prevents an unclassified treatment from being
+        // smuggled into a price key when the finish is still unknown.
+        guard finish != nil || itemKind != .rawCard else { return [] }
+        let evidence = MagicTreatmentEvidence(treatments: magicTreatments)
+        return MagicTreatmentKeyCodec.storedIDs(
+            from: evidence.applicableTreatments(for: finish)
+        )
+    }
+
+    /// Treatment ids that are safe to use for the price identity already
+    /// stored on this row. Raw cards need a selected finish; graded and sealed
+    /// rows have their own namespaces and may carry a reviewed treatment even
+    /// though they do not expose a raw-finish selector.
+    var priceTreatmentIDs: [String] {
+        guard cardGame == .magic else { return [] }
+        if itemKind == .rawCard {
+            return magicTreatmentIDs(for: variant)
+        }
+        return MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
+    }
+
     /// What a collection tile calls this row.
     var itemKindLabel: String {
         switch itemKind {
@@ -167,7 +203,8 @@ final class CollectedCard {
         identityResolution: IdentityResolution = .printedIdentifier,
         setReleaseOrder: Int = 0,
         quantity: Int = 1,
-        dateAdded: Date = .now
+        dateAdded: Date = .now,
+        magicTreatments: [MagicTreatment] = []
     ) {
         self.collectionKey = collectionKey
         self.game = game.rawValue
@@ -181,6 +218,7 @@ final class CollectedCard {
         self.thumbnailURL = thumbnailURL
         self.variantID = variant?.id
         self.variantLabel = variant?.label
+        self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
         self.variantResolutionRaw = variantResolution.rawValue
         self.identityResolutionRaw = identityResolution.rawValue
         self.setReleaseOrder = setReleaseOrder
@@ -249,6 +287,9 @@ final class CollectedCard {
             setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
             quantity: 1
         )
+        magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: resolved.variant)
+        )
         if case let .magic(magic) = card {
             tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
         }
@@ -268,17 +309,29 @@ final class CollectedCard {
     static func gradedCollectionKey(
         game: CardGame,
         underlyingPrintingID: String,
-        variantUUID: String
+        variantUUID: String,
+        magicTreatments: [MagicTreatment] = []
     ) -> String {
-        "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        let base = "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        guard game == .magic else { return base }
+        return MagicTreatmentKeyCodec.appendCollectionSuffix(
+            to: base,
+            treatments: magicTreatments
+        )
     }
 
     static func sealedCollectionKey(
         game: CardGame,
         productUUID: String,
-        variantUUID: String
+        variantUUID: String,
+        magicTreatments: [MagicTreatment] = []
     ) -> String {
-        "sealed:\(game.rawValue):\(productUUID):\(variantUUID)"
+        let base = "sealed:\(game.rawValue):\(productUUID):\(variantUUID)"
+        guard game == .magic else { return base }
+        return MagicTreatmentKeyCodec.appendCollectionSuffix(
+            to: base,
+            treatments: magicTreatments
+        )
     }
 
     /// A slab identified by certificate never merges with another slab, even an
@@ -287,15 +340,18 @@ final class CollectedCard {
         game: CardGame,
         underlyingPrintingID: String,
         variantUUID: String,
-        certificationNumber: String?
+        certificationNumber: String?,
+        magicTreatments: [MagicTreatment] = []
     ) -> String {
-        let base = gradedCollectionKey(
-            game: game,
-            underlyingPrintingID: underlyingPrintingID,
-            variantUUID: variantUUID
+        var base = "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        if let certificationNumber, !certificationNumber.isEmpty {
+            base += ":cert:\(certificationNumber)"
+        }
+        guard game == .magic else { return base }
+        return MagicTreatmentKeyCodec.appendCollectionSuffix(
+            to: base,
+            treatments: magicTreatments
         )
-        guard let certificationNumber, !certificationNumber.isEmpty else { return base }
-        return "\(base):cert:\(certificationNumber)"
     }
 
     /// The `PriceRecord` this entry reads its price from. Every owned copy of the
@@ -313,7 +369,12 @@ final class CollectedCard {
     }
 
     var priceKey: String {
-        PriceRecord.key(game: cardGame, printingID: priceStorageID, variantID: variantID)
+        PriceRecord.key(
+            game: cardGame,
+            printingID: priceStorageID,
+            variantID: variantID,
+            treatmentIDs: priceTreatmentIDs
+        )
     }
 
     /// Keys used by builds before print run and vendor-native price identities
@@ -321,6 +382,10 @@ final class CollectedCard {
     /// already-working stored prices visible until a fresh observation is saved
     /// under the canonical key.
     var legacyPriceKeys: [String] {
+        // A generic finish price is not evidence for a treatment-bearing
+        // printing. Do not reuse the treatment-free key: the correct state is a
+        // cold, first-party treatment price rather than a wrong inherited one.
+        guard priceTreatmentIDs.isEmpty else { return [] }
         var keys: [String] = []
         if itemKind != .rawCard, justTCGVariantID != nil {
             keys.append(PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID))

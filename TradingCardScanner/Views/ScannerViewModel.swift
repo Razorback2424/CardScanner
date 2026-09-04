@@ -1414,7 +1414,10 @@ final class ScannerViewModel: ObservableObject {
             game: card.game,
             printingID: pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
                 ?? card.providerID,
-            variantID: variant?.id
+            variantID: variant?.id,
+            treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                from: card.magicTreatments(for: variant)
+            )
         )
         guard savingImmediately else { return }
         prices.save()
@@ -1907,10 +1910,14 @@ final class ScannerViewModel: ObservableObject {
 
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
             ?? card.providerID
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: variant)
+        )
         let key = PriceRecord.key(
             game: card.game,
             printingID: printingID,
-            variantID: variant?.id
+            variantID: variant?.id,
+            treatmentIDs: treatmentIDs
         )
         guard fallbackQuoteTasks[key] == nil else { return }
 
@@ -1928,7 +1935,8 @@ final class ScannerViewModel: ObservableObject {
                 let identityKey = ProductIdentity.key(
                     game: card.game,
                     printingID: printingID,
-                    variantID: variant?.id
+                    variantID: variant?.id,
+                    treatmentIDs: treatmentIDs
                 )
                 let marketVariantID = ProductIdentityStore(context: prices.context)
                     .cachedVariantID(forKey: identityKey)
@@ -1937,7 +1945,8 @@ final class ScannerViewModel: ObservableObject {
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
-                    marketVariantID: marketVariantID
+                    marketVariantID: marketVariantID,
+                    treatmentIDs: treatmentIDs
                 )
                 prices.save()
             case .failed:

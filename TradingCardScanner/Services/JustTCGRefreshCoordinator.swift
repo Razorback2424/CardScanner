@@ -17,6 +17,10 @@ struct MarketPriceTarget: Hashable, Sendable {
     let lookupCandidates: [JustTCGBatchLookup]
     let currentAmount: Double?
     let lastCheckedAt: Date?
+    /// The collection identity this target writes. It is deliberately separate
+    /// from the vendor lookup handle because the vendor may not distinguish a
+    /// treatment even though the app must keep its price records distinct.
+    let magicTreatmentIDsRaw: [String]
     /// This row has never had a complete answer from the vendor, so "unchanged
     /// since the cutoff" tells it nothing.
     ///
@@ -27,6 +31,32 @@ struct MarketPriceTarget: Hashable, Sendable {
     /// ambiguity the delta clock is supposed to prevent. Such a row forces its
     /// whole chunk to ask for a full response.
     var requiresFullResponse: Bool = false
+
+    init(
+        priceKey: String,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        itemKind: CollectionItemKind,
+        marketVariantID: String?,
+        lookupCandidates: [JustTCGBatchLookup],
+        currentAmount: Double?,
+        lastCheckedAt: Date?,
+        magicTreatmentIDsRaw: [String] = [],
+        requiresFullResponse: Bool = false
+    ) {
+        self.priceKey = priceKey
+        self.game = game
+        self.printingID = printingID
+        self.variantID = variantID
+        self.itemKind = itemKind
+        self.marketVariantID = marketVariantID
+        self.lookupCandidates = lookupCandidates
+        self.currentAmount = currentAmount
+        self.lastCheckedAt = lastCheckedAt
+        self.magicTreatmentIDsRaw = magicTreatmentIDsRaw
+        self.requiresFullResponse = requiresFullResponse
+    }
 
     /// The single identifier this target should be sent as.
     var lookup: JustTCGBatchLookup? {

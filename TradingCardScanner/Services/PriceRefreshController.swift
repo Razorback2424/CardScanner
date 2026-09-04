@@ -77,6 +77,10 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// owned rather than every permutation the vendor publishes.
     var gradingCompany: GradingCompany? = nil
     var grade: String? = nil
+    /// Treatment ids are part of the price identity but not of the vendor's
+    /// finish lookup. A provider response may serve several treatment-aware
+    /// records; each record is still written under its own exact key.
+    var magicTreatmentIDsRaw: [String] = []
 
     /// Whether this row exists only in the market vendor's catalogue.
     ///
@@ -97,7 +101,14 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
         itemKind == .sealedProduct
     }
 
-    var id: String { PriceRecord.key(game: game, printingID: printingID, variantID: variantID) }
+    var id: String {
+        PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: magicTreatmentIDsRaw
+        )
+    }
 
     /// One catalog response answers every variant of the same printing, so a
     /// collection holding a normal and a reverse copy costs one request.
@@ -410,7 +421,8 @@ final class PriceRefreshController: ObservableObject {
                         let key = PriceRecord.key(
                             game: target.game,
                             printingID: target.printingID,
-                            variantID: target.variantID
+                            variantID: target.variantID,
+                            treatmentIDs: target.magicTreatmentIDsRaw
                         )
                         let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
                         let newAmount: Double?
@@ -425,7 +437,8 @@ final class PriceRefreshController: ObservableObject {
                             game: target.game,
                             printingID: target.printingID,
                             variantID: target.variantID,
-                            at: now
+                            at: now,
+                            treatmentIDs: target.magicTreatmentIDsRaw
                         )
                     }
 
@@ -447,7 +460,8 @@ final class PriceRefreshController: ObservableObject {
                             game: target.game,
                             printingID: target.printingID,
                             variantID: target.variantID,
-                            at: now
+                            at: now,
+                            treatmentIDs: target.magicTreatmentIDsRaw
                         )
                         // A card the catalog could not even identify is the
                         // strongest fallback candidate there is — it has no
@@ -675,7 +689,8 @@ final class PriceRefreshController: ObservableObject {
             let key = ProductIdentity.key(
                 game: candidate.target.game,
                 printingID: candidate.target.printingID,
-                variantID: candidate.target.variantID
+                variantID: candidate.target.variantID,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
             guard let existing = byKey[key] else {
                 byKey[key] = candidate
@@ -753,7 +768,8 @@ final class PriceRefreshController: ObservableObject {
             let key = ProductIdentity.key(
                 game: candidate.target.game,
                 printingID: candidate.target.printingID,
-                variantID: candidate.target.variantID
+                variantID: candidate.target.variantID,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
             // The handle stored on the row wins. It was written when the item
             // was added out of the vendor's own catalogue, and for a sealed box
@@ -794,6 +810,7 @@ final class PriceRefreshController: ObservableObject {
                     lookupCandidates: external,
                     currentAmount: nil,
                     lastCheckedAt: candidate.target.lastCheckedAt,
+                    magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     // Nothing to compare a delta against: either the row has
                     // never been priced, or it is a sealed product still
                     // missing the artwork only a returned listing can supply.
@@ -887,7 +904,8 @@ final class PriceRefreshController: ObservableObject {
             let key = ProductIdentity.key(
                 game: candidate.target.game,
                 printingID: candidate.target.printingID,
-                variantID: candidate.target.variantID
+                variantID: candidate.target.variantID,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
             // A card already known to be absent from the vendor is skipped
             // outright — that is what makes a collection of unmatchable cards
@@ -902,7 +920,11 @@ final class PriceRefreshController: ObservableObject {
                 variant: variant,
                 lane: .background
             )
-            identities.record(outcome, forKey: key)
+            identities.record(
+                outcome,
+                forKey: key,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
+            )
 
             switch outcome {
             case let .price(price, _, _):
@@ -910,7 +932,8 @@ final class PriceRefreshController: ObservableObject {
                     .price(price),
                     game: candidate.target.game,
                     printingID: candidate.target.printingID,
-                    variantID: candidate.target.variantID
+                    variantID: candidate.target.variantID,
+                    treatmentIDs: candidate.target.magicTreatmentIDsRaw
                 )
                 priced += 1
             case let .budgetReached(resetAt):
@@ -1025,7 +1048,8 @@ final class PriceRefreshController: ObservableObject {
                     game: target.game,
                     printingID: target.printingID,
                     variantID: target.variantID,
-                    marketVariantID: variant.id
+                    marketVariantID: variant.id,
+                    treatmentIDs: target.magicTreatmentIDsRaw
                 )
                 if let record = store.record(forKey: target.id) {
                     record.marketVariantID = variant.id
@@ -1116,6 +1140,7 @@ final class PriceRefreshController: ObservableObject {
                 forKey: owner.priceKey,
                 cardID: card.uuid ?? card.id,
                 variantID: variant.variantId,
+                treatmentIDs: owner.magicTreatmentIDsRaw,
                 at: fetchedAt
             )
             // Marketplace identity is catalog metadata: once the vendor has
@@ -1146,7 +1171,8 @@ final class PriceRefreshController: ObservableObject {
                 game: owner.game,
                 printingID: owner.printingID,
                 variantID: owner.variantID,
-                marketVariantID: variant.variantId
+                marketVariantID: variant.variantId,
+                treatmentIDs: owner.magicTreatmentIDsRaw
             )
             if let record = store.record(forKey: owner.priceKey) {
                 record.marketVariantID = variant.variantId

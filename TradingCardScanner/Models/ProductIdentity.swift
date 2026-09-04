@@ -13,7 +13,8 @@ import SwiftData
 /// re-run a search on every refresh forever.
 @Model
 final class ProductIdentity {
-    /// `game|printingID|variantID` — the same shape as `PriceRecord.key`, because
+    /// `game:printingID:variantID[:treatment=...]` — the same shape as
+    /// `PriceRecord.key`, because
     /// a vendor handle belongs to a printing *and* a finish, exactly as a price
     /// does. One handle per card would reintroduce the finish-collapsing bug the
     /// pricing layer exists to prevent.
@@ -31,6 +32,10 @@ final class ProductIdentity {
     /// keyed refresh actually sends.
     var vendorVariantID: String?
     var resolvedAt: Date?
+    /// Mirrors the treatment-qualified price identity. A vendor handle belongs
+    /// to a treatment-bearing object only when its cache key says so; it must
+    /// not fall through to the generic foil handle.
+    var magicTreatmentIDsRaw: [String] = []
 
     /// Set when the vendor was searched and had nothing. Distinct from "never
     /// asked", which is this whole record being absent.
@@ -59,7 +64,8 @@ final class ProductIdentity {
         vendorVariantID: String? = nil,
         resolvedAt: Date? = nil,
         unmatchedAt: Date? = nil,
-        attemptVersion: Int = ProductIdentity.currentAttemptVersion
+        attemptVersion: Int = ProductIdentity.currentAttemptVersion,
+        magicTreatmentIDs: [String] = []
     ) {
         self.key = key
         self.vendorRaw = vendor.rawValue
@@ -68,6 +74,7 @@ final class ProductIdentity {
         self.resolvedAt = resolvedAt
         self.unmatchedAt = unmatchedAt
         self.attemptVersion = attemptVersion
+        self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)
     }
 
     /// Raise this when the matcher learns to resolve something it previously
@@ -95,7 +102,17 @@ final class ProductIdentity {
         return now.timeIntervalSince(unmatchedAt) < retryUnmatchedAfter
     }
 
-    static func key(game: CardGame, printingID: String, variantID: String?) -> String {
-        PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
+    static func key(
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String] = []
+    ) -> String {
+        PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
     }
 }

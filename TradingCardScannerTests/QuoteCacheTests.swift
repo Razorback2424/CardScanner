@@ -52,6 +52,55 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertTrue(try context.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
     }
 
+    func testMagicTreatmentQuoteDoesNotReuseGenericFoilQuote() throws {
+        let context = try makeContext()
+        let cache = QuoteCache(context: context)
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+
+        cache.store(
+            quote(48.12, at: now),
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            at: now
+        )
+
+        XCTAssertNotNil(
+            cache.quote(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id
+            )
+        )
+        XCTAssertNil(
+            cache.quote(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                treatmentIDs: ["surgefoil"]
+            )
+        )
+
+        cache.store(
+            quote(72.50, at: now),
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            at: now,
+            treatmentIDs: ["surgefoil"]
+        )
+
+        XCTAssertEqual(
+            cache.quote(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                treatmentIDs: ["surgefoil"]
+            )?.amount,
+            72.50
+        )
+    }
+
     func testFailedRefreshKeepsLastKnownQuoteAndItsFreshness() throws {
         let context = try makeContext()
         let cache = QuoteCache(context: context)
