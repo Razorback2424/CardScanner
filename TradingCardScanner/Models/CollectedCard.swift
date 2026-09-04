@@ -290,7 +290,9 @@ final class CollectedCard {
 
     /// Keeps the import identity and collection key stable while filling in
     /// provider metadata from either background normalization or price refresh.
-    func applyCatalogMetadata(from card: IdentifiedCard, checkedAt: Date) {
+    /// The catalog retry watermark is recorded by CollectionCatalogNormalizer,
+    /// which is its single owner.
+    func applyCatalogMetadata(from card: IdentifiedCard) {
         catalogProviderID = card.providerID
         setCode = card.setCode
         rarity = card.rarity
@@ -304,10 +306,9 @@ final class CollectedCard {
             thumbnailURL = card.thumbnailImageURL?.absoluteString
             tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
         }
-        catalogMetadataCheckedAt = checkedAt
     }
 
-    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata, checkedAt: Date) {
+    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata) {
         catalogProviderID = metadata.providerID
         setCode = metadata.setCode
         rarity = metadata.rarity ?? rarity
@@ -318,7 +319,6 @@ final class CollectedCard {
         justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
         justTCGVariantID = metadata.justTCGVariantID ?? justTCGVariantID
         justTCGAPIVersion = metadata.justTCGAPIVersion ?? justTCGAPIVersion
-        catalogMetadataCheckedAt = checkedAt
     }
 
     convenience init(

@@ -1663,3 +1663,148 @@ private extension MagicCollectionKeyParts {
         )
     }
 }
+
+/// Serializes the treatment migration with work that snapshots price identity.
+///
+/// Network enrichment deliberately runs after portfolio startup, but the rows
+/// it enriches can still be rekeyed while a foreground or background price
+/// refresh is being planned. Keeping the migration task here gives every app
+/// entry point one gate: target construction happens only after the network
+/// phase has finished, so a refresh cannot write a generic price through a
+/// treatment-qualified row's superseded key.
+@MainActor
+final class MagicTreatmentMigrationCoordinator {
+    typealias NetworkRunner = @MainActor (
+        ModelContext,
+        Date
+    ) async -> MagicTreatmentMigration.Report
+
+    static let shared = MagicTreatmentMigrationCoordinator()
+
+    private let networkRunner: NetworkRunner
+    private var localTask: Task<MagicTreatmentMigration.Report, Never>?
+    private var localTaskRevision: Int?
+    private var networkTask: Task<MagicTreatmentMigration.Report, Never>?
+    private var networkTaskRevision: Int?
+    private var localReport: MagicTreatmentMigration.Report?
+    private var networkReport: MagicTreatmentMigration.Report?
+    private var collectionRevision = 0
+
+    init(
+        networkRunner: @escaping NetworkRunner = { context, now in
+            await MagicTreatmentMigration.runNetwork(in: context, now: now)
+        }
+    ) {
+        self.networkRunner = networkRunner
+    }
+
+    /// A new collection row can arrive after the first migration pass,
+    /// including from another CloudKit device. Keep completed reports tied to
+    /// the collection revision they examined. An active task may finish, but
+    /// its result must not be cached if the collection changed while it ran.
+    func invalidateCompletedReports() {
+        collectionRevision += 1
+        localReport = nil
+        networkReport = nil
+    }
+
+    /// Runs the local phase once for all callers currently waiting on it.
+    /// A network caller also waits for this phase, so the two migration phases
+    /// can never mutate the same collection concurrently.
+    @discardableResult
+    func runLocal(
+        in context: ModelContext,
+        now: Date = .now
+    ) async -> MagicTreatmentMigration.Report {
+        while true {
+            if let localReport {
+                return localReport
+            }
+            if let networkTask {
+                let taskRevision = networkTaskRevision ?? collectionRevision
+                let report = await networkTask.value
+                guard taskRevision == collectionRevision else { continue }
+                return report
+            }
+            if let localTask {
+                let taskRevision = localTaskRevision ?? collectionRevision
+                let report = await localTask.value
+                guard taskRevision == collectionRevision else { continue }
+                return report
+            }
+
+            let taskRevision = collectionRevision
+            let task = Task { @MainActor in
+                await MagicTreatmentMigration.runLocal(in: context, now: now)
+            }
+            localTask = task
+            localTaskRevision = taskRevision
+            let report = await task.value
+            localTask = nil
+            localTaskRevision = nil
+            guard taskRevision == collectionRevision else { continue }
+            localReport = report
+            return report
+        }
+    }
+
+    /// Runs the deferred network phase once for all callers. The task remains
+    /// owned by the coordinator rather than by a view, so a disappearing view
+    /// cannot cancel shared migration work while another entry point is waiting
+    /// for the same result.
+    @discardableResult
+    func runNetwork(
+        in context: ModelContext,
+        now: Date = .now
+    ) async -> MagicTreatmentMigration.Report {
+        while true {
+            if let networkReport {
+                return networkReport
+            }
+            if let networkTask {
+                let taskRevision = networkTaskRevision ?? collectionRevision
+                let report = await networkTask.value
+                guard taskRevision == collectionRevision else { continue }
+                return report
+            }
+
+            _ = await runLocal(in: context, now: now)
+            if let networkReport {
+                return networkReport
+            }
+            if let networkTask {
+                let taskRevision = networkTaskRevision ?? collectionRevision
+                let report = await networkTask.value
+                guard taskRevision == collectionRevision else { continue }
+                return report
+            }
+
+            let taskRevision = collectionRevision
+            let runner = networkRunner
+            let task = Task { @MainActor in
+                await runner(context, now)
+            }
+            networkTask = task
+            networkTaskRevision = taskRevision
+            let report = await task.value
+            networkTask = nil
+            networkTaskRevision = nil
+            guard taskRevision == collectionRevision else { continue }
+            networkReport = report
+            return report
+        }
+    }
+
+    /// Builds and executes a price refresh only after treatment migration has
+    /// finished. The operation closure is intentionally inside the gate: its
+    /// target snapshot must be made after rekeying, not merely its network
+    /// writes.
+    func withPriceRefresh<Result>(
+        in context: ModelContext,
+        now: Date = .now,
+        operation: @escaping @MainActor () async -> Result
+    ) async -> Result {
+        _ = await runNetwork(in: context, now: now)
+        return await operation()
+    }
+}

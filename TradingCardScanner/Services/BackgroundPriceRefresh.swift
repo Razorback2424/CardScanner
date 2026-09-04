@@ -159,34 +159,39 @@ enum BackgroundPriceRefresh {
         }
 
         let context = TradingCardScannerApp.container.mainContext
-        let allTargets: [PriceTarget]
-        do {
-            allTargets = try PriceRefreshTargets.make(
-                context: context,
-                usesPriceFallback: UserDefaults.standard.bool(forKey: "usesPriceFallback"),
-                includeImported: true
-            )
-        } catch {
-            return false
-        }
-
-        let staleTargets = PriceRefreshController.staleTargets(from: allTargets)
-            .sorted {
-                ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
+        await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(in: context) {
+            // Make the target snapshot only after treatment migration has
+            // finished. A target made before rekeying would write its result
+            // under the superseded treatment-free price key.
+            let allTargets: [PriceTarget]
+            do {
+                allTargets = try PriceRefreshTargets.make(
+                    context: context,
+                    usesPriceFallback: UserDefaults.standard.bool(forKey: "usesPriceFallback"),
+                    includeImported: true
+                )
+            } catch {
+                return
             }
-        let targets: [PriceTarget]
-        switch kind {
-        case .processing:
-            targets = staleTargets
-        case .appRefresh:
-            targets = Array(staleTargets.prefix(appRefreshTargetLimit))
-        }
 
-        if !targets.isEmpty {
-            await PriceRefreshController.shared.refresh(
-                targets,
-                store: PriceStore(context: context)
-            )
+            let staleTargets = PriceRefreshController.staleTargets(from: allTargets)
+                .sorted {
+                    ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
+                }
+            let targets: [PriceTarget]
+            switch kind {
+            case .processing:
+                targets = staleTargets
+            case .appRefresh:
+                targets = Array(staleTargets.prefix(appRefreshTargetLimit))
+            }
+
+            if !targets.isEmpty {
+                await PriceRefreshController.shared.refresh(
+                    targets,
+                    store: PriceStore(context: context)
+                )
+            }
         }
         guard !Task.isCancelled else { return false }
 

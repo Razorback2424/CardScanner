@@ -15,6 +15,46 @@ private actor MagicTreatmentBatchRecorder {
     }
 }
 
+private actor MagicTreatmentMigrationGate {
+    private var hasStarted = false
+    private var isOpen = false
+    private var waiter: CheckedContinuation<Void, Never>?
+
+    func markStarted() {
+        hasStarted = true
+    }
+
+    func started() -> Bool {
+        hasStarted
+    }
+
+    func waitUntilOpen() async {
+        if isOpen { return }
+        await withCheckedContinuation { continuation in
+            waiter = continuation
+        }
+    }
+
+    func open() {
+        isOpen = true
+        waiter?.resume()
+        waiter = nil
+    }
+}
+
+private actor MagicTreatmentMigrationRunCounter {
+    private var count = 0
+
+    func increment() -> Int {
+        count += 1
+        return count
+    }
+
+    func value() -> Int {
+        count
+    }
+}
+
 final class MagicTreatmentTests: XCTestCase {
     func testScryfallCollectionIdentifierEncodesExactID() throws {
         let id = "cb82d614-13d8-40ec-9213-8e6852d37c9c"
@@ -203,6 +243,163 @@ final class MagicTreatmentTests: XCTestCase {
             identified.collectionKey(variant: .foil),
             "magic:cb82d614-13d8-40ec-9213-8e6852d37c9c#foil#treatment=surgefoil"
         )
+    }
+
+    func testSlice9BundledNeoNeonInkQualifiersCoverAllFourExactPrintings() throws {
+        let appBundle = try XCTUnwrap(
+            Bundle(identifier: "com.example.TradingCardScanner"),
+            "The runtime catalog must be validated from the application bundle"
+        )
+        let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
+        let fixtures = [
+            (
+                id: "4826991d-c3c3-45ff-9dfc-4246a84b40e0",
+                number: "429",
+                color: "red"
+            ),
+            (
+                id: "c046b0b3-05f0-4468-817f-355e87552faf",
+                number: "430",
+                color: "green"
+            ),
+            (
+                id: "92da2c98-afe0-4e7a-9510-5a74cc2cdde4",
+                number: "431",
+                color: "blue"
+            ),
+            (
+                id: "78c0b64b-cade-414d-b893-ac1b633c66d0",
+                number: "432",
+                color: "yellow"
+            )
+        ]
+
+        for fixture in fixtures {
+            let entry = try XCTUnwrap(catalog.entry(forCardID: fixture.id))
+            XCTAssertEqual(entry.setCode, "neo")
+            XCTAssertEqual(entry.collectorNumber, fixture.number)
+            XCTAssertEqual(entry.decodedTreatments, [.neonInk])
+            XCTAssertEqual(entry.qualifiers, [MagicTreatment.neonInk.id: fixture.color])
+
+            let card = try decodeMagic(
+                id: fixture.id,
+                setCode: "neo",
+                collectorNumber: fixture.number,
+                finishes: ["foil"],
+                promoTypes: ["neonink"]
+            )
+            let evidence = catalog.evidence(for: card)
+            XCTAssertEqual(evidence.treatments, [.neonInk])
+            XCTAssertEqual(evidence.qualifier(for: .neonInk), fixture.color)
+        }
+    }
+
+    func testSlice9FinalFantasySuffixesRemainDistinctThroughScanAndCompletion() throws {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIN", printedSize: nil)
+        ])
+        let numbers = ["523b", "525a", "525b", "527a", "527b"]
+        let identifiers = try numbers.map { number in
+            try XCTUnwrap(profile.parse(["FIN • \(number) • EN"]))
+        }
+
+        XCTAssertEqual(
+            identifiers.map(\.displayIdentifier),
+            numbers.map { "FIN \($0) EN" }
+        )
+        XCTAssertEqual(Set(identifiers).count, numbers.count)
+
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "fin"),
+            name: "Final Fantasy",
+            code: "FIN",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: numbers.count,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let owned = numbers.map { number in
+            CollectedCard(
+                collectionKey: "magic:fin-\(number)#foil",
+                game: .magic,
+                providerID: "fin-\(number)",
+                name: "Fixture \(number)",
+                setName: "Final Fantasy",
+                setCode: "FIN",
+                cardNumber: number,
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: .foil,
+                variantResolution: .userConfirmed
+            )
+        }
+        let treatedCopyOfOneNumber = CollectedCard(
+            collectionKey: "magic:fin-523b#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "fin-523b",
+            name: "Fixture 523b",
+            setName: "Final Fantasy",
+            setCode: "FIN",
+            cardNumber: "523b",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+
+        XCTAssertEqual(
+            SetCompletionCalculator.progress(
+                for: set,
+                cards: owned + [treatedCopyOfOneNumber]
+            ),
+            SetCompletion(owned: numbers.count, total: numbers.count, unit: "cards")
+        )
+    }
+
+    func testSlice9DualFinishFICIsKeyedAndPricedOnlyForSelectedFinish() throws {
+        let card = try decodeMagic(
+            id: "slice9-fic-10",
+            setCode: "fic",
+            collectorNumber: "10",
+            finishes: ["foil", "nonfoil"],
+            promoTypes: ["surgefoil"],
+            prices: ["usd": "1.25", "usd_foil": "6.40"]
+        )
+        let identified = IdentifiedCard.magic(card)
+        let foilTreatments = identified.magicTreatments(for: .foil)
+        let nonfoilTreatments = identified.magicTreatments(for: .nonfoil)
+
+        XCTAssertEqual(foilTreatments, [.surgeFoil])
+        XCTAssertTrue(nonfoilTreatments.isEmpty)
+        XCTAssertEqual(
+            identified.collectionKey(variant: .nonfoil),
+            "magic:slice9-fic-10#nonfoil"
+        )
+        XCTAssertEqual(
+            identified.collectionKey(variant: .foil),
+            "magic:slice9-fic-10#foil#treatment=surgefoil"
+        )
+        XCTAssertEqual(
+            CardPricing.price(
+                for: identified,
+                variant: .foil,
+                magicTreatments: foilTreatments
+            ),
+            .unavailable(.scryfall)
+        )
+        guard case let .price(nonfoilPrice) = CardPricing.price(
+            for: identified,
+            variant: .nonfoil,
+            magicTreatments: nonfoilTreatments
+        ) else {
+            return XCTFail("The nonfoil FIC copy should retain its ordinary Scryfall price")
+        }
+        XCTAssertEqual(nonfoilPrice.unitMarketPriceUSD, 1.25)
+        XCTAssertEqual(nonfoilPrice.sourceVariantID, "usd")
     }
 
     func testSharedTreatmentRuleDrivesCollectionKeysForEachFinish() throws {
@@ -776,7 +973,8 @@ final class MagicTreatmentTests: XCTestCase {
         promoTypes: [String]? = nil,
         frameEffects: [String]? = nil,
         variation: Bool? = nil,
-        variationOf: String? = nil
+        variationOf: String? = nil,
+        prices: [String: String] = [:]
     ) throws -> ScryfallCard {
         var optionalFields = ""
         if let promoTypes {
@@ -794,6 +992,12 @@ final class MagicTreatmentTests: XCTestCase {
         }
         if let variationOf {
             optionalFields += ", \"variation_of\": \"\(variationOf)\""
+        }
+        if !prices.isEmpty {
+            let encodedPrices = prices.keys.sorted().compactMap { key in
+                prices[key].map { "\"\(key)\": \"\($0)\"" }
+            }.joined(separator: ",")
+            optionalFields += ", \"prices\": {\(encodedPrices)}"
         }
 
         let json = """
@@ -820,6 +1024,97 @@ final class MagicTreatmentMigrationTests: XCTestCase {
     override func tearDown() {
         container = nil
         super.tearDown()
+    }
+
+    func testPriceRefreshPlanningWaitsForNetworkTreatmentMigration() async throws {
+        let context = try makeContext()
+        let gate = MagicTreatmentMigrationGate()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                await gate.markStarted()
+                await gate.waitUntilOpen()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<10_000 {
+            if await gate.started() { break }
+            await Task.yield()
+        }
+        let migrationStarted = await gate.started()
+        XCTAssertTrue(migrationStarted)
+
+        var refreshEntered = false
+        let refresh = Task { @MainActor in
+            await coordinator.withPriceRefresh(in: context) {
+                refreshEntered = true
+            }
+        }
+        for _ in 0..<100 {
+            await Task.yield()
+        }
+        XCTAssertFalse(refreshEntered)
+
+        await gate.open()
+        _ = await migration.value
+        await refresh.value
+        XCTAssertTrue(refreshEntered)
+    }
+
+    func testMigrationRechecksRowsAddedDuringAnInFlightPass() async throws {
+        let context = try makeContext()
+        let gate = MagicTreatmentMigrationGate()
+        let counter = MagicTreatmentMigrationRunCounter()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                let call = await counter.increment()
+                if call == 1 {
+                    await gate.markStarted()
+                    await gate.waitUntilOpen()
+                }
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<10_000 {
+            if await gate.started() { break }
+            await Task.yield()
+        }
+        let migrationStarted = await gate.started()
+        XCTAssertTrue(migrationStarted)
+
+        coordinator.invalidateCompletedReports()
+        await gate.open()
+        _ = await migration.value
+        let runCount = await counter.value()
+        XCTAssertEqual(runCount, 2)
+    }
+
+    func testMigrationInvalidationClearsCompletedReport() async throws {
+        let context = try makeContext()
+        let counter = MagicTreatmentMigrationRunCounter()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                _ = await counter.increment()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        _ = await coordinator.runNetwork(in: context)
+        _ = await coordinator.runNetwork(in: context)
+        let cachedRunCount = await counter.value()
+        XCTAssertEqual(cachedRunCount, 1)
+
+        coordinator.invalidateCompletedReports()
+        _ = await coordinator.runNetwork(in: context)
+        let refreshedRunCount = await counter.value()
+        XCTAssertEqual(refreshedRunCount, 2)
     }
 
     func testLocalMigrationDefersCatalogMissesToBatchedNetworkPhase() async throws {
@@ -1481,7 +1776,129 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertEqual(generic.attemptVersion, 1)
     }
 
+    func testSlice9MigrationConvergesAcrossTwoDevicesWithoutChangingQuantity() async throws {
+        let date = Date(timeIntervalSince1970: 4_500)
+        let legacyKey = "magic:two-device-collision#foil"
+        let canonicalKey = "magic:two-device-collision#foil#treatment=surgefoil"
+
+        func seed(_ context: ModelContext) throws {
+            let legacy = makeRow(
+                key: legacyKey,
+                providerID: "two-device-collision",
+                quantity: 2,
+                treatments: []
+            )
+            let canonical = makeRow(
+                key: canonicalKey,
+                providerID: "two-device-collision",
+                quantity: 1,
+                treatments: [.surgeFoil]
+            )
+            context.insert(legacy)
+            context.insert(canonical)
+            try appendLineage(for: legacy, quantity: 2, at: date, in: context)
+            try appendLineage(for: canonical, quantity: 1, at: date, in: context)
+            try context.save()
+        }
+
+        let deviceA = try makeContainer()
+        let deviceB = try makeContainer()
+        let contextA = deviceA.mainContext
+        let contextB = deviceB.mainContext
+        try seed(contextA)
+        try seed(contextB)
+
+        func quantityTotal(_ context: ModelContext) throws -> Int {
+            let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+            return InventoryLedger.quantities(from: events).values.reduce(0, +)
+        }
+
+        XCTAssertEqual(try quantityTotal(contextA), 3)
+        XCTAssertEqual(try quantityTotal(contextB), 3)
+
+        let response = try makeScryfallCard(
+            id: "two-device-collision",
+            finishes: ["foil"],
+            promoTypes: ["surgefoil"]
+        )
+        let reportA = await MagicTreatmentMigration.run(
+            in: contextA,
+            now: date
+        ) { _ in response }
+        let reportB = await MagicTreatmentMigration.run(
+            in: contextB,
+            now: date
+        ) { _ in response }
+
+        XCTAssertTrue(reportA.isComplete)
+        XCTAssertTrue(reportB.isComplete)
+        XCTAssertEqual(reportA.mergedCollisions, 1)
+        XCTAssertEqual(reportB.mergedCollisions, 1)
+
+        func correctionSignature(_ context: ModelContext) throws -> [String] {
+            let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+                .filter { $0.kind == .correction }
+                .sorted { ($0.legRaw ?? "") < ($1.legRaw ?? "") }
+            XCTAssertEqual(events.count, 2)
+            return events.map {
+                [
+                    $0.operationID.uuidString,
+                    $0.idempotencyKey,
+                    $0.legRaw ?? "-",
+                    $0.collectionKey,
+                    $0.priceStorageKey,
+                    String($0.deltaQuantity),
+                    String($0.occurredAt.timeIntervalSince1970)
+                ].joined(separator: "|")
+            }
+        }
+
+        XCTAssertEqual(
+            try correctionSignature(contextA),
+            try correctionSignature(contextB)
+        )
+        let correctionsA = try contextA.fetch(FetchDescriptor<InventoryEvent>())
+            .filter { $0.kind == .correction }
+        let correctionsB = try contextB.fetch(FetchDescriptor<InventoryEvent>())
+            .filter { $0.kind == .correction }
+        XCTAssertEqual(
+            Set(correctionsA.map(\.operationID)),
+            Set(correctionsB.map(\.operationID))
+        )
+
+        for context in [contextA, contextB] {
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.collectionKey, canonicalKey)
+            XCTAssertEqual(rows.first?.quantity, 3)
+            XCTAssertEqual(
+                InventoryLedger.quantities(
+                    from: try context.fetch(FetchDescriptor<InventoryEvent>())
+                ),
+                [canonicalKey: 3]
+            )
+            XCTAssertEqual(try quantityTotal(context), 3)
+            XCTAssertTrue(
+                CollectionActivity.integrityDefects(
+                    activities: try context.fetch(FetchDescriptor<CollectionActivity>()),
+                    events: try context.fetch(FetchDescriptor<InventoryEvent>())
+                ).isEmpty
+            )
+        }
+
+        let retry = await MagicTreatmentMigration.run(in: contextA, now: date) { _ in response }
+        XCTAssertTrue(retry.isComplete)
+        XCTAssertEqual(retry.exactLookups, 0)
+        XCTAssertEqual(try contextA.fetch(FetchDescriptor<InventoryEvent>()).count, 4)
+    }
+
     private func makeContext() throws -> ModelContext {
+        let container = try makeContainer()
+        self.container = container
+        return container.mainContext
+    }
+
+    private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             CollectedCard.self,
             PriceRecord.self,
@@ -1490,12 +1907,10 @@ final class MagicTreatmentMigrationTests: XCTestCase {
             CollectionActivity.self,
             InventoryEvent.self
         ])
-        let container = try ModelContainer(
+        return try ModelContainer(
             for: schema,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
-        self.container = container
-        return container.mainContext
     }
 
     private func makeRow(

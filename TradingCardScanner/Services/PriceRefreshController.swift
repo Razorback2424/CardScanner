@@ -385,7 +385,11 @@ final class PriceRefreshController: ObservableObject {
                 case let .card(card):
                     if printing.importedIdentity != nil {
                         for importedCard in importedCardsByProviderID[printing.printingID] ?? [] {
-                            importedCard.applyCatalogMetadata(from: card, checkedAt: now)
+                            importedCard.applyCatalogMetadata(from: card)
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                on: importedCard,
+                                at: now
+                            )
                         }
                     }
                     if card.game == .magic {
@@ -1108,11 +1112,16 @@ final class PriceRefreshController: ObservableObject {
         for owner in owners where owner.itemKind == .sealedProduct {
             for row in rowsByPriceKey[owner.priceKey] ?? []
             where row.itemKind == .sealedProduct && row.imageURL == nil {
+                // Record the catalog-owned retry watermark before applying the
+                // image; the helper intentionally requires artwork to be
+                // missing so a completed row cannot be stamped accidentally.
+                CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                    on: row,
+                    at: checkedAt
+                )
                 if let artwork {
                     row.imageURL = artwork.absoluteString
                 }
-                row.catalogMetadataCheckedAt = checkedAt
-                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
             }
         }
     }
@@ -1132,8 +1141,10 @@ final class PriceRefreshController: ObservableObject {
         for owner in owners where owner.itemKind == .sealedProduct {
             for row in rowsByPriceKey[owner.priceKey] ?? []
             where row.itemKind == .sealedProduct && row.imageURL == nil {
-                row.catalogMetadataCheckedAt = checkedAt
-                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+                CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                    on: row,
+                    at: checkedAt
+                )
             }
         }
     }

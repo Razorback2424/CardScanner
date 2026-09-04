@@ -129,8 +129,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 for row in rows {
                     let previousVariantID = row.justTCGVariantID
                     let previousPriceKey = row.priceKey
-                    row.applyCatalogMetadata(metadata, checkedAt: now)
-                    row.catalogMetadataVersion = Self.metadataVersion
+                    row.applyCatalogMetadata(metadata)
+                    Self.recordCatalogMetadataCheck(on: row, at: now)
 
                     // A changed marketplace variant is a changed priced object,
                     // even though the collection row and its physical finish
@@ -155,16 +155,19 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 let isDefinitiveSealedMiss = request.itemKind == .sealedProduct
                     && resolution.definitiveSealedMisses.contains(request.sourceProviderID)
                 for row in rows {
-                    row.catalogMetadataCheckedAt = now
                     // A negative current version is a completed, deterministic
                     // sealed miss. A positive current version is a transient
                     // sealed check (or an ordinary card miss) and remains
                     // eligible after the normal retry interval. Using the
                     // version avoids a SwiftData schema migration, and changing
                     // the resolver version reopens either state safely.
-                    row.catalogMetadataVersion = isDefinitiveSealedMiss
-                        ? -Self.metadataVersion
-                        : Self.metadataVersion
+                    Self.recordCatalogMetadataCheck(
+                        on: row,
+                        at: now,
+                        version: isDefinitiveSealedMiss
+                            ? -Self.metadataVersion
+                            : Self.metadataVersion
+                    )
                 }
             }
         }
@@ -224,6 +227,29 @@ final class CollectionCatalogNormalizer: ObservableObject {
             && card.justTCGVariantID == nil
             && card.catalogMetadataCheckedAt != nil
             && card.catalogMetadataVersion == -Self.metadataVersion
+    }
+
+    /// The sole writer for the catalog normalizer's retry watermark. Other
+    /// services may discover metadata or sealed artwork, but they must report
+    /// that observation through this method instead of mutating the gate.
+    static func recordCatalogMetadataCheck(
+        on card: CollectedCard,
+        at checkedAt: Date,
+        version: Int = metadataVersion
+    ) {
+        card.catalogMetadataCheckedAt = checkedAt
+        card.catalogMetadataVersion = version
+    }
+
+    /// Records a completed artwork lookup while the sealed row is still
+    /// missing artwork. The caller invokes this before applying a returned
+    /// image so the same helper remains valid for both a hit and a miss.
+    static func recordSealedArtworkCheck(
+        on card: CollectedCard,
+        at checkedAt: Date
+    ) {
+        guard card.itemKind == .sealedProduct, card.imageURL == nil else { return }
+        recordCatalogMetadataCheck(on: card, at: checkedAt)
     }
 
     /// Repairs sealed products saved by older in-app catalogue builds. These
