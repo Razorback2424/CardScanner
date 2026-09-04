@@ -121,6 +121,38 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
 
     var isEmpty: Bool { treatments.isEmpty }
 
+    /// Presentation labels keep the treatment axis visible without pretending
+    /// that a qualifier is another finish. A reviewed qualifier is appended to
+    /// its treatment, so a color or stamp type cannot be mistaken for a
+    /// separate physical-variant choice.
+    var displayLabels: [String] {
+        treatments.map { treatmentLabel(for: $0) }
+    }
+
+    var displayLabel: String? {
+        displayLabels.isEmpty ? nil : displayLabels.joined(separator: " · ")
+    }
+
+    func displayLabel(with finish: PhysicalVariant?) -> String? {
+        let compatibleLabels = treatments.compactMap { treatment -> String? in
+            guard let requiredFinish = treatment.requiredFinish else {
+                return treatmentLabel(for: treatment)
+            }
+            guard let finish,
+                  finish.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame else {
+                return nil
+            }
+            return treatmentLabel(for: treatment)
+        }
+
+        guard !compatibleLabels.isEmpty else {
+            return finish?.label
+        }
+        return [finish?.label, compatibleLabels.joined(separator: " · ")]
+            .compactMap { $0 }
+            .joined(separator: " · ")
+    }
+
     init(
         treatments: [MagicTreatment],
         qualifiers: [String: String] = [:]
@@ -131,5 +163,33 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
 
     func qualifier(for treatment: MagicTreatment) -> String? {
         qualifiers[treatment.id]
+    }
+
+    private func treatmentLabel(for treatment: MagicTreatment) -> String {
+        guard let qualifier = qualifier(for: treatment) else {
+            return treatment.label
+        }
+        return "\(treatment.label) · \(qualifier.capitalized)"
+    }
+}
+
+/// A read-only integrity finding for provider data that contradicts a known
+/// treatment relationship. The treatment remains visible for review; this
+/// value only reports that its required finish was not published on the exact
+/// printing.
+struct MagicTreatmentDiagnostic: Equatable, Hashable, Sendable, Identifiable {
+    let treatment: MagicTreatment
+    let requiredFinish: PhysicalVariant
+    let publishedFinishes: [PhysicalVariant]
+
+    var id: String { "\(treatment.id):\(requiredFinish.id)" }
+
+    var title: String {
+        "\(treatment.label) / \(requiredFinish.label) mismatch"
+    }
+
+    var detail: String {
+        let published = publishedFinishes.map(\.label).joined(separator: " · ")
+        return "This printing is published as \(published), but \(treatment.label) requires \(requiredFinish.label)."
     }
 }

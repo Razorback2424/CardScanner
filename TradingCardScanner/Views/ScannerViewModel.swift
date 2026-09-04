@@ -539,6 +539,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let name: String
     let identifier: String
     let variantLabel: String
+    let treatmentDiagnostics: [MagicTreatmentDiagnostic]
     let thumbnailURL: URL?
 
     static func == (lhs: ScanReceipt, rhs: ScanReceipt) -> Bool { lhs.id == rhs.id }
@@ -1687,9 +1688,13 @@ final class ScannerViewModel: ObservableObject {
                 scanID: scan.id,
                 name: candidate.card.name,
                 identifier: candidate.identifier.scannerDisplayIdentifier(for: candidate.card),
-                variantLabel: [candidate.pokemonPrintRun?.label, candidate.resolved.label]
+                variantLabel: [
+                    candidate.pokemonPrintRun?.label,
+                    candidate.card.finishAndTreatmentDisplayLabel(for: candidate.resolved.variant)
+                ]
                     .compactMap { $0 }
                     .joined(separator: " · "),
+                treatmentDiagnostics: candidate.card.magicTreatmentDiagnostics,
                 thumbnailURL: scan.thumbnailURL
             )
         )

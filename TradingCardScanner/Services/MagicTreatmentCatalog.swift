@@ -220,6 +220,29 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
         )
     }
 
+    /// Checks only explicit provider finish metadata. A missing finish list is
+    /// unknown, not contradictory; a nonfoil (or other non-required) list is a
+    /// reportable mismatch when the provider simultaneously identifies a
+    /// foil-only treatment.
+    func diagnostics(for card: ScryfallCard) -> [MagicTreatmentDiagnostic] {
+        let publishedFinishes = card.catalogVariants
+        guard !publishedFinishes.isEmpty else { return [] }
+
+        return treatments(for: card).compactMap { treatment in
+            guard let requiredFinish = treatment.requiredFinish,
+                  !publishedFinishes.contains(where: {
+                      $0.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
+                  }) else {
+                return nil
+            }
+            return MagicTreatmentDiagnostic(
+                treatment: treatment,
+                requiredFinish: requiredFinish,
+                publishedFinishes: publishedFinishes
+            )
+        }
+    }
+
     func entry(forCardID cardID: String) -> MagicTreatmentCatalogEntry? {
         entriesByCardID[cardID.lowercased()]
     }

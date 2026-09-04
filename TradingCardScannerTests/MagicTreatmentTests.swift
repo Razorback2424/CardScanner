@@ -86,6 +86,58 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertEqual(card.catalogVariants, [.foil])
     }
 
+    func testTreatmentDisplayComposesFinishAndQualifier() throws {
+        let card = try decodeMagic(
+            finishes: ["foil"],
+            promoTypes: ["neonink"]
+        )
+        let catalog = try makeCatalog(entries: [
+            MagicTreatmentCatalogEntry(
+                id: card.id,
+                setCode: card.setCode,
+                collectorNumber: card.collectorNumber,
+                treatments: ["neonink"],
+                qualifiers: ["neonink": "red"]
+            )
+        ])
+
+        XCTAssertEqual(
+            card.magicTreatmentDisplayLabel(using: catalog),
+            "Neon Ink · Red"
+        )
+        XCTAssertEqual(
+            IdentifiedCard.magic(card).finishAndTreatmentDisplayLabel(for: .foil),
+            "Foil · Neon Ink"
+        )
+    }
+
+    func testDualFinishTreatmentFollowsTheSelectedFinish() throws {
+        // FIC #10 is an audited dual-finish Surge Foil printing: the number
+        // identifies the treatment, but the copy's finish still decides
+        // whether that treatment applies.
+        let card = try decodeMagic(
+            id: "cb82d614-13d8-40ec-9213-8e6852d37c9c",
+            setCode: "fic",
+            collectorNumber: "10",
+            finishes: ["foil", "nonfoil"],
+            promoTypes: ["surgefoil"]
+        )
+        let evidence = card.magicTreatmentEvidence(using: .empty)
+
+        XCTAssertEqual(evidence.displayLabel(with: .foil), "Foil · Surge Foil")
+        XCTAssertEqual(evidence.displayLabel(with: .nonfoil), "Nonfoil")
+        XCTAssertEqual(card.magicTreatmentDisplayLabel(using: .empty), "Surge Foil")
+        XCTAssertTrue(card.magicTreatmentDiagnostics(using: .empty).isEmpty)
+        XCTAssertEqual(
+            IdentifiedCard.magic(card).finishAndTreatmentDisplayLabel(for: .nonfoil),
+            "Nonfoil"
+        )
+        XCTAssertEqual(
+            IdentifiedCard.magic(card).finishAndTreatmentDisplayLabel(for: nil),
+            "Unknown finish · Surge Foil"
+        )
+    }
+
     func testKnownProviderSignalStillWorksForCardsNotYetInCompactCatalog() throws {
         let card = try decodeMagic(
             setCode: "fin",
@@ -115,6 +167,31 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertNil(
             card.magicTreatmentEvidence(using: .empty).qualifier(for: .neonInk)
         )
+    }
+
+    func testFoilOnlyTreatmentReportsExplicitNonfoilContradiction() throws {
+        let card = try decodeMagic(
+            finishes: ["nonfoil"],
+            promoTypes: ["surgefoil"]
+        )
+
+        let diagnostics = card.magicTreatmentDiagnostics(using: .empty)
+        let diagnostic = try XCTUnwrap(diagnostics.first)
+        XCTAssertEqual(diagnostic.treatment, .surgeFoil)
+        XCTAssertEqual(diagnostic.requiredFinish, .foil)
+        XCTAssertEqual(diagnostic.publishedFinishes, [.nonfoil])
+        XCTAssertEqual(diagnostic.title, "Surge Foil / Foil mismatch")
+        XCTAssertTrue(diagnostic.detail.contains("published as Nonfoil"))
+        XCTAssertTrue(diagnostic.detail.contains("requires Foil"))
+    }
+
+    func testMissingFinishMetadataDoesNotInventAContradiction() throws {
+        let card = try decodeMagic(
+            finishes: [],
+            promoTypes: ["surgefoil"]
+        )
+
+        XCTAssertTrue(card.magicTreatmentDiagnostics(using: .empty).isEmpty)
     }
 
     func testCatalogEnrichmentRequiresTheExactPrintingIdentity() throws {

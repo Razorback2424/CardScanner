@@ -92,6 +92,7 @@ struct CatalogCardDetailView: View {
                 if let rarity = details.card.rarity { Text(rarity.capitalized).font(.subheadline).foregroundStyle(.secondary) }
             }
 
+            treatmentSection(details.card)
             ownedSection(details.card)
             priceSection(details.card)
 
@@ -127,6 +128,35 @@ struct CatalogCardDetailView: View {
         }
         .padding(20)
         .contentWidthLimit(.standard)
+    }
+
+    @ViewBuilder
+    private func treatmentSection(_ card: IdentifiedCard) -> some View {
+        if let label = card.magicTreatmentDisplayLabel {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Treatment", systemImage: "sparkles")
+                    .font(.headline)
+
+                Text(label)
+                    .font(.body.weight(.semibold))
+                    .accessibilityLabel("Treatment: \(label)")
+
+                ForEach(card.magicTreatmentDiagnostics) { diagnostic in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.orange)
+                        Text(diagnostic.detail)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        }
     }
 
     @ViewBuilder private func ownedSection(_ card: IdentifiedCard) -> some View {
@@ -314,3 +344,133 @@ struct CatalogCardDetailView: View {
         isLoading = false
     }
 }
+
+#if DEBUG
+private enum MagicTreatmentSlice4Fixture {
+    static let card: ScryfallCard = {
+        let json = """
+        {
+          "id": "cb82d614-13d8-40ec-9213-8e6852d37c9c",
+          "name": "Auron, Venerated Guardian",
+          "set": "fic",
+          "set_name": "Final Fantasy Commander",
+          "collector_number": "10",
+          "lang": "en",
+          "digital": false,
+          "layout": "normal",
+          "rarity": "rare",
+          "released_at": "2025-06-13",
+          "finishes": ["foil", "nonfoil"],
+          "frame_effects": ["legendary"],
+          "promo_types": ["ffx", "surgefoil", "universesbeyond"]
+        }
+        """
+        return try! JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
+    }()
+
+    static let set = CatalogSet(
+        catalogID: CatalogSetID(game: .magic, providerID: "fic"),
+        name: card.setName,
+        code: card.setCode.uppercased(),
+        logoURL: nil,
+        symbolURL: nil,
+        cardCount: 106,
+        releaseDate: Date(timeIntervalSince1970: 1_749_772_800),
+        sortRank: 0
+    )
+
+    static let summary = CatalogCardSummary(
+        game: .magic,
+        providerID: card.id,
+        setID: set.catalogID,
+        setName: card.setName,
+        setCode: card.setCode.uppercased(),
+        name: card.name,
+        collectorNumber: card.collectorNumber,
+        thumbnailURL: nil,
+        imageURL: nil
+    )
+
+    static let receipt = ScanReceipt(
+        scanID: UUID(),
+        name: card.name,
+        identifier: "FIC 10",
+        variantLabel: IdentifiedCard.magic(card)
+            .finishAndTreatmentDisplayLabel(for: .foil),
+        treatmentDiagnostics: [],
+        thumbnailURL: nil
+    )
+}
+
+private actor MagicTreatmentSlice4DebugCatalog: BrowseCatalogProviding {
+    static let shared = MagicTreatmentSlice4DebugCatalog()
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        game == .magic ? [MagicTreatmentSlice4Fixture.set] : []
+    }
+
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [MagicTreatmentSlice4Fixture.summary], nextCursor: nil)
+    }
+
+    func searchCards(
+        named query: String,
+        game: CardGame,
+        setIDs: Set<CatalogSetID>,
+        cursor: String?
+    ) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [MagicTreatmentSlice4Fixture.summary], nextCursor: nil)
+    }
+
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        CatalogCardDetails(
+            card: .magic(MagicTreatmentSlice4Fixture.card),
+            set: MagicTreatmentSlice4Fixture.set
+        )
+    }
+
+    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+}
+
+/// DEBUG-only deterministic surface for Slice 4 visual QA. It reuses the
+/// production receipt and catalog-detail views with a local exact-printing
+/// dual-finish fixture, so the screenshot proves that a selected foil can show
+/// the composed label while browse detail does not silently choose foil.
+struct MagicTreatmentSlice4DebugView: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Magic treatment")
+                        .font(.largeTitle.bold())
+
+                    Text("Scan receipt")
+                        .font(.headline)
+                    ScanReceiptCard(
+                        receipt: MagicTreatmentSlice4Fixture.receipt,
+                        onUndo: {},
+                        onOpen: {}
+                    )
+
+                    Text("Catalog card detail")
+                        .font(.headline)
+                    CatalogCardDetailView(
+                        summary: MagicTreatmentSlice4Fixture.summary,
+                        catalog: MagicTreatmentSlice4DebugCatalog.shared
+                    )
+                        .frame(height: 680)
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 18)
+                                .stroke(.quaternary, lineWidth: 1)
+                        }
+                }
+                .padding(20)
+                .contentWidthLimit(.standard)
+            }
+            .navigationTitle("Treatment QA")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+#endif

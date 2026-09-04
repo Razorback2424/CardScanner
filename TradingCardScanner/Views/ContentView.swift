@@ -45,7 +45,7 @@ struct ContentView: View {
         debugRoute = route
         let initialTab: Tab
         switch route {
-        case "Browse", "SealedArtwork", "CardMovement": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
@@ -100,6 +100,16 @@ struct ContentView: View {
                 }
                 .tag(Tab.centering)
         }
+#if DEBUG
+        .overlay {
+            if debugRoute == "MagicTreatmentSlice4" {
+                MagicTreatmentSlice4DebugView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(uiColor: .systemBackground))
+                    .ignoresSafeArea()
+            }
+        }
+#endif
 #if DEBUG
         .task {
             switch debugRoute {

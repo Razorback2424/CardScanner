@@ -397,6 +397,13 @@ struct ScanReceiptCard: View {
                             .font(.caption.monospacedDigit())
                             .foregroundStyle(.white.opacity(0.72))
                             .lineLimit(1)
+                        ForEach(receipt.treatmentDiagnostics) { diagnostic in
+                            Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.orange)
+                                .lineLimit(2)
+                                .accessibilityValue(diagnostic.detail)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -451,7 +458,7 @@ struct RecentScanRail: View {
                             onDelete(scan)
                         }
                     }
-                    .accessibilityLabel("\(scan.card.name), \(scan.resolved.label). Open to correct.")
+                    .accessibilityLabel("\(scan.card.name), \(scan.card.finishAndTreatmentDisplayLabel(for: scan.resolved.variant)). Open to correct.")
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
                 }
             }

@@ -568,6 +568,25 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
         catalog.evidence(for: self)
     }
 
+    /// Browse detail has no selected physical finish. Keep the treatment visible
+    /// without silently choosing foil; finish-aware surfaces use
+    /// `MagicTreatmentEvidence.displayLabel(with:)` after resolution.
+    var magicTreatmentDisplayLabel: String? {
+        magicTreatmentEvidence.displayLabel
+    }
+
+    func magicTreatmentDisplayLabel(using catalog: MagicTreatmentCatalog) -> String? {
+        catalog.evidence(for: self).displayLabel
+    }
+
+    var magicTreatmentDiagnostics: [MagicTreatmentDiagnostic] {
+        MagicTreatmentCatalogStore.bundledDefault.diagnostics(for: self)
+    }
+
+    func magicTreatmentDiagnostics(using catalog: MagicTreatmentCatalog) -> [MagicTreatmentDiagnostic] {
+        catalog.diagnostics(for: self)
+    }
+
     /// DFCs put images on faces rather than the card root. The front is enough
     /// for MVP and does not need a special scanning path.
     var displayImageURL: URL? {
@@ -772,6 +791,34 @@ enum IdentifiedCard: Identifiable, Sendable {
         switch self {
         case .pokemon: return MagicTreatmentEvidence(treatments: [])
         case let .magic(card): return card.magicTreatmentEvidence
+        }
+    }
+
+    func finishAndTreatmentDisplayLabel(for finish: PhysicalVariant?) -> String {
+        let finishLabel = finish?.label ?? "Unknown finish"
+        guard case let .magic(card) = self else {
+            return finishLabel
+        }
+        if let finish {
+            return card.magicTreatmentEvidence.displayLabel(with: finish) ?? finishLabel
+        }
+        guard let treatmentLabel = card.magicTreatmentEvidence.displayLabel else {
+            return finishLabel
+        }
+        return "\(finishLabel) · \(treatmentLabel)"
+    }
+
+    var magicTreatmentDisplayLabel: String? {
+        switch self {
+        case .pokemon: return nil
+        case let .magic(card): return card.magicTreatmentDisplayLabel
+        }
+    }
+
+    var magicTreatmentDiagnostics: [MagicTreatmentDiagnostic] {
+        switch self {
+        case .pokemon: return []
+        case let .magic(card): return card.magicTreatmentDiagnostics
         }
     }
 }
