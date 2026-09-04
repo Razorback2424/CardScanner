@@ -110,7 +110,8 @@ final class CatalogNormalizationTests: XCTestCase {
 
         guard case let .price(price) = CardPricing.price(
             for: .pokemon(card, setCode: "M2"),
-            variant: .normal
+            variant: .normal,
+            magicTreatments: []
         ) else {
             return XCTFail("Expected a Cardmarket price")
         }

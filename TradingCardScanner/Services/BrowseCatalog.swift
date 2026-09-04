@@ -282,6 +282,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 let lookup = CardPricing.price(
                     for: details.card,
                     variant: variant,
+                    magicTreatments: details.card.magicTreatments(for: variant),
                     pokemonPrintRun: summary.pokemonPrintRun
                 )
                 if case let .price(price) = lookup {
@@ -397,6 +398,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let items = page.data.compactMap { card -> CatalogCardSummary? in
             let id = CatalogSetID(game: .magic, providerID: card.setCode.lowercased())
             guard let set = directory.first(where: { $0.catalogID == id }) else { return nil }
+            let evidence = card.magicTreatmentEvidence
             let summary = CatalogCardSummary(
                 game: .magic,
                 providerID: card.id,
@@ -406,7 +408,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 name: card.name,
                 collectorNumber: card.collectorNumber,
                 thumbnailURL: card.thumbnailImageURL,
-                imageURL: card.displayImageURL
+                imageURL: card.displayImageURL,
+                magicTreatmentIDsRaw: MagicTreatmentKeyCodec.storedIDs(
+                    from: evidence.treatments
+                ),
+                magicTreatmentQualifiers: evidence.qualifiers
             )
             detailCache[summary.id] = CatalogCardDetails(card: .magic(card), set: set)
             return summary

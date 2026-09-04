@@ -104,6 +104,19 @@ final class PriceObservation {
         amountUSDTenThousandths.map(Money.init(tenThousandths:))
     }
 
+    /// A pre-Slice-6 generic provider amount can already be present in the
+    /// append-only log under a treatment-qualified price key. Keep that history
+    /// for diagnostics, but do not let it value the portfolio. Imported CSV is
+    /// the only current source with an explicit treatment claim.
+    var effectiveUSDAmount: Money? {
+        guard currencyCode == "USD" else { return nil }
+        if MagicTreatmentKeyCodec.containsPriceTreatmentSuffix(in: instrumentKey),
+           source?.isProvenForMagicTreatment != true {
+            return nil
+        }
+        return amount
+    }
+
     /// The value-setting content of this row, as the pure ingestion logic sees
     /// it. Provenance is part of it on purpose — see `PriceObservationValue`.
     var value: PriceObservationValue {

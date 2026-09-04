@@ -59,6 +59,14 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     let collectorNumber: String
     let thumbnailURL: URL?
     let imageURL: URL?
+    /// Magic treatments are part of the exact printing summary, not another
+    /// finish choice. Raw strings keep a newer catalog value readable on an
+    /// older build as `MagicTreatment.unclassified` instead of dropping the
+    /// card from Browse or ownership matching.
+    var magicTreatmentIDsRaw: [String] = []
+    /// Reviewed treatment qualifiers (for example a Neon Ink color) travel with
+    /// the summary so the Browse grid can describe the exact catalog evidence.
+    var magicTreatmentQualifiers: [String: String] = [:]
     /// Pokémon set pages expand one numbered card into the pack-pulled
     /// variations required by a master set. Search and Magic summaries leave
     /// this nil because they still represent a printing rather than a slot.
@@ -71,6 +79,110 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     var isSoleSlotForCard = false
     var pokemonPrintRun: PokemonPrintRun? { setID.pokemonPrintRun }
 
+    init(
+        game: CardGame,
+        providerID: String,
+        setID: CatalogSetID,
+        setName: String,
+        setCode: String,
+        name: String,
+        collectorNumber: String,
+        thumbnailURL: URL?,
+        imageURL: URL?,
+        masterSetVariant: PhysicalVariant? = nil,
+        isExpandedMasterSetVariant: Bool = false,
+        isSoleSlotForCard: Bool = false,
+        magicTreatmentIDsRaw: [String] = [],
+        magicTreatmentQualifiers: [String: String] = [:]
+    ) {
+        self.game = game
+        self.providerID = providerID
+        self.setID = setID
+        self.setName = setName
+        self.setCode = setCode
+        self.name = name
+        self.collectorNumber = collectorNumber
+        self.thumbnailURL = thumbnailURL
+        self.imageURL = imageURL
+        let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
+        self.magicTreatmentIDsRaw = storedTreatmentIDs
+        let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
+        self.magicTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
+            from: magicTreatmentQualifiers
+        ).filter { treatmentIDSet.contains($0.key) }
+        self.masterSetVariant = masterSetVariant
+        self.isExpandedMasterSetVariant = isExpandedMasterSetVariant
+        self.isSoleSlotForCard = isSoleSlotForCard
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case game, providerID, setID, setName, setCode, name, collectorNumber
+        case thumbnailURL, imageURL
+        case magicTreatmentIDsRaw, magicTreatmentQualifiers
+        case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        game = try container.decode(CardGame.self, forKey: .game)
+        providerID = try container.decode(String.self, forKey: .providerID)
+        setID = try container.decode(CatalogSetID.self, forKey: .setID)
+        setName = try container.decode(String.self, forKey: .setName)
+        setCode = try container.decode(String.self, forKey: .setCode)
+        name = try container.decode(String.self, forKey: .name)
+        collectorNumber = try container.decode(String.self, forKey: .collectorNumber)
+        thumbnailURL = try container.decodeIfPresent(URL.self, forKey: .thumbnailURL)
+        imageURL = try container.decodeIfPresent(URL.self, forKey: .imageURL)
+        let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: try container.decodeIfPresent([String].self, forKey: .magicTreatmentIDsRaw) ?? []
+        )
+        magicTreatmentIDsRaw = storedTreatmentIDs
+        let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
+        let rawQualifiers = try container.decodeIfPresent(
+            [String: String].self,
+            forKey: .magicTreatmentQualifiers
+        ) ?? [:]
+        magicTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
+            from: rawQualifiers
+        ).filter { treatmentIDSet.contains($0.key) }
+        masterSetVariant = try container.decodeIfPresent(
+            PhysicalVariant.self,
+            forKey: .masterSetVariant
+        )
+        isExpandedMasterSetVariant = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .isExpandedMasterSetVariant
+        ) ?? false
+        isSoleSlotForCard = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .isSoleSlotForCard
+        ) ?? false
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(game, forKey: .game)
+        try container.encode(providerID, forKey: .providerID)
+        try container.encode(setID, forKey: .setID)
+        try container.encode(setName, forKey: .setName)
+        try container.encode(setCode, forKey: .setCode)
+        try container.encode(name, forKey: .name)
+        try container.encode(collectorNumber, forKey: .collectorNumber)
+        try container.encodeIfPresent(thumbnailURL, forKey: .thumbnailURL)
+        try container.encodeIfPresent(imageURL, forKey: .imageURL)
+        // Keep Pokémon checklist resources byte-compatible and sparse. The
+        // absent keys decode as the empty Magic treatment axis above.
+        if !magicTreatmentIDsRaw.isEmpty {
+            try container.encode(magicTreatmentIDsRaw, forKey: .magicTreatmentIDsRaw)
+        }
+        if !magicTreatmentQualifiers.isEmpty {
+            try container.encode(magicTreatmentQualifiers, forKey: .magicTreatmentQualifiers)
+        }
+        try container.encodeIfPresent(masterSetVariant, forKey: .masterSetVariant)
+        try container.encode(isExpandedMasterSetVariant, forKey: .isExpandedMasterSetVariant)
+        try container.encode(isSoleSlotForCard, forKey: .isSoleSlotForCard)
+    }
+
     var id: String {
         [setID.id, providerID, masterSetVariant?.id]
             .compactMap { $0 }
@@ -78,6 +190,21 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     }
 
     var masterSetVariantLabel: String? { masterSetVariant?.label }
+
+    var magicTreatments: [MagicTreatment] {
+        magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
+    }
+
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        MagicTreatmentEvidence(
+            treatments: magicTreatments,
+            qualifiers: magicTreatmentQualifiers
+        )
+    }
+
+    var magicTreatmentDisplayLabel: String? {
+        magicTreatmentEvidence.displayLabel
+    }
 }
 
 struct CatalogCardDetails: Sendable {
@@ -126,6 +253,9 @@ enum SetCompletionCalculator {
     static func owns(_ summary: CatalogCardSummary, cards: [CollectedCard]) -> Bool {
         guard let targetNumber = canonicalNumber(summary.collectorNumber) else { return false }
         let targetProviderID = summary.providerID.lowercased()
+        let requiredTreatmentIDs = Set(
+            MagicTreatmentKeyCodec.canonicalIDs(from: summary.magicTreatmentIDsRaw)
+        )
         return cards.contains { card in
             guard card.itemKind.countsTowardSetCompletion else { return false }
             guard !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) else {
@@ -146,6 +276,10 @@ enum SetCompletionCalculator {
                     || normalized(card.setName) == normalized(summary.setName)
             }
             guard identityMatches else { return false }
+            guard treatmentIDs(for: card) == requiredTreatmentIDs
+                || requiredTreatmentIDs.isEmpty else {
+                return false
+            }
             guard let required = summary.masterSetVariant else { return true }
             if card.variantID == nil && summary.isSoleSlotForCard { return true }
             return masterVariantID(card.variantID) == masterVariantID(required.id)
@@ -161,6 +295,17 @@ enum SetCompletionCalculator {
             total: slots.count,
             unit: "variations"
         )
+    }
+
+    private static func treatmentIDs(for card: CollectedCard) -> Set<String> {
+        let rawIDs: [String]
+        switch card.itemKind {
+        case .rawCard:
+            rawIDs = card.magicTreatmentIDs(for: card.variant)
+        case .gradedCard, .sealedProduct:
+            rawIDs = card.magicTreatmentIDsRaw
+        }
+        return Set(MagicTreatmentKeyCodec.canonicalIDs(from: rawIDs))
     }
 
     private static func belongs(_ card: CollectedCard, to set: CatalogSet) -> Bool {
@@ -222,6 +367,21 @@ enum SetCompletionCalculator {
         let printed = value.split(separator: "/", maxSplits: 1).first.map(String.init) ?? value
         let trimmed = printed.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
+
+        // A suffixed collector number is still one numeric identity. Strip
+        // padding from its numeric stem without turning `0523a` into a
+        // different string from the catalog's `523a`.
+        let numberEnd = trimmed.firstIndex(where: { !$0.isNumber }) ?? trimmed.endIndex
+        if numberEnd > trimmed.startIndex,
+           numberEnd < trimmed.endIndex {
+            let numericPart = String(trimmed[..<numberEnd])
+            let suffix = trimmed[numberEnd...]
+            if suffix.allSatisfy({ $0.isLetter }),
+               let number = Int(numericPart) {
+                return "\(number)\(suffix.lowercased())"
+            }
+        }
+
         return Int(trimmed).map(String.init) ?? trimmed.lowercased()
     }
 

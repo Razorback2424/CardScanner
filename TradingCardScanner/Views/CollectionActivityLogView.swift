@@ -217,11 +217,17 @@ struct CollectionActivityLogView: View {
             activity.setName,
             activity.cardNumber,
             activity.pokemonPrintRun?.label,
-            finish
+            activity.magicContentKind == .regular ? nil : activity.magicContentKind.label,
+            finish,
+            treatmentLabel(for: activity)
         ]
             .compactMap { $0 }
             .filter { !$0.isEmpty }
             .joined(separator: " · ")
+    }
+
+    private func treatmentLabel(for activity: CollectionActivity) -> String? {
+        activity.magicTreatmentEvidence.displayLabel
     }
 
     private enum Action {

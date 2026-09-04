@@ -29,6 +29,14 @@ enum TCGplayerLinkBuilder {
     /// button: it looks authoritative and is silently wrong, and the whole
     /// point of this link is letting someone check the price we showed them.
     static func url(for card: CollectedCard) -> URL? {
+        // A vendor product id is card-level identity, not proof that its generic
+        // Foil page represents a named Magic treatment. Keep the marketplace
+        // button hidden until a treatment-specific `marketProductID` mapping
+        // exists, mirroring the separate market identities used by
+        // `MagicPhysicalObjects`.
+        guard !hasMagicTreatment(card) else {
+            return nil
+        }
         if let product = productURL(
             productID: card.tcgplayerProductID,
             variantID: card.variantID,
@@ -37,6 +45,12 @@ enum TCGplayerLinkBuilder {
             return product
         }
         return providerURL(card.tcgplayerURL)
+    }
+
+    private static func hasMagicTreatment(_ card: CollectedCard) -> Bool {
+        guard card.cardGame == .magic else { return false }
+        return !card.magicTreatmentIDsRaw.isEmpty
+            || !MagicTreatmentKeyCodec.collectionTreatmentIDs(from: card.collectionKey).isEmpty
     }
 
     /// A product page, with the printing preselected where the owned variant

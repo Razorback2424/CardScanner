@@ -101,6 +101,7 @@ struct CollectionCommitCandidate {
         price = CardPricing.price(
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
+            magicTreatments: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant),
             pokemonPrintRun: resolvedScan.pokemonPrintRun
         )
         encounterID = resolvedScan.request.encounterID
@@ -1371,6 +1372,7 @@ final class ScannerViewModel: ObservableObject {
         let correctedLookup = CardPricing.price(
             for: scan.card,
             variant: variant,
+            magicTreatments: scan.card.magicTreatments(for: variant),
             pokemonPrintRun: scan.pokemonPrintRun
         )
         recordPrice(
@@ -1409,6 +1411,7 @@ final class ScannerViewModel: ObservableObject {
             lookup ?? CardPricing.price(
                 for: card,
                 variant: variant,
+                magicTreatments: card.magicTreatments(for: variant),
                 pokemonPrintRun: pokemonPrintRun
             ),
             game: card.game,
@@ -2071,6 +2074,7 @@ final class ScannerViewModel: ObservableObject {
         case .noExactPrice: return .noExactPrice
         case .notMatched: return .notMatched
         case .unsupportedFinish: return .unsupportedFinish
+        case .unsupportedTreatment: return .unsupportedTreatment
         case .providerUnavailable: return .providerUnavailable
         case .fallbackDisabled: return .fallbackDisabled
         case .fallbackUnconfigured: return .fallbackUnconfigured

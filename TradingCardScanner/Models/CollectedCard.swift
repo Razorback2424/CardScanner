@@ -49,6 +49,19 @@ final class CollectedCard {
     /// synchronize a real treatment through CloudKit without requiring an older
     /// build to know its enum case. `[]` is the lightweight-migration default.
     var magicTreatmentIDsRaw: [String] = []
+    /// Qualifiers are stored as JSON because the CloudKit-backed model already
+    /// treats strings as the forward-compatible wire format. The map is keyed
+    /// by normalized treatment id and keeps values such as a Neon Ink color.
+    var magicTreatmentQualifiersJSON: String?
+    /// The last exact-printing treatment migration this row has passed. A
+    /// per-row watermark lets new CSV/import rows be picked up after launch,
+    /// while a failed provider lookup remains retryable without a global
+    /// UserDefaults claim that could miss a row arriving from another device.
+    var magicTreatmentMigrationVersion: Int = 0
+    /// The printed face's semantic kind is independent from how it is owned.
+    /// Existing rows were created before this axis was persisted and therefore
+    /// default to ordinary cards.
+    var magicContentKindRaw: String = MagicContentKind.regular.rawValue
     /// WotC print run is independent of finish: a card can be both 1st Edition
     /// and Holo. Kept separate so pricing and master-set routing never have to
     /// overload one mutually exclusive variant field with two physical facts.
@@ -143,6 +156,50 @@ final class CollectedCard {
         magicTreatmentIDsRaw.compactMap { MagicTreatment(id: $0) }
     }
 
+    var magicTreatmentQualifiers: [String: String] {
+        get { MagicTreatmentKeyCodec.decodeQualifiers(magicTreatmentQualifiersJSON) }
+        set { magicTreatmentQualifiersJSON = MagicTreatmentKeyCodec.encodeQualifiers(newValue) }
+    }
+
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        MagicTreatmentEvidence(
+            treatments: magicTreatments,
+            qualifiers: magicTreatmentQualifiers
+        )
+    }
+
+    var magicContentKind: MagicContentKind {
+        MagicContentKind(rawValue: magicContentKindRaw) ?? .regular
+    }
+
+    /// The treatment label shown for this owned object. Raw rows have a
+    /// selected finish, so they use the same finish-aware relationship as
+    /// collection key construction; graded and sealed rows use the persisted
+    /// exact-printing treatment set because their vendor identity has no raw
+    /// finish selector.
+    var displayedMagicTreatments: [MagicTreatment] {
+        switch itemKind {
+        case .rawCard:
+            return displayedMagicTreatmentEvidence.treatments
+        case .gradedCard, .sealedProduct:
+            return magicTreatmentEvidence.treatments
+        }
+    }
+
+    var displayedMagicTreatmentEvidence: MagicTreatmentEvidence {
+        let treatments: [MagicTreatment]
+        switch itemKind {
+        case .rawCard:
+            treatments = magicTreatmentIDs(for: variant).compactMap(MagicTreatment.init(id:))
+        case .gradedCard, .sealedProduct:
+            treatments = magicTreatments
+        }
+        let qualifiers = Dictionary(uniqueKeysWithValues: treatments.compactMap { treatment in
+            magicTreatmentEvidence.qualifier(for: treatment).map { (treatment.id, $0) }
+        })
+        return MagicTreatmentEvidence(treatments: treatments, qualifiers: qualifiers)
+    }
+
     /// Re-applies the shared finish relationship when a history correction
     /// changes the selected finish but has no live provider response available.
     func magicTreatmentIDs(for finish: PhysicalVariant?) -> [String] {
@@ -151,9 +208,8 @@ final class CollectedCard {
         // identity. This also prevents an unclassified treatment from being
         // smuggled into a price key when the finish is still unknown.
         guard finish != nil || itemKind != .rawCard else { return [] }
-        let evidence = MagicTreatmentEvidence(treatments: magicTreatments)
         return MagicTreatmentKeyCodec.storedIDs(
-            from: evidence.applicableTreatments(for: finish)
+            from: magicTreatmentEvidence.applicableTreatments(for: finish)
         )
     }
 
@@ -204,7 +260,9 @@ final class CollectedCard {
         setReleaseOrder: Int = 0,
         quantity: Int = 1,
         dateAdded: Date = .now,
-        magicTreatments: [MagicTreatment] = []
+        magicTreatments: [MagicTreatment] = [],
+        magicTreatmentQualifiers: [String: String] = [:],
+        magicContentKind: MagicContentKind = .regular
     ) {
         self.collectionKey = collectionKey
         self.game = game.rawValue
@@ -219,6 +277,10 @@ final class CollectedCard {
         self.variantID = variant?.id
         self.variantLabel = variant?.label
         self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
+        self.magicTreatmentQualifiersJSON = MagicTreatmentKeyCodec.encodeQualifiers(
+            magicTreatmentQualifiers
+        )
+        self.magicContentKindRaw = magicContentKind.rawValue
         self.variantResolutionRaw = variantResolution.rawValue
         self.identityResolutionRaw = identityResolution.rawValue
         self.setReleaseOrder = setReleaseOrder
@@ -228,7 +290,9 @@ final class CollectedCard {
 
     /// Keeps the import identity and collection key stable while filling in
     /// provider metadata from either background normalization or price refresh.
-    func applyCatalogMetadata(from card: IdentifiedCard, checkedAt: Date) {
+    /// The catalog retry watermark is recorded by CollectionCatalogNormalizer,
+    /// which is its single owner.
+    func applyCatalogMetadata(from card: IdentifiedCard) {
         catalogProviderID = card.providerID
         setCode = card.setCode
         rarity = card.rarity
@@ -242,10 +306,9 @@ final class CollectedCard {
             thumbnailURL = card.thumbnailImageURL?.absoluteString
             tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
         }
-        catalogMetadataCheckedAt = checkedAt
     }
 
-    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata, checkedAt: Date) {
+    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata) {
         catalogProviderID = metadata.providerID
         setCode = metadata.setCode
         rarity = metadata.rarity ?? rarity
@@ -256,7 +319,6 @@ final class CollectedCard {
         justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
         justTCGVariantID = metadata.justTCGVariantID ?? justTCGVariantID
         justTCGAPIVersion = metadata.justTCGAPIVersion ?? justTCGAPIVersion
-        catalogMetadataCheckedAt = checkedAt
     }
 
     convenience init(
@@ -290,6 +352,8 @@ final class CollectedCard {
         magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
             from: card.magicTreatments(for: resolved.variant)
         )
+        magicTreatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
+        magicContentKindRaw = card.magicContentKind.rawValue
         if case let .magic(magic) = card {
             tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
         }

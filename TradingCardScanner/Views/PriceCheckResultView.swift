@@ -17,6 +17,10 @@ struct PriceCheckResultView: View {
         return live
     }
 
+    private var hasTreatment: Bool {
+        !result.card.magicTreatments(for: result.resolved.variant).isEmpty
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -157,11 +161,7 @@ struct PriceCheckResultView: View {
                 description: Text("Tap Refresh Price to check this exact variant.")
             )
         case .noExactPrice:
-            ContentUnavailableView(
-                "No listing for this finish",
-                systemImage: "dollarsign.circle",
-                description: Text("The price provider found this card but has no listing for its exact finish.")
-            )
+            exactPriceUnavailableState
         case .notMatched:
             ContentUnavailableView(
                 "Card not matched to a vendor product",
@@ -173,6 +173,12 @@ struct PriceCheckResultView: View {
                 "Finish not supported",
                 systemImage: "tag.slash",
                 description: Text("The optional fallback provider does not have a safe mapping for this finish, so it was not asked for a price.")
+            )
+        case .unsupportedTreatment:
+            ContentUnavailableView(
+                "Treatment price unavailable",
+                systemImage: "tag.slash",
+                description: Text("The optional fallback provider has no treatment-specific product identity, so its generic price is not used.")
             )
         case .providerUnavailable:
             ContentUnavailableView(
@@ -205,12 +211,20 @@ struct PriceCheckResultView: View {
                 description: Text("The optional fallback allowance resets \(resetAt.formatted(date: .abbreviated, time: .shortened)).")
             )
         case .current, .lastKnown(_):
-            ContentUnavailableView(
-                "No listing for this finish",
-                systemImage: "dollarsign.circle",
-                description: Text("The price provider found this card but has no listing for its exact finish.")
-            )
+            exactPriceUnavailableState
         }
+    }
+
+    private var exactPriceUnavailableState: some View {
+        ContentUnavailableView(
+            hasTreatment ? "No exact treatment price" : "No listing for this finish",
+            systemImage: "dollarsign.circle",
+            description: Text(
+                hasTreatment
+                    ? "No provider publishes a price proven for this treatment. The generic foil price is not used."
+                    : "The price provider found this card but has no listing for its exact finish."
+            )
+        )
     }
 
     private func fallbackSettingsState(
@@ -239,11 +253,15 @@ struct PriceCheckResultView: View {
     private func lastKnownMessage(for issue: PriceCheckRefreshIssue) -> String {
         switch issue {
         case .noExactPrice:
-            return "No listing for this finish — showing last known"
+            return hasTreatment
+                ? "No exact treatment price — showing last known"
+                : "No listing for this finish — showing last known"
         case .notMatched:
             return "Card not matched to a vendor product — showing last known"
         case .unsupportedFinish:
             return "Finish not supported by the fallback provider — showing last known"
+        case .unsupportedTreatment:
+            return "Treatment not supported by the fallback provider — showing last known"
         case .providerUnavailable:
             return "Couldn’t update — showing last known"
         case .fallbackDisabled:

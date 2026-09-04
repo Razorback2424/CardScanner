@@ -110,6 +110,10 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
         )
     }
 
+    var isTreatmentQualified: Bool {
+        game == .magic && !magicTreatmentIDsRaw.isEmpty
+    }
+
     /// One catalog response answers every variant of the same printing, so a
     /// collection holding a normal and a reverse copy costs one request.
     var printing: Printing {
@@ -381,7 +385,11 @@ final class PriceRefreshController: ObservableObject {
                 case let .card(card):
                     if printing.importedIdentity != nil {
                         for importedCard in importedCardsByProviderID[printing.printingID] ?? [] {
-                            importedCard.applyCatalogMetadata(from: card, checkedAt: now)
+                            importedCard.applyCatalogMetadata(from: card)
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                on: importedCard,
+                                at: now
+                            )
                         }
                     }
                     if card.game == .magic {
@@ -393,6 +401,9 @@ final class PriceRefreshController: ObservableObject {
                         let lookup = CardPricing.price(
                             for: card,
                             variant: target.variantID.map(PhysicalVariant.resolving),
+                            magicTreatments: card.magicTreatments(
+                                for: target.variantID.map(PhysicalVariant.resolving)
+                            ),
                             pokemonPrintRun: target.pokemonPrintRun,
                             at: now
                         )
@@ -635,6 +646,7 @@ final class PriceRefreshController: ObservableObject {
         /// route at all and must resolve by search once, after which the stored
         /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
+            guard !target.isTreatmentQualified else { return [] }
             if let catalogID = card?.providerID ?? target.catalogPrintingID,
                let variant = target.variantID.map(PhysicalVariant.resolving) {
                 let stamped = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID, variant: variant)
@@ -672,7 +684,8 @@ final class PriceRefreshController: ObservableObject {
                 cardNumber: number,
                 japaneseSetID: catalogID.flatMap(PriceFallbackQuoteResolver.japaneseSetID(forCatalogCardID:)),
                 pokemonPrintRun: target.pokemonPrintRun,
-                vendorCardID: vendorCardID
+                vendorCardID: vendorCardID,
+                magicTreatmentIDsRaw: target.magicTreatmentIDsRaw
             )
         }
     }
@@ -771,6 +784,14 @@ final class PriceRefreshController: ObservableObject {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
+            if candidate.target.isTreatmentQualified {
+                // The current vendor wire model has no treatment-specific
+                // identity or listing. This is a capability gap, not a vendor
+                // miss, so leave the identity store untouched; it must never
+                // consume an ordinary foil handle or create a 30-day negative.
+                completed += 1
+                continue
+            }
             // The handle stored on the row wins. It was written when the item
             // was added out of the vendor's own catalogue, and for a sealed box
             // or a graded slab it is the only identity that exists — there is no
@@ -948,7 +969,7 @@ final class PriceRefreshController: ObservableObject {
                     pending: eligibleCandidates.count - completed,
                     retryAt: retryAt
                 )
-            case .noListingForVariant, .noProductMatch, .unsupportedFinish, .requestFailed:
+            case .noListingForVariant, .noProductMatch, .unsupportedFinish, .unsupportedTreatment, .requestFailed:
                 break
             }
 
@@ -993,7 +1014,11 @@ final class PriceRefreshController: ObservableObject {
     /// narrowed to the graders and grades actually owned, which keeps a card
     /// with a hundred grader/grade permutations to a single small response.
     private func refreshGraded(_ targets: [PriceTarget], store: PriceStore) async -> Int {
-        let slabs = targets.filter { $0.itemKind == .gradedCard && $0.marketVariantID != nil }
+        let slabs = targets.filter {
+            $0.itemKind == .gradedCard
+                && $0.marketVariantID != nil
+                && !$0.isTreatmentQualified
+        }
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else { return 0 }
 
         // One request serves every grade of one card, so group before asking.
@@ -1087,11 +1112,16 @@ final class PriceRefreshController: ObservableObject {
         for owner in owners where owner.itemKind == .sealedProduct {
             for row in rowsByPriceKey[owner.priceKey] ?? []
             where row.itemKind == .sealedProduct && row.imageURL == nil {
+                // Record the catalog-owned retry watermark before applying the
+                // image; the helper intentionally requires artwork to be
+                // missing so a completed row cannot be stamped accidentally.
+                CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                    on: row,
+                    at: checkedAt
+                )
                 if let artwork {
                     row.imageURL = artwork.absoluteString
                 }
-                row.catalogMetadataCheckedAt = checkedAt
-                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
             }
         }
     }
@@ -1111,8 +1141,10 @@ final class PriceRefreshController: ObservableObject {
         for owner in owners where owner.itemKind == .sealedProduct {
             for row in rowsByPriceKey[owner.priceKey] ?? []
             where row.itemKind == .sealedProduct && row.imageURL == nil {
-                row.catalogMetadataCheckedAt = checkedAt
-                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+                CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                    on: row,
+                    at: checkedAt
+                )
             }
         }
     }
@@ -1129,6 +1161,11 @@ final class PriceRefreshController: ObservableObject {
         rowsByPriceKey: [String: [CollectedCard]],
         fetchedAt: Date = .now
     ) {
+        // This callback is a second line of defence after the coordinator's
+        // treatment-aware owner grouping. A generic vendor response must never
+        // be written to a treatment-qualified Magic key, even if a future
+        // caller accidentally supplies a mixed owner array.
+        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return }
         recordSealedArtwork(
             from: card,
             for: owners,

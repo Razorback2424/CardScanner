@@ -685,23 +685,38 @@ enum PokemonHistoricalIdentityResolver {
 /// Scryfall files them under — The List numbers its cards `MM2-48`, carrying the
 /// original set's code, while every marketplace export writes plain `48`.
 struct ScryfallCardIdentifier: Encodable, Hashable, Sendable {
-    let set: String
+    /// Scryfall's collection endpoint accepts an exact card id as well as the
+    /// set/collector-number form. Exact ids are the only safe identifier for
+    /// the treatment migration: set plus number can still name more than one
+    /// printing across Magic's history.
+    let id: String?
+    let set: String?
     let collectorNumber: String?
     let name: String?
 
     init(set: String, collectorNumber: String) {
+        self.id = nil
         self.set = set
         self.collectorNumber = collectorNumber
         self.name = nil
     }
 
     init(set: String, name: String) {
+        self.id = nil
         self.set = set
         self.collectorNumber = nil
         self.name = name
     }
 
+    init(id: String) {
+        self.id = id
+        self.set = nil
+        self.collectorNumber = nil
+        self.name = nil
+    }
+
     enum CodingKeys: String, CodingKey {
+        case id
         case set
         case collectorNumber = "collector_number"
         case name
@@ -709,6 +724,19 @@ struct ScryfallCardIdentifier: Encodable, Hashable, Sendable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        if let id {
+            try container.encode(id, forKey: .id)
+            return
+        }
+        guard let set else {
+            throw EncodingError.invalidValue(
+                self,
+                EncodingError.Context(
+                    codingPath: encoder.codingPath,
+                    debugDescription: "A Scryfall collection identifier needs an id or set"
+                )
+            )
+        }
         try container.encode(set, forKey: .set)
         try container.encodeIfPresent(collectorNumber, forKey: .collectorNumber)
         try container.encodeIfPresent(name, forKey: .name)

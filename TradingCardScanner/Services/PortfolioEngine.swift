@@ -64,6 +64,16 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     var id: String { collectionKey }
 }
 
+/// Injectable boundary around the expensive replay. The app uses the default
+/// actor-backed implementation; tests can pause a computation deterministically
+/// to exercise cancellation and trailing-recompute behavior.
+typealias PortfolioComputationProvider = @Sendable (
+    ModelContainer,
+    Date,
+    Date,
+    String
+) async -> PortfolioReplaySnapshotBuilder.Computation
+
 /// Owns portfolio computation.
 ///
 /// A status enum as the presentation contract, matching
@@ -73,6 +83,14 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
 /// pass would be both slow and, worse, a number that moves while being read.
 @MainActor
 final class PortfolioEngine: ObservableObject {
+    private let computationProvider: PortfolioComputationProvider?
+
+    init(
+        computationProvider: PortfolioComputationProvider? = nil
+    ) {
+        self.computationProvider = computationProvider
+    }
+
     enum Status: Equatable {
         case idle
         case computing
@@ -177,6 +195,13 @@ final class PortfolioEngine: ObservableObject {
         startRecompute(context: context, now: now)
     }
 
+    /// Cancels only the computation currently in flight. A newer request that
+    /// arrived while it was running remains queued and is started by the
+    /// cancellation completion path.
+    func cancelRecompute() {
+        computationTask?.cancel()
+    }
+
     private func startRecompute(context: ModelContext, now: Date) {
         isRecomputing = true
         // A retained summary remains the display value while its replacement is
@@ -190,13 +215,24 @@ final class PortfolioEngine: ObservableObject {
         let container = context.container
         let epoch = PortfolioEpoch.startedAt() ?? now
 
+        let computationProvider = self.computationProvider
         computationTask = Task { @MainActor [weak self] in
-            let actor = PortfolioComputationActor(modelContainer: container)
-            let computation = await actor.compute(
-                epoch: epoch,
-                through: now,
-                timeZoneIdentifier: timeZone.identifier
-            )
+            let computation: PortfolioReplaySnapshotBuilder.Computation
+            if let computationProvider {
+                computation = await computationProvider(
+                    container,
+                    epoch,
+                    now,
+                    timeZone.identifier
+                )
+            } else {
+                let actor = PortfolioComputationActor(modelContainer: container)
+                computation = await actor.compute(
+                    epoch: epoch,
+                    through: now,
+                    timeZoneIdentifier: timeZone.identifier
+                )
+            }
             guard let self else { return }
             guard !Task.isCancelled else {
                 self.finishCancelledComputation()
@@ -364,8 +400,11 @@ final class PortfolioEngine: ObservableObject {
 
     private func finishCancelledComputation() {
         computationTask = nil
-        pendingRecompute = nil
         isRecomputing = false
+
+        guard let pendingRecompute else { return }
+        self.pendingRecompute = nil
+        startRecompute(context: pendingRecompute.context, now: pendingRecompute.now)
     }
 
     // MARK: - Current value, measured independently of the walk
@@ -587,7 +626,7 @@ final class PortfolioEngine: ObservableObject {
             // Non-USD is normalised away here rather than deep in the walk, so
             // exactly one place in the app decides what "not in the total"
             // means.
-            amount: row.currencyCode == "USD" ? row.amount : nil,
+            amount: row.effectiveUSDAmount,
             receivedAt: row.receivedAt
         )
     }

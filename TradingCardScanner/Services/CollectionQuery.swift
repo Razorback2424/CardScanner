@@ -18,6 +18,15 @@ struct CollectionRow: Identifiable, Equatable {
     let quantity: Int
     let dateAdded: Date
     let price: PriceDisplay
+    /// The treatment axis is independent from the finish and therefore gets its
+    /// own row field. Raw ids preserve forward-compatible values for filtering
+    /// and display rather than trying to turn an unknown treatment into a
+    /// `PhysicalVariant`.
+    var magicTreatmentIDsRaw: [String] = []
+    /// Publisher-backed qualifiers stay beside the treatment id so a row can
+    /// describe Neon Ink's verified color without turning color into another
+    /// finish or another set-completion slot.
+    var magicTreatmentQualifiers: [String: String] = [:]
     /// Raw card, graded slab or sealed product. Defaulted so every construction
     /// site that predates the widening keeps compiling and keeps meaning what it
     /// meant.
@@ -32,6 +41,45 @@ struct CollectionRow: Identifiable, Equatable {
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
+    }
+
+    var magicTreatments: [MagicTreatment] {
+        magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
+    }
+
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        MagicTreatmentEvidence(
+            treatments: magicTreatments,
+            qualifiers: magicTreatmentQualifiers
+        )
+    }
+
+    /// Raw rows use the same finish-aware relationship as collection-key
+    /// construction. Graded and sealed rows have no raw finish selector, so
+    /// their persisted treatment set is already the exact object identity.
+    var displayedMagicTreatments: [MagicTreatment] {
+        switch itemKind {
+        case .rawCard:
+            return displayedMagicTreatmentEvidence.treatments
+        case .gradedCard, .sealedProduct:
+            return magicTreatmentEvidence.treatments
+        }
+    }
+
+    var displayedMagicTreatmentEvidence: MagicTreatmentEvidence {
+        switch itemKind {
+        case .rawCard:
+            return MagicTreatmentEvidence(
+                treatments: magicTreatmentEvidence.applicableTreatments(for: variant),
+                qualifiers: magicTreatmentQualifiers
+            )
+        case .gradedCard, .sealedProduct:
+            return magicTreatmentEvidence
+        }
+    }
+
+    var magicTreatmentDisplayLabel: String? {
+        displayedMagicTreatmentEvidence.displayLabel
     }
 
     /// Current market price of *one* copy. Filtering and sorting deliberately use
@@ -159,6 +207,7 @@ struct CollectionFilters: Equatable {
     var game: CardGame?
     var setCodes: Set<String> = []
     var variantIDs: Set<String> = []
+    var treatmentIDs: Set<String> = []
     var price: PriceFilter?
     /// Empty means every kind, which is what "All Items" selects.
     var itemKinds: Set<CollectionItemKind> = []
@@ -166,7 +215,7 @@ struct CollectionFilters: Equatable {
     var gradeValues: Set<String> = []
 
     var isActive: Bool {
-        game != nil || !setCodes.isEmpty || !variantIDs.isEmpty
+        game != nil || !setCodes.isEmpty || !variantIDs.isEmpty || !treatmentIDs.isEmpty
             || price != nil || !itemKinds.isEmpty
             || !gradingCompanies.isEmpty || !gradeValues.isEmpty
     }
@@ -258,6 +307,16 @@ enum CollectionQuery {
         if !filters.setCodes.isEmpty, !filters.setCodes.contains(row.setFilterID) { return false }
         if !filters.variantIDs.isEmpty {
             guard let variantID = row.variantID, filters.variantIDs.contains(variantID) else { return false }
+        }
+        if !filters.treatmentIDs.isEmpty {
+            let requestedTreatmentIDs = Set(
+                filters.treatmentIDs.compactMap { MagicTreatment(id: $0)?.id }
+            )
+            guard !requestedTreatmentIDs.isEmpty else { return false }
+            let rowTreatmentIDs = Set(
+                MagicTreatmentKeyCodec.canonicalIDs(from: row.displayedMagicTreatments)
+            )
+            guard !rowTreatmentIDs.isDisjoint(with: requestedTreatmentIDs) else { return false }
         }
         if !filters.itemKinds.isEmpty, !filters.itemKinds.contains(row.itemKind) { return false }
         if !filters.gradingCompanies.isEmpty {

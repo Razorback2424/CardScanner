@@ -131,16 +131,27 @@ struct ContentView: View {
                 break
             }
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(in: modelContext)
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #else
         .task {
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(in: modelContext)
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #endif
+        .task(id: hasStartedPortfolio) {
+            guard hasStartedPortfolio else { return }
+            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
+            guard !Task.isCancelled else { return }
+            // Network enrichment can add treatments or rekey rows after the
+            // initial portfolio snapshot. Recompute only after the migration
+            // has finished so the user never sees a half-applied result.
+            portfolio.recompute(context: modelContext)
+        }
         // Portfolio truth is app-scoped: scanning or importing must recompute it
         // even if Collection has never been selected in this app session. This
         // lives in its own view rather than here because deciding whether the
@@ -216,21 +227,33 @@ struct ContentView: View {
     @MainActor
     private func refreshAllPrices() async {
         refreshStatusTask?.cancel()
-        let targets = PriceRefreshController.staleTargets(
-            from: PriceRefreshTargets.make(
-                cards: cards,
-                priceRecords: priceRecords,
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true
-            )
-        )
-        guard !targets.isEmpty else {
-            refresh.markRecentlyChecked()
-            dismissRefreshStatusLater()
-            return
+        let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+            in: modelContext
+        ) {
+            // Build the target snapshot inside the gate. The migration may have
+            // changed both the row key and its treatment ids while the caller
+            // was waiting, so a pre-gate snapshot is not safe to write with.
+            let currentTargets: [PriceTarget]
+            do {
+                currentTargets = try PriceRefreshTargets.make(
+                    context: modelContext,
+                    usesPriceFallback: usesPriceFallback,
+                    includeImported: true
+                )
+            } catch {
+                return false
+            }
+            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            guard !targets.isEmpty else {
+                refresh.markRecentlyChecked()
+                return false
+            }
+            await refresh.refresh(targets, store: PriceStore(context: modelContext))
+            return true
         }
-        await refresh.refresh(targets, store: PriceStore(context: modelContext))
-        portfolio.recompute(context: modelContext)
+        if didRefresh {
+            portfolio.recompute(context: modelContext)
+        }
         dismissRefreshStatusLater()
     }
 
@@ -288,8 +311,7 @@ struct ContentView: View {
             game: .pokemon
         ) else { return }
         if let row = store.card(forKey: unavailable.collectionKey) {
-            row.catalogMetadataCheckedAt = .now
-            row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+            CollectionCatalogNormalizer.recordCatalogMetadataCheck(on: row, at: .now)
         }
         try? modelContext.save()
     }
@@ -322,6 +344,7 @@ private struct PortfolioInputObserver: View {
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var hasCheckedForStalePrices = false
+    @State private var hasEstablishedMagicTreatmentBaseline = false
 
     var body: some View {
         Color.clear
@@ -340,6 +363,20 @@ private struct PortfolioInputObserver: View {
                     factors: portfolio.performanceFactors,
                     contributions: portfolio.contributionIndex
                 )
+            }
+            // A collection row can arrive after the one-time launch migration,
+            // including through CloudKit. Establish the launch snapshot first;
+            // later Magic-row changes invalidate the memo and rerun enrichment.
+            .task(id: magicTreatmentInputTaskID) {
+                guard hasStartedPortfolio else { return }
+                guard hasEstablishedMagicTreatmentBaseline else {
+                    hasEstablishedMagicTreatmentBaseline = true
+                    return
+                }
+                MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
+                _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
+                guard !Task.isCancelled else { return }
+                portfolio.recompute(context: modelContext)
             }
     }
 
@@ -404,6 +441,21 @@ private struct PortfolioInputObserver: View {
         "\(portfolio.inputRevision)-\(history.mode.rawValue)-\(history.range.rawValue)"
     }
 
+    private var magicTreatmentInputTaskID: Int {
+        var hasher = Hasher()
+        hasher.combine(hasStartedPortfolio)
+        let magicCards = cards.filter { $0.cardGame == .magic }
+        hasher.combine(magicCards.count)
+        for card in magicCards {
+            hasher.combine(card.collectionKey)
+            hasher.combine(card.quantity)
+            hasher.combine(card.variantID)
+            hasher.combine(card.magicTreatmentMigrationVersion)
+            hasher.combine(card.magicTreatmentIDsRaw)
+        }
+        return hasher.finalize()
+    }
+
     /// The controller owns the pass this starts, so a saved batch invalidating
     /// the id above cancels this caller without tearing the work down partway
     /// through and leaving the collection unrefreshed.
@@ -411,16 +463,26 @@ private struct PortfolioInputObserver: View {
     private func refreshStalePricesIfNeeded() async {
         guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
         hasCheckedForStalePrices = true
-        let targets = PriceRefreshController.staleTargets(
-            from: PriceRefreshTargets.make(
-                cards: cards,
-                priceRecords: priceRecords,
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true
-            )
-        )
-        guard !targets.isEmpty else { return }
-        await refresh.refresh(targets, store: PriceStore(context: modelContext))
+        let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+            in: modelContext
+        ) {
+            let currentTargets: [PriceTarget]
+            do {
+                currentTargets = try PriceRefreshTargets.make(
+                    context: modelContext,
+                    usesPriceFallback: usesPriceFallback,
+                    includeImported: true
+                )
+            } catch {
+                hasCheckedForStalePrices = false
+                return false
+            }
+            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            guard !targets.isEmpty else { return false }
+            await refresh.refresh(targets, store: PriceStore(context: modelContext))
+            return true
+        }
+        guard didRefresh else { return }
         // The automatic stale check is silent when it works. When it does not,
         // the failure is still the app's to surface.
         refresh.dismissTransientSuccessSummary()

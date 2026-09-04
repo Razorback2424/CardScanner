@@ -27,13 +27,14 @@ final class PricingTests: XCTestCase {
         return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "PRE")
     }
 
-    private func magicCard() throws -> IdentifiedCard {
+    private func magicCard(promoType: String? = nil) throws -> IdentifiedCard {
+        let promoTypes = promoType.map { ", \"promo_types\": [\"\($0)\"]" } ?? ""
         let json = """
         {
           "id": "3f0a1f52-0000-4000-8000-000000000001",
           "name": "Llanowar Elves",
           "set": "ecl", "set_name": "Eclipse", "collector_number": "218",
-          "lang": "en", "digital": false, "frame": "2015",
+          "lang": "en", "digital": false, "frame": "2015"\(promoTypes),
           "released_at": "2026-02-06",
           "finishes": ["nonfoil", "foil"],
           "prices": { "usd": "1.25", "usd_foil": "6.40", "usd_etched": null }
@@ -45,7 +46,11 @@ final class PricingTests: XCTestCase {
     // MARK: - A price belongs to printing *and* variant
 
     func testReverseHoloReadsTheReverseHoloListing() throws {
-        guard case let .price(price) = CardPricing.price(for: try pokemonCard(), variant: .reverse) else {
+        guard case let .price(price) = CardPricing.price(
+            for: try pokemonCard(),
+            variant: .reverse,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a price")
         }
 
@@ -59,19 +64,31 @@ final class PricingTests: XCTestCase {
     func testUnmappedVariantIsUnavailableRatherThanBorrowingAnotherFinishesPrice() throws {
         let card = try pokemonCard()
 
-        XCTAssertEqual(CardPricing.price(for: card, variant: .masterBall), .unavailable(.tcgplayer))
-        XCTAssertEqual(CardPricing.price(for: card, variant: .pokeBall), .unavailable(.tcgplayer))
+        XCTAssertEqual(
+            CardPricing.price(for: card, variant: .masterBall, magicTreatments: []),
+            .unavailable(.tcgplayer)
+        )
+        XCTAssertEqual(
+            CardPricing.price(for: card, variant: .pokeBall, magicTreatments: []),
+            .unavailable(.tcgplayer)
+        )
         XCTAssertNil(CardPricing.tcgplayerListing(for: .masterBall))
     }
 
     func testUnknownFinishGetsNoPrice() throws {
-        XCTAssertEqual(CardPricing.price(for: try pokemonCard(), variant: nil), .unavailable(.tcgplayer))
+        XCTAssertEqual(
+            CardPricing.price(for: try pokemonCard(), variant: nil, magicTreatments: []),
+            .unavailable(.tcgplayer)
+        )
     }
 
     func testCardWithNoPricingAtAllIsUnavailable() throws {
         let card = try pokemonCard(pricingJSON: nil)
 
-        XCTAssertEqual(CardPricing.price(for: card, variant: .reverse), .unavailable(nil))
+        XCTAssertEqual(
+            CardPricing.price(for: card, variant: .reverse, magicTreatments: []),
+            .unavailable(nil)
+        )
         XCTAssertTrue(card.marketPrices.isEmpty)
     }
 
@@ -97,7 +114,11 @@ final class PricingTests: XCTestCase {
     func testMagicFinishesMapOntoScryfallPriceKeys() throws {
         let card = try magicCard()
 
-        guard case let .price(foil) = CardPricing.price(for: card, variant: .foil) else {
+        guard case let .price(foil) = CardPricing.price(
+            for: card,
+            variant: .foil,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a foil price")
         }
         XCTAssertEqual(foil.unitMarketPriceUSD, 6.40)
@@ -109,7 +130,124 @@ final class PricingTests: XCTestCase {
     }
 
     func testMagicEtchedIsUnavailableWhenScryfallHasNoNumberForIt() throws {
-        XCTAssertEqual(CardPricing.price(for: try magicCard(), variant: .etched), .unavailable(.scryfall))
+        XCTAssertEqual(
+            CardPricing.price(for: try magicCard(), variant: .etched, magicTreatments: []),
+            .unavailable(.scryfall)
+        )
+
+    }
+
+    func testMagicTreatmentWithholdsGenericFoilPriceButNonfoilRemainsPriceable() throws {
+        let card = try magicCard(promoType: "surgefoil")
+        let foilTreatments = card.magicTreatments(for: .foil)
+        let nonfoilTreatments = card.magicTreatments(for: .nonfoil)
+
+        XCTAssertEqual(foilTreatments, [.surgeFoil])
+        XCTAssertTrue(nonfoilTreatments.isEmpty)
+        XCTAssertEqual(
+            CardPricing.price(
+                for: card,
+                variant: .foil,
+                magicTreatments: foilTreatments
+            ),
+            .unavailable(.scryfall)
+        )
+        guard case let .price(nonfoil) = CardPricing.price(
+            for: card,
+            variant: .nonfoil,
+            magicTreatments: nonfoilTreatments
+        ) else {
+            return XCTFail("The nonfoil copy has no treatment and should retain usd")
+        }
+        XCTAssertEqual(nonfoil.unitMarketPriceUSD, 1.25)
+        XCTAssertEqual(nonfoil.sourceVariantID, "usd")
+    }
+
+    func testUnclassifiedMagicTreatmentWithholdsGenericPrice() throws {
+        XCTAssertEqual(
+            CardPricing.price(
+                for: try magicCard(),
+                variant: .foil,
+                magicTreatments: [.unclassified("future-treatment")]
+            ),
+            .unavailable(.scryfall)
+        )
+    }
+
+    func testPreviouslyStoredGenericMagicTreatmentPriceIsNotEffectiveEvidence() {
+        let record = PriceRecord(
+            key: PriceRecord.key(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                treatmentIDs: ["surgefoil"]
+            ),
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            magicTreatmentIDs: ["surgefoil"]
+        )
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 6.40,
+                currencyCode: "USD",
+                source: .scryfall,
+                sourceVariantID: "usd_foil",
+                sourceUpdatedAt: nil,
+                fetchedAt: .now
+            )
+        )
+
+        // Keep the raw row available for migration diagnostics, but never let
+        // the generic provider amount value a named treatment.
+        XCTAssertEqual(record.unitMarketPriceUSD, 6.40)
+        XCTAssertTrue(record.isUnprovenMagicTreatmentPrice)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(record.display.amount)
+    }
+
+    func testPreviouslyStoredGenericMagicTreatmentObservationCannotValuePortfolio() throws {
+        // Model the row exactly as an older build could have left it: the
+        // treatment marker is in the canonical key, while the mirrored model
+        // column is still empty and the observation contains Scryfall's generic
+        // usd_foil amount.
+        let key = PriceRecord.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["surgefoil"]
+        )
+        let record = PriceRecord(
+            key: key,
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id
+        )
+        record.unitMarketPriceUSD = 6.40
+        record.sourceRaw = PriceSource.scryfall.rawValue
+        record.sourceVariantID = "usd_foil"
+        record.fetchedAt = Date(timeIntervalSince1970: 100)
+
+        let observedAmount = try XCTUnwrap(Money(rounding: 6.40))
+        let observation = PriceObservation(
+            instrumentKey: key,
+            kind: .marketUpdate,
+            amount: observedAmount,
+            source: .scryfall,
+            sourceVariantID: "usd_foil",
+            marketVariantID: nil,
+            effectiveAt: Date(timeIntervalSince1970: 100),
+            receivedAt: Date(timeIntervalSince1970: 100),
+            isSourceStamped: false
+        )
+
+        XCTAssertNil(PortfolioEngine.observationEntry(from: observation).amount)
+        XCTAssertNil(
+            InventoryLedger.resolveValuation(
+                observation: observation,
+                record: record
+            ).unitPrice
+        )
     }
 
     func testMagicReleaseDateDrivesSetOrdering() throws {
@@ -246,7 +384,11 @@ final class PricingTests: XCTestCase {
     }
 
     func testTCGdexUpdatedTimestampReachesThePrice() throws {
-        guard case let .price(price) = CardPricing.price(for: try pokemonCard(), variant: .normal) else {
+        guard case let .price(price) = CardPricing.price(
+            for: try pokemonCard(),
+            variant: .normal,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a price")
         }
 
@@ -292,8 +434,16 @@ final class PricingTests: XCTestCase {
     func testEachBallPatternGetsItsOwnPrice() throws {
         let card = try ballPatternCard()
 
-        guard case let .price(pokeBall) = CardPricing.price(for: card, variant: .pokeBall),
-              case let .price(masterBall) = CardPricing.price(for: card, variant: .masterBall) else {
+        guard case let .price(pokeBall) = CardPricing.price(
+                  for: card,
+                  variant: .pokeBall,
+                  magicTreatments: []
+              ),
+              case let .price(masterBall) = CardPricing.price(
+                  for: card,
+                  variant: .masterBall,
+                  magicTreatments: []
+              ) else {
             return XCTFail("Expected a price for each ball pattern")
         }
 
@@ -308,7 +458,11 @@ final class PricingTests: XCTestCase {
         let card = try ballPatternCard()
 
         let amounts = [PhysicalVariant.reverse, .pokeBall, .masterBall].map { variant -> Double? in
-            guard case let .price(price) = CardPricing.price(for: card, variant: variant) else { return nil }
+            guard case let .price(price) = CardPricing.price(
+                for: card,
+                variant: variant,
+                magicTreatments: []
+            ) else { return nil }
             return price.unitMarketPriceUSD
         }
 
@@ -346,14 +500,19 @@ final class PricingTests: XCTestCase {
             setCode: "PRE"
         )
 
-        guard case let .price(reverse) = CardPricing.price(for: card, variant: .reverse) else {
+        guard case let .price(reverse) = CardPricing.price(
+            for: card,
+            variant: .reverse,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a reverse price")
         }
         XCTAssertEqual(reverse.unitMarketPriceUSD, 0.20)
 
         guard case let .price(confetti) = CardPricing.price(
             for: card,
-            variant: PhysicalVariant.pokemonFoilPattern("confetti")
+            variant: PhysicalVariant.pokemonFoilPattern("confetti"),
+            magicTreatments: []
         ) else {
             return XCTFail("Expected the unnamed pattern to keep its own price")
         }
@@ -395,7 +554,11 @@ final class PricingTests: XCTestCase {
         ) else {
             return XCTFail("A finish lock must not silently answer the stamp question")
         }
-        guard case let .price(price) = CardPricing.price(for: card, variant: staff) else {
+        guard case let .price(price) = CardPricing.price(
+            for: card,
+            variant: staff,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected the Staff object's exact price")
         }
         XCTAssertEqual(price.unitMarketPriceUSD, 20.0)
@@ -457,7 +620,11 @@ final class PricingTests: XCTestCase {
     }
 
     func testCardmarketFillsInWhereTCGplayerPublishesNothing() throws {
-        guard case let .price(price) = CardPricing.price(for: try promoCard(), variant: .holo) else {
+        guard case let .price(price) = CardPricing.price(
+            for: try promoCard(),
+            variant: .holo,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a Cardmarket price")
         }
 
@@ -469,7 +636,11 @@ final class PricingTests: XCTestCase {
     /// A euro figure is reported as euros. Labelling it USD would misstate a
     /// number by whatever the exchange rate happens to be that day.
     func testCardmarketPriceKeepsItsOwnCurrency() throws {
-        guard case let .price(price) = CardPricing.price(for: try promoCard(), variant: .holo) else {
+        guard case let .price(price) = CardPricing.price(
+            for: try promoCard(),
+            variant: .holo,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected a Cardmarket price")
         }
 
@@ -480,7 +651,11 @@ final class PricingTests: XCTestCase {
     func testTCGplayerStillWinsWhenItHasAPriceForTheVariant() throws {
         let card = try promoCard(tcgplayerJSON: #"{ "holofoil": { "marketPrice": 3.10 } }"#)
 
-        guard case let .price(price) = CardPricing.price(for: card, variant: .holo) else {
+        guard case let .price(price) = CardPricing.price(
+            for: card,
+            variant: .holo,
+            magicTreatments: []
+        ) else {
             return XCTFail("Expected the TCGplayer price")
         }
 

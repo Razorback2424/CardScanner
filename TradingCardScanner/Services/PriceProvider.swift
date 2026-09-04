@@ -61,6 +61,7 @@ enum CardPricing {
     static func price(
         for card: IdentifiedCard,
         variant: PhysicalVariant?,
+        magicTreatments: [MagicTreatment],
         pokemonPrintRun: PokemonPrintRun? = nil,
         at fetchedAt: Date = .now
     ) -> PriceLookup {
@@ -109,6 +110,12 @@ enum CardPricing {
             )
 
         case let .magic(magic):
+            // Scryfall's finish prices are printing-wide. A named Magic
+            // treatment is a second identity axis, so `usd_foil` cannot answer
+            // a surge-foil, neon-ink, or future unclassified treatment question.
+            // The treatment-specific vendor path is deliberately separate and
+            // must prove the treatment before it can return a number.
+            guard magicTreatments.isEmpty else { return .unavailable(.scryfall) }
             guard let prices = magic.prices else { return .unavailable(nil) }
             guard let listing = scryfallListing(for: variant),
                   let amount = prices.value(forKey: listing) else {
@@ -138,7 +145,11 @@ enum CardPricing {
     /// never printed.
     static func publishedPrices(for card: IdentifiedCard) -> [CardMarketPrice] {
         card.variantEvidence.catalogVariants.compactMap { variant in
-            guard case let .price(price) = self.price(for: card, variant: variant) else { return nil }
+            guard case let .price(price) = self.price(
+                for: card,
+                variant: variant,
+                magicTreatments: card.magicTreatments(for: variant)
+            ) else { return nil }
             return CardMarketPrice(
                 variantID: variant.id,
                 label: displayLabel(for: variant),
@@ -153,7 +164,11 @@ enum CardPricing {
     /// unowned catalog printing has no user-selected physical variant yet.
     static func highestPublishedUSDPrice(for card: IdentifiedCard) -> Double? {
         card.variantEvidence.catalogVariants.compactMap { variant -> Double? in
-            guard case let .price(price) = self.price(for: card, variant: variant),
+            guard case let .price(price) = self.price(
+                for: card,
+                variant: variant,
+                magicTreatments: card.magicTreatments(for: variant)
+            ),
                   price.currencyCode == "USD" else { return nil }
             return price.unitMarketPriceUSD
         }

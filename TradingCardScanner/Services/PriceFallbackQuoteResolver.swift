@@ -18,6 +18,9 @@ enum PriceFallbackQuoteResolution: Equatable {
         /// The app has no safe mapping for this finish, so no vendor request
         /// was made and no price claim can be drawn from the result.
         case unsupportedFinish
+        /// The app has no treatment-specific vendor identity, so no request was
+        /// made and the result must not become a cached product miss.
+        case unsupportedTreatment
         case disabled
         case missingCredentials
         case budgetReached(resetAt: Date)
@@ -138,10 +141,17 @@ final class PriceFallbackQuoteResolver {
         guard UserDefaults.standard.bool(forKey: "usesPriceFallback") else {
             return .failed(.disabled)
         }
+        guard !Task.isCancelled else { return .failed(.cancelled) }
+        guard !(game == .magic && !treatmentIDs.isEmpty) else {
+            // The current vendor model cannot prove a treatment-specific
+            // product. Do not record `.noProductMatch`: that would suppress
+            // this row for 30 days and turn a capability gap into vendor
+            // evidence. The ordinary foil key remains independent.
+            return .failed(.unsupportedTreatment)
+        }
         guard PriceVendorCredentials.hasKey else {
             return .failed(.missingCredentials)
         }
-        guard !Task.isCancelled else { return .failed(.cancelled) }
         let key = ProductIdentity.key(
             game: game,
             printingID: printingID,
@@ -194,7 +204,8 @@ final class PriceFallbackQuoteResolver {
             setName: setName,
             cardNumber: cardNumber,
             pokemonPrintRun: pokemonPrintRun,
-            vendorCardID: identities.cachedCardID(forKey: key)
+            vendorCardID: identities.cachedCardID(forKey: key),
+            magicTreatmentIDsRaw: treatmentIDs
         ) else {
             return .failed(.requestFailed)
         }
@@ -219,6 +230,8 @@ final class PriceFallbackQuoteResolver {
             return .failed(.notMatched)
         case .unsupportedFinish:
             return .failed(.unsupportedFinish)
+        case .unsupportedTreatment:
+            return .failed(.unsupportedTreatment)
         case .requestFailed:
             return .failed(.requestFailed)
         case let .budgetReached(resetAt):
@@ -266,17 +279,22 @@ final class PriceFallbackQuoteResolver {
 
     nonisolated static func subject(
         for card: IdentifiedCard,
+        variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?,
         vendorCardID: String?
     ) -> ProductPriceSubject? {
-        subject(
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: variant)
+        )
+        return subject(
             game: card.game,
             catalogID: card.providerID,
             name: card.name,
             setName: card.setName,
             cardNumber: card.cardNumber,
             pokemonPrintRun: pokemonPrintRun,
-            vendorCardID: vendorCardID
+            vendorCardID: vendorCardID,
+            magicTreatmentIDsRaw: treatmentIDs
         )
     }
 
@@ -287,7 +305,8 @@ final class PriceFallbackQuoteResolver {
         setName: String,
         cardNumber: String,
         pokemonPrintRun: PokemonPrintRun?,
-        vendorCardID: String?
+        vendorCardID: String?,
+        magicTreatmentIDsRaw: [String]
     ) -> ProductPriceSubject? {
         guard !name.isEmpty, !cardNumber.isEmpty else { return nil }
         return ProductPriceSubject(
@@ -298,7 +317,8 @@ final class PriceFallbackQuoteResolver {
             cardNumber: cardNumber,
             japaneseSetID: catalogID.flatMap(japaneseSetID(forCatalogCardID:)),
             pokemonPrintRun: pokemonPrintRun,
-            vendorCardID: vendorCardID
+            vendorCardID: vendorCardID,
+            magicTreatmentIDsRaw: magicTreatmentIDsRaw
         )
     }
 
@@ -323,6 +343,12 @@ final class PriceFallbackQuoteResolver {
         identities: ProductIdentityStore,
         identityKey: String
     ) async -> PriceFallbackQuoteResolution {
+        guard !target.isTreatmentQualified else {
+            // Direct vendor handles are still generic unless the vendor has
+            // explicitly modelled this treatment. Do not turn a capability
+            // gap into a cached negative identity or query a generic product.
+            return .failed(.unsupportedTreatment)
+        }
         do {
             let client = JustTCGV1Client(transport: transport)
             let response = try await client.batchCards(

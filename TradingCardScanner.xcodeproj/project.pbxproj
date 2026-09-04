@@ -133,6 +133,7 @@
 		A00200E1 /* MagicTreatmentSnapshot in Resources */ = {isa = PBXBuildFile; fileRef = B00100E1 /* MagicTreatmentSnapshot */; };
 		A00100E2 /* MagicTreatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E2 /* MagicTreatment.swift */; };
 		A00100E3 /* MagicTreatmentCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E3 /* MagicTreatmentCatalog.swift */; };
+		A00100E5 /* MagicTreatmentMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E5 /* MagicTreatmentMigration.swift */; };
 		A00100E4 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A00200E2 /* MagicTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E2 /* MagicTreatmentTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
@@ -287,6 +288,7 @@
 		B00200E0 /* MagicTreatmentSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentSnapshotTests.swift; sourceTree = "<group>"; };
 		B00100E2 /* MagicTreatment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatment.swift; sourceTree = "<group>"; };
 		B00100E3 /* MagicTreatmentCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentCatalog.swift; sourceTree = "<group>"; };
+		B00100E5 /* MagicTreatmentMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentMigration.swift; sourceTree = "<group>"; };
 		B00100E4 /* MagicTreatmentCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicTreatmentCatalog; sourceTree = "<group>"; };
 		B00200E2 /* MagicTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100E0 /* MagicTreatmentSnapshot.swift */,
 				B00100E3 /* MagicTreatmentCatalog.swift */,
+				B00100E5 /* MagicTreatmentMigration.swift */,
 				B0010004 /* SetCodeMap.swift */,
 				B0010005 /* ScanParser.swift */,
 				B0010006 /* TCGdexService.swift */,
@@ -731,6 +734,7 @@
 				A00100E0 /* MagicTreatmentSnapshot.swift in Sources */,
 				A00100E2 /* MagicTreatment.swift in Sources */,
 				A00100E3 /* MagicTreatmentCatalog.swift in Sources */,
+				A00100E5 /* MagicTreatmentMigration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

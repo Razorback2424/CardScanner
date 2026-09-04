@@ -66,9 +66,11 @@ enum CollectionActivityKind: String, CaseIterable, Identifiable, Codable, Hashab
         }
     }
 
-    /// The positive quantity an entry still represents. Correction entries are
-    /// deliberately zero: the original entry moves identity and the correction
-    /// row records that fact without counting the copy twice.
+    /// The positive quantity an entry still represents. Ordinary correction
+    /// entries are zero because the original entry moves identity; the
+    /// treatment migration may use a positive corrected entry only when a
+    /// legacy row has no activity lineage to retarget. That entry documents the
+    /// recovered collection quantity without making it an acquisition claim.
     var hasQuantityClaim: Bool {
         self == .added || self == .restored
     }
@@ -101,6 +103,8 @@ final class CollectionActivity {
     /// Stored independently from the finish so history preserves the exact
     /// treatment-qualified collection identity it describes.
     var magicTreatmentIDsRaw: [String] = []
+    var magicTreatmentQualifiersJSON: String?
+    var magicContentKindRaw: String = MagicContentKind.regular.rawValue
     var pokemonPrintRunRaw: String?
     /// Kept for lightweight migration compatibility with the acquisition-only
     /// model. New code reads `deltaQuantity`; it is the unsigned legacy mirror.
@@ -145,6 +149,8 @@ final class CollectionActivity {
         variantID = card.variantID
         variantLabel = card.variantLabel
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
+        magicTreatmentQualifiersJSON = card.magicTreatmentQualifiersJSON
+        magicContentKindRaw = card.magicContentKindRaw
         pokemonPrintRunRaw = card.pokemonPrintRun?.rawValue
         self.quantity = quantity
         let defaultDelta: Int
@@ -189,6 +195,21 @@ final class CollectionActivity {
     }
     var pokemonPrintRun: PokemonPrintRun? {
         pokemonPrintRunRaw.flatMap(PokemonPrintRun.init(rawValue:))
+    }
+
+    var magicTreatmentQualifiers: [String: String] {
+        MagicTreatmentKeyCodec.decodeQualifiers(magicTreatmentQualifiersJSON)
+    }
+
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        MagicTreatmentEvidence(
+            treatments: magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
+            qualifiers: magicTreatmentQualifiers
+        )
+    }
+
+    var magicContentKind: MagicContentKind {
+        MagicContentKind(rawValue: magicContentKindRaw) ?? .regular
     }
 }
 

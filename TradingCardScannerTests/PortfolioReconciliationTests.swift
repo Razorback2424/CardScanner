@@ -2,6 +2,37 @@ import XCTest
 import SwiftData
 @testable import TradingCardScanner
 
+private actor PortfolioComputationGate {
+    private var permits = 0
+    private var waiting = 0
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        if permits > 0 {
+            permits -= 1
+            return
+        }
+        waiting += 1
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
+        }
+    }
+
+    func release() {
+        if let waiter = waiters.first {
+            waiters.removeFirst()
+            waiting -= 1
+            waiter.resume()
+        } else {
+            permits += 1
+        }
+    }
+
+    func waitingCount() -> Int {
+        waiting
+    }
+}
+
 /// Container-backed reconciliation cases: local knowledge time, missed close
 /// publication, CloudKit-style duplicate rows, invalidation, and explicit undo
 /// semantics. These are the contracts most likely to pass pure accounting tests
@@ -158,6 +189,19 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTFail("Portfolio recompute did not finish", file: file, line: line)
     }
 
+    private func waitForComputationGate(
+        _ gate: PortfolioComputationGate,
+        count: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        for _ in 0..<10_000 {
+            if await gate.waitingCount() == count { return }
+            await Task.yield()
+        }
+        XCTFail("Expected (count) computation(s) waiting at the gate", file: file, line: line)
+    }
+
     // MARK: - Recompute presentation and coalescing
 
     func testRecomputeRetainsTheLastUsableSummaryWhileUpdating() async throws {
@@ -212,6 +256,40 @@ final class PortfolioReconciliationTests: XCTestCase {
         // One initial replay established the retained value; the three rapid
         // requests above become the active pass plus one trailing pass.
         XCTAssertEqual(engine.inputRevision, 3)
+    }
+
+    func testCancelledComputationRunsTheNewestPendingReplay() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: date))
+        try context.save()
+
+        let gate = PortfolioComputationGate()
+        let engine = PortfolioEngine(
+            computationProvider: { container, epoch, through, timeZoneIdentifier in
+                await gate.wait()
+                let actor = PortfolioComputationActor(modelContainer: container)
+                return await actor.compute(
+                    epoch: epoch,
+                    through: through,
+                    timeZoneIdentifier: timeZoneIdentifier
+                )
+            }
+        )
+
+        engine.recompute(context: context, now: date)
+        await waitForComputationGate(gate, count: 1)
+
+        engine.recompute(context: context, now: date.addingTimeInterval(60))
+        engine.cancelRecompute()
+        await gate.release()
+        await waitForComputationGate(gate, count: 1)
+        await gate.release()
+
+        await waitForRecomputeToFinish(engine)
+        XCTAssertFalse(engine.isRecomputing)
+        XCTAssertNotNil(engine.summary)
+        XCTAssertEqual(engine.inputRevision, 1)
     }
 
     func testRecomputeAndWaitIncludesTheTrailingReplayItQueues() async throws {

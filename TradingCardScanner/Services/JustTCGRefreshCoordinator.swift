@@ -1,5 +1,10 @@
 import Foundation
 
+private struct MarketListingOwnerKey: Hashable {
+    let variantID: String?
+    let treatmentIDs: [String]
+}
+
 /// One thing whose market price needs refreshing.
 ///
 /// Carries both the storage key it writes back to and the identifiers it can be
@@ -62,6 +67,10 @@ struct MarketPriceTarget: Hashable, Sendable {
     var lookup: JustTCGBatchLookup? {
         if let marketVariantID { return .variantID(marketVariantID) }
         return JustTCGBatchLookup.best(from: lookupCandidates)
+    }
+
+    var isTreatmentQualified: Bool {
+        game == .magic && !magicTreatmentIDsRaw.isEmpty
     }
 }
 
@@ -213,7 +222,17 @@ struct JustTCGRefreshCoordinator {
                     // A card-level lookup can serve several owned finishes. The
                     // request is still deduplicated, but the returned listing
                     // must be selected and applied per physical variant.
-                    for finishOwners in Dictionary(grouping: owners, by: \.variantID).values {
+                    for finishOwners in Dictionary(
+                        grouping: owners,
+                        by: {
+                            MarketListingOwnerKey(
+                                variantID: $0.variantID,
+                                treatmentIDs: MagicTreatmentKeyCodec.canonicalIDs(
+                                    from: $0.magicTreatmentIDsRaw
+                                )
+                            )
+                        }
+                    ).values {
                         guard case let .matched(card, variant) = Self.exactListing(
                             lookup: lookup,
                             owners: finishOwners,
@@ -288,6 +307,9 @@ struct JustTCGRefreshCoordinator {
         owners: [MarketPriceTarget],
         response: JustTCGBatchResponse
     ) -> ExactLookupResult {
+        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else {
+            return .noExactListing
+        }
         let returned = response.variantsByID
         switch lookup {
         case let .variantID(id):
@@ -334,6 +356,7 @@ struct JustTCGRefreshCoordinator {
         on card: JustTCGCard,
         for owners: [MarketPriceTarget]
     ) -> (card: JustTCGCard, variant: JustTCGVariant)? {
+        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return nil }
         let variants = card.variants ?? []
         let wanted = owners.compactMap {
             ProductFinish.printing(for: $0.variantID.map(PhysicalVariant.resolving))

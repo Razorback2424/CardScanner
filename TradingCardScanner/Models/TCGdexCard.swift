@@ -811,6 +811,30 @@ enum IdentifiedCard: Identifiable, Sendable {
         magicTreatmentEvidence.applicableTreatments(for: finish)
     }
 
+    /// The semantic kind of the exact printed face. Tokens and art-series
+    /// cards are separate from ordinary cards even when their visible number
+    /// overlaps one in the parent set; the provider layout is the authoritative
+    /// value after the content-aware lookup has resolved.
+    var magicContentKind: MagicContentKind {
+        guard case let .magic(card) = self else { return .regular }
+        switch card.layout?.lowercased() {
+        case "token", "double_faced_token", "emblem": return .token
+        case "art_series": return .artCard
+        default: return .regular
+        }
+    }
+
+    /// Qualifiers follow the same finish-aware treatment relationship as the
+    /// treatment ids. A dual-finish printing therefore carries its qualifier
+    /// only on the foil row that actually has the treatment.
+    func magicTreatmentQualifiers(for finish: PhysicalVariant?) -> [String: String] {
+        let evidence = magicTreatmentEvidence
+        let applicable = evidence.applicableTreatments(for: finish)
+        return Dictionary(uniqueKeysWithValues: applicable.compactMap { treatment in
+            evidence.qualifier(for: treatment).map { (treatment.id, $0) }
+        })
+    }
+
     /// A graded entry has no raw finish selector in the vendor's graded
     /// response. It may still carry a treatment when the exact printing has one
     /// and publishes exactly one finish; dual-finish printings remain
