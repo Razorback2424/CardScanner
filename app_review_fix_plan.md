@@ -117,6 +117,122 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Review remediation implementation — remaining planned slices
+
+The remaining roadmap slices are implemented in `29ca750`.
+
+### Slice 5 — synced price evidence and duplicate records
+
+- [x] Reconcile changed and explicitly invalidated synced `PriceRecord` rows
+  into the device-local observation log at the time this device learns them.
+- [x] Preserve local knowledge time rather than copying another device's fetch
+  time, and reject delayed remote evidence that is older than the newest local
+  knowledge.
+- [x] Select duplicate price rows deterministically by knowledge watermark,
+  invalidation state, and stable provenance; never by price magnitude.
+- [x] Repair redundant rows on the next write/refresh and report the repair
+  only after the surrounding save succeeds.
+- [x] Add changed-price, out-of-order, invalidation, duplicate, and
+  invalidation-precedence regressions.
+
+Status: implemented in `29ca750`. The scalar ledger, bulk replay, collection
+display, and portfolio computation now share the same authoritative evidence
+rules. Two-device CloudKit convergence remains unverified because the available
+environment has no working simulator runtime or second device.
+
+### Slice 7 — scoped browse searches
+
+- [x] Pass the visible Cards/Sealed/All scope into search scheduling.
+- [x] Restrict sealed requests to the selected game and defer omitted lanes
+  until the user selects them.
+- [x] Add transport-count regressions for Cards-only and single-game searches.
+
+Status: implemented in `29ca750`. Cached sealed results remain available
+offline; only missing or stale requested lanes with credentials reach the
+vendor.
+
+### Slice 9 — centering export freshness
+
+- [x] Key export preparation by image revision, measurement, and rotation.
+- [x] Coalesce guide changes before preparing the shareable file, and clear the
+  prior URL while a newer export is pending.
+- [x] Preserve rotation in the rendered export and filename.
+
+Status: implemented in `29ca750`. The stale-export path is covered in source
+and filename tests. The PNG render/encode/write remains synchronous on the
+main actor; no runtime hitch measurement was available, so moving it to a
+background renderer was intentionally deferred rather than guessed.
+
+### Slice 10 — CSV import progress and selective recovery
+
+- [x] Publish row progress, disable a second import from Settings while one is
+  active, and invalidate queued progress callbacks on completion.
+- [x] Preserve row-level transaction isolation and expose normalized failed
+  entries as a retry-only CSV.
+- [x] Distinguish partial completion from complete success in the completion
+  message.
+
+Status: implemented in `29ca750`. Persistence failures and parser exclusions
+remain separate in the import result; the partial-completion action prioritizes
+exporting persistence-failed rows for safe retry.
+
+### Slice 11 — device-local custom artwork ownership
+
+- [x] Add a device-local `LocalArtworkOverride` mapping keyed by collection key.
+- [x] Migrate legacy filename values at launch, then clear the legacy bridge for
+  new writes so another device cannot overwrite a local filename.
+- [x] Update collection, portfolio, diagnostics, and missing-artwork export
+  paths to read the local mapping.
+
+Status: implemented in `29ca750`. Intentional compatibility deviation: the
+legacy `CollectedCard.userArtworkFilename` property remains in the model schema
+as a temporary migration bridge rather than being removed in one destructive
+schema change. Launch migration copies it locally and clears it; all new
+artwork writes use the local mapping. Full image synchronization was not added,
+consistent with the plan's product boundary.
+
+### Slice 12 — truthful storage/sync status
+
+- [x] Report the actual local-only versus CloudKit-backed container mode chosen
+  at launch.
+- [x] Correct Settings wording so Sign in with Apple is described as the cloud
+  configuration gate, while the private database follows the device's iCloud
+  account.
+- [x] Keep restart requirements explicit after account changes.
+
+Status: implemented in `29ca750`. CloudKit account behavior and fallback paths
+still require device/account checks in an environment with iCloud provisioning.
+
+### Slice 13 — Magic set-page cache expiry
+
+- [x] Apply a 24-hour age policy to disk-backed Magic card pages.
+- [x] Revalidate stale pages, retain stale content when the provider is
+  unreachable, and leave the old timestamp in place so a later visit retries.
+
+Status: implemented in `29ca750`. The existing cache and offline behavior were
+retained; no new cache layer was introduced.
+
+### Cleanup — reference-only portfolio calculation
+
+- [x] Remove the unused legacy calculation walk from the production target.
+- [x] Move it into `PortfolioCloseReference.swift` in the test target so the
+  independent reference oracle and existing tests remain available.
+
+Status: implemented in `29ca750`. Production keeps only the attribution result
+type used by UI/history models.
+
+### Final verification for these slices
+
+- `xcodebuild build` for `generic/platform=iOS` — passed after `29ca750`.
+- `xcodebuild build-for-testing` for `generic/platform=iOS` — passed after
+  `29ca750`.
+- `git diff --check` — clean.
+- Simulator XCTest execution — not available: CoreSimulatorService reports no
+  discoverable runtime.
+- Not claimed: physical-camera lifecycle checks, two-device CloudKit
+  convergence, provider-network behavior, centering frame-time measurements,
+  large-import scaling, or activity-log/collection performance measurements.
+
 ## Review against `ef689ce` — planned remediation
 
 The following slices track the supplied static review in its stated roadmap
