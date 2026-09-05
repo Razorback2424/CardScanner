@@ -48,6 +48,7 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     var fallbackIdentity: ImportedPriceIdentity? = nil
     let catalogMetadataCheckedAt: Date?
     let lastFailureAt: Date?
+    var lastFailureReasonRaw: String? = nil
     let hasPrice: Bool
     /// When this app last asked about it, successfully or not.
     let lastCheckedAt: Date?
@@ -89,16 +90,15 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// then stamps a price failure that reads as though something went wrong.
     /// These go straight to the vendor, keyed by the handle the row carries.
     ///
-    /// Sealed products only. A graded slab looks similar — its price also comes
-    /// from the vendor — but it *does* have an underlying catalog identity, and
-    /// an imported one still needs the catalog pass to resolve that identity and
-    /// fetch its artwork. It reaches the vendor the ordinary way instead: the
-    /// catalog answers `.unavailable` for a row with no raw finish, which is
-    /// already a fallback candidate. The same holds for a raw card that has a
-    /// vendor handle from an earlier pass — skipping the catalog for it would
-    /// permanently forfeit a free price the catalog may publish later.
+    /// Sealed products have no external catalog identity. Graded slabs are
+    /// vendor-native only after their stored variant handle is available; an
+    /// imported slab without that handle is not queryable by either provider
+    /// and is classified as unsupported before the catalog pass. Raw cards are
+    /// intentionally not vendor-native: a catalog response may still provide
+    /// a free price or the identity needed for a later fallback.
     var isVendorNative: Bool {
         itemKind == .sealedProduct
+            || (itemKind == .gradedCard && marketVariantID != nil)
     }
 
     var id: String {
@@ -244,7 +244,6 @@ final class PriceRefreshController: ObservableObject {
 
     private struct PendingRefreshBatch {
         var targets: [PriceTarget]
-        let store: PriceStore
     }
 
     private var isRefreshing: Bool {
@@ -253,8 +252,24 @@ final class PriceRefreshController: ObservableObject {
     }
 
     /// Targets that a refresh should bother with.
-    nonisolated static func staleTargets(from targets: [PriceTarget], now: Date = .now) -> [PriceTarget] {
+    nonisolated static func staleTargets(
+        from targets: [PriceTarget],
+        now: Date = .now,
+        usesPriceFallback: Bool = true
+    ) -> [PriceTarget] {
         targets.filter { target in
+            if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+                let isStillUnsupported = target.isTreatmentQualified
+                    || (target.itemKind == .gradedCard && target.marketVariantID == nil)
+                if !isStillUnsupported { return true }
+                // A capability stamp is only actionable while the optional
+                // provider is enabled. If the setting changes, the next
+                // enabled pass must be allowed to revisit it immediately.
+                guard usesPriceFallback else { return false }
+                return target.lastCheckedAt.map {
+                    now.timeIntervalSince($0) >= noSupportedProviderRetryInterval
+                } ?? true
+            }
             // A previous "unavailable" result is not permanent. Manual refreshes
             // must always be able to revisit cards that still have no price.
             if !target.hasPrice { return true }
@@ -277,6 +292,11 @@ final class PriceRefreshController: ObservableObject {
             return priceNeedsRefresh || metadataNeedsRefresh
         }
     }
+
+    /// A capability gap is stable for much longer than a transport failure.
+    /// Keeping this interval separate prevents an unpriceable identity from
+    /// turning every launch into another request.
+    nonisolated static let noSupportedProviderRetryInterval: TimeInterval = 30 * 24 * 60 * 60
 
     /// A non-USD catalog observation remains useful when fallback is off, but
     /// becomes unfinished the moment the user opts into a USD fallback.
@@ -310,7 +330,7 @@ final class PriceRefreshController: ObservableObject {
     /// startup check looked like a button that did nothing.
     func refresh(_ targets: [PriceTarget], store: PriceStore) async {
         if let activeRefresh {
-            enqueuePending(targets, store: store)
+            enqueuePending(targets)
             await activeRefresh.value
             return
         }
@@ -348,22 +368,24 @@ final class PriceRefreshController: ObservableObject {
         // already decided there is nothing left to process.
         defer { activeRefresh = nil }
         var targets = initialTargets
-        var store = initialStore
+        // A refresh is a long-lived workflow. Its context is deliberately
+        // independent from the UI/main context so a collection mutation or
+        // import rollback cannot discard its staged price evidence, and its
+        // checkpoints cannot commit unrelated UI work.
+        let refreshContext = ModelContext(initialStore.context.container)
+        let store = PriceStore(context: refreshContext)
         while !targets.isEmpty {
             await performRefresh(targets, store: store)
 
             guard !Task.isCancelled else { return }
             guard let pending = takePendingRefresh() else { break }
             targets = pending.targets
-            store = pending.store
         }
     }
 
-    private func enqueuePending(_ targets: [PriceTarget], store: PriceStore) {
+    private func enqueuePending(_ targets: [PriceTarget]) {
         guard !targets.isEmpty else { return }
-        if let index = pendingRefreshBatches.indices.last,
-           ObjectIdentifier(pendingRefreshBatches[index].store.context)
-                == ObjectIdentifier(store.context) {
+        if let index = pendingRefreshBatches.indices.last {
             var byID: [String: PriceTarget] = [:]
             var order: [String] = []
             for target in pendingRefreshBatches[index].targets {
@@ -378,8 +400,7 @@ final class PriceRefreshController: ObservableObject {
         } else {
             pendingRefreshBatches.append(
                 PendingRefreshBatch(
-                    targets: targets,
-                    store: store
+                    targets: targets
                 )
             )
         }
@@ -396,18 +417,36 @@ final class PriceRefreshController: ObservableObject {
         // A sealed box or a graded slab has no catalog identity to look up, so
         // it never enters the catalog pass. It carries the vendor's own variant
         // handle instead and goes straight to the batched stage below.
-        let vendorNative = targets.filter(\.isVendorNative)
+        let unsupported = targets.filter {
+            $0.isTreatmentQualified
+                || ($0.itemKind == .gradedCard && $0.marketVariantID == nil)
+        }
+        for target in unsupported {
+            store.recordUnsupportedProvider(
+                game: target.game,
+                printingID: target.printingID,
+                variantID: target.variantID,
+                treatmentIDs: target.magicTreatmentIDsRaw
+            )
+        }
+        // Partitioned by instrument id rather than by `Array.contains`. A
+        // synthesized `PriceTarget ==` compares two dozen fields including
+        // arrays, so the linear membership test was quadratic over the whole
+        // collection before a single request went out.
+        let unsupportedIDs = Set(unsupported.map(\.id))
+        let supportedTargets = targets.filter { !unsupportedIDs.contains($0.id) }
+        let vendorNative = supportedTargets.filter(\.isVendorNative)
 
         // Group by printing: every variant of one card shares a single response.
         var order: [PriceTarget.Printing] = []
         var byPrinting: [PriceTarget.Printing: [PriceTarget]] = [:]
-        for target in targets where !target.isVendorNative {
+        for target in supportedTargets where !target.isVendorNative {
             if byPrinting[target.printing] == nil { order.append(target.printing) }
             byPrinting[target.printing, default: []].append(target)
         }
 
         let previousLatest = latestKnownSourceUpdate(in: store)
-        let importedCardsByProviderID = store.importedCardsByProviderID()
+        let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
         var completed = 0
         var priced = 0
         var failed = 0
@@ -449,12 +488,14 @@ final class PriceRefreshController: ObservableObject {
                 switch outcome.result {
                 case let .card(card):
                     if printing.importedIdentity != nil {
-                        for importedCard in importedCardsByProviderID[printing.printingID] ?? [] {
-                            importedCard.applyCatalogMetadata(from: card)
-                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
-                                on: importedCard,
-                                at: now
-                            )
+                        for importedCardID in importedCardIDsByProviderID[printing.printingID] ?? [] {
+                        guard let importedCard = store.context.model(for: importedCardID) as? CollectedCard
+                        else { continue }
+                        importedCard.applyCatalogMetadata(from: card)
+                        CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                            on: importedCard,
+                            at: now
+                        )
                         }
                     }
                     if card.game == .magic {
@@ -912,11 +953,11 @@ final class PriceRefreshController: ObservableObject {
         // writes back to. A sealed product's picture and its price come from the
         // same response, so the refresh that pays for one may as well store the
         // other rather than leaving a placeholder box on screen forever.
-        let artworkPending = Self.rowsMissingArtwork(in: store.context)
+        let artworkPending = Self.rowsMissingArtworkIDs(in: store.context)
         // Artwork is an optional backfill, but marketplace identity is useful
         // for every owned row. Keep separate indexes so an already illustrated
         // card still receives the product/SKU handles returned by this pass.
-        let identityRows = Self.rowsByPriceKey(in: store.context)
+        let identityRows = Self.rowsByPriceKeyIDs(in: store.context)
 
         // MARK: Batched pass
         let coordinator = JustTCGRefreshCoordinator(
@@ -944,14 +985,16 @@ final class PriceRefreshController: ObservableObject {
                         owners: owners,
                         store: store,
                         identities: identities,
-                        artworkRowsByPriceKey: artworkPending,
-                        identityRowsByPriceKey: identityRows
+                        artworkRowIDsByPriceKey: artworkPending,
+                        identityRowIDsByPriceKey: identityRows,
+                        context: store.context
                     )
                 },
                 unmatched: { owners in
                     Self.recordSealedArtworkMiss(
                         for: owners,
-                        rowsByPriceKey: artworkPending
+                        rowIDsByPriceKey: artworkPending,
+                        context: store.context
                     )
                 },
                 checkpoint: {
@@ -1175,6 +1218,40 @@ final class PriceRefreshController: ObservableObject {
         return Dictionary(grouping: rows, by: \.priceKey)
     }
 
+    private static func rowsMissingArtworkIDs(
+        in context: ModelContext
+    ) -> [String: [PersistentIdentifier]] {
+        let rows = (try? context.fetch(
+            FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.imageURL == nil })
+        )) ?? []
+        return rows.reduce(into: [String: [PersistentIdentifier]]()) { result, row in
+            result[row.priceKey, default: []].append(row.persistentModelID)
+        }
+    }
+
+    private static func rowsByPriceKeyIDs(
+        in context: ModelContext
+    ) -> [String: [PersistentIdentifier]] {
+        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return rows.reduce(into: [String: [PersistentIdentifier]]()) { result, row in
+            result[row.priceKey, default: []].append(row.persistentModelID)
+        }
+    }
+
+    private static func rows(
+        for ids: [PersistentIdentifier],
+        in context: ModelContext
+    ) -> [CollectedCard] {
+        ids.compactMap { context.model(for: $0) as? CollectedCard }
+    }
+
+    private static func materializedRows(
+        from index: [String: [PersistentIdentifier]],
+        in context: ModelContext
+    ) -> [String: [CollectedCard]] {
+        index.mapValues { rows(for: $0, in: context) }
+    }
+
     /// Applies product artwork independently of whether the returned variant
     /// has a market price. A completed response without a usable marketplace
     /// image is stamped at the current resolver version so an already-priced
@@ -1224,6 +1301,19 @@ final class PriceRefreshController: ObservableObject {
                 )
             }
         }
+    }
+
+    private static func recordSealedArtworkMiss(
+        for owners: [MarketPriceTarget],
+        rowIDsByPriceKey: [String: [PersistentIdentifier]],
+        context: ModelContext,
+        checkedAt: Date = .now
+    ) {
+        recordSealedArtworkMiss(
+            for: owners,
+            rowsByPriceKey: materializedRows(from: rowIDsByPriceKey, in: context),
+            checkedAt: checkedAt
+        )
     }
 
     /// One matched vendor response, applied in dependency order. Identity and
@@ -1300,6 +1390,37 @@ final class PriceRefreshController: ObservableObject {
                 record.periodChangeCount = variant.priceChangesCount7d
             }
         }
+    }
+
+    private static func applyVendorBatchHit(
+        card: JustTCGCard,
+        variant: JustTCGVariant,
+        owners: [MarketPriceTarget],
+        store: PriceStore,
+        identities: ProductIdentityStore,
+        artworkRowIDsByPriceKey: [String: [PersistentIdentifier]],
+        identityRowIDsByPriceKey: [String: [PersistentIdentifier]],
+        context: ModelContext,
+        fetchedAt: Date = .now
+    ) {
+        // The IDs were captured before the network await. Re-fetching here
+        // makes deletion, rollback, or a sync merge during that await harmless.
+        applyVendorBatchHit(
+            card: card,
+            variant: variant,
+            owners: owners,
+            store: store,
+            identities: identities,
+            artworkRowsByPriceKey: materializedRows(
+                from: artworkRowIDsByPriceKey,
+                in: context
+            ),
+            identityRowsByPriceKey: materializedRows(
+                from: identityRowIDsByPriceKey,
+                in: context
+            ),
+            fetchedAt: fetchedAt
+        )
     }
 
     /// Compatibility overload for callers that already have one row index.

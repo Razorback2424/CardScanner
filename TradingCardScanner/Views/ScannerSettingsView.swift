@@ -261,16 +261,22 @@ struct SettingsView: View {
     @MainActor
     private func importCSV(_ plan: CollectionCSVImportPlan) {
         pendingCSVImport = nil
-        do {
-            let result = try CollectionCSV.apply(plan, to: modelContext)
-            Task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
-            var details = "Added \(result.totalQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
-            if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
-            if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
-            details += " Artwork loads automatically. Refresh prices when you're ready."
-            csvMessage = CSVMessage(title: "Import Complete", message: details, skippedCSVText: plan.skippedCSVText)
-        } catch {
-            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+        let container = modelContext.container
+        Task { @MainActor in
+            do {
+                let result = try await CollectionCSV.applyIsolated(plan, to: container)
+                Task { await catalogNormalizer.normalizeImportedCards(in: container) }
+                var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
+                if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
+                if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
+                if !result.failedRows.isEmpty {
+                    details += " Skipped \(result.failedRows.count) rows that could not be imported."
+                }
+                details += " Artwork loads automatically. Refresh prices when you're ready."
+                csvMessage = CSVMessage(title: "Import Complete", message: details, skippedCSVText: plan.skippedCSVText)
+            } catch {
+                csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+            }
         }
     }
 

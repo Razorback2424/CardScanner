@@ -131,8 +131,15 @@ struct ProductIdentityStore {
         }
     }
 
-    func save() {
-        guard context.hasChanges else { return }
-        try? context.save()
+    @discardableResult
+    func save() -> Bool {
+        guard context.hasChanges else { return true }
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 }

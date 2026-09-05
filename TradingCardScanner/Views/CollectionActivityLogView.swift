@@ -524,32 +524,35 @@ struct CollectionActivityEditor: View {
         ), usesFallback, PriceVendorCredentials.hasKey else { return }
 
         fallbackQuoteTask?.cancel()
-        let resolver = PriceFallbackQuoteResolver(context: modelContext)
+        let input = PriceFallbackCardInput(
+            card: card,
+            variant: card.variant,
+            pokemonPrintRun: card.pokemonPrintRun
+        )
+        let fallbackContext = ModelContext(modelContext.container)
+        let fallbackPrices = PriceStore(context: fallbackContext)
+        let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTask = Task { @MainActor in
-            switch await resolver.resolve(
-                card: card,
-                variant: card.variant,
-                pokemonPrintRun: card.pokemonPrintRun
-            ) {
+            switch await resolver.resolve(input) {
             case let .lookup(quote):
                 guard !Task.isCancelled else { return }
                 let identityKey = ProductIdentity.key(
-                    game: card.cardGame,
-                    printingID: card.priceStorageID,
-                    variantID: card.variantID,
-                    treatmentIDs: card.priceTreatmentIDs
+                    game: input.game,
+                    printingID: input.printingID,
+                    variantID: input.variant?.id,
+                    treatmentIDs: input.treatmentIDs
                 )
-                let marketVariantID = ProductIdentityStore(context: prices.context)
+                let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                prices.store(
+                fallbackPrices.store(
                     quote,
-                    game: card.cardGame,
-                    printingID: card.priceStorageID,
-                    variantID: card.variantID,
+                    game: input.game,
+                    printingID: input.printingID,
+                    variantID: input.variant?.id,
                     marketVariantID: marketVariantID,
-                    treatmentIDs: card.priceTreatmentIDs
+                    treatmentIDs: input.treatmentIDs
                 )
-                prices.save()
+                _ = fallbackPrices.save()
             case .failed:
                 break
             }

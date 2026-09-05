@@ -116,7 +116,19 @@ enum PriceObservationRules {
 /// the app legitimately holds. Only an `explicitInvalidation` can do that.
 struct PriceObservationLog {
     let context: ModelContext
-    var timeZone: TimeZone = PortfolioCalendar.timeZone()
+
+    /// Observation rows are local-only, so two SwiftData contexts in the same
+    /// process can otherwise both observe the same absence and seed it. The
+    /// portfolio computation actor is the production owner, while this narrow
+    /// process-wide lock keeps a background computation and a foreground retry
+    /// from racing during the handoff. The second context fetches again after
+    /// the first context saves, so the absence check remains idempotent without
+    /// adding a synced schema watermark to `PriceRecord`.
+    private static let backfillLock = NSLock()
+    /// Reading the log must not be able to establish the portfolio epoch as a
+    /// side effect. The epoch owner pins the zone explicitly; this fallback is
+    /// only for callers that operate before an epoch exists.
+    var timeZone: TimeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
 
     // MARK: - Reading
 
@@ -286,16 +298,11 @@ struct PriceObservationLog {
     /// value and when it was fetched, and that is enough to open the log
     /// honestly: "as of this moment, this is what the app believed".
     ///
-    /// Runs on every launch and is idempotent — it writes only where an
-    /// instrument has a usable value and no observation at all. That also
-    /// covers the case the ledger baseline cannot: a second device inherits the
-    /// synced `PriceRecord`s but none of the first device's local observations,
-    /// and seeds its own.
-    ///
-    /// The caller owns the context and must serialize writes for that context.
-    /// A process-local mutex cannot make two SwiftData contexts or two devices
-    /// observe one another's uncommitted work; durable idempotency belongs at
-    /// the persisted observation boundary, not in a thread-blocking lock.
+    /// The portfolio computation owner invokes this at each recomputation. It
+    /// writes only where an instrument has a usable value and no observation at
+    /// all. A process-local mutex serializes the app's main and computation
+    /// contexts, but it cannot deduplicate two devices' local-only observations;
+    /// that cross-device limitation is intentional and remains value-neutral.
     @discardableResult
     func backfillFromRecords(
         receivedAt localKnowledgeTime: Date = .now,
@@ -342,6 +349,9 @@ struct PriceObservationLog {
         existingObservations: [PriceObservation]?,
         fetchExistingObservations: (() throws -> [PriceObservation])? = nil
     ) -> (written: Int, observations: [PriceObservation]) {
+        Self.backfillLock.lock()
+        defer { Self.backfillLock.unlock() }
+
         let records = PriceStore(context: context).allRecords()
         var observations: [PriceObservation]
         if let existingObservations {
@@ -390,7 +400,18 @@ struct PriceObservationLog {
             written += 1
         }
 
-        if written > 0 { try? context.save() }
+        if written > 0 {
+            do {
+                try context.save()
+            } catch {
+                // Backfill is best effort, but an unsaved in-memory observation
+                // must not be returned as durable evidence or remain staged for
+                // a later unrelated save. The computation actor will retry on
+                // its next pass.
+                context.rollback()
+                return (0, [])
+            }
+        }
         return (written, observations)
     }
 

@@ -203,7 +203,8 @@ struct ContentView: View {
                 priceRecords: priceRecords,
                 usesPriceFallback: usesPriceFallback,
                 includeImported: true
-            )
+            ),
+            usesPriceFallback: usesPriceFallback
         ).count
         await refresh.updateFallbackAvailability(pending: pending)
     }
@@ -243,7 +244,10 @@ struct ContentView: View {
             } catch {
                 return false
             }
-            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            let targets = PriceRefreshController.staleTargets(
+                from: currentTargets,
+                usesPriceFallback: usesPriceFallback
+            )
             guard !targets.isEmpty else {
                 refresh.markRecentlyChecked()
                 return false
@@ -269,7 +273,7 @@ struct ContentView: View {
     @MainActor
     private func recomputeAtDayRollover() async {
         while !Task.isCancelled {
-            let timeZone = PortfolioCalendar.timeZone()
+            let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
             let today = PortfolioCalendar.day(containing: .now, in: timeZone)
             let next = PortfolioCalendar.boundary(afterDay: today, in: timeZone)
             try? await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow + 0.5)))
@@ -352,6 +356,15 @@ private struct PortfolioInputObserver: View {
             // tables are part of the trigger; CloudKit can deliver either first.
             .task(id: portfolioInputTaskID) {
                 guard hasStartedPortfolio else { return }
+                // A refresh pass or an arriving CloudKit batch changes these
+                // tables many times in quick succession, and each change used to
+                // buy its own full recompute. Settling first collapses the burst
+                // into one; `task(id:)` cancels the sleep when the next change
+                // supersedes it. This paces the recompute only — the identity
+                // above is still derived from every payload field, because that
+                // is what notices a late event or a repaired row.
+                try? await Task.sleep(for: .milliseconds(300))
+                guard !Task.isCancelled else { return }
                 portfolio.recompute(context: modelContext)
                 await refreshStalePricesIfNeeded()
             }
@@ -477,7 +490,10 @@ private struct PortfolioInputObserver: View {
                 hasCheckedForStalePrices = false
                 return false
             }
-            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            let targets = PriceRefreshController.staleTargets(
+                from: currentTargets,
+                usesPriceFallback: usesPriceFallback
+            )
             guard !targets.isEmpty else { return false }
             await refresh.refresh(targets, store: PriceStore(context: modelContext))
             return true

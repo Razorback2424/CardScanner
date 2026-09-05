@@ -17,6 +17,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedMarketPriceNull = "graded_market_price_null"
     case justTCGVariantUnresolved = "justtcg_variant_unresolved"
     case invalidProviderQuote = "invalid_provider_quote"
+    case noSupportedProvider = "no_supported_provider"
 
     var title: String {
         switch self {
@@ -30,6 +31,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedMarketPriceNull: return "Graded market price unavailable"
         case .justTCGVariantUnresolved: return "Market variant not resolved"
         case .invalidProviderQuote: return "Invalid provider quote rejected"
+        case .noSupportedProvider: return "No supported price provider"
         }
     }
 
@@ -55,6 +57,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "The marketplace card was identified, but its exact physical variant was not."
         case .invalidProviderQuote:
             return "The provider returned a non-finite or unrepresentable amount. The quote was rejected and the prior value was kept."
+        case .noSupportedProvider:
+            return "This item has no provider that can answer its exact identity. It will be retried occasionally rather than on every refresh."
         }
     }
 }
@@ -64,6 +68,9 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if record?.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+            return .noSupportedProvider
+        }
         if record?.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue {
             return .invalidProviderQuote
         }
@@ -268,6 +275,17 @@ struct PriceStore {
         )
     }
 
+    /// Persistent identifiers are safe to retain while a paced provider request
+    /// is suspended. Model objects are not: another context operation can delete
+    /// or invalidate them before the response returns.
+    func importedCardIDsByProviderID() -> [String: [PersistentIdentifier]] {
+        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return cards.filter { $0.providerID.hasPrefix("csv:") }
+            .reduce(into: [String: [PersistentIdentifier]]()) { result, card in
+                result[card.providerID, default: []].append(card.persistentModelID)
+            }
+    }
+
     /// Records what a provider said about one variant, creating the record if
     /// this is the first time the app has asked.
     ///
@@ -323,10 +341,19 @@ struct PriceStore {
         switch lookup {
         case let .price(price):
             guard record.apply(price) else { return }
+            record.lastFailureReasonRaw = nil
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
+            // A real amount clears every prior diagnosis. "The provider had
+            // nothing for this variant" does not: it is the same answer the
+            // capability stamp already records, and the scanner writes it on
+            // every commit of a treatment-qualified Magic card. Clearing here
+            // let one scan withdraw the 30-day terminal state and put the card
+            // back into the refresh queue it was just taken out of.
+            if record.lastFailureReasonRaw != PricingDiagnosticReason.noSupportedProvider.rawValue {
+                record.lastFailureReasonRaw = nil
+            }
         }
-        record.lastFailureReasonRaw = nil
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
@@ -407,9 +434,57 @@ struct PriceStore {
             treatmentIDs: treatmentIDs
         ) else { return }
         record.recordFailure(at: date)
+        // A target can become supported after a catalog/schema/provider update.
+        // Once that target is actually attempted, the old capability stamp must
+        // not continue to suppress it for the long terminal retry interval.
+        if record.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+            record.lastFailureReasonRaw = nil
+        }
     }
 
-    func save() {
-        try? context.save()
+    /// Stamps a capability gap rather than a provider failure. This is used for
+    /// identities the live catalog cannot represent at all (for example a
+    /// treatment-qualified Magic card or a graded row without a vendor handle).
+    /// It intentionally writes no observation and no coverage row: no provider
+    /// answered the question.
+    func recordUnsupportedProvider(
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        at date: Date = .now,
+        treatmentIDs: [String] = []
+    ) {
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        ) else { return }
+        record.lastCheckedAt = date
+        record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
+        record.lastFailureAt = nil
+    }
+
+    /// Saves only this store's context. A failed save is rolled back immediately
+    /// so a later caller cannot inherit a half-staged price write and commit it
+    /// together with unrelated work. Production refreshes use a dedicated
+    /// context as an additional isolation boundary.
+    @discardableResult
+    func save() -> Bool {
+        guard context.hasChanges else { return true }
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 }

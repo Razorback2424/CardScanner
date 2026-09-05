@@ -59,7 +59,7 @@ struct QuoteCache {
             record.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         record.apply(lookup, at: date)
-        try? context.save()
+        save()
         return record
     }
 
@@ -96,7 +96,23 @@ struct QuoteCache {
             record.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         record.recordFailure(at: date)
-        try? context.save()
+        save()
         return record
+    }
+
+    /// Quote persistence is intentionally best effort, but a failed save must
+    /// not leave this context dirty for the next Price Check or collection
+    /// mutation. Production Price Check contexts are separate from collection
+    /// ownership state as well.
+    @discardableResult
+    private func save() -> Bool {
+        guard context.hasChanges else { return true }
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 }

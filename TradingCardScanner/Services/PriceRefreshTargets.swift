@@ -41,6 +41,7 @@ enum PriceRefreshTargets {
                     : nil,
                 catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
                 lastFailureAt: record?.lastFailureAt,
+                lastFailureReasonRaw: record?.lastFailureReasonRaw,
                 hasPrice: PriceRefreshController.hasFinishedPrice(
                     amount: record?.effectiveUnitMarketPriceUSD,
                     currencyCode: record?.currencyCode,
