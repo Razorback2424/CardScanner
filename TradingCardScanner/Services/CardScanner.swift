@@ -747,14 +747,21 @@ final class CardScanner: NSObject, ObservableObject {
             // iOS reports the ordinary app-background transition through the
             // same interruption notification as real camera contention. It is
             // expected lifecycle, not a camera fault worth showing to the user.
+            let notify = {
+                DispatchQueue.main.async { [weak self] in
+                    self?.onCameraInterruption?()
+                }
+            }
             guard let reasonNumber = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as? NSNumber,
                   let reason = AVCaptureSession.InterruptionReason(rawValue: reasonNumber.intValue) else {
+                // Missing or future interruption reasons are not known-benign.
+                // Reset pending scan state rather than letting an interruption
+                // silently leave a stale latch and confirmation window alive.
+                notify()
                 return
             }
             guard reason != .videoDeviceNotAvailableInBackground else { return }
-            DispatchQueue.main.async { [weak self] in
-                self?.onCameraInterruption?()
-            }
+            notify()
         }
         interruptionEndedObserver = NotificationCenter.default.addObserver(
             forName: AVCaptureSession.interruptionEndedNotification,

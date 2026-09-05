@@ -2177,6 +2177,12 @@ final class ScannerViewModel: ObservableObject {
             scanner.allowImmediateRetry()
             show(ScanNote(text: "Lookup failed — keep the card in the box", tone: .problem))
 
+        case .providerUnavailable:
+            // A held card must remain latched while the provider circuit cools.
+            // Releasing it here would turn one outage into an unbounded stream
+            // of requests and haptics from the same physical card.
+            show(ScanNote(text: "Magic lookup is temporarily unavailable — try again later", tone: .problem))
+
         case .notInCatalog:
             // The first deterministic miss is not enough to file a card: a
             // transient OCR/catalog boundary can still have produced the same

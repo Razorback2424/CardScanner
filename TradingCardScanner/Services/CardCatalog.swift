@@ -10,6 +10,10 @@ enum CatalogFailure: Equatable {
     /// Network or server trouble. Nothing was written and nothing is known to be
     /// wrong with the card, so the very next reading should be allowed through.
     case transient
+    /// The provider is actively cooling down after a server/rate-limit outage.
+    /// Keep the physical card latched so a held card cannot turn the outage into
+    /// a request loop; a later presentation can try again after the circuit opens.
+    case providerUnavailable
 }
 
 enum PokemonHistoricalCatalogError: Error, Sendable {
@@ -341,6 +345,10 @@ actor TCGdexCircuitBreaker {
     /// breaker each meant the second caller re-paid the connect timeout the
     /// first had already established was hopeless.
     static let shared = TCGdexCircuitBreaker()
+    /// Scryfall has a separate quota and outage domain from TCGdex, but uses the
+    /// same circuit implementation. Keeping a distinct instance prevents a
+    /// Scryfall outage from suppressing Pokémon lookups (and vice versa).
+    static let scryfallShared = TCGdexCircuitBreaker()
 
     /// How badly the provider failed, which decides how long to stay away.
     ///
@@ -353,11 +361,14 @@ actor TCGdexCircuitBreaker {
         case serverError
         /// Nothing answered: connection refused, DNS failure, or timeout.
         case unreachable
+        /// The provider explicitly asked the client to wait.
+        case rateLimited
 
         var base: TimeInterval {
             switch self {
             case .serverError: return 10
             case .unreachable: return 30
+            case .rateLimited: return 60
             }
         }
 
@@ -365,6 +376,7 @@ actor TCGdexCircuitBreaker {
             switch self {
             case .serverError: return 60
             case .unreachable: return 600
+            case .rateLimited: return 600
             }
         }
     }
@@ -397,9 +409,15 @@ actor TCGdexCircuitBreaker {
         consecutiveFailures = 0
     }
 
-    func recordFailure(_ failure: Failure = .unreachable, now: Date = .now) {
+    func recordFailure(
+        _ failure: Failure = .unreachable,
+        now: Date = .now,
+        cooldownOverride: TimeInterval? = nil
+    ) {
         consecutiveFailures += 1
-        unavailableUntil = now.addingTimeInterval(cooldown(for: failure))
+        unavailableUntil = now.addingTimeInterval(
+            max(cooldownOverride ?? cooldown(for: failure), 0)
+        )
     }
 
     private func cooldown(for failure: Failure) -> TimeInterval {
@@ -797,6 +815,10 @@ actor CardCatalog {
              ScryfallError.cardNotFound, ScryfallError.identityMismatch,
              ScryfallError.unsupportedPrinting, ScryfallError.invalidURL:
             return .notInCatalog
+        case ScryfallError.endpointNotFound,
+             ScryfallError.rateLimited,
+             ScryfallError.providerUnavailable:
+            return .providerUnavailable
         default:
             return .transient
         }
