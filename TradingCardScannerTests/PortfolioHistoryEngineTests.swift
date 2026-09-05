@@ -147,7 +147,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             anchorValue: money(100),
             endValue: money(107),
             market: money(-10),
-            netInventoryActivity: money(17),
+            added: money(17),
+            removed: .zero,
             corrections: .zero,
             newlyAddedValue: .zero,
             pricingAdjustments: .zero,
@@ -207,7 +208,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             anchorValue: money(100),
             endValue: money(107),
             market: money(-17),
-            netInventoryActivity: money(24),
+            added: money(24),
+            removed: .zero,
             corrections: .zero,
             newlyAddedValue: .zero,
             pricingAdjustments: .zero,
@@ -364,7 +366,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         )
 
         XCTAssertEqual(result.accounting?.totalChange, money(50_000))
-        XCTAssertEqual(result.accounting?.netInventoryActivity, money(50_000))
+        XCTAssertEqual(result.accounting?.added, money(50_000))
+        XCTAssertEqual(result.accounting?.removed, .zero)
         XCTAssertEqual(result.accounting?.market, .zero)
         XCTAssertTrue(result.contributions.isEmpty)
     }
@@ -443,7 +446,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             anchorValue: .zero,
             endValue: money(10),
             market: money(10),
-            netInventoryActivity: .zero,
+            added: .zero,
+            removed: .zero,
             corrections: .zero,
             newlyAddedValue: .zero,
             pricingAdjustments: .zero,
@@ -473,7 +477,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             anchorValue: money(100),
             endValue: money(100),
             market: .zero,
-            netInventoryActivity: .zero,
+            added: .zero,
+            removed: .zero,
             corrections: .zero,
             newlyAddedValue: .zero,
             pricingAdjustments: .zero,
@@ -494,7 +499,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             anchorValue: money(100),
             endValue: money(100),
             market: .zero,
-            netInventoryActivity: .zero,
+            added: .zero,
+            removed: .zero,
             corrections: .zero,
             newlyAddedValue: .zero,
             pricingAdjustments: .zero,
@@ -505,30 +511,30 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         for component in [
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
-                netInventoryActivity: money(1), corrections: .zero,
+                added: money(1), removed: .zero, corrections: .zero,
                 newlyAddedValue: .zero,
                 pricingAdjustments: .zero, unexplained: .zero
             ),
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
-                netInventoryActivity: .zero, corrections: money(1),
+                added: .zero, removed: .zero, corrections: money(1),
                 newlyAddedValue: .zero,
                 pricingAdjustments: .zero, unexplained: .zero
             ),
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
-                netInventoryActivity: .zero, corrections: .zero,
+                added: .zero, removed: .zero, corrections: .zero,
                 newlyAddedValue: money(1),
                 pricingAdjustments: .zero, unexplained: .zero
             ),
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
-                netInventoryActivity: .zero, corrections: .zero,
+                added: .zero, removed: .zero, corrections: .zero,
                 pricingAdjustments: money(1), unexplained: .zero
             ),
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
-                netInventoryActivity: .zero, corrections: .zero,
+                added: .zero, removed: .zero, corrections: .zero,
                 newlyAddedValue: .zero,
                 pricingAdjustments: .zero, unexplained: money(1)
             )
@@ -612,7 +618,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
 
         XCTAssertEqual(result.points.last?.value, money(50_100))
         XCTAssertEqual(result.performanceFactor, Decimal(1))
-        XCTAssertEqual(result.accounting?.netInventoryActivity, money(50_000))
+        XCTAssertEqual(result.accounting?.added, money(50_000))
+        XCTAssertEqual(result.accounting?.removed, .zero)
     }
 
     func testChainedMarketReturnsMultiply() {

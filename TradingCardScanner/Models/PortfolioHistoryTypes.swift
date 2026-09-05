@@ -322,33 +322,6 @@ struct PortfolioHistoryAccounting: Equatable, Sendable {
 
     var totalChange: Money { endValue - anchorValue }
 
-    /// Compatibility projection for callers that still need the net flow.
-    /// Presentation and accounting use `added` and `removed` separately.
-    var netInventoryActivity: Money { added - removed }
-
-    init(
-        anchorValue: Money,
-        endValue: Money,
-        market: Money,
-        netInventoryActivity: Money,
-        corrections: Money,
-        newlyAddedValue: Money = .zero,
-        pricingAdjustments: Money,
-        unexplained: Money
-    ) {
-        self.init(
-            anchorValue: anchorValue,
-            endValue: endValue,
-            market: market,
-            added: Money(tenThousandths: max(0, netInventoryActivity.tenThousandths)),
-            removed: Money(tenThousandths: max(0, -netInventoryActivity.tenThousandths)),
-            corrections: corrections,
-            newlyAddedValue: newlyAddedValue,
-            pricingAdjustments: pricingAdjustments,
-            unexplained: unexplained
-        )
-    }
-
     init(
         anchorValue: Money,
         endValue: Money,

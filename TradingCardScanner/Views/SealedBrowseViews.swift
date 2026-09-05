@@ -656,6 +656,7 @@ struct SealedProductDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(pendingMutation != nil)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }

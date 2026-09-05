@@ -22,11 +22,6 @@ struct SettingsView: View {
     @State private var csvImportToken = UUID()
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
-    private var cards: [CollectedCard]
-    @Query private var priceRecords: [PriceRecord]
-    @Query private var artworkOverrides: [LocalArtworkOverride]
-
     private struct CSVMessage: Identifiable {
         let id = UUID()
         let title: String
@@ -191,11 +186,20 @@ struct SettingsView: View {
             .disabled(csvImportProgress != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
-                csvExportDocument = CollectionCSV.export(cards)
-                csvExportFilename = "CardScanner Collection"
-                isShowingCSVExporter = true
+                do {
+                    let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+                    csvExportDocument = CollectionCSV.export(cards)
+                    csvExportFilename = "CardScanner Collection"
+                    isShowingCSVExporter = true
+                } catch {
+                    csvMessage = CSVMessage(
+                        title: "Export Failed",
+                        message: error.localizedDescription,
+                        skippedCSVText: nil
+                    )
+                }
             }
-            .disabled(cards.isEmpty)
+            .disabled(collectionCardCount == 0)
 
             NavigationLink {
                 CollectionActivityLogView()
@@ -260,29 +264,67 @@ struct SettingsView: View {
     }
 
     private var portfolioCloseCount: Int {
-        (try? PortfolioEngine.allCloses(in: modelContext).count) ?? 0
+        (try? modelContext.fetchCount(FetchDescriptor<PortfolioDailyClose>())) ?? 0
+    }
+
+    private var collectionCardCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<CollectedCard>())) ?? 0
+    }
+
+    private var priceRecordCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<PriceRecord>())) ?? 0
+    }
+
+    private var missingArtworkCount: Int {
+        let descriptor = FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.imageURL == nil }
+        )
+        return (try? modelContext.fetchCount(descriptor)) ?? 0
     }
 
     private var developerSection: some View {
         Section {
             DisclosureGroup("Developer") {
                 Button("Export Unpriced Cards", systemImage: "dollarsign.circle") {
-                    csvExportDocument = CollectionCSV.exportUnpriced(cards, priceRecords: priceRecords)
-                    csvExportFilename = "CardScanner Unpriced Cards"
-                    isShowingCSVExporter = true
+                    do {
+                        let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+                        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+                        csvExportDocument = CollectionCSV.exportUnpriced(cards, priceRecords: priceRecords)
+                        csvExportFilename = "CardScanner Unpriced Cards"
+                        isShowingCSVExporter = true
+                    } catch {
+                        csvMessage = CSVMessage(
+                            title: "Export Failed",
+                            message: error.localizedDescription,
+                            skippedCSVText: nil
+                        )
+                    }
                 }
-                .disabled(priceRecords.isEmpty)
+                .disabled(priceRecordCount == 0)
 
                 Button("Export Missing Artwork", systemImage: "photo") {
-                    csvExportDocument = CollectionCSV.exportMissingArtwork(
-                        cards,
-                        priceRecords: priceRecords,
-                        localArtworkKeys: Set(artworkOverrides.map(\.collectionKey))
-                    )
-                    csvExportFilename = "CardScanner Missing Artwork"
-                    isShowingCSVExporter = true
+                    do {
+                        let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+                        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+                        let artworkOverrides = try modelContext.fetch(
+                            FetchDescriptor<LocalArtworkOverride>()
+                        )
+                        csvExportDocument = CollectionCSV.exportMissingArtwork(
+                            cards,
+                            priceRecords: priceRecords,
+                            localArtworkKeys: Set(artworkOverrides.map(\.collectionKey))
+                        )
+                        csvExportFilename = "CardScanner Missing Artwork"
+                        isShowingCSVExporter = true
+                    } catch {
+                        csvMessage = CSVMessage(
+                            title: "Export Failed",
+                            message: error.localizedDescription,
+                            skippedCSVText: nil
+                        )
+                    }
                 }
-                .disabled(!cards.contains { $0.highImageURL == nil })
+                .disabled(missingArtworkCount == 0)
 
 #if DEBUG
                 Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
@@ -290,7 +332,7 @@ struct SettingsView: View {
                         await BackgroundPriceRefresh.run(.processing, allowsForeground: true)
                     }
                 }
-                .disabled(cards.isEmpty)
+                .disabled(collectionCardCount == 0)
 #endif
             }
         }

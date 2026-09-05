@@ -154,6 +154,9 @@ enum CardCenteringAnalyzer {
             // than letting a guess wear the same face as a measurement.
             notes.append("The card outline could not be found automatically — check the outer guides before reading the result.")
         }
+        if let outline, !outline.edgesAreParallel {
+            notes.append("The card's side edges are not parallel or could not be compared reliably — the photo may be angled, so the centering reading may not be reliable.")
+        }
 
         // Inner edges are found by averaging the gradient down whole columns
         // and across whole rows, so a skewed card smears its border transition
@@ -556,6 +559,8 @@ enum CardCenteringAnalyzer {
         let edges: CardCenteringEdges
         /// Positive means the card leans clockwise in image coordinates.
         let skewDegrees: Double
+        /// Whether the side-edge slopes support a trustworthy rotation estimate.
+        let edgesAreParallel: Bool
     }
 
     private static func cardOutline(
@@ -600,17 +605,24 @@ enum CardCenteringAnalyzer {
         // because a few degrees of skew and a tight crop both move it, but it
         // still rejects a background that happened to form a long run.
         let aspect = Double(boxWidth) / Double(boxHeight)
-        guard (0.50...1.00).contains(aspect) || (1.00...2.00).contains(aspect) else { return nil }
+        guard (0.50...2.00).contains(aspect) else { return nil }
 
         // Both vertical edges are fitted and averaged. One alone can be dragged
-        // by a shadow down one side; the two disagreeing is itself the signal
-        // that neither should be trusted, so the fit is discarded then.
+        // by a shadow down one side; when the two disagree, neither supports a
+        // trustworthy corrective rotation. Keep the outline for measurement,
+        // but carry that evidence to the result instead of inferring skew.
         let inset = Swift.max(2, Int((Double(boxHeight) * 0.1).rounded()))
         let fitRows = (rows.lower + inset)...(rows.upper - inset)
         guard fitRows.lowerBound < fitRows.upperBound else { return nil }
 
         let leftSlope = slope(of: firstForeground, over: fitRows)
         let rightSlope = slope(of: lastForeground, over: fitRows)
+        let edgesAreParallel: Bool
+        if let leftSlope, let rightSlope {
+            edgesAreParallel = abs(leftSlope - rightSlope) <= 0.08
+        } else {
+            edgesAreParallel = false
+        }
         let skew: Double
         if let leftSlope, let rightSlope, abs(leftSlope - rightSlope) <= 0.08 {
             // `dx/dy` of the edges, negated. Image space has y increasing
@@ -630,7 +642,8 @@ enum CardCenteringAnalyzer {
                 right: columns.upper,
                 bottom: rows.upper
             ),
-            skewDegrees: skew
+            skewDegrees: skew,
+            edgesAreParallel: edgesAreParallel
         )
     }
 

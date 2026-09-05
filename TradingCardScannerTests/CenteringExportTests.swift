@@ -226,6 +226,42 @@ final class CardCenteringAnalyzerTests: XCTestCase {
         }.pngData()!
     }
 
+    /// A centred card photographed at an angle: its two side edges converge
+    /// toward the far edge instead of remaining parallel.
+    private func perspectiveCard() -> Data {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        return UIGraphicsImageRenderer(
+            size: CGSize(width: 600, height: 800),
+            format: format
+        ).image { ctx in
+            let cg = ctx.cgContext
+            UIColor(white: 0.55, alpha: 1).setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: 600, height: 800))
+
+            let outer = CGMutablePath()
+            outer.move(to: CGPoint(x: 150, y: 80))
+            outer.addLine(to: CGPoint(x: 450, y: 80))
+            outer.addLine(to: CGPoint(x: 530, y: 720))
+            outer.addLine(to: CGPoint(x: 70, y: 720))
+            outer.closeSubpath()
+            UIColor(red: 0.98, green: 0.85, blue: 0.20, alpha: 1).setFill()
+            cg.addPath(outer)
+            cg.fillPath()
+
+            let inner = CGMutablePath()
+            inner.move(to: CGPoint(x: 175, y: 110))
+            inner.addLine(to: CGPoint(x: 425, y: 110))
+            inner.addLine(to: CGPoint(x: 495, y: 690))
+            inner.addLine(to: CGPoint(x: 105, y: 690))
+            inner.closeSubpath()
+            UIColor(red: 0.10, green: 0.25, blue: 0.55, alpha: 1).setFill()
+            cg.addPath(inner)
+            cg.fillPath()
+        }.pngData()!
+    }
+
     /// Borders are compared with a tolerance because the guides land on whole
     /// pixels and a resampled edge is a pixel wide. The assertion that matters
     /// is that the four borders are recovered at all — every failure this
@@ -418,6 +454,15 @@ final class CardCenteringAnalyzerTests: XCTestCase {
         )).measurement
         XCTAssertTrue(m.detectionNotes.isEmpty, "unexpected notes: \(m.detectionNotes)")
         XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings: \(m.warnings)")
+    }
+
+    func testPerspectiveCardSaysItsEdgesAreNotParallel() throws {
+        let m = try CardCenteringAnalyzer.analyze(perspectiveCard()).measurement
+
+        XCTAssertTrue(
+            m.detectionNotes.contains { $0.contains("not parallel") },
+            "expected a perspective note, got \(m.detectionNotes)"
+        )
     }
 
     /// Nothing card-shaped in the frame at all. The gradient scan still returns

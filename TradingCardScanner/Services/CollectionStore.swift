@@ -69,10 +69,13 @@ extension CollectionStoreError: LocalizedError {
     }
 }
 
-/// Process-local identity state shared by `CollectionStore` values that use the
-/// same model container. A store is intentionally a value wrapper around a
-/// context, so putting this cache on the wrapper would recreate it for every
-/// button tap in the interactive UI.
+/// Cache isolation follows the owner of the ModelContext: ProductIdentityIndex
+/// is @MainActor because its context is main-actor-owned, PriceRefreshDataIndex
+/// stays context-owned, and a cache shared beyond one store value must
+/// synchronize itself. This session cache is the last case — its registry
+/// shares it by container, so CollectionStore values created for one container
+/// see the same aliases even though each value is only a wrapper around the
+/// context.
 private final class CollectionStoreSession: @unchecked Sendable {
     enum LegacyIdentityLookup: Equatable {
         case resolved(String)
