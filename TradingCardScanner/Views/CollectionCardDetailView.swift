@@ -7,7 +7,6 @@ struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Bindable var card: CollectedCard
-    @Query private var collectionCards: [CollectedCard]
     @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
     private var collectionActivities: [CollectionActivity]
     let price: PriceDisplay
@@ -42,7 +41,12 @@ struct CollectionCardDetailView: View {
         isLogicalConflict: Bool = false,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void
     ) {
+        let collectionKey = card.collectionKey
         self._card = Bindable(card)
+        self._collectionActivities = Query(
+            filter: #Predicate<CollectionActivity> { $0.collectionKey == collectionKey },
+            sort: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+        )
         self.price = price
         self.history = history
         self.unpricedReason = unpricedReason
@@ -339,7 +343,8 @@ struct CollectionCardDetailView: View {
         // route-time snapshot: the first Stepper tap merges the physical rows,
         // and the next tap must start from the merged quantity.
         guard isLogicalConflict else { return card.quantity }
-        let projection = LogicalCollection.project(cards: collectionCards) { $0.priceKey }
+        let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
         return projection.byKey[card.collectionKey]?.quantity
             ?? logicalQuantity
             ?? card.quantity
@@ -516,7 +521,7 @@ struct CollectionCardDetailView: View {
     }
 
     private var cardHistory: [CollectionActivity] {
-        collectionActivities.filter { $0.collectionKey == card.collectionKey }
+        collectionActivities
     }
 
     private func historyMetadata(for activity: CollectionActivity) -> String {
@@ -874,16 +879,24 @@ enum CollectionArtworkStore {
     /// stores can migrate safely; it is cleared after the local copy exists.
     static func migrateLegacyMappings(in context: ModelContext) {
         do {
-            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
-            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-            var keysWithOverrides = Set(overrides.map(\.collectionKey))
-            let legacyCards = cards
+            var legacyDescriptor = FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.userArtworkFilename != nil }
+            )
+            legacyDescriptor.sortBy = [
+                SortDescriptor(\CollectedCard.collectionKey, order: .forward),
+                SortDescriptor(\CollectedCard.dateAdded, order: .forward)
+            ]
+            let legacyCards = try context.fetch(legacyDescriptor)
                 .filter { $0.userArtworkFilename?.isEmpty == false }
                 .sorted {
                     if $0.collectionKey != $1.collectionKey { return $0.collectionKey < $1.collectionKey }
                     if $0.dateAdded != $1.dateAdded { return $0.dateAdded < $1.dateAdded }
                     return ($0.userArtworkFilename ?? "") < ($1.userArtworkFilename ?? "")
                 }
+            guard !legacyCards.isEmpty else { return }
+
+            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            var keysWithOverrides = Set(overrides.map(\.collectionKey))
 
             var changed = false
             for card in legacyCards {

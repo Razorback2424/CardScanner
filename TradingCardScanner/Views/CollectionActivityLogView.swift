@@ -11,7 +11,16 @@ struct CollectionActivityLogView: View {
     @State private var pendingRemovalID: UUID?
     @State private var errorMessage: String?
 
+    private struct ActivityIndex {
+        let cardsByCollectionKey: [String: CollectedCard]
+        let quantitiesByCollectionKey: [String: Int]
+        let lineage: CollectionStore.LineageIndex
+        let eventsByCollectionKey: [String: [InventoryEvent]]
+    }
+
     var body: some View {
+        let index = makeIndex()
+
         Group {
             if visibleActivities.isEmpty {
                 ContentUnavailableView(
@@ -32,32 +41,20 @@ struct CollectionActivityLogView: View {
                             } label: {
                                 activityRow(activity)
                             }
-                            activityActions(for: activity)
+                            activityActions(for: activity, using: index)
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            if canRemove(activity) {
+                            if canRemove(activity, using: index) {
                                 Button("Remove", role: .destructive) {
                                     pendingRemovalID = activity.id
                                 }
                             }
-                            if canRestore(activity) {
+                            if canRestore(activity, using: index) {
                                 Button("Restore") {
                                     restore(activity)
                                 }
                                 .tint(.green)
                             }
-                        }
-                        .confirmationDialog(
-                            "Remove \(pendingRemoval?.name ?? "copies")?",
-                            isPresented: removalDialogBinding,
-                            titleVisibility: .visible
-                        ) {
-                            Button("Remove", role: .destructive) {
-                                if let pendingRemoval { remove(pendingRemoval) }
-                            }
-                            Button("Cancel", role: .cancel) { pendingRemovalID = nil }
-                        } message: {
-                            Text("Only the copies claimed by this history entry will be removed.")
                         }
                     }
                 }
@@ -69,6 +66,18 @@ struct CollectionActivityLogView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 kindFilter
             }
+        }
+        .confirmationDialog(
+            "Remove \(pendingRemoval?.name ?? "copies")?",
+            isPresented: removalDialogBinding,
+            titleVisibility: .visible
+        ) {
+            Button("Remove", role: .destructive) {
+                if let pendingRemoval { remove(pendingRemoval) }
+            }
+            Button("Cancel", role: .cancel) { pendingRemovalID = nil }
+        } message: {
+            Text("Only the copies claimed by this history entry will be removed.")
         }
         .task { try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded() }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
@@ -99,6 +108,16 @@ struct CollectionActivityLogView: View {
         Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
+        )
+    }
+
+    private func makeIndex() -> ActivityIndex {
+        let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
+        return ActivityIndex(
+            cardsByCollectionKey: projection.byKey.mapValues(\.representative),
+            quantitiesByCollectionKey: projection.quantities,
+            lineage: CollectionStore.LineageIndex(events: inventoryEvents),
+            eventsByCollectionKey: Dictionary(grouping: inventoryEvents, by: \.collectionKey)
         )
     }
 
@@ -167,9 +186,12 @@ struct CollectionActivityLogView: View {
     }
 
     @ViewBuilder
-    private func activityActions(for activity: CollectionActivity) -> some View {
+    private func activityActions(
+        for activity: CollectionActivity,
+        using index: ActivityIndex
+    ) -> some View {
         Menu {
-            if canCorrect(activity) {
+            if canCorrect(activity, using: index) {
                 NavigationLink {
                     CollectionActivityEditor(activity: activity)
                 } label: {
@@ -178,29 +200,29 @@ struct CollectionActivityLogView: View {
             } else {
                 Button("Correct finish…", systemImage: "pencil") {}
                     .disabled(true)
-                Text(actionReason(activity, action: .correct))
+                Text(actionReason(activity, action: .correct, using: index))
                     .font(.caption)
             }
 
-            if canRemove(activity) {
+            if canRemove(activity, using: index) {
                 Button("Remove copies…", systemImage: "minus.circle") {
                     pendingRemovalID = activity.id
                 }
             } else {
                 Button("Remove copies…", systemImage: "minus.circle") {}
                     .disabled(true)
-                Text(actionReason(activity, action: .remove))
+                Text(actionReason(activity, action: .remove, using: index))
                     .font(.caption)
             }
 
-            if canRestore(activity) {
+            if canRestore(activity, using: index) {
                 Button("Restore", systemImage: "arrow.uturn.backward") {
                     restore(activity)
                 }
             } else if activity.kind == .removed {
                 Button("Restore", systemImage: "arrow.uturn.backward") {}
                     .disabled(true)
-                Text(actionReason(activity, action: .restore))
+                Text(actionReason(activity, action: .restore, using: index))
                     .font(.caption)
             }
         } label: {
@@ -236,45 +258,51 @@ struct CollectionActivityLogView: View {
         case restore
     }
 
-    private func canCorrect(_ activity: CollectionActivity) -> Bool {
+    private func canCorrect(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
         activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.itemKind == .rawCard
             && activity.remainingQuantity > 0
             && activity.variantID != nil
-            && card(for: activity).map { $0.quantity >= activity.remainingQuantity } == true
-            && CollectionStore(context: modelContext).hasValidLineage(
+            && (index.quantitiesByCollectionKey[activity.collectionKey] ?? 0) >= activity.remainingQuantity
+            && CollectionStore.hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity
+                quantity: activity.claimedQuantity,
+                using: index.lineage
             )
     }
 
-    private func canRemove(_ activity: CollectionActivity) -> Bool {
+    private func canRemove(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
         activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.remainingQuantity > 0
-            && CollectionStore(context: modelContext).hasValidLineage(
+            && CollectionStore.hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity
+                quantity: activity.claimedQuantity,
+                using: index.lineage
             )
-            && (card(for: activity)?.quantity ?? 0) >= activity.remainingQuantity
+            && (index.quantitiesByCollectionKey[activity.collectionKey] ?? 0) >= activity.remainingQuantity
     }
 
-    private func canRestore(_ activity: CollectionActivity) -> Bool {
+    private func canRestore(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
         guard activity.kind == .removed,
               activity.remainingQuantity > 0,
               activity.removalSnapshotData != nil,
               Date.now.timeIntervalSince(activity.occurredAt) <= CollectionActivity.restoreWindow,
-              CollectionStore(context: modelContext).hasValidRemovalLineage(activity)
+              CollectionStore.hasValidRemovalLineage(activity, using: index.lineage)
         else { return false }
 
-        guard card(for: activity) != nil else { return true }
-        return !positionWasReacquired(activity)
+        guard card(for: activity, using: index) != nil else { return true }
+        return !positionWasReacquired(activity, using: index)
     }
 
-    private func actionReason(_ activity: CollectionActivity, action: Action) -> String {
+    private func actionReason(
+        _ activity: CollectionActivity,
+        action: Action,
+        using index: ActivityIndex
+    ) -> String {
         switch action {
         case .correct:
             if activity.kind != .added && activity.kind != .restored {
@@ -284,13 +312,14 @@ struct CollectionActivityLogView: View {
             if activity.remainingQuantity == 0 { return "This entry has already been acted on." }
             if activity.itemKind != .rawCard { return "Only raw card finishes can be corrected." }
             if activity.variantID == nil { return "This entry has no known finish." }
-            if (card(for: activity)?.quantity ?? 0) < activity.remainingQuantity {
+            if (index.quantitiesByCollectionKey[activity.collectionKey] ?? 0) < activity.remainingQuantity {
                 return "The current collection quantity is too small."
             }
-            if !CollectionStore(context: modelContext).hasValidLineage(
+            if !CollectionStore.hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity
+                quantity: activity.claimedQuantity,
+                using: index.lineage
             ) {
                 return "The ledger lineage is missing, incomplete, or already reversed."
             }
@@ -299,10 +328,14 @@ struct CollectionActivityLogView: View {
             if !activity.kind.hasQuantityClaim { return "This entry does not claim removable copies." }
             if activity.signedQuantity <= 0 { return "This entry does not claim added copies." }
             if activity.remainingQuantity == 0 { return "This entry has already been acted on." }
-            if !CollectionStore(context: modelContext).hasValidLineage(
+            if (index.quantitiesByCollectionKey[activity.collectionKey] ?? 0) < activity.remainingQuantity {
+                return "The current collection quantity is too small."
+            }
+            if !CollectionStore.hasValidLineage(
                 activity.ledgerOperationIDs,
                 for: activity.collectionKey,
-                quantity: activity.claimedQuantity
+                quantity: activity.claimedQuantity,
+                using: index.lineage
             ) {
                 return "The ledger lineage is missing, incomplete, or already reversed."
             }
@@ -310,10 +343,10 @@ struct CollectionActivityLogView: View {
         case .restore:
             if activity.removalSnapshotData == nil { return "This removal has no restore snapshot." }
             if activity.remainingQuantity == 0 { return "This removal has already been restored." }
-            if !CollectionStore(context: modelContext).hasValidRemovalLineage(activity) {
+            if !CollectionStore.hasValidRemovalLineage(activity, using: index.lineage) {
                 return "The removal ledger lineage is missing, incomplete, or already reversed."
             }
-            if positionWasReacquired(activity) { return "The position was acquired again." }
+            if positionWasReacquired(activity, using: index) { return "The position was acquired again." }
             if Date.now.timeIntervalSince(activity.occurredAt) > CollectionActivity.restoreWindow {
                 return "This removal is outside the restore window."
             }
@@ -321,29 +354,33 @@ struct CollectionActivityLogView: View {
         }
     }
 
-    private func card(for activity: CollectionActivity) -> CollectedCard? {
-        cards.first { $0.collectionKey == activity.collectionKey }
+    private func card(
+        for activity: CollectionActivity,
+        using index: ActivityIndex
+    ) -> CollectedCard? {
+        index.cardsByCollectionKey[activity.collectionKey]
     }
 
     /// A surviving row is not automatically a re-acquisition: a per-entry
     /// removal can leave sibling copies in that same quantity row. The disposal
     /// event and the absence of a later positive event are the proof the store
     /// uses before allowing that merge.
-    private func positionWasReacquired(_ activity: CollectionActivity) -> Bool {
-        guard card(for: activity) != nil else { return false }
+    private func positionWasReacquired(
+        _ activity: CollectionActivity,
+        using index: ActivityIndex
+    ) -> Bool {
+        guard card(for: activity, using: index) != nil else { return false }
         guard let data = activity.removalSnapshotData,
               let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
               let operationID = snapshot.operationID else { return true }
-        let removalRecordedAt = inventoryEvents
-            .filter { $0.operationID == operationID }
+        let removalRecordedAt = index.lineage.eventsByOperationID[operationID]?
             .map(\.recordedAt)
             .max()
         guard let removalRecordedAt else { return true }
-        return inventoryEvents.contains {
-            $0.collectionKey == activity.collectionKey
-                && $0.recordedAt >= removalRecordedAt
+        return index.eventsByCollectionKey[activity.collectionKey]?.contains {
+            $0.recordedAt >= removalRecordedAt
                 && $0.deltaQuantity > 0
-        }
+        } == true
     }
 
     private func remove(_ activity: CollectionActivity) {

@@ -1,6 +1,75 @@
 import SwiftData
 import SwiftUI
 
+/// Inputs that can change the cached collection projection. Search text and
+/// filter state intentionally do not participate: they only transform the
+/// already-projected rows. Keeping this fingerprint separate makes the cache's
+/// invalidation contract testable without rendering a full SwiftUI hierarchy.
+enum CollectionProjectionToken {
+    @MainActor
+    static func make(
+        cards: [CollectedCard],
+        priceRecords: [PriceRecord],
+        artworkOverrides: [LocalArtworkOverride]
+    ) -> Int {
+        var hasher = Hasher()
+        hasher.combine(cards.count)
+        for card in cards {
+            // Only fields that change the logical projection or the value row
+            // belong here. Artwork and diagnostic-only metadata remain on the
+            // live model passed to each tile, so changing them must not rebuild
+            // every CollectionRow.
+            hasher.combine(card.collectionKey)
+            hasher.combine(card.dateAdded)
+            hasher.combine(card.providerID)
+            hasher.combine(card.catalogProviderID)
+            hasher.combine(card.name)
+            hasher.combine(card.quantity)
+            hasher.combine(card.game)
+            hasher.combine(card.setName)
+            hasher.combine(card.setCode)
+            hasher.combine(card.cardNumber)
+            hasher.combine(card.variantID)
+            hasher.combine(card.variantLabel)
+            hasher.combine(card.magicTreatmentIDsRaw)
+            hasher.combine(card.magicTreatmentQualifiersJSON)
+            hasher.combine(card.magicContentKindRaw)
+            hasher.combine(card.pokemonPrintRunRaw)
+            hasher.combine(card.setReleaseOrder)
+            hasher.combine(card.itemKindRaw)
+            hasher.combine(card.justTCGVariantID)
+            hasher.combine(card.justTCGAPIVersion)
+            hasher.combine(card.gradingCompanyRaw)
+            hasher.combine(card.gradeRaw)
+            hasher.combine(card.gradeLabel)
+            hasher.combine(card.gradingQualifier)
+        }
+
+        hasher.combine(priceRecords.count)
+        for record in priceRecords {
+            hasher.combine(record.key)
+            hasher.combine(record.game)
+            hasher.combine(record.magicTreatmentIDsRaw)
+            hasher.combine(record.unitMarketPriceUSD)
+            hasher.combine(record.currencyCode)
+            hasher.combine(record.sourceRaw)
+            hasher.combine(record.sourceVariantID)
+            hasher.combine(record.sourceUpdatedAt)
+            hasher.combine(record.fetchedAt)
+            hasher.combine(record.lastCheckedAt)
+            hasher.combine(record.lastFailureAt)
+            hasher.combine(record.lastFailureReasonRaw)
+            hasher.combine(record.invalidatedAt)
+        }
+
+        hasher.combine(artworkOverrides.count)
+        for override in artworkOverrides {
+            hasher.combine(override.collectionKey)
+        }
+        return hasher.finalize()
+    }
+}
+
 /// Collection is for finding, filtering, and managing owned items. Portfolio
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
@@ -12,7 +81,7 @@ struct CollectionView: View {
     @Query private var priceRecords: [PriceRecord]
     @Query private var artworkOverrides: [LocalArtworkOverride]
     let catalog: any BrowseCatalogProviding
-    @ObservedObject var history: PortfolioHistoryStore
+    let history: PortfolioHistoryStore
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
@@ -33,6 +102,11 @@ struct CollectionView: View {
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalErrorMessage: String?
+    /// View-owned cache for the part of a snapshot that cannot change when the
+    /// user edits search, filters, or sort. The cache is deliberately a plain
+    /// reference rather than an observed object: changing it must not itself
+    /// trigger another body evaluation.
+    @State private var projectionCache = ProjectionCache()
     /// The compact phone stack or regular-width detail-column stack. Selection
     /// lives here rather than in a closure destination so it survives the
     /// window shrinking to one column and widening back out — resizing must
@@ -484,8 +558,81 @@ struct CollectionView: View {
         let entries: [Entry]
     }
 
+    /// The expensive half of a collection render. Search and filter state are
+    /// intentionally absent so typing remains a local operation over `all`.
+    private struct CachedProjection {
+        let all: [CollectionRow]
+        let cardsByKey: [String: CollectedCard]
+        let priceRecordsByCollectionKey: [String: PriceRecord]
+        let localArtworkKeys: Set<String>
+        let physicalRowCountsByKey: [String: Int]
+    }
+
+    private final class ProjectionCache {
+        private var token: Int?
+        private var cachedValue: CachedProjection?
+
+        func value(
+            for token: Int,
+            build: () -> CachedProjection
+        ) -> CachedProjection {
+            if self.token == token, let cachedValue { return cachedValue }
+            let value = build()
+            self.token = token
+            self.cachedValue = value
+            return value
+        }
+    }
+
     @MainActor
     private func makeSnapshot() -> Snapshot {
+        let cached = projectionCache.value(for: makeProjectionToken()) {
+            makeCachedProjection()
+        }
+
+        let visible = CollectionQuery.apply(
+            nameQuery: searchQuery,
+            filters: filters,
+            sort: sort,
+            to: cached.all
+        )
+
+        return Snapshot(
+            all: cached.all,
+            entries: visible.compactMap { row -> Snapshot.Entry? in
+                guard let card = cached.cardsByKey[row.id] else { return nil }
+                let record = cached.priceRecordsByCollectionKey[row.id]
+                return Snapshot.Entry(
+                    row: row,
+                    card: card,
+                    unpricedReason: row.unitPrice == nil
+                        ? PricingDiagnostics.unpricedReason(for: card, record: record)
+                        : nil,
+                    artworkReason: ArtworkDiagnostics.reason(
+                        for: card,
+                        hasLocalOverride: cached.localArtworkKeys.contains(card.collectionKey)
+                    ),
+                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+                )
+            }
+        )
+    }
+
+    /// Hashes persisted inputs rather than deriving the projection just to ask
+    /// whether the projection changed. SwiftData has no cheap query revision;
+    /// this fingerprint is still much less work than faulting every property,
+    /// allocating lookup keys, grouping rows, and rebuilding every tile row.
+    @MainActor
+    private func makeProjectionToken() -> Int {
+        CollectionProjectionToken.make(
+            cards: cards,
+            priceRecords: priceRecords,
+            artworkOverrides: artworkOverrides
+        )
+    }
+
+    @MainActor
+    private func makeCachedProjection() -> CachedProjection {
         let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
         let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
 
@@ -508,6 +655,12 @@ struct CollectionView: View {
             PriceStore.priceStorageKey(for: card, in: recordsByKey)
         }
         let cardsByKey = projection.byKey.mapValues(\.representative)
+        let priceRecordsByCollectionKey: [String: PriceRecord] = Dictionary(
+            uniqueKeysWithValues: projection.positions.compactMap { position in
+                PriceStore.record(for: position.representative, in: recordsByKey)
+                    .map { (position.collectionKey, $0) }
+            }
+        )
 
         let all = projection.positions.map { position in
             let card = position.representative
@@ -523,7 +676,7 @@ struct CollectionView: View {
                 variantLabel: card.variantLabel,
                 quantity: position.quantity,
                 dateAdded: position.dateAdded,
-                price: PriceStore.record(for: card, in: recordsByKey)?.display ?? .unknown,
+                price: priceRecordsByCollectionKey[position.collectionKey]?.display ?? .unknown,
                 magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
                 magicTreatmentQualifiers: card.magicTreatmentQualifiers,
                 itemKind: card.itemKind,
@@ -533,31 +686,12 @@ struct CollectionView: View {
             )
         }
 
-        let visible = CollectionQuery.apply(
-            nameQuery: searchQuery,
-            filters: filters,
-            sort: sort,
-            to: all
-        )
-
-        return Snapshot(
+        return CachedProjection(
             all: all,
-            entries: visible.compactMap { row -> Snapshot.Entry? in
-                guard let card = cardsByKey[row.id] else { return nil }
-                let record = PriceStore.record(for: card, in: recordsByKey)
-                return Snapshot.Entry(
-                    row: row,
-                    card: card,
-                    unpricedReason: row.unitPrice == nil
-                        ? PricingDiagnostics.unpricedReason(for: card, record: record)
-                        : nil,
-                    artworkReason: ArtworkDiagnostics.reason(
-                        for: card,
-                        hasLocalOverride: localArtworkKeys.contains(card.collectionKey)
-                    ),
-                    isLogicalConflict: (projection.byKey[row.id]?.physicalRowCount ?? 1) > 1
-                )
-            }
+            cardsByKey: cardsByKey,
+            priceRecordsByCollectionKey: priceRecordsByCollectionKey,
+            localArtworkKeys: localArtworkKeys,
+            physicalRowCountsByKey: projection.byKey.mapValues(\.physicalRowCount)
         )
     }
 
@@ -923,64 +1057,14 @@ private struct CollectionCardArtwork: View {
                 .resizable()
                 .scaledToFit()
         } else {
-            AsyncImage(url: primaryURL) { phase in
-                switch phase {
-                case let .success(image):
-                    cardImage(image)
-                case .failure:
-                    fallback
-                case .empty:
-                    placeholder
-                @unknown default:
-                    placeholder
-                }
-            }
+            CatalogCachedImage(
+                url: primaryURL,
+                fallbackURL: fallbackURL,
+                placeholderText: placeholderText
+            )
         }
     }
 
-    @ViewBuilder
-    private var fallback: some View {
-        if let fallbackURL {
-            AsyncImage(url: fallbackURL) { phase in
-                switch phase {
-                case let .success(image):
-                    cardImage(image)
-                case .failure:
-                    placeholder
-                case .empty:
-                    placeholder
-                @unknown default:
-                    placeholder
-                }
-            }
-        } else {
-            placeholder
-        }
-    }
-
-    private func cardImage(_ image: Image) -> some View {
-        image
-            .resizable()
-            .scaledToFit()
-    }
-
-    private var placeholder: some View {
-        RoundedRectangle(cornerRadius: 10)
-            .fill(.quaternary)
-            .aspectRatio(0.727, contentMode: .fit)
-            .overlay {
-                VStack(spacing: 6) {
-                    Image(systemName: "photo")
-                    if let placeholderText {
-                        Text(placeholderText)
-                            .font(.caption)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 8)
-                    }
-                }
-                .foregroundStyle(.secondary)
-            }
-    }
 }
 
 /// One place decides how a price is allowed to be described.

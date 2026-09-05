@@ -483,12 +483,10 @@ struct PortfolioView: View {
 
     @ViewBuilder
     private var largestHoldings: some View {
-        let ranked = portfolio.holdings
-            .filter { $0.currentValue != nil }
-            .sorted { lhs, rhs in
-                if lhs.currentValue != rhs.currentValue { return (lhs.currentValue ?? .zero) > (rhs.currentValue ?? .zero) }
-                return lhs.collectionKey < rhs.collectionKey
-            }
+        // The publisher orders priced holdings before unpriced holdings, so
+        // stop at the first missing value instead of allocating a filtered
+        // copy of the entire holdings array on every body evaluation.
+        let ranked = portfolio.holdings.prefix(while: { $0.currentValue != nil })
 
         if !ranked.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
@@ -504,7 +502,7 @@ struct PortfolioView: View {
                         .accessibilityHint("Opens Collection sorted by price, highest first")
                     }
                 }
-                ForEach(Array(ranked.prefix(5))) { holding in
+                ForEach(ranked.prefix(5)) { holding in
                     NavigationLink {
                         PortfolioOwnedCardDestination(
                             collectionKey: holding.collectionKey,

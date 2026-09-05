@@ -1268,6 +1268,7 @@ struct CatalogCachedImage: View {
     let url: URL?
     var fallbackURL: URL? = nil
     var placeholderSymbol = "photo"
+    var placeholderText: String? = nil
     @StateObject private var loader = CatalogImageLoader()
 
     var body: some View {
@@ -1277,7 +1278,11 @@ struct CatalogCachedImage: View {
                     .resizable()
                     .scaledToFit()
             } else if loader.failed, let fallbackURL, fallbackURL != url {
-                CatalogCachedImage(url: fallbackURL, placeholderSymbol: placeholderSymbol)
+                CatalogCachedImage(
+                    url: fallbackURL,
+                    placeholderSymbol: placeholderSymbol,
+                    placeholderText: placeholderText
+                )
             } else {
                 placeholder
             }
@@ -1289,8 +1294,20 @@ struct CatalogCachedImage: View {
         RoundedRectangle(cornerRadius: 10)
             .fill(.quaternary)
             .overlay {
-                if loader.isLoading { ProgressView() }
-                else { Image(systemName: placeholderSymbol).foregroundStyle(.secondary) }
+                if loader.isLoading {
+                    ProgressView()
+                } else {
+                    VStack(spacing: 6) {
+                        Image(systemName: placeholderSymbol)
+                        if let placeholderText {
+                            Text(placeholderText)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 8)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
             }
     }
 }
@@ -1315,8 +1332,8 @@ private final class CatalogImageLoader: ObservableObject {
         isLoading = true
         task = Task { [weak self] in
             do {
-                let data = try await CatalogImageCache.shared.data(for: url)
-                guard !Task.isCancelled, let image = UIImage(data: data) else { return }
+                let image = try await CatalogImageCache.shared.image(for: url)
+                guard !Task.isCancelled else { return }
                 self?.image = image
             } catch {
                 if !Task.isCancelled { self?.failed = true }
@@ -1332,13 +1349,25 @@ actor CatalogImageCache {
     static let shared = CatalogImageCache()
     private static let maximumBytes = 60 * 1_024 * 1_024
     private static let maximumAssetBytes = 5 * 1_024 * 1_024
+    private static let trimThresholdBytes = 10 * 1_024 * 1_024
+    private static let touchInterval: TimeInterval = 60
+    private static let maximumTouchEntries = 512
 
     private let directory: URL
+    private let memoryCache: NSCache<NSURL, UIImage> = {
+        let cache = NSCache<NSURL, UIImage>()
+        cache.countLimit = 60
+        cache.totalCostLimit = 48 * 1_024 * 1_024
+        return cache
+    }()
     private struct InFlight {
         let id: UUID
         let task: Task<Data, Error>
     }
     private var inFlight: [URL: InFlight] = [:]
+    private var lastTouchAt: [URL: Date] = [:]
+    private var bytesSinceTrim = 0
+    private var didTrimAtStartup = false
 
     init(directory: URL? = nil) {
         self.directory = directory ?? FileManager.default
@@ -1347,10 +1376,26 @@ actor CatalogImageCache {
             .appendingPathComponent("BrowseArtworkCache", isDirectory: true)
     }
 
-    func data(for url: URL) async throws -> Data {
+    func image(for url: URL) async throws -> UIImage {
+        if let cached = memoryCache.object(forKey: url as NSURL) {
+            return cached
+        }
+
+        let data = try await data(for: url)
+        guard let image = UIImage(data: data) else {
+            throw BrowseCatalogError.badResponse
+        }
+        let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
+            ?? max(Int(image.size.width * image.scale * image.size.height * image.scale * 4), 1)
+        memoryCache.setObject(image, forKey: url as NSURL, cost: cost)
+        return image
+    }
+
+    private func data(for url: URL) async throws -> Data {
+        trimAtStartupIfNeeded()
         let file = directory.appendingPathComponent(filename(for: url))
         if let cached = try? Data(contentsOf: file) {
-            touch(file)
+            touchIfNeeded(file, for: url)
             return cached
         }
 
@@ -1387,7 +1432,11 @@ actor CatalogImageCache {
                         withIntermediateDirectories: true
                     )
                     try? data.write(to: file, options: .atomic)
-                    trim()
+                    bytesSinceTrim += data.count
+                    if bytesSinceTrim >= Self.trimThresholdBytes {
+                        trim()
+                        bytesSinceTrim = 0
+                    }
                 }
             }
             return data
@@ -1399,8 +1448,27 @@ actor CatalogImageCache {
         }
     }
 
-    private func touch(_ url: URL) {
-        try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
+    private func touchIfNeeded(_ file: URL, for sourceURL: URL) {
+        let now = Date.now
+        guard now.timeIntervalSince(lastTouchAt[sourceURL] ?? .distantPast) >= Self.touchInterval else {
+            return
+        }
+        if lastTouchAt[sourceURL] == nil,
+           lastTouchAt.count >= Self.maximumTouchEntries,
+           let oldest = lastTouchAt.min(by: { $0.value < $1.value })?.key {
+            lastTouchAt.removeValue(forKey: oldest)
+        }
+        lastTouchAt[sourceURL] = now
+        try? FileManager.default.setAttributes([.modificationDate: now], ofItemAtPath: file.path)
+    }
+
+    private func trimAtStartupIfNeeded() {
+        guard !didTrimAtStartup else { return }
+        didTrimAtStartup = true
+        // A previous process may have left the disk cache at its ceiling. One
+        // lazy startup trim restores the limit without enumerating the entire
+        // directory on every image download.
+        trim()
     }
 
     private func trim() {

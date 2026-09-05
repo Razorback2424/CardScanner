@@ -660,7 +660,7 @@ final class ScannerViewModel: ObservableObject {
     /// the game of the card just identified is ever consulted.
     @Published private(set) var finishLocks: [CardGame: PhysicalVariant] = [:]
 
-    let scanner = CardScanner()
+    let scanner: CardScanner
 
     /// The latch needs only its bounded recent window for duplicate routing.
     /// The UI rail keeps a few more cards for a useful visual history, but no
@@ -668,8 +668,8 @@ final class ScannerViewModel: ObservableObject {
     private static let committedHistoryLimit = CardLatch.recentlyConsumedLimit
     private static let recentScanLimit = 12
 
-    private let catalog = CardCatalog()
-    private let feedback = ScanFeedback()
+    private let catalog: CardCatalog
+    private let feedback: ScanFeedback
     private let scryfall = ScryfallService()
 
     private var store: CollectionStore?
@@ -725,7 +725,15 @@ final class ScannerViewModel: ObservableObject {
     private static let slowLookupThreshold: Duration = .milliseconds(400)
     private static let noteLifetime: Duration = .milliseconds(2600)
 
-    init() {
+    init(
+        scanner: CardScanner = CardScanner(),
+        catalog: CardCatalog = CardCatalog(),
+        feedback: ScanFeedback? = nil
+    ) {
+        self.scanner = scanner
+        self.catalog = catalog
+        self.feedback = feedback ?? ScanFeedback()
+
         scanner.onPlausibleCandidate = { [weak self] identifier in
             guard let self else { return }
             // Speculation only. Nothing downstream may act on this.
@@ -849,7 +857,12 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Session lifecycle
 
-    func start(context: ModelContext, isSceneActive: Bool = true) {
+    func start(
+        context: ModelContext,
+        isSceneActive: Bool = true,
+        startCamera: Bool = true,
+        shouldRefreshMagicDirectory: Bool = true
+    ) {
         recognitionEligibility.isScannerVisible = true
         recognitionEligibility.isSceneActive = isSceneActive
         // A fresh visible scanner owns a new camera-session opportunity. If a
@@ -868,7 +881,7 @@ final class ScannerViewModel: ObservableObject {
         // Decode the merged Pokémon checklist and resolved-card cache before
         // the first confirmed frame needs either one.
         Task { await catalog.prewarm() }
-        if isSceneActive {
+        if isSceneActive, startCamera {
             scanner.start()
         }
 
@@ -877,7 +890,9 @@ final class ScannerViewModel: ObservableObject {
         // round trip. The camera is useful immediately, and offline.
         scanner.useMagicDefinitions(magicSetDefinitions)
         resumeRecognitionIfPossible()
-        refreshMagicDirectory()
+        if shouldRefreshMagicDirectory {
+            refreshMagicDirectory()
+        }
     }
 
     /// Leaving the tab is not a session boundary. The rail, the unresolved
