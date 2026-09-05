@@ -307,7 +307,7 @@ final class PortfolioHistoryStore: ObservableObject {
             input: PortfolioHistoryInput(
                 closes: closes,
                 summary: summary,
-                epoch: PortfolioEpoch.startedAt(context: context),
+                epoch: PortfolioEpoch.startedAt(),
                 timeZoneIdentifier: timeZone.identifier,
                 now: now,
                 factors: factors,

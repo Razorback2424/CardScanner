@@ -67,43 +67,6 @@ struct LedgerIntegrityDefect: Identifiable, Equatable, Sendable {
     var periodEnd: Date?
 }
 
-/// Where integrity defects accumulate for display.
-///
-/// In memory and bounded: this is an instrument, not a second ledger. If it
-/// ever has entries in it, the answer is to find out why, not to make the list
-/// bigger.
-@MainActor
-final class LedgerIntegrityLog: ObservableObject {
-    static let shared = LedgerIntegrityLog()
-
-    @Published private(set) var defects: [LedgerIntegrityDefect] = []
-
-    private let limit = 50
-
-    func report(_ defect: LedgerIntegrityDefect) {
-        defects.append(defect)
-        if defects.count > limit {
-            defects.removeFirst(defects.count - limit)
-        }
-    }
-
-    /// Replaces the defects of one reason, for checks that are recomputed from
-    /// scratch on every pass rather than appended to.
-    func replace(reason: LedgerIntegrityReason, with new: [LedgerIntegrityDefect]) {
-        defects.removeAll { $0.reason == reason }
-        defects.append(contentsOf: new)
-    }
-
-    /// Replaces everything derived on one full recomputation pass. Derived
-    /// checks are recomputed from scratch each time, so accumulating them would
-    /// show the same defect once per refresh.
-    func replaceAll(with new: [LedgerIntegrityDefect]) {
-        defects = Array(new.suffix(limit))
-    }
-
-    func clear() { defects.removeAll() }
-}
-
 /// Reads and appends the ownership ledger.
 ///
 /// Every mutation of the collection writes its event here, in the same

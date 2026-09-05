@@ -1017,7 +1017,6 @@ private struct PortfolioArtwork: View {
 }
 
 private struct PortfolioOwnedCardDestination: View {
-    @Environment(\.modelContext) private var modelContext
     @Query(sort: \CollectedCard.dateAdded, order: .forward) private var cards: [CollectedCard]
     @Query private var priceRecords: [PriceRecord]
     @Query private var artworkOverrides: [LocalArtworkOverride]
@@ -1026,16 +1025,29 @@ private struct PortfolioOwnedCardDestination: View {
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
-        let projection = LogicalCollection.project(
-            cards: cards,
-            ledger: InventoryLedger(context: modelContext)
+        // The closure overload, not the `ledger:` one. That form resolves each
+        // position's instrument by asking the ledger, and the ledger answers
+        // with two to four predicate fetches per candidate key — several
+        // thousand fetches per render on a large collection, on the main
+        // thread, from inside `body`, and again on every price save because
+        // this view holds three whole-table queries. Same reason
+        // `CollectionView.makeCachedProjection` stopped using it.
+        //
+        // Answering from the records already in hand also makes the instrument
+        // a position is attributed to and the price displayed for it one
+        // decision rather than two rules that can disagree: an invalidation
+        // living only in the observation log is visible to the ledger's rule
+        // and not to this one, and the grid already resolves that the same way.
+        let recordsByKey = Dictionary(
+            priceRecords.map { ($0.key, $0) },
+            uniquingKeysWith: { first, _ in first }
         )
+        let projection = LogicalCollection.project(cards: cards) { card in
+            PriceStore.priceStorageKey(for: card, in: recordsByKey)
+        }
         if let position = projection.byKey[collectionKey] {
             let card = position.representative
-            let record = PriceStore.record(
-                for: card,
-                in: Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-            )
+            let record = PriceStore.record(for: card, in: recordsByKey)
             CollectionCardDetailView(
                 card: card,
                 price: record?.display ?? .unknown,

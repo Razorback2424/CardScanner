@@ -283,7 +283,6 @@ final class PortfolioEngine: ObservableObject {
         // non-authoritative, and leave the day eligible for a later retry.
         if computation.defects.contains(where: { $0.reason == .unreadableStore }) {
             integrityDefects = computation.defects
-            LedgerIntegrityLog.shared.replaceAll(with: integrityDefects)
 
             if var retained = lastUsableSummary {
                 retained.defects = computation.defects
@@ -318,7 +317,6 @@ final class PortfolioEngine: ObservableObject {
 
         guard let epoch = PortfolioEpoch.startedAt() else {
             integrityDefects = summary.defects
-            LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
             lastUsableSummary = summary
             status = .ready(summary)
             return
@@ -378,7 +376,6 @@ final class PortfolioEngine: ObservableObject {
         }
 
         integrityDefects = summary.defects
-        LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
 #if DEBUG
         if !summary.defects.isEmpty {

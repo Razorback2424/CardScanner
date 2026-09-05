@@ -162,6 +162,102 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
     }
 
+    /// Holding detail resolves a position's instrument the way the grid does,
+    /// not the way the ledger does.
+    ///
+    /// `PortfolioOwnedCardDestination` used to project through
+    /// `InventoryLedger.priceStorageKey(for:)`, which costs two to four
+    /// predicate fetches per candidate key per position from inside `body`.
+    /// Moving it to `PriceStore.priceStorageKey(for:in:)` was a performance
+    /// change, but it is not a semantically neutral one: the ledger's rule can
+    /// see an invalidation that exists only in the observation log, and the
+    /// record-only rule cannot. This pins the choice that was made — detail and
+    /// grid agree, and the price shown is the price of the instrument the
+    /// position is attributed to — and pins it on the one input where the two
+    /// rules genuinely disagree, so it cannot pass vacuously.
+    func testHoldingDetailResolvesTheSameInstrumentAsTheGrid() throws {
+        let context = try makeContext()
+
+        // A first-edition raw card reads through a legacy price key, so there
+        // is a real choice between two candidates.
+        let row = card(key: "observation-invalidated")
+        row.variantID = PhysicalVariant.firstEdition.id
+        row.variantLabel = PhysicalVariant.firstEdition.label
+        context.insert(row)
+
+        let canonicalKey = row.priceKey
+        guard let legacyKey = row.legacyPriceKeys.first else {
+            return XCTFail("fixture needs a legacy read-through key")
+        }
+
+        // The canonical key holds a placeholder with no value; the legacy key
+        // holds the only real price. Neither record is invalidated — the
+        // withdrawal exists solely as an observation, which is the one shape
+        // the two resolvers answer differently.
+        for (key, priced) in [(canonicalKey, false), (legacyKey, true)] {
+            let record = PriceRecord(
+                key: key,
+                game: row.cardGame,
+                printingID: row.priceStorageID,
+                variantID: row.variantID
+            )
+            if priced {
+                _ = record.apply(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 4.25,
+                        currencyCode: "USD",
+                        source: .tcgplayer,
+                        sourceVariantID: key,
+                        sourceUpdatedAt: nil,
+                        fetchedAt: Date(timeIntervalSince1970: 100)
+                    )
+                )
+            }
+            context.insert(record)
+        }
+        context.insert(
+            PriceObservation(
+                instrumentKey: canonicalKey,
+                kind: .explicitInvalidation,
+                amount: nil,
+                source: .tcgplayer,
+                sourceVariantID: nil,
+                marketVariantID: nil,
+                effectiveAt: Date(timeIntervalSince1970: 200),
+                receivedAt: Date(timeIntervalSince1970: 200),
+                isSourceStamped: false
+            )
+        )
+        try context.save()
+
+        let recordsByKey = Dictionary(
+            try context.fetch(FetchDescriptor<PriceRecord>()).map { ($0.key, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        // Not vacuous: the ledger really does answer differently here.
+        XCTAssertEqual(
+            InventoryLedger(context: context).priceStorageKey(for: row),
+            canonicalKey,
+            "the ledger honours an observation-only invalidation"
+        )
+        XCTAssertEqual(
+            PriceStore.priceStorageKey(for: row, in: recordsByKey),
+            legacyKey,
+            "the record-only rule cannot see it, and falls through to the priced key"
+        )
+
+        // The property the change rests on: the instrument holding detail
+        // attributes the position to is the instrument whose price it shows,
+        // and both match what the grid computes from the same records.
+        let detailInstrument = LogicalCollection
+            .project(cards: [row]) { PriceStore.priceStorageKey(for: $0, in: recordsByKey) }
+            .byKey[row.collectionKey]?
+            .priceStorageKey
+        XCTAssertEqual(detailInstrument, legacyKey)
+        XCTAssertEqual(PriceStore.record(for: row, in: recordsByKey)?.key, detailInstrument)
+    }
+
     private func makeContext() throws -> ModelContext {
         let syncedSchema = Schema([
             CollectedCard.self,
@@ -208,7 +304,6 @@ final class PortfolioReconciliationTests: XCTestCase {
 
     override func tearDown() {
         container = nil
-        LedgerIntegrityLog.shared.clear()
         super.tearDown()
     }
 
@@ -1083,7 +1178,7 @@ final class PortfolioReconciliationTests: XCTestCase {
                 save: { _ in throw ExpectedFailure.save }
             )
         )
-        XCTAssertNil(PortfolioEpoch.startedAt(context: context, defaults: defaults))
+        XCTAssertNil(PortfolioEpoch.startedAt(defaults: defaults))
         XCTAssertTrue(InventoryLedger(context: context).allEvents().isEmpty)
 
         XCTAssertEqual(
@@ -1409,7 +1504,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
         try context.save()
 
-        XCTAssertNil(PortfolioEpoch.startedAt(context: context, defaults: defaults))
+        XCTAssertNil(PortfolioEpoch.startedAt(defaults: defaults))
         XCTAssertEqual(
             try PortfolioEpoch.establishIfNeeded(
                 context: context,
@@ -1684,11 +1779,6 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(events.count, 1)
         XCTAssertEqual(events.first?.eventID, firstKnown.eventID)
         XCTAssertEqual(events.first?.occurredAt, earlier)
-        XCTAssertFalse(
-            LedgerIntegrityLog.shared.defects.contains {
-                $0.reason == .conflictingPayloadForIdempotencyKey
-            }
-        )
     }
 
     // MARK: - CSV integration
@@ -2410,7 +2500,6 @@ final class PortfolioReconciliationTests: XCTestCase {
             "an attribution defect must not discard the independently measured close"
         )
         XCTAssertEqual(engine.integrityDefects, summary.defects)
-        XCTAssertEqual(LedgerIntegrityLog.shared.defects, summary.defects)
     }
 
     /// A local-only device cannot be waiting on anything, so a collection with

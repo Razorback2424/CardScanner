@@ -260,7 +260,7 @@ struct SettingsView: View {
     }
 
     private var portfolioStartedAt: Date? {
-        PortfolioEpoch.startedAt(context: modelContext)
+        PortfolioEpoch.startedAt()
     }
 
     private var portfolioCloseCount: Int {
