@@ -73,10 +73,12 @@ final class SealedBrowseModel: ObservableObject {
         searchLanes = [:]
     }
 
-    /// Loads both sealed search lanes from the query that the browse model has
-    /// already debounced. Cached pages are usable without credentials; only a
-    /// stale or missing page with a configured account proceeds to the network.
-    func search(query: String) async {
+    /// Loads the requested sealed search lanes from the query that the browse
+    /// model has already debounced. Cached pages are usable without
+    /// credentials; only a stale or missing page with a configured account
+    /// proceeds to the network. A scope change supplies a narrower game list,
+    /// so invisible lanes never spend the shared vendor allowance.
+    func search(query: String, games: [CardGame] = CardGame.allCases) async {
         let normalizedQuery = CardNameSearch.normalize(query)
         guard normalizedQuery.count >= 2 else {
             clearSearch()
@@ -89,7 +91,7 @@ final class SealedBrowseModel: ObservableObject {
         var lanes: [CardGame: Lane] = [:]
         var gamesToFetch: [CardGame] = []
 
-        for game in CardGame.allCases {
+        for game in games {
             let key = CatalogCacheStore.sealedPageKey(
                 game: game,
                 setID: nil,

@@ -186,6 +186,8 @@ final class PriceRefreshController: ObservableObject {
         /// durably persisted. Network success is not presented as a complete
         /// refresh in this state.
         var persistenceFailed = false
+        /// Number of redundant synced rows repaired and durably removed.
+        var reconciledDuplicateRecords = 0
     }
 
     enum Status: Equatable {
@@ -426,8 +428,10 @@ final class PriceRefreshController: ObservableObject {
         var checkedUnstampedProvider = false
         var changedPrices = false
         var persistenceFailed = false
+        var reconciledDuplicateRecords = 0
         var stagedPriced = 0
         var stagedChangedPrices = false
+        var stagedDuplicateRepairs = store.reconcileDuplicateRecords()
 
         func stage(_ accepted: Bool, priced: Bool = false, changed: Bool = false) {
             guard accepted else {
@@ -444,11 +448,13 @@ final class PriceRefreshController: ObservableObject {
             if saved {
                 priced += stagedPriced
                 changedPrices = changedPrices || stagedChangedPrices
+                reconciledDuplicateRecords += stagedDuplicateRepairs
             } else {
                 persistenceFailed = true
             }
             stagedPriced = 0
             stagedChangedPrices = false
+            stagedDuplicateRepairs = 0
             return saved
         }
 
@@ -559,7 +565,6 @@ final class PriceRefreshController: ObservableObject {
                             )
                         }
                         if case let .price(price) = lookup {
-                            priced += 1
                             if let updated = price.sourceUpdatedAt,
                                updated > (latestSourceUpdate ?? .distantPast) {
                                 latestSourceUpdate = updated
@@ -751,7 +756,8 @@ final class PriceRefreshController: ObservableObject {
                 changedPrices: changedPrices,
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
                 providerUnreachable: providerUnreachable,
-                persistenceFailed: persistenceFailed
+                persistenceFailed: persistenceFailed,
+                reconciledDuplicateRecords: reconciledDuplicateRecords
             )
         )
     }
@@ -1593,7 +1599,10 @@ final class PriceRefreshController: ObservableObject {
     nonisolated static func isTransientSuccessStatus(_ status: Status) -> Bool {
         switch status {
         case let .finished(summary):
-            return !summary.providerUnreachable && summary.failed == 0 && !summary.persistenceFailed
+            return !summary.providerUnreachable
+                && summary.failed == 0
+                && !summary.persistenceFailed
+                && summary.reconciledDuplicateRecords == 0
         case .recentlyChecked:
             return true
         case .idle, .refreshing:

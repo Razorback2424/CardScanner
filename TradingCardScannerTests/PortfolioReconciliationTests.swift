@@ -340,6 +340,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         // Refused, reported, and non-destructive: both slabs still exist and
         // neither absorbed the other's quantity.
         XCTAssertEqual(result.failedRows.map(\.collectionKey), [canonicalKey])
+        XCTAssertEqual(result.failedEntries.map(\.collectionKey), [canonicalKey])
+        XCTAssertTrue(CollectionCSV.exportFailedEntries(result.failedEntries).text.contains("csv-ambiguous"))
         XCTAssertEqual(result.importedQuantity, 0)
         let rows = try context.fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(Set(rows.map(\.collectionKey)), [legacyKey, canonicalKey])
@@ -440,8 +442,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
 
         XCTAssertEqual(result.insertedEntries, 3)
-        XCTAssertEqual(recorder.values().map(\.0), [2, 3])
-        XCTAssertEqual(recorder.values().map(\.1), [3, 3])
+        XCTAssertEqual(recorder.values().map(\.0), [0, 2, 3])
+        XCTAssertEqual(recorder.values().map(\.1), [3, 3, 3])
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 3)
         XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 3)
@@ -1157,6 +1159,204 @@ final class PortfolioReconciliationTests: XCTestCase {
             try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty,
             "an unreadable observation table is not an empty baseline"
         )
+    }
+
+    func testSyncedPriceRecordChangeBecomesLocalKnowledgeAtReconciliationTime() throws {
+        let context = try makeContext()
+        let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)
+        let localLearned = remoteFetch.addingTimeInterval(7 * 86_400)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v2",
+                sourceUpdatedAt: remoteFetch,
+                fetchedAt: remoteFetch
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(10),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v1",
+                marketVariantID: nil,
+                effectiveAt: remoteFetch.addingTimeInterval(-120),
+                receivedAt: remoteFetch.addingTimeInterval(-60),
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: localLearned)
+        let newest = try XCTUnwrap(
+            rows.filter { $0.instrumentKey == "instrument" }
+                .max(by: { $0.receivedAt < $1.receivedAt })
+        )
+        XCTAssertEqual(newest.amount, money(20))
+        XCTAssertEqual(newest.receivedAt, localLearned)
+        XCTAssertEqual(newest.effectiveAt, remoteFetch)
+    }
+
+    func testOutOfOrderSyncedPriceDoesNotOverwriteNewerLocalKnowledge() throws {
+        let context = try makeContext()
+        let newerKnowledge = Date(timeIntervalSince1970: 2_000)
+        let staleRemoteFetch = Date(timeIntervalSince1970: 1_000)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "stale",
+                sourceUpdatedAt: staleRemoteFetch,
+                fetchedAt: staleRemoteFetch
+            )
+        )
+        context.insert(record)
+        let existing = PriceObservation(
+            instrumentKey: "instrument",
+            kind: .marketUpdate,
+            amount: money(20),
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "newer",
+            marketVariantID: nil,
+            effectiveAt: newerKnowledge,
+            receivedAt: newerKnowledge,
+            isSourceStamped: true
+        )
+        context.insert(existing)
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(
+                learnedAt: newerKnowledge.addingTimeInterval(60)
+            )
+        XCTAssertEqual(rows.filter { $0.instrumentKey == "instrument" }.count, 1)
+        XCTAssertEqual(rows.first?.amount, money(20))
+    }
+
+    func testSyncedInvalidationCreatesLocalKnowledgeEvenWithoutPriorObservation() throws {
+        let context = try makeContext()
+        let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)
+        let localLearned = remoteFetch.addingTimeInterval(7 * 86_400)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v2",
+                sourceUpdatedAt: remoteFetch,
+                fetchedAt: remoteFetch
+            )
+        )
+        _ = record.invalidate(at: remoteFetch.addingTimeInterval(60))
+        context.insert(record)
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: localLearned)
+        let invalidation = try XCTUnwrap(rows.first)
+        XCTAssertEqual(invalidation.kind, .explicitInvalidation)
+        XCTAssertNil(invalidation.amount)
+        XCTAssertEqual(invalidation.receivedAt, localLearned)
+    }
+
+    func testDuplicatePriceRecordsResolveByEvidenceAndConvergeOnWrite() throws {
+        let context = try makeContext()
+        let older = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        older.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "older",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        let newer = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        newer.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "newer",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 200)
+            )
+        )
+        context.insert(older)
+        context.insert(newer)
+        try context.save()
+
+        XCTAssertEqual(PriceStore(context: context).record(forKey: "instrument")?.unitMarketPriceUSD, 20)
+        XCTAssertTrue(
+            PriceStore(context: context).store(
+                .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 30,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: "repaired",
+                        sourceUpdatedAt: nil,
+                        fetchedAt: Date(timeIntervalSince1970: 300)
+                    )
+                ),
+                game: .pokemon,
+                printingID: "p",
+                variantID: nil,
+                at: Date(timeIntervalSince1970: 300)
+            )
+        )
+        XCTAssertTrue(PriceStore(context: context).save())
+        let records = try context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == "instrument" })
+        )
+        XCTAssertEqual(records.count, 1)
+        XCTAssertEqual(records.first?.unitMarketPriceUSD, 30)
+    }
+
+    func testDuplicateInvalidationWinsOverAnOlderUsableRecord() throws {
+        let context = try makeContext()
+        let usable = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        usable.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usable",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        let invalidated = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        invalidated.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 99,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "withdrawn",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        _ = invalidated.invalidate(at: Date(timeIntervalSince1970: 200))
+        context.insert(usable)
+        context.insert(invalidated)
+        try context.save()
+
+        let selected = try XCTUnwrap(PriceStore(context: context).record(forKey: "instrument"))
+        XCTAssertTrue(selected.isInvalidated)
+        XCTAssertNil(selected.effectiveUnitMarketPriceUSD)
     }
 
     func testSyncedOwnershipEpochDoesNotBackdateLocalKnowledgeEpoch() throws {

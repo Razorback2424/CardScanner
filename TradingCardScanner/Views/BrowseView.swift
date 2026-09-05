@@ -3,6 +3,12 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+enum BrowseScope: Hashable {
+    case all
+    case cards
+    case sealed
+}
+
 @MainActor
 final class BrowseViewModel: ObservableObject {
     struct Lane {
@@ -14,6 +20,7 @@ final class BrowseViewModel: ObservableObject {
 
     @Published var searchText = "" { didSet { scheduleSearch() } }
     @Published var selectedGame: CardGame? { didSet { scheduleSearch() } }
+    @Published var searchScope: BrowseScope = .cards { didSet { scheduleSearch() } }
     @Published var selectedSets: Set<CatalogSetID> = [] { didSet { scheduleSearch() } }
     @Published private(set) var sets: [CardGame: [CatalogSet]] = [:]
     @Published private(set) var setErrors: [CardGame: String] = [:]
@@ -125,18 +132,51 @@ final class BrowseViewModel: ObservableObject {
 
     private func runSearch(query: String, token: UUID) async {
         let games = selectedGame.map { [$0] } ?? CardGame.allCases
-        for game in games { lanes[game] = Lane(isLoading: true) }
-        for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
+        let searchesCards = searchScope != .sealed
+        let searchesSealed = searchScope != .cards
 
-        async let sealedSearch = sealedModel.search(query: query)
+        if searchesCards {
+            for game in games { lanes[game] = Lane(isLoading: true) }
+            for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
+        } else {
+            lanes = [:]
+        }
 
+        if searchesSealed {
+            async let sealedSearch = sealedModel.search(query: query, games: games)
+            if searchesCards {
+                await searchCardLanes(games: games, query: query, token: token)
+            }
+            await sealedSearch
+        } else {
+            sealedModel.clearSearch()
+            if searchesCards {
+                await searchCardLanes(games: games, query: query, token: token)
+            }
+        }
+    }
+
+    private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {
         await withTaskGroup(of: (CardGame, Result<CatalogPage<CatalogCardSummary>, Error>).self) { group in
             for game in games {
                 let catalog = catalog
                 let setIDs = effectiveSetIDs(for: game)
                 group.addTask {
-                    do { return (game, .success(try await catalog.searchCards(named: query, game: game, setIDs: setIDs, cursor: nil))) }
-                    catch { return (game, .failure(error)) }
+                    do {
+                        return (
+                            game,
+                            .success(
+                                try await catalog.searchCards(
+                                    named: query,
+                                    game: game,
+                                    setIDs: setIDs,
+                                    cursor: nil
+                                )
+                            )
+                        )
+                    } catch {
+                        return (game, .failure(error))
+                    }
                 }
             }
             for await (game, result) in group {
@@ -149,8 +189,6 @@ final class BrowseViewModel: ObservableObject {
                 }
             }
         }
-
-        await sealedSearch
     }
 
     private func effectiveSetIDs(for game: CardGame) -> Set<CatalogSetID> {
@@ -172,7 +210,6 @@ struct BrowseView: View {
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
 
-    enum BrowseScope: Hashable { case all, cards, sealed }
     @State private var browseScope: BrowseScope = .cards
 
     init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
@@ -277,6 +314,9 @@ struct BrowseView: View {
             } else if browseScope == .all {
                 browseScope = .cards
             }
+        }
+        .onChange(of: browseScope) { _, scope in
+            model.searchScope = scope
         }
     }
 

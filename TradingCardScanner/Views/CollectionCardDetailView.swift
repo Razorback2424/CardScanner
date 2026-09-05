@@ -113,7 +113,7 @@ struct CollectionCardDetailView: View {
 
             PhotosPicker(selection: $selectedArtwork, matching: .images) {
                 Label(
-                    card.userArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
+                    localArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
                     systemImage: "photo.badge.plus"
                 )
             }
@@ -124,7 +124,7 @@ struct CollectionCardDetailView: View {
                 pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
             }
 
-            if card.userArtworkFilename != nil {
+            if localArtworkFilename != nil {
                 Button("Use Catalog Artwork", role: .destructive) {
                     removeUserArtwork()
                 }
@@ -212,7 +212,7 @@ struct CollectionCardDetailView: View {
 
     @ViewBuilder
     private var artwork: some View {
-        if let image = CollectionArtworkStore.image(filename: card.userArtworkFilename) {
+        if let image = CollectionArtworkStore.image(filename: localArtworkFilename) {
             Image(uiImage: image).resizable().scaledToFit()
         } else {
             AsyncImage(url: card.highImageURL) { phase in
@@ -268,8 +268,16 @@ struct CollectionCardDetailView: View {
             CollectionArtworkStore.remove(filename: filename)
             return
         }
-        let oldFilename = card.userArtworkFilename
-        card.userArtworkFilename = filename
+        let oldFilename = localArtworkFilename
+        CollectionArtworkStore.set(
+            filename: filename,
+            for: card.collectionKey,
+            in: modelContext
+        )
+        // Kept only as a migration bridge for stores written before local
+        // artwork ownership existed. New writes never publish a device-local
+        // file reference through the synced card row.
+        card.userArtworkFilename = nil
         do {
             try modelContext.save()
             CollectionArtworkStore.remove(filename: oldFilename)
@@ -277,7 +285,11 @@ struct CollectionCardDetailView: View {
                 selectedArtwork = nil
             }
         } catch {
-            card.userArtworkFilename = oldFilename
+            CollectionArtworkStore.set(
+                filename: oldFilename,
+                for: card.collectionKey,
+                in: modelContext
+            )
             CollectionArtworkStore.remove(filename: filename)
             errorMessage = error.localizedDescription
             if requestID == artworkGeneration { selectedArtwork = nil }
@@ -286,15 +298,32 @@ struct CollectionCardDetailView: View {
 
     private func removeUserArtwork() {
         artworkGeneration &+= 1
-        let oldFilename = card.userArtworkFilename
+        let oldFilename = localArtworkFilename
+        CollectionArtworkStore.set(
+            filename: nil,
+            for: card.collectionKey,
+            in: modelContext
+        )
         card.userArtworkFilename = nil
         do {
             try modelContext.save()
             CollectionArtworkStore.remove(filename: oldFilename)
         } catch {
-            card.userArtworkFilename = oldFilename
+            CollectionArtworkStore.set(
+                filename: oldFilename,
+                for: card.collectionKey,
+                in: modelContext
+            )
             errorMessage = error.localizedDescription
         }
+    }
+
+    private var localArtworkFilename: String? {
+        CollectionArtworkStore.filename(
+            for: card.collectionKey,
+            legacyFilename: card.userArtworkFilename,
+            in: modelContext
+        )
     }
 
     private var removalMessage: String {
@@ -793,6 +822,86 @@ enum CollectionArtworkStore {
         cache.totalCostLimit = 48 * 1024 * 1024
         return cache
     }()
+
+    static func filename(
+        for collectionKey: String,
+        legacyFilename: String?,
+        in context: ModelContext
+    ) -> String? {
+        do {
+            let rows = try context.fetch(
+                FetchDescriptor<LocalArtworkOverride>(
+                    predicate: #Predicate { $0.collectionKey == collectionKey },
+                    sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+                )
+            )
+            if let filename = rows.first?.filename, !filename.isEmpty {
+                return filename
+            }
+            // Legacy values remain readable until launch migration has moved
+            // them. Do not cache that fallback because the synced bridge field
+            // can be cleared by the caller during the same session.
+            if let legacyFilename, !legacyFilename.isEmpty { return legacyFilename }
+            return nil
+        } catch {
+            return legacyFilename
+        }
+    }
+
+    static func set(filename: String?, for collectionKey: String, in context: ModelContext) {
+        do {
+            let rows = try context.fetch(
+                FetchDescriptor<LocalArtworkOverride>(
+                    predicate: #Predicate { $0.collectionKey == collectionKey }
+                )
+            )
+            if let filename, !filename.isEmpty {
+                let override = rows.first ?? LocalArtworkOverride(collectionKey: collectionKey, filename: filename)
+                override.filename = filename
+                override.updatedAt = .now
+                if rows.isEmpty { context.insert(override) }
+            } else {
+                for row in rows { context.delete(row) }
+            }
+        } catch {
+            // The caller's model save reports the durable failure. Keeping the
+            // image file intact until that save succeeds makes this reversible.
+        }
+    }
+
+    /// Move legacy synced filenames into the local mapping before any screen
+    /// reads them. The old model field remains in the schema only so existing
+    /// stores can migrate safely; it is cleared after the local copy exists.
+    static func migrateLegacyMappings(in context: ModelContext) {
+        do {
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            var keysWithOverrides = Set(overrides.map(\.collectionKey))
+            let legacyCards = cards
+                .filter { $0.userArtworkFilename?.isEmpty == false }
+                .sorted {
+                    if $0.collectionKey != $1.collectionKey { return $0.collectionKey < $1.collectionKey }
+                    if $0.dateAdded != $1.dateAdded { return $0.dateAdded < $1.dateAdded }
+                    return ($0.userArtworkFilename ?? "") < ($1.userArtworkFilename ?? "")
+                }
+
+            var changed = false
+            for card in legacyCards {
+                if !keysWithOverrides.contains(card.collectionKey),
+                   let filename = card.userArtworkFilename,
+                   !filename.isEmpty {
+                    context.insert(LocalArtworkOverride(collectionKey: card.collectionKey, filename: filename))
+                    keysWithOverrides.insert(card.collectionKey)
+                }
+                card.userArtworkFilename = nil
+                changed = true
+            }
+            guard changed else { return }
+            try context.save()
+        } catch {
+            context.rollback()
+        }
+    }
 
     static func save(_ data: Data) -> String? {
         guard UIImage(data: data) != nil, let directory else { return nil }

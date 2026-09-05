@@ -120,6 +120,13 @@ final class CenteringExportTests: XCTestCase {
 
         XCTAssertEqual(CardCenteringExport.filename(for: flat), "Card Centering.png")
     }
+
+    func testFilenameDistinguishesAUserRotation() {
+        let name = CardCenteringExport.filename(for: measurement(), rotationDegrees: 2.5)
+
+        XCTAssertTrue(name.contains("rotated 2.50°"))
+        XCTAssertFalse(name.contains("/"))
+    }
 }
 
 final class CardCenteringAnalyzerTests: XCTestCase {

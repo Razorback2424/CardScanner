@@ -195,7 +195,23 @@ actor BrowseCatalog: BrowseCatalogProviding {
             page = CatalogPage(items: summaries, nextCursor: nil)
         case .magic:
             let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
-            if let saved = await cache.cardPage(for: cacheKey) { return saved }
+            if let saved = await cache.cardPage(for: cacheKey) {
+                if saved.isFresh { return saved.value }
+                do {
+                    let refreshed = try await magicCards(
+                        query: "e:\(set.providerID) lang:en game:paper",
+                        cursor: cursor
+                    )
+                    await cache.storeCardPage(refreshed, for: cacheKey)
+                    return refreshed
+                } catch {
+                    // A stale page is still useful offline. Keep it visible
+                    // when revalidation cannot reach Scryfall, while the next
+                    // visit will try again because the stored timestamp stays
+                    // old until a successful refresh replaces it.
+                    return saved.value
+                }
+            }
             page = try await magicCards(query: "e:\(set.providerID) lang:en game:paper", cursor: cursor)
             await cache.storeCardPage(page, for: cacheKey)
             return page
@@ -795,6 +811,7 @@ actor CatalogCacheStore {
     private static let setDirectoryMaxAge: TimeInterval = 24 * 60 * 60
     private static let sealedSetDirectoryMaxAge: TimeInterval = 7 * 24 * 60 * 60
     private static let sealedProductMaxAge: TimeInterval = 6 * 60 * 60
+    private static let magicCardPageMaxAge: TimeInterval = 24 * 60 * 60
     private static let cardPageLimit = 25 * 1_024 * 1_024
     private static let sealedPageLimit = 10 * 1_024 * 1_024
 
@@ -819,13 +836,17 @@ actor CatalogCacheStore {
         store(sets, at: setDirectoryURL(for: game))
     }
 
-    func cardPage(for key: String) -> CatalogPage<CatalogCardSummary>? {
+    func cardPage(for key: String) -> Cached<CatalogPage<CatalogCardSummary>>? {
         let url = cardPagesDirectory.appendingPathComponent(filename(for: key))
-        guard let cached = load(CatalogPage<CatalogCardSummary>.self, from: url, maxAge: nil) else {
+        guard let cached = load(
+            CatalogPage<CatalogCardSummary>.self,
+            from: url,
+            maxAge: Self.magicCardPageMaxAge
+        ) else {
             return nil
         }
         touch(url)
-        return cached.value
+        return cached
     }
 
     func storeCardPage(_ page: CatalogPage<CatalogCardSummary>, for key: String) {

@@ -289,7 +289,11 @@ enum PortfolioReplaySnapshotBuilder {
         }
 
         var recordsByKey: [String: PriceRecord] = [:]
-        for record in records where recordsByKey[record.key] == nil {
+        for record in records {
+            if let existing = recordsByKey[record.key],
+               !PriceStore.isPreferred(record, over: existing) {
+                continue
+            }
             recordsByKey[record.key] = record
         }
 
@@ -386,7 +390,7 @@ actor PortfolioComputationActor {
         // fetching here first would let a second context carry a stale empty
         // snapshot into the critical section.
         let observations = PriceObservationLog(context: modelContext)
-            .backfillFromRecordsAndReturnObservations()
+            .reconcileSyncedRecordsAndReturnObservations()
         if observations.isEmpty {
             // An empty result may be a genuinely empty log or an unreadable
             // table. Let the builder perform its normal fetch so the latter is

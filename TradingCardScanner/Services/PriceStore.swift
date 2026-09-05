@@ -139,8 +139,13 @@ enum ArtworkDiagnosticReason: String, Equatable, Sendable {
 }
 
 enum ArtworkDiagnostics {
-    static func reason(for card: CollectedCard) -> ArtworkDiagnosticReason? {
-        guard card.userArtworkFilename == nil, card.imageURL == nil else { return nil }
+    static func reason(
+        for card: CollectedCard,
+        hasLocalOverride: Bool = false
+    ) -> ArtworkDiagnosticReason? {
+        guard !hasLocalOverride, card.userArtworkFilename == nil, card.imageURL == nil else {
+            return nil
+        }
 
         if card.itemKind == .sealedProduct {
             if CollectionCatalogNormalizer.isDefinitiveSealedMiss(card) {
@@ -179,9 +184,75 @@ struct PriceStore {
     let context: ModelContext
 
     func record(forKey key: String) -> PriceRecord? {
-        var descriptor = FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        let matches = (try? context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+        )) ?? []
+        return Self.authoritativeRecord(in: matches)
+    }
+
+    /// The CloudKit schema has no unique constraint, so a concurrent first
+    /// write can deliver more than one row for one instrument. Reads must not
+    /// depend on SwiftData's fetch order while a repair is pending.
+    static func authoritativeRecord(in records: [PriceRecord]) -> PriceRecord? {
+        records.reduce(nil) { current, candidate in
+            guard let current else { return candidate }
+            return isPreferred(candidate, over: current) ? candidate : current
+        }
+    }
+
+    /// Selects the row with the newest knowledge/invalidation watermark. An
+    /// invalidation wins ties so a duplicate cannot resurrect a withdrawn
+    /// value. The remaining fingerprint is only a deterministic tie-breaker;
+    /// price magnitude is deliberately not part of the preference rule.
+    static func isPreferred(_ candidate: PriceRecord, over incumbent: PriceRecord) -> Bool {
+        let candidateDate = knowledgeDate(for: candidate)
+        let incumbentDate = knowledgeDate(for: incumbent)
+        if candidateDate != incumbentDate { return candidateDate > incumbentDate }
+        if candidate.isInvalidated != incumbent.isInvalidated {
+            return candidate.isInvalidated
+        }
+        return fingerprint(for: candidate) > fingerprint(for: incumbent)
+    }
+
+    /// Repairs all duplicate keys visible in this context before a refresh.
+    /// The returned count is the number of redundant rows removed, so callers
+    /// can report a repair only after the surrounding save succeeds.
+    @discardableResult
+    func reconcileDuplicateRecords() -> Int {
+        let recordsByKey = Dictionary(grouping: allRecords(), by: \.key)
+        var removed = 0
+        for records in recordsByKey.values where records.count > 1 {
+            guard let authoritative = Self.authoritativeRecord(in: records) else { continue }
+            for duplicate in records where duplicate !== authoritative {
+                context.delete(duplicate)
+                removed += 1
+            }
+        }
+        return removed
+    }
+
+    private static func knowledgeDate(for record: PriceRecord) -> Date {
+        [
+            record.invalidatedAt,
+            record.lastSuccessfulCheckAt,
+            record.fetchedAt,
+            record.lastCheckedAt
+        ]
+        .compactMap { $0 }
+        .max() ?? .distantPast
+    }
+
+    private static func fingerprint(for record: PriceRecord) -> String {
+        [
+            record.isInvalidated ? "1" : "0",
+            record.sourceRaw ?? "",
+            record.sourceVariantID ?? "",
+            record.marketVariantID ?? "",
+            record.currencyCode,
+            record.unitMarketPriceUSD.map { String($0) } ?? "",
+            record.sourceUpdatedAt?.timeIntervalSince1970.description ?? "",
+            record.fetchedAt?.timeIntervalSince1970.description ?? ""
+        ].joined(separator: "\u{1F}  ")
     }
 
     /// Resolves the record for a write without treating an unreadable store as
@@ -200,7 +271,13 @@ struct PriceStore {
             let matches = try context.fetch(
                 FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
             )
-            guard matches.count <= 1 else { return nil }
+            if matches.count > 1,
+               let authoritative = Self.authoritativeRecord(in: matches) {
+                for duplicate in matches where duplicate !== authoritative {
+                    context.delete(duplicate)
+                }
+                return authoritative
+            }
             if let existing = matches.first {
                 if existing.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
                     existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(

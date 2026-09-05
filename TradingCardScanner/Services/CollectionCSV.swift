@@ -42,14 +42,22 @@ struct CollectionCSVImportResult: Sendable {
     let totalQuantity: Int
     let skippedRows: Int
     let failedRows: [CollectionCSVImportFailure]
+
+    /// Normalized entries whose row transaction rolled back. These are kept
+    /// separate from `skippedRows`: skipped source rows were never importable,
+    /// while failed entries are safe candidates for a selective retry.
+    var failedEntries: [CollectionCSVEntry] {
+        failedRows.map(\.entry)
+    }
 }
 
 struct CollectionCSVImportFailure: Sendable, Equatable {
     let collectionKey: String
     let detail: String
+    let entry: CollectionCSVEntry
 }
 
-struct CollectionCSVEntry: Sendable {
+struct CollectionCSVEntry: Sendable, Equatable {
     let collectionKey: String
     let game: CardGame
     let providerID: String
@@ -168,6 +176,46 @@ enum CollectionCSV {
         return CollectionCSVDocument(text: text)
     }
 
+    /// Re-exports only entries whose individual import transaction failed.
+    /// The normalized rows are intentionally written in the same schema as a
+    /// collection export, so the result can be selected for a focused retry
+    /// without re-importing rows that already committed.
+    static func exportFailedEntries(_ entries: [CollectionCSVEntry]) -> CollectionCSVDocument {
+        let formatter = ISO8601DateFormatter()
+        let rows = entries.map { entry in
+            [
+                entry.game.rawValue,
+                entry.providerID,
+                entry.name,
+                entry.setName,
+                entry.setCode,
+                entry.cardNumber,
+                entry.variant?.id ?? "",
+                entry.variant?.label ?? "",
+                String(entry.quantity),
+                entry.rarity ?? "",
+                entry.imageURL ?? "",
+                entry.thumbnailURL ?? "",
+                formatter.string(from: entry.dateAdded),
+                entry.itemKind.rawValue,
+                entry.justTCGCardID ?? "",
+                entry.justTCGVariantID ?? "",
+                entry.justTCGAPIVersion ?? "",
+                entry.gradingCompany?.rawValue ?? "",
+                entry.grade?.value ?? "",
+                entry.grade?.label ?? "",
+                entry.grade?.qualifier ?? "",
+                entry.certificationNumber ?? "",
+                entry.marketRegionRaw ?? "",
+                entry.pokemonPrintRun?.rawValue ?? "",
+                encodedTreatmentIDs(entry.magicTreatmentIDsRaw),
+                MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
+                entry.magicContentKindRaw
+            ]
+        }
+        return CollectionCSVDocument(text: csvText(headers: exportHeaders, rows: rows))
+    }
+
     /// Daily closes, one row per revision.
     ///
     /// Phase 1 history is device-local, and an export is what keeps it from
@@ -270,10 +318,11 @@ enum CollectionCSV {
     /// is temporarily offline is deliberately not classified as missing data.
     static func exportMissingArtwork(
         _ cards: [CollectedCard],
-        priceRecords: [PriceRecord]
+        priceRecords: [PriceRecord],
+        localArtworkKeys: Set<String> = []
     ) -> CollectionCSVDocument {
         diagnosticExport(
-            cards.filter { $0.highImageURL == nil },
+            cards.filter { $0.highImageURL == nil && !localArtworkKeys.contains($0.collectionKey) },
             priceRecords: priceRecords,
             diagnostic: { card, _ in
                 ArtworkDiagnostics.reason(for: card)?.rawValue ?? "artwork_available"
@@ -550,6 +599,7 @@ enum CollectionCSV {
 
             let safeBatchSize = max(1, batchSize)
             var batchStart = 0
+            progress?(0, plan.entries.count)
             while batchStart < plan.entries.count {
                 let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
                 for index in batchStart..<batchEnd {
@@ -768,7 +818,8 @@ enum CollectionCSV {
                         failedRows.append(
                             CollectionCSVImportFailure(
                                 collectionKey: plan.entries[index].collectionKey,
-                                detail: error.localizedDescription
+                                detail: error.localizedDescription,
+                                entry: plan.entries[index]
                             )
                         )
                         context.rollback()

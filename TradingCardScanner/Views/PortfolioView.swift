@@ -307,7 +307,10 @@ struct PortfolioView: View {
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
         if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
         if case let .finished(result) = refresh.status {
-            return result.providerUnreachable || result.failed > 0 || result.persistenceFailed
+            return result.providerUnreachable
+                || result.failed > 0
+                || result.persistenceFailed
+                || result.reconciledDuplicateRecords > 0
         }
         return false
     }
@@ -988,11 +991,18 @@ private struct PortfolioMagnitudeBar: View {
 }
 
 private struct PortfolioArtwork: View {
+    @Environment(\.modelContext) private var modelContext
     let holding: PortfolioHoldingSnapshot
 
     var body: some View {
         Group {
-            if let image = CollectionArtworkStore.image(filename: holding.userArtworkFilename) {
+            if let image = CollectionArtworkStore.image(
+                filename: CollectionArtworkStore.filename(
+                    for: holding.collectionKey,
+                    legacyFilename: holding.userArtworkFilename,
+                    in: modelContext
+                )
+            ) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -1013,6 +1023,7 @@ private struct PortfolioOwnedCardDestination: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CollectedCard.dateAdded, order: .forward) private var cards: [CollectedCard]
     @Query private var priceRecords: [PriceRecord]
+    @Query private var artworkOverrides: [LocalArtworkOverride]
     let collectionKey: String
     @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
@@ -1035,7 +1046,10 @@ private struct PortfolioOwnedCardDestination: View {
                 unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
                     ? PricingDiagnostics.unpricedReason(for: card, record: record)
                     : nil,
-                artworkReason: ArtworkDiagnostics.reason(for: card),
+                artworkReason: ArtworkDiagnostics.reason(
+                    for: card,
+                    hasLocalOverride: artworkOverrides.contains { $0.collectionKey == card.collectionKey }
+                ),
                 logicalQuantity: position.quantity,
                 isLogicalConflict: position.physicalRowCount > 1,
                 onRemoved: onRemoved
@@ -1188,11 +1202,16 @@ private struct PortfolioDetailsView: View {
                         ? "The card catalog is unreachable. Check your connection and try again."
                         : result.persistenceFailed
                             ? "Some price updates could not be saved. Try again."
+                            : result.reconciledDuplicateRecords > 0
+                                ? "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
                             : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
                 )
                     .font(.subheadline)
                     .foregroundStyle(
-                        result.providerUnreachable || result.failed > 0 || result.persistenceFailed
+                        result.providerUnreachable
+                            || result.failed > 0
+                            || result.persistenceFailed
+                            || result.reconciledDuplicateRecords > 0
                             ? PortfolioPalette.attention
                             : .secondary
                     )

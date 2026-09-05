@@ -10,6 +10,7 @@ struct CollectionView: View {
     private var cards: [CollectedCard]
 
     @Query private var priceRecords: [PriceRecord]
+    @Query private var artworkOverrides: [LocalArtworkOverride]
     let catalog: any BrowseCatalogProviding
     @ObservedObject var history: PortfolioHistoryStore
     let opensBrowseOnLaunch: Bool
@@ -279,7 +280,11 @@ struct CollectionView: View {
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
-        ScrollView {
+        let artworkByKey = Dictionary(
+            artworkOverrides.map { ($0.collectionKey, $0.filename) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return ScrollView {
             LazyVStack(spacing: 12) {
                 collectionSummary(snapshot)
                 filterBar(snapshot)
@@ -298,6 +303,8 @@ struct CollectionView: View {
                             } label: {
                                 CollectionCardTile(
                                     card: entry.card,
+                                    userArtworkFilename: artworkByKey[entry.card.collectionKey]
+                                        ?? entry.card.userArtworkFilename,
                                     quantity: entry.row.quantity,
                                     price: entry.row.price,
                                     unpricedReason: entry.unpricedReason,
@@ -480,6 +487,7 @@ struct CollectionView: View {
     @MainActor
     private func makeSnapshot() -> Snapshot {
         let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
+        let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
 
         // One collection key can legitimately have more than one row, so what
         // is owned comes from the shared projection rather than from whichever
@@ -543,7 +551,10 @@ struct CollectionView: View {
                     unpricedReason: row.unitPrice == nil
                         ? PricingDiagnostics.unpricedReason(for: card, record: record)
                         : nil,
-                    artworkReason: ArtworkDiagnostics.reason(for: card),
+                    artworkReason: ArtworkDiagnostics.reason(
+                        for: card,
+                        hasLocalOverride: localArtworkKeys.contains(card.collectionKey)
+                    ),
                     isLogicalConflict: (projection.byKey[row.id]?.physicalRowCount ?? 1) > 1
                 )
             }
@@ -686,6 +697,7 @@ struct CollectionView: View {
 
 private struct CollectionCardTile: View {
     let card: CollectedCard
+    let userArtworkFilename: String?
     /// The projected quantity for the position, not `card.quantity`. The card
     /// is one physical row, and CloudKit can legitimately split a position
     /// across several of them; the badge and the detail view must agree about
@@ -701,7 +713,7 @@ private struct CollectionCardTile: View {
                 Color.secondary.opacity(0.08)
 
                 CollectionCardArtwork(
-                    userArtworkFilename: card.userArtworkFilename,
+                    userArtworkFilename: userArtworkFilename,
                     thumbnailURL: card.lowImageURL,
                     fullSizeURL: card.highImageURL,
                     placeholderText: artworkReason?.title

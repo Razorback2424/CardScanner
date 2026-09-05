@@ -293,6 +293,24 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testSealedSearchCanLoadOnlyTheSelectedGame() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let client = RecordingJustTCGProviding()
+        let model = SealedBrowseModel(
+            client: client,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+
+        await model.search(query: "box", games: [.magic])
+
+        XCTAssertEqual(Set(model.searchLanes.keys), Set([CardGame.magic]))
+        let searchedGames = await client.sealedSearchGames()
+        XCTAssertEqual(searchedGames, [.magic])
+    }
+
+    @MainActor
     func testBrowseSearchDebouncesBeforeStartingBothSearchLanes() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -305,6 +323,7 @@ final class BrowseFeatureTests: XCTestCase {
         let catalog = EmptyBrowseCatalog()
         let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
 
+        model.searchScope = .all
         model.searchText = "box"
         try await Task.sleep(for: .milliseconds(150))
         let earlyCardSearchCount = await catalog.searchCount()
@@ -317,6 +336,53 @@ final class BrowseFeatureTests: XCTestCase {
         let sealedSearchCount = await sealedClient.sealedSearchCount()
         XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
         XCTAssertEqual(sealedSearchCount, CardGame.allCases.count)
+    }
+
+    @MainActor
+    func testBrowseCardsScopeDoesNotStartSealedSearch() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let sealedClient = RecordingJustTCGProviding()
+        let sealedModel = SealedBrowseModel(
+            client: sealedClient,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.searchScope = .cards
+        model.searchText = "box"
+        try await Task.sleep(for: .milliseconds(550))
+
+        let cardSearchCount = await catalog.searchCount()
+        let sealedSearchCount = await sealedClient.sealedSearchCount()
+        XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
+        XCTAssertEqual(sealedSearchCount, 0)
+    }
+
+    @MainActor
+    func testBrowseSealedScopePassesTheSelectedGameAndSkipsCardSearch() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let sealedClient = RecordingJustTCGProviding()
+        let sealedModel = SealedBrowseModel(
+            client: sealedClient,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.selectedGame = .magic
+        model.searchScope = .sealed
+        model.searchText = "box"
+        try await Task.sleep(for: .milliseconds(550))
+
+        let cardSearchCount = await catalog.searchCount()
+        let searchedGames = await sealedClient.sealedSearchGames()
+        XCTAssertEqual(cardSearchCount, 0)
+        XCTAssertEqual(searchedGames, [.magic])
     }
 
     private func makeTemporaryCacheDirectory() throws -> URL {

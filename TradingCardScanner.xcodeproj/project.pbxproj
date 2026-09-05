@@ -106,6 +106,7 @@
 		A0020051 /* TCGplayerLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020051 /* TCGplayerLinkTests.swift */; };
 		A0020050 /* PortfolioReplayEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020050 /* PortfolioReplayEngineTests.swift */; };
 		A0020041 /* PortfolioCloseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020041 /* PortfolioCloseTests.swift */; };
+		A00200D0 /* PortfolioCloseReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200D0 /* PortfolioCloseReference.swift */; };
 		A0020042 /* PortfolioReconciliationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020042 /* PortfolioReconciliationTests.swift */; };
 		A0020043 /* PortfolioHistoryEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020043 /* PortfolioHistoryEngineTests.swift */; };
 		A0020021 /* PricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020021 /* PricingTests.swift */; };
@@ -261,6 +262,7 @@
 		B0020051 /* TCGplayerLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGplayerLinkTests.swift; sourceTree = "<group>"; };
 		B0020050 /* PortfolioReplayEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplayEngineTests.swift; sourceTree = "<group>"; };
 		B0020041 /* PortfolioCloseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCloseTests.swift; sourceTree = "<group>"; };
+		B00200D0 /* PortfolioCloseReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCloseReference.swift; sourceTree = "<group>"; };
 		B0020042 /* PortfolioReconciliationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReconciliationTests.swift; sourceTree = "<group>"; };
 		B0020043 /* PortfolioHistoryEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryEngineTests.swift; sourceTree = "<group>"; };
 		B0020021 /* PricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingTests.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 				B0020051 /* TCGplayerLinkTests.swift */,
 				B0020050 /* PortfolioReplayEngineTests.swift */,
 				B0020041 /* PortfolioCloseTests.swift */,
+				B00200D0 /* PortfolioCloseReference.swift */,
 				B0020040 /* PortfolioLedgerTests.swift */,
 				B0020042 /* PortfolioReconciliationTests.swift */,
 				B0020043 /* PortfolioHistoryEngineTests.swift */,
@@ -757,6 +760,7 @@
 				A0020051 /* TCGplayerLinkTests.swift in Sources */,
 				A0020050 /* PortfolioReplayEngineTests.swift in Sources */,
 				A0020041 /* PortfolioCloseTests.swift in Sources */,
+				A00200D0 /* PortfolioCloseReference.swift in Sources */,
 				A0020040 /* PortfolioLedgerTests.swift in Sources */,
 				A0020042 /* PortfolioReconciliationTests.swift in Sources */,
 				A0020043 /* PortfolioHistoryEngineTests.swift in Sources */,
