@@ -315,6 +315,7 @@ struct CollectionView: View {
                     artworkReason: entry.artworkReason,
                     logicalQuantity: entry.row.quantity,
                     isLogicalConflict: entry.isLogicalConflict,
+                    instrumentKey: entry.row.priceStorageKey,
                     onRemoved: presentUndo(for:)
                 )
             } else {
@@ -677,6 +678,7 @@ struct CollectionView: View {
                 quantity: position.quantity,
                 dateAdded: position.dateAdded,
                 price: priceRecordsByCollectionKey[position.collectionKey]?.display ?? .unknown,
+                priceStorageKey: position.priceStorageKey,
                 magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
                 magicTreatmentQualifiers: card.magicTreatmentQualifiers,
                 itemKind: card.itemKind,

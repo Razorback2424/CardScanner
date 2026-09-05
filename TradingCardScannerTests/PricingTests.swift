@@ -667,3 +667,121 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(price.currencyCode, "USD")
     }
 }
+
+final class PriceHistoryChartModelTests: XCTestCase {
+    private let instrumentKey = "pokemon:test-set-001:normal"
+    private let timeZone = TimeZone(secondsFromGMT: 0)!
+
+    private var calendar: Calendar {
+        PortfolioCalendar.calendar(in: timeZone)
+    }
+
+    private func date(day: Int, hour: Int = 1) -> Date {
+        let secondsPerDay: TimeInterval = 24 * 60 * 60
+        let offset = TimeInterval(day) * secondsPerDay + TimeInterval(hour) * 60 * 60
+        let base = calendar.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+        return base.addingTimeInterval(offset)
+    }
+
+    private func observation(
+        day: Int,
+        amount: Double,
+        kind: PriceObservationKind = .marketUpdate
+    ) throws -> PriceObservation {
+        PriceObservation(
+            instrumentKey: instrumentKey,
+            kind: kind,
+            amount: try XCTUnwrap(Money(rounding: amount)),
+            source: .tcgplayer,
+            sourceVariantID: "normal",
+            marketVariantID: "normal",
+            effectiveAt: date(day: day),
+            receivedAt: date(day: day),
+            isSourceStamped: true
+        )
+    }
+
+    private func checkDay(day: Int) -> PriceCheckDay {
+        PriceCheckDay(
+            instrumentKey: instrumentKey,
+            portfolioDay: calendar.startOfDay(for: date(day: day)),
+            lastSuccessfulCheckAt: date(day: day, hour: 2),
+            source: .tcgplayer
+        )
+    }
+
+    private func makeModel(
+        observations: [PriceObservation],
+        checks: [PriceCheckDay],
+        nowDay: Int = 5
+    ) -> PriceHistoryChartModel {
+        PriceHistoryChartModel.make(
+            observations: observations,
+            checkDays: checks,
+            currencyCode: "USD",
+            range: .all,
+            now: date(day: nowDay, hour: 12),
+            timeZone: timeZone
+        )
+    }
+
+    func testNoObservationShowsRecordingState() {
+        let model = makeModel(observations: [], checks: [])
+
+        XCTAssertTrue(model.samples.isEmpty)
+        XCTAssertEqual(model.segments.count, 0)
+    }
+
+    func testOneObservationRemainsAPointWithoutALine() throws {
+        let model = makeModel(
+            observations: [try observation(day: 0, amount: 10)],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        XCTAssertEqual(model.observationCount, 1)
+        XCTAssertFalse(model.segments.contains { $0.samples.count > 1 })
+        XCTAssertEqual(model.segments.count, 1)
+    }
+
+    func testCheckedDaysConnectChangedPricesWithAFlatStep() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 10),
+                try observation(day: 2, amount: 12)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1), checkDay(day: 2)]
+        )
+
+        XCTAssertEqual(model.observationCount, 2)
+        XCTAssertEqual(model.segments.count, 1)
+        XCTAssertGreaterThanOrEqual(model.segments[0].samples.count, 3)
+        XCTAssertFalse(model.hasGaps)
+    }
+
+    func testUncheckedDaysCreateAVisibleGap() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 10),
+                try observation(day: 3, amount: 12)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 3)]
+        )
+
+        XCTAssertEqual(model.observationCount, 2)
+        XCTAssertEqual(model.segments.count, 2)
+        XCTAssertTrue(model.hasGaps)
+        XCTAssertTrue(model.segments.allSatisfy { $0.samples.count == 1 })
+    }
+
+    func testSourceRestatementIsAnnotatedAsNonMarket() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 10),
+                try observation(day: 1, amount: 9, kind: .sourceRestatement)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        XCTAssertEqual(model.samples.last?.annotationLabel, "Source restatement")
+    }
+}

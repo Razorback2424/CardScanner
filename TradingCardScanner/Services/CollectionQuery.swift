@@ -18,6 +18,10 @@ struct CollectionRow: Identifiable, Equatable {
     let quantity: Int
     let dateAdded: Date
     let price: PriceDisplay
+    /// The exact instrument used for this logical position's price record and
+    /// history. Passing it through the projection keeps detail views from
+    /// resolving a key with fetch-all work during rendering.
+    var priceStorageKey: String? = nil
     /// The treatment axis is independent from the finish and therefore gets its
     /// own row field. Raw ids preserve forward-compatible values for filtering
     /// and display rather than trying to turn an unknown treatment into a

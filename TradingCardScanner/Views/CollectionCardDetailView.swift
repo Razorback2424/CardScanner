@@ -1,4 +1,5 @@
 import PhotosUI
+import Charts
 import SwiftData
 import SwiftUI
 import UIKit
@@ -9,6 +10,8 @@ struct CollectionCardDetailView: View {
     @Bindable var card: CollectedCard
     @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
     private var collectionActivities: [CollectionActivity]
+    @Query private var priceObservations: [PriceObservation]
+    @Query private var priceCheckDays: [PriceCheckDay]
     let price: PriceDisplay
     @ObservedObject var history: PortfolioHistoryStore
     let unpricedReason: PricingDiagnosticReason?
@@ -19,6 +22,7 @@ struct CollectionCardDetailView: View {
     let logicalQuantity: Int?
     /// Duplicate synced rows cannot be edited safely through a single-row API.
     let isLogicalConflict: Bool
+    private let priceHistoryInstrumentKey: String
 
     @State private var isConfirmingRemoval = false
     @State private var selectedArtwork: PhotosPickerItem?
@@ -39,13 +43,23 @@ struct CollectionCardDetailView: View {
         artworkReason: ArtworkDiagnosticReason?,
         logicalQuantity: Int? = nil,
         isLogicalConflict: Bool = false,
+        instrumentKey: String? = nil,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void
     ) {
         let collectionKey = card.collectionKey
+        let resolvedInstrumentKey = instrumentKey ?? card.priceKey
         self._card = Bindable(card)
         self._collectionActivities = Query(
             filter: #Predicate<CollectionActivity> { $0.collectionKey == collectionKey },
             sort: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+        )
+        self._priceObservations = Query(
+            filter: #Predicate<PriceObservation> { $0.instrumentKey == resolvedInstrumentKey },
+            sort: [SortDescriptor(\PriceObservation.receivedAt, order: .forward)]
+        )
+        self._priceCheckDays = Query(
+            filter: #Predicate<PriceCheckDay> { $0.instrumentKey == resolvedInstrumentKey },
+            sort: [SortDescriptor(\PriceCheckDay.portfolioDay, order: .forward)]
         )
         self.price = price
         self.history = history
@@ -53,35 +67,45 @@ struct CollectionCardDetailView: View {
         self.artworkReason = artworkReason
         self.logicalQuantity = logicalQuantity
         self.isLogicalConflict = isLogicalConflict
+        self.priceHistoryInstrumentKey = resolvedInstrumentKey
         self.onRemoved = onRemoved
     }
 
     var body: some View {
-        ScrollView {
-            // Side by side when the window can hold both columns, stacked when it
-            // cannot. `ViewThatFits` asks the space rather than the device, so the
-            // same view answers correctly at every window width without ever
-            // consulting an idiom or an orientation. The `minWidth` is the
-            // threshold: it is the width the two-column arrangement needs, not an
-            // assumption about any particular screen.
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 28) {
-                    artworkColumn
-                        .frame(maxWidth: 360)
-                    detailsColumn
-                        .frame(minWidth: 380, maxWidth: 440)
-                }
-                .frame(minWidth: 780)
-
-                VStack(spacing: 20) {
-                    artworkColumn
-                    detailsColumn
-                }
-                .contentWidthLimit(.standard)
+        List {
+            Section("Card") {
+                cardOverview
             }
-            .padding(20)
-            .frame(maxWidth: .infinity)
+
+            Section("Price") {
+                priceSection
+            }
+
+            Section("Facts") {
+                factsSection
+            }
+
+            if exactTCGPlayerPrintingURL != nil {
+                Section("Marketplace") {
+                    marketplaceRow
+                }
+            }
+
+            Section("History") {
+                historyRows
+            }
+
+            if isLogicalConflict {
+                Section {
+                    conflictNotice
+                }
+            }
+
+            Section("Quantity") {
+                quantitySection
+            }
         }
+        .listStyle(.insetGrouped)
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
         .task(id: card.catalogProviderID ?? card.providerID) {
@@ -108,74 +132,197 @@ struct CollectionCardDetailView: View {
         }
     }
 
+    /// The first section keeps the existing adaptive iPad treatment: a wide
+    /// window gets artwork and identity side by side, while compact windows use
+    /// the same content stacked in one column.
     @ViewBuilder
-    private var artworkColumn: some View {
-        VStack(spacing: 16) {
-            artwork
-                .frame(maxHeight: 460)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+    private var cardOverview: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: 28) {
+                artworkHero
+                    .frame(maxWidth: 360)
+                identitySection
+                    .frame(minWidth: 380, maxWidth: 440)
+            }
+            .frame(minWidth: 780)
 
+            VStack(alignment: .leading, spacing: 16) {
+                artworkHero
+                identitySection
+            }
+            .contentWidthLimit(.standard)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var artworkHero: some View {
+        artwork
+            .overlay(alignment: .topTrailing) {
+                artworkMenu
+                    .padding(8)
+            }
+    }
+
+    @ViewBuilder
+    private var artworkMenu: some View {
+        Menu {
             PhotosPicker(selection: $selectedArtwork, matching: .images) {
                 Label(
                     localArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
                     systemImage: "photo.badge.plus"
                 )
             }
-            .buttonStyle(.bordered)
-            .onChange(of: selectedArtwork) { _, item in
-                guard let item else { return }
-                artworkGeneration &+= 1
-                pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
-            }
 
             if localArtworkFilename != nil {
                 Button("Use Catalog Artwork", role: .destructive) {
                     removeUserArtwork()
                 }
-                .font(.subheadline)
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle.fill")
+                .font(.title2)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.white)
+                .padding(4)
+                .background(.black.opacity(0.55), in: Circle())
+        }
+        .accessibilityLabel("Artwork actions")
+        .accessibilityHint("Choose a personal photo, replace it, or return to catalog artwork.")
+        .onChange(of: selectedArtwork) { _, item in
+            guard let item else { return }
+            artworkGeneration &+= 1
+            pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
+        }
+    }
+
+    private var identitySection: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(card.name)
+                .font(.title2.bold())
+                .multilineTextAlignment(.leading)
+            Text(card.setName)
+                .foregroundStyle(.secondary)
+            if let printRun = card.pokemonPrintRun {
+                Text(printRun.label)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.accentColor)
+            }
+            Text("\(card.setCode)  \(card.cardNumber)")
+                .font(.headline.monospacedDigit())
+            if let rarity = card.rarity {
+                Text(rarity)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var priceSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                PriceLabel(price: price, style: .detailed)
+                Spacer(minLength: 12)
+                Text("unit")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let source = price.source, price.amount != nil {
+                Text(priceSourceDescription(source))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if price.refreshFailed {
+                Label("Last refresh failed", systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+
+            Picker("Price history range", selection: Binding(
+                get: { history.range },
+                set: { history.range = $0 }
+            )) {
+                ForEach(PortfolioHistoryRange.allCases, id: \.rawValue) { item in
+                    Text(item.rawValue)
+                        .accessibilityLabel(item.accessibilityName)
+                        .tag(item)
+                }
+            }
+            .pickerStyle(.segmented)
+            .accessibilityHint("Choose how much per-card price history to show.")
+
+            PriceHistoryChartView(
+                observations: priceObservations,
+                checkDays: priceCheckDays,
+                currencyCode: price.currencyCode,
+                range: history.range
+            )
+            .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
+
+            movementSummary
+
+            if let unpricedReason, price.amount == nil {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
+                        .font(.subheadline.weight(.semibold))
+                    Text(unpricedReason.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Diagnostic: \(unpricedReason.rawValue)")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 4)
             }
         }
     }
 
     @ViewBuilder
-    private var detailsColumn: some View {
-        VStack(spacing: 20) {
-            VStack(spacing: 7) {
-                Text(card.name)
-                    .font(.title2.bold())
-                    .multilineTextAlignment(.center)
-                Text(card.setName)
-                    .foregroundStyle(.secondary)
-                if let printRun = card.pokemonPrintRun {
-                    Text(printRun.label)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.accentColor)
-                }
-                Text("\(card.setCode)  \(card.cardNumber)")
-                    .font(.headline.monospacedDigit())
-                if let rarity = card.rarity {
-                    Text(rarity)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
+    private var factsSection: some View {
+        LabeledContent("Finish", value: card.variant?.label ?? "Unknown")
+            .font(.subheadline)
 
-            pricing
-            movementSummary
-            finish
-            treatment
-            marketplaceLinks
-            activityHistory
+        if let label = card.displayedMagicTreatmentEvidence.displayLabel {
+            LabeledContent("Treatment", value: label)
+                .font(.subheadline)
+        }
 
-            if isLogicalConflict {
-                Label(
-                    "Multiple synced rows will be merged automatically when this position changes.",
-                    systemImage: "arrow.triangle.merge"
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
+        if card.itemKind != .rawCard {
+            LabeledContent("Type", value: card.itemKindLabel)
+                .font(.subheadline)
+        }
 
+        if let gradingCompany = card.gradingCompany {
+            LabeledContent("Grading company", value: gradingCompany.label)
+                .font(.subheadline)
+        }
+
+        if let grade = card.cardGrade,
+           let gradingCompany = card.gradingCompany {
+            LabeledContent("Grade", value: grade.display(company: gradingCompany))
+                .font(.subheadline)
+        } else if let gradeRaw = card.gradeRaw {
+            LabeledContent("Grade", value: gradeRaw)
+                .font(.subheadline)
+        }
+    }
+
+    private var conflictNotice: some View {
+        Label(
+            "Multiple synced rows will be merged automatically when this position changes.",
+            systemImage: "arrow.triangle.merge"
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+
+    private var quantitySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
             Stepper(
                 "Quantity: \(displayedQuantity)",
                 value: Binding(
@@ -193,7 +340,6 @@ struct CollectionCardDetailView: View {
                 ),
                 in: 1...999
             )
-                .padding(.horizontal)
 
             Button("Remove from Collection", role: .destructive) {
                 isConfirmingRemoval = true
@@ -216,42 +362,52 @@ struct CollectionCardDetailView: View {
 
     @ViewBuilder
     private var artwork: some View {
-        if let image = CollectionArtworkStore.image(filename: localArtworkFilename) {
-            Image(uiImage: image).resizable().scaledToFit()
-        } else {
-            AsyncImage(url: card.highImageURL) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().scaledToFit()
-                case .empty:
-                    ProgressView().frame(height: 410)
-                case .failure:
-                    missingArtworkPlaceholder
-                @unknown default:
-                    missingArtworkPlaceholder
+        ZStack {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(.quaternary.opacity(0.55))
+
+            if let image = CollectionArtworkStore.image(filename: localArtworkFilename) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                AsyncImage(url: card.highImageURL) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image.resizable().scaledToFit()
+                    case .empty:
+                        ProgressView()
+                    case .failure:
+                        missingArtworkPlaceholder
+                    @unknown default:
+                        missingArtworkPlaceholder
+                    }
                 }
             }
+
+            CardFinishOverlay(
+                variant: card.variant,
+                resolution: card.variantResolution
+            )
         }
+        .aspectRatio(0.716, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
     private var missingArtworkPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .fill(.quaternary)
-            .aspectRatio(0.727, contentMode: .fit)
-            .overlay {
-                VStack(spacing: 8) {
-                    Image(systemName: "photo")
-                    Text(artworkReason?.title ?? "Artwork unavailable")
-                        .font(.subheadline.weight(.semibold))
-                    if let artworkReason {
-                        Text(artworkReason.detail)
-                            .font(.caption)
-                            .multilineTextAlignment(.center)
-                    }
-                }
-                .foregroundStyle(.secondary)
-                .padding()
+        VStack(spacing: 8) {
+            Image(systemName: "photo")
+            Text(artworkReason?.title ?? "Artwork unavailable")
+                .font(.subheadline.weight(.semibold))
+            if let artworkReason {
+                Text(artworkReason.detail)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
             }
+        }
+        .foregroundStyle(.secondary)
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     @MainActor
@@ -370,90 +526,14 @@ struct CollectionCardDetailView: View {
         )
     }
 
-    /// Straight from the number to the market it came from.
-    ///
-    /// Sits directly under the price because that is the question it answers:
-    /// "this says it is worth $31 — show me". Absent entirely when the app has
-    /// no marketplace identity it can stand behind, rather than falling back to
-    /// a search that might open the wrong reprint.
-    @ViewBuilder
-    private var marketplaceLink: some View {
-        if let url = TCGplayerLinkBuilder.url(for: card) {
-            Link(destination: url) {
-                Label("View on TCGplayer", systemImage: "arrow.up.forward.app")
-                    .font(.subheadline.weight(.semibold))
-            }
-            .frame(minHeight: 44)
-            .padding(.top, 2)
-            .accessibilityLabel("View \(card.name) on TCGplayer")
-            .accessibilityHint("Opens the marketplace page for this printing.")
-        }
-    }
-
     /// The price belongs to this printing *and* this finish. When the provider
     /// exposes nothing for the variant the user owns, the app says so instead of
     /// borrowing a different finish's number.
-    private var pricing: some View {
-        VStack(spacing: 6) {
-            PriceLabel(price: price, style: .detailed)
-
-            if let source = price.source, price.amount != nil {
-                Text(source.publishesSourceTimestamp
-                     ? "\(source.label) · current as of \(price.effectiveAsOf?.formatted(date: .abbreviated, time: .shortened) ?? "unknown")"
-                     : "\(source.label) · checked \(price.fetchedAt?.formatted(date: .abbreviated, time: .shortened) ?? "never")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-
-            if price.refreshFailed {
-                Label("Last refresh failed", systemImage: "exclamationmark.triangle")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            }
-
-            marketplaceLink
-
-            if let unpricedReason, price.amount == nil {
-                VStack(alignment: .leading, spacing: 4) {
-                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
-                        .font(.subheadline.weight(.semibold))
-                    Text(unpricedReason.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text("Diagnostic: \(unpricedReason.rawValue)")
-                        .font(.caption.monospaced())
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 4)
-            }
+    private func priceSourceDescription(_ source: PriceSource) -> String {
+        if source.publishesSourceTimestamp {
+            return "\(source.label) · current as of \(price.effectiveAsOf?.formatted(date: .abbreviated, time: .shortened) ?? "unknown")"
         }
-        .padding(14)
-        .frame(maxWidth: .infinity)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    private var finish: some View {
-        VStack {
-            LabeledContent("Finish", value: card.variant?.label ?? "Unknown")
-        }
-        .font(.subheadline)
-        .padding(14)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    @ViewBuilder
-    private var treatment: some View {
-        if let label = card.displayedMagicTreatmentEvidence.displayLabel {
-            VStack {
-                LabeledContent("Treatment", value: label)
-            }
-            .font(.subheadline)
-            .padding(14)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-        }
+        return "\(source.label) · checked \(price.fetchedAt?.formatted(date: .abbreviated, time: .shortened) ?? "never")"
     }
 
     /// The compact, route-independent disclosure surface. Its state comes from
@@ -477,47 +557,40 @@ struct CollectionCardDetailView: View {
         .contentShape(Rectangle())
     }
 
-    private var activityHistory: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("History")
-                .font(.headline)
-
-            if cardHistory.isEmpty {
-                Text("No history recorded for this collection entry.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(cardHistory) { activity in
-                    NavigationLink {
-                        CollectionActivityEditor(activity: activity)
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: activity.kind.symbolName)
-                                .foregroundStyle(historyColor(for: activity.kind))
-                                .frame(width: 24)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(activity.kind.label)
-                                    .font(.subheadline.weight(.semibold))
-                                Text(historyMetadata(for: activity))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(activity.occurredAt, format: .dateTime.month().day().year().hour().minute())
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Text(signedQuantity(activity.signedQuantity))
-                                .font(.subheadline.monospacedDigit().weight(.semibold))
+    @ViewBuilder
+    private var historyRows: some View {
+        if cardHistory.isEmpty {
+            Text("No history recorded for this collection entry.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        } else {
+            ForEach(cardHistory) { activity in
+                NavigationLink {
+                    CollectionActivityEditor(activity: activity)
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: activity.kind.symbolName)
+                            .foregroundStyle(historyColor(for: activity.kind))
+                            .frame(width: 24)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(activity.kind.label)
+                                .font(.subheadline.weight(.semibold))
+                            Text(historyMetadata(for: activity))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text(activity.occurredAt, format: .dateTime.month().day().year().hour().minute())
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        .frame(minHeight: 44)
+                        Spacer()
+                        Text(signedQuantity(activity.signedQuantity))
+                            .font(.subheadline.monospacedDigit().weight(.semibold))
+                            .foregroundStyle(.secondary)
                     }
+                    .frame(minHeight: 44)
                 }
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
     private var cardHistory: [CollectionActivity] {
@@ -553,38 +626,29 @@ struct CollectionCardDetailView: View {
     }
 
     @ViewBuilder
-    private var marketplaceLinks: some View {
+    private var marketplaceRow: some View {
         if let url = exactTCGPlayerPrintingURL,
            let variant = card.variant {
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Marketplace")
-                    .font(.headline)
-                    .padding(.bottom, 6)
-
-                Link(destination: url) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "cart")
-                            .frame(width: 24)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("TCGplayer")
-                                .foregroundStyle(.primary)
-                            Text("Exact printing · select \(variant.label)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "arrow.up.right")
+            Link(destination: url) {
+                HStack(spacing: 12) {
+                    Image(systemName: "cart")
+                        .frame(width: 24)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("TCGplayer")
+                            .foregroundStyle(.primary)
+                        Text("Exact printing · select \(variant.label)")
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .foregroundStyle(.secondary)
                 }
-                .accessibilityLabel("Open this printing on TCGplayer")
-                .accessibilityHint("Select \(variant.label) on TCGplayer")
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+            .accessibilityLabel("Open this printing on TCGplayer")
+            .accessibilityHint("Select \(variant.label) on TCGplayer")
         }
     }
 
@@ -616,6 +680,436 @@ struct CollectionCardDetailView: View {
         }
         card.tcgplayerURL = url.absoluteString
         try? modelContext.save()
+    }
+}
+
+/// A quiet, static rendering cue for the finishes the catalog actually
+/// confirmed. Imported or catalog-silent rows keep the plain artwork because a
+/// visual treatment would otherwise turn an unresolved label into a claim.
+private struct CardFinishOverlay: View {
+    let variant: PhysicalVariant?
+    let resolution: VariantResolution?
+
+    private var isCatalogConfirmed: Bool {
+        guard variant != nil, let resolution else { return false }
+        return resolution != .catalogSilent && resolution != .imported
+    }
+
+    var body: some View {
+        if isCatalogConfirmed, let variant {
+            GeometryReader { proxy in
+                ZStack {
+                    if variant.id == PhysicalVariant.holo.id || variant.id == PhysicalVariant.foil.id {
+                        RoundedRectangle(
+                            cornerRadius: max(8, proxy.size.width * 0.035),
+                            style: .continuous
+                        )
+                        .fill(
+                            AngularGradient(
+                                colors: [
+                                    .white.opacity(0.06),
+                                    .cyan.opacity(0.28),
+                                    .purple.opacity(0.24),
+                                    .yellow.opacity(0.18),
+                                    .white.opacity(0.06)
+                                ],
+                                center: .center
+                            )
+                        )
+                        .frame(
+                            width: proxy.size.width * 0.80,
+                            height: proxy.size.height * 0.46
+                        )
+                        .position(
+                            x: proxy.size.width / 2,
+                            y: proxy.size.height * 0.37
+                        )
+                        .blendMode(.screen)
+                        .opacity(0.72)
+                    }
+
+                    if variant.id == PhysicalVariant.reverse.id {
+                        RoundedRectangle(
+                            cornerRadius: max(8, proxy.size.width * 0.035),
+                            style: .continuous
+                        )
+                        .stroke(
+                            LinearGradient(
+                                colors: [.cyan.opacity(0.82), .purple.opacity(0.76), .yellow.opacity(0.72)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: max(3, proxy.size.width * 0.018)
+                        )
+                        .padding(proxy.size.width * 0.025)
+                        .blendMode(.screen)
+                        .opacity(0.78)
+                    }
+                }
+            }
+            .allowsHitTesting(false)
+        }
+    }
+}
+
+struct PriceHistorySample: Identifiable, Equatable {
+    let id: String
+    let date: Date
+    let day: Date
+    let amount: Money
+    let kind: PriceObservationKind?
+    let isObservation: Bool
+
+    var annotationLabel: String? {
+        kind?.chartLabel
+    }
+}
+
+struct PriceHistorySegment: Identifiable, Equatable {
+    let id: String
+    let samples: [PriceHistorySample]
+}
+
+/// A pure projection of the two price-history tables. A line joins only days
+/// for which the app has a successful check row; observations alone can create
+/// points, but they cannot manufacture knowledge across an unchecked span.
+struct PriceHistoryChartModel: Equatable {
+    let currencyCode: String
+    let rangeStart: Date
+    let rangeEnd: Date
+    let samples: [PriceHistorySample]
+    let segments: [PriceHistorySegment]
+    let observationCount: Int
+    let checkedDayCount: Int
+
+    var hasGaps: Bool {
+        segments.count > 1 && observationCount >= 2
+    }
+
+    var yDomain: ClosedRange<Double> {
+        let values = samples.map { $0.amount.doubleValue }
+        guard let minimum = values.min(), let maximum = values.max() else { return 0...1 }
+        if minimum == maximum {
+            let padding = max(abs(minimum) * 0.12, 0.5)
+            return max(0, minimum - padding)...(maximum + padding)
+        }
+        let padding = max((maximum - minimum) * 0.12, 0.01)
+        return max(0, minimum - padding)...(maximum + padding)
+    }
+
+    var summary: String {
+        let observationLabel = observationCount == 1 ? "1 changed price" : "\(observationCount) changed prices"
+        let checkLabel = checkedDayCount == 1 ? "1 checked day" : "\(checkedDayCount) checked days"
+        return "\(observationLabel) across \(checkLabel)."
+    }
+
+    static func make(
+        observations: [PriceObservation],
+        checkDays: [PriceCheckDay],
+        currencyCode: String,
+        range: PortfolioHistoryRange,
+        now: Date,
+        timeZone: TimeZone
+    ) -> Self {
+        let calendar = PortfolioCalendar.calendar(in: timeZone)
+        let orderedObservations = observations.sorted {
+            if $0.receivedAt != $1.receivedAt { return $0.receivedAt < $1.receivedAt }
+            return $0.id.uuidString < $1.id.uuidString
+        }
+        let orderedCheckDays = checkDays.sorted {
+            if $0.lastSuccessfulCheckAt != $1.lastSuccessfulCheckAt {
+                return $0.lastSuccessfulCheckAt < $1.lastSuccessfulCheckAt
+            }
+            return $0.portfolioDay < $1.portfolioDay
+        }
+
+        let earliestEvent = (orderedObservations.map(\.receivedAt) + orderedCheckDays.map(\.portfolioDay)).min()
+        let start = range.requestedStart(now: now, calendar: calendar, earliest: earliestEvent)
+        let requestedEnd = max(now, start)
+        let end = requestedEnd > start
+            ? requestedEnd
+            : calendar.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(24 * 60 * 60)
+
+        let checkedDays = Set(orderedCheckDays.map { calendar.startOfDay(for: $0.portfolioDay) })
+        let checkedDaysInRange = checkedDays.filter { $0 >= start && $0 <= end }.count
+
+        var events: [TimelineEvent] = orderedObservations.map {
+            TimelineEvent(
+                date: $0.receivedAt,
+                day: calendar.startOfDay(for: $0.receivedAt),
+                priority: 0,
+                orderKey: $0.id.uuidString,
+                observation: $0,
+                checkDay: nil
+            )
+        }
+        events.append(contentsOf: orderedCheckDays.map {
+            TimelineEvent(
+                date: $0.lastSuccessfulCheckAt,
+                day: calendar.startOfDay(for: $0.portfolioDay),
+                priority: 1,
+                orderKey: "\($0.portfolioDay.timeIntervalSinceReferenceDate)-\($0.lastSuccessfulCheckAt.timeIntervalSinceReferenceDate)",
+                observation: nil,
+                checkDay: $0
+            )
+        })
+        events.sort {
+            if $0.date != $1.date { return $0.date < $1.date }
+            if $0.priority != $1.priority { return $0.priority < $1.priority }
+            return $0.orderKey < $1.orderKey
+        }
+
+        var currentAmount: Money?
+        var samples: [PriceHistorySample] = []
+        var observationCount = 0
+        var sampleIndex = 0
+
+        for event in events {
+            if let observation = event.observation {
+                if observation.kind == .explicitInvalidation {
+                    currentAmount = nil
+                    continue
+                }
+                currentAmount = usableAmount(
+                    for: observation,
+                    currencyCode: currencyCode
+                )
+                guard let currentAmount,
+                      observation.receivedAt >= start,
+                      observation.receivedAt <= end else { continue }
+                observationCount += 1
+                append(
+                    PriceHistorySample(
+                        id: "observation-\(sampleIndex)",
+                        date: observation.receivedAt,
+                        day: event.day,
+                        amount: currentAmount,
+                        kind: observation.kind,
+                        isObservation: true
+                    ),
+                    to: &samples
+                )
+                sampleIndex += 1
+            } else if let checkDay = event.checkDay,
+                      checkDay.lastSuccessfulCheckAt >= start,
+                      checkDay.lastSuccessfulCheckAt <= end,
+                      let currentAmount {
+                append(
+                    PriceHistorySample(
+                        id: "check-\(sampleIndex)",
+                        date: checkDay.lastSuccessfulCheckAt,
+                        day: event.day,
+                        amount: currentAmount,
+                        kind: nil,
+                        isObservation: false
+                    ),
+                    to: &samples
+                )
+                sampleIndex += 1
+            }
+        }
+
+        // A single changed value is a point, not a fabricated flat series. The
+        // check-day rows remain useful once a second observation gives the chart
+        // two anchors for a step; until then they must not imply a trend.
+        if observationCount < 2 {
+            samples.removeAll { !$0.isObservation }
+        }
+
+        var segments: [PriceHistorySegment] = []
+        var currentSegment: [PriceHistorySample] = []
+        for sample in samples {
+            guard let previous = currentSegment.last else {
+                currentSegment = [sample]
+                continue
+            }
+            if observationCount >= 2,
+               allDaysChecked(from: previous.day, to: sample.day, in: checkedDays, calendar: calendar) {
+                currentSegment.append(sample)
+            } else {
+                segments.append(
+                    PriceHistorySegment(id: "segment-\(segments.count)", samples: currentSegment)
+                )
+                currentSegment = [sample]
+            }
+        }
+        if !currentSegment.isEmpty {
+            segments.append(
+                PriceHistorySegment(id: "segment-\(segments.count)", samples: currentSegment)
+            )
+        }
+
+        return PriceHistoryChartModel(
+            currencyCode: currencyCode,
+            rangeStart: start,
+            rangeEnd: end,
+            samples: samples,
+            segments: segments,
+            observationCount: observationCount,
+            checkedDayCount: checkedDaysInRange
+        )
+    }
+
+    private struct TimelineEvent {
+        let date: Date
+        let day: Date
+        let priority: Int
+        let orderKey: String
+        let observation: PriceObservation?
+        let checkDay: PriceCheckDay?
+    }
+
+    private static func usableAmount(
+        for observation: PriceObservation,
+        currencyCode: String
+    ) -> Money? {
+        guard observation.currencyCode == currencyCode,
+              let amount = observation.amount,
+              amount.isValid,
+              observation.kind != .explicitInvalidation else { return nil }
+        if MagicTreatmentKeyCodec.containsPriceTreatmentSuffix(in: observation.instrumentKey),
+           observation.source?.isProvenForMagicTreatment != true {
+            return nil
+        }
+        return amount
+    }
+
+    private static func append(_ sample: PriceHistorySample, to samples: inout [PriceHistorySample]) {
+        if let previous = samples.last,
+           !sample.isObservation,
+           previous.day == sample.day,
+           previous.amount == sample.amount {
+            return
+        }
+        samples.append(sample)
+    }
+
+    private static func allDaysChecked(
+        from first: Date,
+        to last: Date,
+        in checkedDays: Set<Date>,
+        calendar: Calendar
+    ) -> Bool {
+        var day = calendar.startOfDay(for: first)
+        let finalDay = calendar.startOfDay(for: last)
+        while true {
+            guard checkedDays.contains(day) else { return false }
+            if day >= finalDay { return true }
+            guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { return false }
+            day = calendar.startOfDay(for: next)
+        }
+    }
+}
+
+private extension PriceObservationKind {
+    var chartLabel: String? {
+        switch self {
+        case .marketUpdate: return nil
+        case .sourceRestatement: return "Source restatement"
+        case .sourceTransition: return "Source changed"
+        case .explicitInvalidation: return "Price withdrawn"
+        }
+    }
+}
+
+struct PriceHistoryChartView: View {
+    let observations: [PriceObservation]
+    let checkDays: [PriceCheckDay]
+    let currencyCode: String
+    let range: PortfolioHistoryRange
+
+    private var model: PriceHistoryChartModel {
+        PriceHistoryChartModel.make(
+            observations: observations,
+            checkDays: checkDays,
+            currencyCode: currencyCode,
+            range: range,
+            now: .now,
+            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
+        )
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if model.samples.isEmpty {
+                Label("History is being recorded", systemImage: "chart.xyaxis.line")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text("Price history is recorded on this device. It will appear after the first successful check here.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart {
+                    ForEach(model.segments) { segment in
+                        if segment.samples.count > 1 {
+                            ForEach(segment.samples) { sample in
+                                LineMark(
+                                    x: .value("Date", sample.date),
+                                    y: .value("Unit price", sample.amount.doubleValue),
+                                    series: .value("Known span", segment.id)
+                                )
+                                .interpolationMethod(.stepEnd)
+                                .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                    }
+
+                    ForEach(model.samples) { sample in
+                        PointMark(
+                            x: .value("Date", sample.date),
+                            y: .value("Unit price", sample.amount.doubleValue)
+                        )
+                        .foregroundStyle(sample.kind?.chartLabel == nil ? Color.accentColor : .orange)
+                        .symbolSize(sample.isObservation ? 42 : 18)
+                        .annotation(position: .top, alignment: .leading) {
+                            if let label = sample.annotationLabel {
+                                Text(label)
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(.orange)
+                            }
+                        }
+                    }
+                }
+                .chartXScale(domain: model.rangeStart...model.rangeEnd)
+                .chartYScale(domain: model.yDomain)
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        AxisGridLine()
+                        AxisTick()
+                        AxisValueLabel {
+                            if let amount = value.as(Double.self) {
+                                Text(amount.formatted(.currency(code: currencyCode).precision(.fractionLength(0...2))))
+                            }
+                        }
+                    }
+                }
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 4)) {
+                        AxisGridLine()
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
+                }
+                .frame(height: 210)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Unit price history")
+                .accessibilityValue(model.summary)
+
+                if model.observationCount < 2 {
+                    Text("One changed price is shown as a point until another value is recorded.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else if model.hasGaps {
+                    Text("Gaps mean the app did not have a successful price check for that span.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Text(model.summary)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -655,8 +1149,7 @@ struct PortfolioMovementSummaryCard: View {
                 .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
         .accessibilityHint("Opens Movement Details")
     }

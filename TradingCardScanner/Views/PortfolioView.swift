@@ -1050,6 +1050,7 @@ private struct PortfolioOwnedCardDestination: View {
                 ),
                 logicalQuantity: position.quantity,
                 isLogicalConflict: position.physicalRowCount > 1,
+                instrumentKey: position.priceStorageKey,
                 onRemoved: onRemoved
             )
         } else {
