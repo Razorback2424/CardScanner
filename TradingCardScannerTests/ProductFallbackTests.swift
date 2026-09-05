@@ -463,6 +463,26 @@ final class ProductFallbackTests: XCTestCase {
             ).count,
             1
         )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt,
+                usesPriceFallback: false,
+                forceUnsupportedRetry: true
+            ).count,
+            1,
+            "an explicit refresh must revisit a capability stamp even when fallback is off"
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt,
+                usesPriceFallback: true,
+                forceUnsupportedRetry: true
+            ).count,
+            1,
+            "enabling fallback must reopen an existing unsupported stamp immediately"
+        )
     }
 
     // MARK: - WotC editions
@@ -782,6 +802,36 @@ final class PokemonCatalogFallbackTests: XCTestCase {
         let harshPermits = await harsh.permitsRequest(now: start.addingTimeInterval(60))
         XCTAssertTrue(lenientPermits)
         XCTAssertFalse(harshPermits)
+    }
+
+    func testScryfallRateLimitUsesTheProviderUnavailableClassification() async {
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.rateLimited(retryAfter: 120)),
+            .providerUnavailable
+        )
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.providerUnavailable),
+            .providerUnavailable
+        )
+
+        let breaker = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+        await breaker.recordFailure(
+            .rateLimited,
+            now: start,
+            cooldownOverride: 120
+        )
+        let blocked = await breaker.permitsRequest(now: start.addingTimeInterval(119))
+        let reopened = await breaker.permitsRequest(now: start.addingTimeInterval(120))
+        XCTAssertFalse(blocked)
+        XCTAssertTrue(reopened)
+    }
+
+    func testScryfallMissingNonCardEndpointIsProviderUnavailable() {
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.endpointNotFound),
+            .providerUnavailable
+        )
     }
 
     func testSuccessClearsEscalation() async {

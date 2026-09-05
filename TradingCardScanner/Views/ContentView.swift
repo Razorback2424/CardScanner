@@ -186,6 +186,13 @@ struct ContentView: View {
             guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
             portfolio.recompute(context: modelContext)
         }
+        .onChange(of: usesPriceFallback) { _, _ in
+            // Enabling a metered fallback changes what the next explicit
+            // refresh may revisit; it must not spend vendor quota from a
+            // settings toggle while the user is still configuring the app.
+            guard hasStartedPortfolio else { return }
+            Task { await updateFallbackAvailability() }
+        }
         .onDisappear {
             refreshStatusTask?.cancel()
             // Real abandonment, which is the only thing that should stop a
@@ -246,7 +253,8 @@ struct ContentView: View {
             }
             let targets = PriceRefreshController.staleTargets(
                 from: currentTargets,
-                usesPriceFallback: usesPriceFallback
+                usesPriceFallback: usesPriceFallback,
+                forceUnsupportedRetry: true
             )
             guard !targets.isEmpty else {
                 refresh.markRecentlyChecked()

@@ -255,16 +255,18 @@ final class PriceRefreshController: ObservableObject {
     nonisolated static func staleTargets(
         from targets: [PriceTarget],
         now: Date = .now,
-        usesPriceFallback: Bool = true
+        usesPriceFallback: Bool = true,
+        forceUnsupportedRetry: Bool = false
     ) -> [PriceTarget] {
         targets.filter { target in
             if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
                 let isStillUnsupported = target.isTreatmentQualified
                     || (target.itemKind == .gradedCard && target.marketVariantID == nil)
                 if !isStillUnsupported { return true }
-                // A capability stamp is only actionable while the optional
-                // provider is enabled. If the setting changes, the next
-                // enabled pass must be allowed to revisit it immediately.
+                // Manual refreshes are an explicit request to re-evaluate a
+                // capability stamp. Automatic/background passes keep the long
+                // retry interval so unsupported rows cannot create churn.
+                if forceUnsupportedRetry { return true }
                 guard usesPriceFallback else { return false }
                 return target.lastCheckedAt.map {
                     now.timeIntervalSince($0) >= noSupportedProviderRetryInterval
@@ -870,6 +872,14 @@ final class PriceRefreshController: ObservableObject {
             total: eligibleCandidates.count,
             remainingToday: budget.remainingToday
         )
+        func publishFallbackProgress() {
+            status = .refreshing(completed: completed, total: eligibleCandidates.count)
+            fallbackStatus = .running(
+                completed: completed,
+                total: eligibleCandidates.count,
+                remainingToday: budget.remainingToday
+            )
+        }
 
         // Two workloads, and only the second of them batches.
         //
@@ -896,6 +906,7 @@ final class PriceRefreshController: ObservableObject {
                 // miss, so leave the identity store untouched; it must never
                 // consume an ordinary foil handle or create a 30-day negative.
                 completed += 1
+                publishFallbackProgress()
                 continue
             }
             // The handle stored on the row wins. It was written when the item
@@ -909,6 +920,8 @@ final class PriceRefreshController: ObservableObject {
             // on every subsequent refresh.
             if cachedVariant == nil, cachedCard == nil,
                !identities.needsResolution(forKey: key) {
+                completed += 1
+                publishFallbackProgress()
                 continue
             }
 
@@ -924,7 +937,11 @@ final class PriceRefreshController: ObservableObject {
             // batch slots to resolve nothing, silently, forever. Graded pricing
             // needs the v2 path — see `JustTCGV2GradedClient` — and until it
             // has one these are left alone rather than pretended over.
-            guard candidate.target.itemKind != .gradedCard else { continue }
+            guard candidate.target.itemKind != .gradedCard else {
+                completed += 1
+                publishFallbackProgress()
+                continue
+            }
 
             batchable[candidate.target.game, default: []].append(
                 MarketPriceTarget(
@@ -1004,7 +1021,7 @@ final class PriceRefreshController: ObservableObject {
             )
             priced += report.variantsUpdated
             completed += report.variantsRequested
-            status = .refreshing(completed: completed, total: eligibleCandidates.count)
+            publishFallbackProgress()
 
             switch report.stoppedReason {
             case let .dailyBudget(resetAt), let .monthlyBudget(resetAt):
@@ -1033,7 +1050,7 @@ final class PriceRefreshController: ObservableObject {
             if Task.isCancelled { break }
             defer {
                 completed += 1
-                status = .refreshing(completed: completed, total: eligibleCandidates.count)
+                publishFallbackProgress()
             }
             let key = ProductIdentity.key(
                 game: candidate.target.game,
@@ -1606,8 +1623,13 @@ final class PriceRefreshController: ObservableObject {
             }
             return PriceFetchOutcome(printing: printing, result: .failed)
         } catch let error as ScryfallError {
-            if case .badResponse = error, printing.game == .magic {
-                return PriceFetchOutcome(printing: printing, result: .unreachable)
+            if printing.game == .magic {
+                switch error {
+                case .badResponse, .endpointNotFound, .providerUnavailable, .rateLimited:
+                    return PriceFetchOutcome(printing: printing, result: .unreachable)
+                default:
+                    break
+                }
             }
             return PriceFetchOutcome(printing: printing, result: .failed)
         } catch {
