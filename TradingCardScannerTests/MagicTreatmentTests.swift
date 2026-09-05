@@ -360,7 +360,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
     }
 
-    func testSlice9DualFinishFICIsKeyedAndPricedOnlyForSelectedFinish() throws {
+    func testSlice9DualFinishFICIsKeyedAndPricedForSelectedFinish() throws {
         let card = try decodeMagic(
             id: "slice9-fic-10",
             setCode: "fic",
@@ -383,14 +383,15 @@ final class MagicTreatmentTests: XCTestCase {
             identified.collectionKey(variant: .foil),
             "magic:slice9-fic-10#foil#treatment=surgefoil"
         )
-        XCTAssertEqual(
-            CardPricing.price(
-                for: identified,
-                variant: .foil,
-                magicTreatments: foilTreatments
-            ),
-            .unavailable(.scryfall)
-        )
+        guard case let .price(foilPrice) = CardPricing.price(
+            for: identified,
+            variant: .foil,
+            magicTreatments: foilTreatments
+        ) else {
+            return XCTFail("The Surge Foil printing should retain its exact Scryfall foil price")
+        }
+        XCTAssertEqual(foilPrice.unitMarketPriceUSD, 6.40)
+        XCTAssertEqual(foilPrice.sourceVariantID, "usd_foil")
         guard case let .price(nonfoilPrice) = CardPricing.price(
             for: identified,
             variant: .nonfoil,

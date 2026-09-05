@@ -23,8 +23,8 @@ struct MarketPriceTarget: Hashable, Sendable {
     let currentAmount: Double?
     let lastCheckedAt: Date?
     /// The collection identity this target writes. It is deliberately separate
-    /// from the vendor lookup handle because the vendor may not distinguish a
-    /// treatment even though the app must keep its price records distinct.
+    /// from the vendor lookup handle because the app keeps treatment records
+    /// distinct even when a provider's exact printing exposes only its finish.
     let magicTreatmentIDsRaw: [String]
     /// This row has never had a complete answer from the vendor, so "unchanged
     /// since the cutoff" tells it nothing.
@@ -71,6 +71,13 @@ struct MarketPriceTarget: Hashable, Sendable {
 
     var isTreatmentQualified: Bool {
         game == .magic && !magicTreatmentIDsRaw.isEmpty
+    }
+
+    /// A resolved market variant or provider card handle identifies the product
+    /// without a name/set search. That identity is safe to use for a treated
+    /// printing; only the handle-less search path remains unsupported.
+    var hasDirectVendorHandle: Bool {
+        marketVariantID != nil || lookupCandidates.contains { !$0.value.isEmpty }
     }
 }
 
@@ -328,7 +335,7 @@ struct JustTCGRefreshCoordinator {
         owners: [MarketPriceTarget],
         response: JustTCGBatchResponse
     ) -> ExactLookupResult {
-        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else {
+        guard owners.allSatisfy({ !$0.isTreatmentQualified || $0.hasDirectVendorHandle }) else {
             return .noExactListing
         }
         let returned = response.variantsByID
@@ -377,7 +384,9 @@ struct JustTCGRefreshCoordinator {
         on card: JustTCGCard,
         for owners: [MarketPriceTarget]
     ) -> (card: JustTCGCard, variant: JustTCGVariant)? {
-        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return nil }
+        guard owners.allSatisfy({ !$0.isTreatmentQualified || $0.hasDirectVendorHandle }) else {
+            return nil
+        }
         let variants = card.variants ?? []
         let wanted = owners.compactMap {
             ProductFinish.printing(for: $0.variantID.map(PhysicalVariant.resolving))

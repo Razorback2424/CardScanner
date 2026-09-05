@@ -347,7 +347,7 @@ final class ProductFallbackTests: XCTestCase {
         XCTAssertEqual(outcome, .unsupportedFinish)
     }
 
-    func testMagicTreatmentIsUnsupportedBeforeCredentialsOrNetwork() async {
+    func testHandlelessMagicTreatmentIsUnsupportedBeforeCredentialsOrNetwork() async {
         let subject = ProductPriceSubject(
             game: .magic,
             catalogID: "scryfall-printing",
@@ -356,7 +356,7 @@ final class ProductFallbackTests: XCTestCase {
             cardNumber: "10",
             japaneseSetID: nil,
             pokemonPrintRun: nil,
-            vendorCardID: "generic-card",
+            vendorCardID: nil,
             magicTreatmentIDsRaw: ["surgefoil"]
         )
 
@@ -366,10 +366,60 @@ final class ProductFallbackTests: XCTestCase {
             lane: .interactive
         )
 
-        // This assertion also proves the guard happens before credentials,
-        // networking, or a cached generic vendor handle can answer the row.
-        // Capability gaps are not vendor misses and must not be cached as one.
+        // This assertion proves the handle-less search path remains blocked
+        // before credentials or networking. Capability gaps are not vendor
+        // misses and must not be cached as one.
         XCTAssertEqual(outcome, .unsupportedTreatment)
+    }
+
+    func testDirectMagicTreatmentHandleReachesVendorAndReturnsPrice() async throws {
+        let suite = "ProductFallbackTests.directTreatment.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        try PriceVendorCredentials.store("product-fallback-test-key")
+        defer { PriceVendorCredentials.remove() }
+
+        ProductPriceTestURLProtocol.reset()
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [ProductPriceTestURLProtocol.self]
+        var serviceConfiguration = ProductPriceService.Configuration()
+        serviceConfiguration.baseURL = URL(string: "https://justtcg.test/v1")!
+        serviceConfiguration.minimumRequestInterval = 0
+        let service = ProductPriceService(
+            configuration: serviceConfiguration,
+            session: URLSession(configuration: sessionConfiguration),
+            pacer: JustTCGPacer(),
+            budget: ProductFallbackBudget(defaults: defaults)
+        )
+        let subject = ProductPriceSubject(
+            game: .magic,
+            catalogID: "scryfall-printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            cardNumber: "10",
+            japaneseSetID: nil,
+            pokemonPrintRun: nil,
+            vendorCardID: "direct-card",
+            magicTreatmentIDsRaw: ["surgefoil"]
+        )
+
+        let outcome = await service.quote(for: subject, variant: .foil, lane: .interactive)
+
+        guard case let .price(price, vendorCardID, _) = outcome else {
+            return XCTFail("a direct treatment handle should return the exact vendor price")
+        }
+        XCTAssertEqual(price.unitMarketPriceUSD, 12.34)
+        XCTAssertEqual(vendorCardID, "direct-card")
+        let request = try XCTUnwrap(ProductPriceTestURLProtocol.requestedURL())
+        XCTAssertEqual(request.path, "/v1/cards")
+        XCTAssertEqual(
+            URLComponents(url: request, resolvingAgainstBaseURL: false)?.queryItems?.first?.name,
+            "cardId"
+        )
+        XCTAssertEqual(
+            URLComponents(url: request, resolvingAgainstBaseURL: false)?.queryItems?.first?.value,
+            "direct-card"
+        )
     }
 
     // MARK: - Vendor-native rows
@@ -400,7 +450,7 @@ final class ProductFallbackTests: XCTestCase {
         XCTAssertFalse(target(kind: .rawCard, handle: nil).isVendorNative)
     }
 
-    func testUnsupportedTargetBacksOffWithoutClaimingProviderCoverage() throws {
+    func testTreatmentUnsupportedTargetIsEligibleAfterPricingBoundaryChanges() throws {
         let context = try makeContext()
         let checkedAt = Date(timeIntervalSince1970: 10_000)
         let store = PriceStore(context: context)
@@ -446,13 +496,16 @@ final class ProductFallbackTests: XCTestCase {
             magicTreatmentIDsRaw: [MagicTreatment.surgeFoil.id]
         )
 
-        XCTAssertTrue(
+        // Treatment rows are back in the catalog/fallback pipeline, so an old
+        // capability stamp must not suppress the next pricing pass.
+        XCTAssertEqual(
             PriceRefreshController.staleTargets(
                 from: [target],
                 now: checkedAt.addingTimeInterval(
                     PriceRefreshController.noSupportedProviderRetryInterval - 1
                 )
-            ).isEmpty
+            ).count,
+            1
         )
         XCTAssertEqual(
             PriceRefreshController.staleTargets(
@@ -719,6 +772,46 @@ final class ProductFallbackTests: XCTestCase {
             )
         )
     }
+}
+
+private final class ProductPriceTestURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var lastRequest: URL?
+
+    static func reset() {
+        lock.lock()
+        lastRequest = nil
+        lock.unlock()
+    }
+
+    static func requestedURL() -> URL? {
+        lock.lock()
+        defer { lock.unlock() }
+        return lastRequest
+    }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        if let url = request.url {
+            Self.lock.lock()
+            Self.lastRequest = url
+            Self.lock.unlock()
+        }
+        let response = HTTPURLResponse(
+            url: request.url ?? URL(string: "https://justtcg.test")!,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: ["Content-Type": "application/json"]
+        )!
+        let body = Data(#"{"data":[{"id":"direct-card","uuid":"direct-uuid","name":"Fixture","set":"fixture-set","number":"10","variants":[{"condition":"Near Mint","printing":"Foil","price":12.34,"currency":"USD","uuid":"direct-variant"}]}]}"#.utf8)
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: body)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    override func stopLoading() {}
 }
 
 /// The catalog fallback chain: what it asks the secondary provider for, and how

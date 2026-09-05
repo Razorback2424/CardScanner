@@ -32,9 +32,9 @@ final class ProductIdentity {
     /// keyed refresh actually sends.
     var vendorVariantID: String?
     var resolvedAt: Date?
-    /// Mirrors the treatment-qualified price identity. A vendor handle belongs
-    /// to a treatment-bearing object only when its cache key says so; it must
-    /// not fall through to the generic foil handle.
+    /// Mirrors the treatment-qualified price identity. When present, a vendor
+    /// handle belongs to the exact Scryfall printing; without one, a
+    /// treatment-bearing object must not fall through to name/set search.
     var magicTreatmentIDsRaw: [String] = []
 
     /// Set when the vendor was searched and had nothing. Distinct from "never

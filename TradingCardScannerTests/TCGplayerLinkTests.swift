@@ -72,9 +72,9 @@ final class TCGplayerLinkTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://www.tcgplayer.com/product/555?Printing=Foil")
     }
 
-    func testTreatmentRowDoesNotOpenAGenericMarketplaceProduct() {
+    func testTreatmentRowOpensItsExactMarketplaceProduct() {
         let exactCardURL = "https://www.tcgplayer.com/product/1234567?page=1"
-        XCTAssertNil(
+        XCTAssertEqual(
             TCGplayerLinkBuilder.url(
                 for: card(
                     game: .magic,
@@ -83,12 +83,13 @@ final class TCGplayerLinkTests: XCTestCase {
                     providerURL: exactCardURL,
                     treatmentIDs: ["surgefoil"]
                 )
-            )
+            )?.absoluteString,
+            "https://www.tcgplayer.com/product/1234567?Printing=Foil"
         )
     }
 
-    func testTreatmentMarkerInCollectionKeyAlsoSuppressesGenericMarketplaceProduct() {
-        XCTAssertNil(
+    func testTreatmentMarkerInCollectionKeyDoesNotSuppressExactMarketplaceProduct() {
+        XCTAssertEqual(
             TCGplayerLinkBuilder.url(
                 for: card(
                     game: .magic,
@@ -96,7 +97,8 @@ final class TCGplayerLinkTests: XCTestCase {
                     productID: "1234567",
                     collectionKey: "magic:printing#foil#treatment=surgefoil"
                 )
-            )
+            )?.absoluteString,
+            "https://www.tcgplayer.com/product/1234567?Printing=Foil"
         )
     }
 

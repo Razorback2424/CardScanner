@@ -12,8 +12,9 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
     case notMatched
     /// The app has no safe vendor mapping for this finish, so it did not ask.
     case unsupportedFinish
-    /// The fallback provider has no treatment-specific identity, so it did not
-    /// ask and the result is not evidence that the card is absent.
+    /// No direct vendor identity was available for this treatment, so the
+    /// resolver did not use a name/set search and the result is not evidence
+    /// that the card is absent.
     case unsupportedTreatment
     case providerUnavailable
     case fallbackDisabled

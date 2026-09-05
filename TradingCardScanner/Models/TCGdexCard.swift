@@ -526,10 +526,9 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     let purchaseURIs: ScryfallPurchaseURIs?
     /// The marketplace product id, where Scryfall has one.
     ///
-    /// Absent for exactly the printings that need the price fallback most: art
-    /// cards and tokens both come back `null`. Present for ordinary printings,
-    /// which is why it is worth carrying even though those are usually priced
-    /// from Scryfall directly.
+    /// Absent for some of the printings that need the price fallback most: art
+    /// cards and tokens commonly come back `null`. When present, it belongs to
+    /// the exact Scryfall printing, including a treated foil printing.
     let tcgplayerID: Int?
 
     enum CodingKeys: String, CodingKey {

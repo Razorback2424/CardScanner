@@ -18,8 +18,9 @@ enum PriceFallbackQuoteResolution: Equatable {
         /// The app has no safe mapping for this finish, so no vendor request
         /// was made and no price claim can be drawn from the result.
         case unsupportedFinish
-        /// The app has no treatment-specific vendor identity, so no request was
-        /// made and the result must not become a cached product miss.
+        /// The app has no direct vendor identity for this treatment, so a
+        /// name/set search was not made and the result must not become a cached
+        /// product miss.
         case unsupportedTreatment
         case disabled
         case missingCredentials
@@ -184,16 +185,6 @@ final class PriceFallbackQuoteResolver {
             return .failed(.disabled)
         }
         guard !Task.isCancelled else { return .failed(.cancelled) }
-        guard !(game == .magic && !treatmentIDs.isEmpty) else {
-            // The current vendor model cannot prove a treatment-specific
-            // product. Do not record `.noProductMatch`: that would suppress
-            // this row for 30 days and turn a capability gap into vendor
-            // evidence. The ordinary foil key remains independent.
-            return .failed(.unsupportedTreatment)
-        }
-        guard PriceVendorCredentials.hasKey else {
-            return .failed(.missingCredentials)
-        }
         let key = ProductIdentity.key(
             game: game,
             printingID: printingID,
@@ -209,6 +200,20 @@ final class PriceFallbackQuoteResolver {
                 treatmentIDs: treatmentIDs
             ))?
             .marketVariantID
+        let cachedCardID = identities.cachedCardID(forKey: key)
+        let hasDirectVendorHandle = marketVariantID != nil
+            || recordedVariantID != nil
+            || cachedCardID?.isEmpty == false
+            || lookupCandidates.contains { !$0.value.isEmpty }
+        guard !(game == .magic && !treatmentIDs.isEmpty && !hasDirectVendorHandle) else {
+            // The only unsafe case is a treatment row with no exact vendor
+            // handle. Do not record `.noProductMatch`: that would suppress this
+            // row for 30 days and turn a capability gap into vendor evidence.
+            return .failed(.unsupportedTreatment)
+        }
+        guard PriceVendorCredentials.hasKey else {
+            return .failed(.missingCredentials)
+        }
         let target = MarketPriceTarget(
             priceKey: key,
             game: game,
@@ -246,7 +251,7 @@ final class PriceFallbackQuoteResolver {
             setName: setName,
             cardNumber: cardNumber,
             pokemonPrintRun: pokemonPrintRun,
-            vendorCardID: identities.cachedCardID(forKey: key),
+            vendorCardID: cachedCardID,
             magicTreatmentIDsRaw: treatmentIDs
         ) else {
             return .failed(.requestFailed)
@@ -385,10 +390,10 @@ final class PriceFallbackQuoteResolver {
         identities: ProductIdentityStore,
         identityKey: String
     ) async -> PriceFallbackQuoteResolution {
-        guard !target.isTreatmentQualified else {
-            // Direct vendor handles are still generic unless the vendor has
-            // explicitly modelled this treatment. Do not turn a capability
-            // gap into a cached negative identity or query a generic product.
+        guard !target.isTreatmentQualified || target.hasDirectVendorHandle else {
+            // A handle-less treatment would fall back to name/set matching here,
+            // which can select a different printing. Direct per-printing ids
+            // are safe; this guard protects only the unresolved search path.
             return .failed(.unsupportedTreatment)
         }
         do {

@@ -178,7 +178,7 @@ struct PriceCheckResultView: View {
             ContentUnavailableView(
                 "Treatment price unavailable",
                 systemImage: "tag.slash",
-                description: Text("The optional fallback provider has no treatment-specific product identity, so its generic price is not used.")
+                description: Text("The optional fallback provider has no direct product identity for this treatment, so a name/set search is not used to avoid borrowing another printing's price.")
             )
         case .providerUnavailable:
             ContentUnavailableView(
@@ -221,7 +221,7 @@ struct PriceCheckResultView: View {
             systemImage: "dollarsign.circle",
             description: Text(
                 hasTreatment
-                    ? "No provider publishes a price proven for this treatment. The generic foil price is not used."
+                    ? "No exact provider listing was available for this treatment. A direct product identity is required; name/set search is not used."
                     : "The price provider found this card but has no listing for its exact finish."
             )
         )

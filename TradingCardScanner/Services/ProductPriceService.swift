@@ -22,9 +22,9 @@ enum ProductPriceOutcome: Equatable, Sendable {
     /// The app does not have a safe spelling for this finish, so no vendor
     /// request was made. This is neither a product miss nor a price miss.
     case unsupportedFinish
-    /// The app does not have a vendor identity that proves this treatment, so
-    /// no vendor request was made. This is not evidence that the product is
-    /// absent and must not create a cached negative identity.
+    /// The app has no direct vendor identity for this treatment, so a name/set
+    /// search was not made. This is not evidence that the product is absent and
+    /// must not create a cached negative identity.
     case unsupportedTreatment
     /// No request was made because today's persisted allowance was exhausted.
     /// This is scheduling state, not evidence about the card.
@@ -64,10 +64,10 @@ struct ProductPriceSubject: Sendable {
     /// A previously resolved vendor handle. Present means the search has already
     /// been paid for once and this refresh is a cheap keyed lookup.
     let vendorCardID: String?
-    /// Treatment identity is part of the app's price key. The current vendor
-    /// product schema exposes finish, but no reviewed treatment-specific handle,
-    /// so a non-empty value is a matching negative rather than permission to use
-    /// the generic foil product.
+    /// Treatment identity is part of the app's price key. A direct product handle
+    /// comes from the provider's exact printing, so it can carry the treatment
+    /// row safely. The handle-less name/set path remains conservative because a
+    /// search can still land on another printing.
     let magicTreatmentIDsRaw: [String]
 
     init(
@@ -119,6 +119,7 @@ actor ProductPriceService {
     private let configuration: Configuration
     private let session: URLSession
     private let pacer: JustTCGPacer
+    private let budget: ProductFallbackBudget
     /// The vendor's set directory, per game. Fetched once per refresh and used
     /// to find the vendor's set for a catalog set name.
     private var knownSets: [ProductCatalogIdentity.Game: ProductSetDirectory] = [:]
@@ -126,15 +127,17 @@ actor ProductPriceService {
     init(
         configuration: Configuration = Configuration(),
         session: URLSession = .shared,
-        pacer: JustTCGPacer = .shared
+        pacer: JustTCGPacer = .shared,
+        budget: ProductFallbackBudget = .shared
     ) {
         self.configuration = configuration
         self.session = session
         self.pacer = pacer
+        self.budget = budget
     }
 
     func budgetSnapshot() async -> ProductFallbackBudget.Snapshot {
-        await ProductFallbackBudget.shared.snapshot()
+        await budget.snapshot()
     }
 
     // MARK: - Quoting
@@ -162,11 +165,14 @@ actor ProductPriceService {
         ) else {
             return .unsupportedFinish
         }
-        guard !(subject.game == .magic && !subject.magicTreatmentIDsRaw.isEmpty) else {
-            // JustTCG has no treatment-specific product identity in this wire
-            // model. This is a capability boundary, not a failed search: a
-            // generic Foil listing cannot prove Surge Foil or Neon Ink, and
-            // the caller must not cache the result as a vendor miss.
+        let hasDirectVendorHandle = subject.vendorCardID?.isEmpty == false
+        guard !(subject.game == .magic
+                && !subject.magicTreatmentIDsRaw.isEmpty
+                && !hasDirectVendorHandle) else {
+            // Scryfall's TCGplayer id belongs to the exact printing, and a
+            // previously resolved vendor card id is likewise keyed to that
+            // product. Only a treatment row without either handle would need a
+            // name/set search, which cannot prove the treatment and is refused.
             return .unsupportedTreatment
         }
         guard PriceVendorCredentials.hasKey else { return .requestFailed }
@@ -175,7 +181,7 @@ actor ProductPriceService {
             let candidates: [ProductCard]
             var resolvedSlug: String?
 
-            if let cardID = subject.vendorCardID {
+            if let cardID = subject.vendorCardID, !cardID.isEmpty {
                 // Already resolved once. No search, no slug needed.
                 candidates = try await fetchCards(query: [("cardId", cardID)], lane: lane)
                 resolvedSlug = candidates.first?.set
@@ -312,7 +318,7 @@ actor ProductPriceService {
             lane: lane
         )
         if let metadata = response.metadata {
-            await ProductFallbackBudget.shared.syncFromServer(metadata)
+            await budget.syncFromServer(metadata)
         }
         let directory = ProductSetDirectory(
             sets: response.data.compactMap { set in
@@ -329,7 +335,7 @@ actor ProductPriceService {
     ) async throws -> [ProductCard] {
         let response: ProductCardsResponse = try await get(path: "cards", query: query, lane: lane)
         if let metadata = response.metadata {
-            await ProductFallbackBudget.shared.syncFromServer(metadata)
+            await budget.syncFromServer(metadata)
         }
         return response.data
     }
@@ -361,7 +367,7 @@ actor ProductPriceService {
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        switch await ProductFallbackBudget.shared.reserveRequest(lane: lane) {
+        switch await budget.reserveRequest(lane: lane) {
         case .allowed:
             break
         case .cancelled:
@@ -386,9 +392,9 @@ actor ProductPriceService {
                 if let headerRetryAt {
                     retryAt = headerRetryAt
                 } else {
-                    retryAt = await ProductFallbackBudget.shared.nextResetDate()
+                    retryAt = await budget.nextResetDate()
                 }
-                await ProductFallbackBudget.shared.recordRateLimit(until: retryAt)
+                await budget.recordRateLimit(until: retryAt)
                 throw ProductPriceError.rateLimited(retryAt)
             }
             throw ProductPriceError.badResponse

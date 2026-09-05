@@ -349,7 +349,7 @@ final class JustTCGContractTests: XCTestCase {
         }
     }
 
-    func testTreatmentQualifiedVendorListingIsNotAcceptedAsExact() throws {
+    func testTreatmentQualifiedVendorListingRequiresAUsableDirectHandle() throws {
         let json = """
         { "data": [ { "uuid": "card-1", "variants": [
           { "uuid": "variant-1", "condition": "Near Mint", "printing": "Foil", "price": 8.0 }
@@ -374,12 +374,32 @@ final class JustTCGContractTests: XCTestCase {
             )
         }
 
-        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+        guard case .matched = JustTCGRefreshCoordinator.exactListing(
             lookup: .cardID("card-1"),
             owners: [target(treatmentIDs: ["surgefoil"])],
             response: response
         ) else {
-            return XCTFail("a generic Foil listing must not answer Surge Foil")
+            return XCTFail("a direct vendor card handle should answer the exact treated printing")
+        }
+
+        let noHandle = MarketPriceTarget(
+            priceKey: "key",
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            itemKind: .rawCard,
+            marketVariantID: nil,
+            lookupCandidates: [],
+            currentAmount: nil,
+            lastCheckedAt: nil,
+            magicTreatmentIDsRaw: ["surgefoil"]
+        )
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .cardID("card-1"),
+            owners: [noHandle],
+            response: response
+        ) else {
+            return XCTFail("a handle-less treatment must not be answered by a search result")
         }
 
         guard case .matched = JustTCGRefreshCoordinator.exactListing(
@@ -416,9 +436,9 @@ final class JustTCGContractTests: XCTestCase {
         )
     }
 
-    /// Scryfall publishes `tcgplayer_id` only for ordinary printings. Art cards
-    /// and tokens — the entire fall-through population — come back null, so they
-    /// have no keyed route and must resolve by search exactly once.
+    /// Scryfall publishes `tcgplayer_id` on the exact printing object. Art cards
+    /// and tokens — the entire fall-through population — can come back null, so
+    /// they have no keyed route and must resolve by search exactly once.
     func testArtCardsAndTokensCarryNoMarketplaceIdentifier() throws {
         let ordinary = """
         { "id": "x", "name": "Cloud, Midgar Mercenary", "set": "fin",

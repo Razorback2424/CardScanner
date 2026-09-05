@@ -25,6 +25,8 @@ enum PriceLookup: Equatable, Sendable {
 /// The rule that keeps the collection's totals honest.
 ///
 /// A price belongs to `printing + physical variant`, never to a printing alone.
+/// Magic treatments remain part of the exact printing identity when the source
+/// provides that printing's vendor handle or published price fields.
 /// If the provider exposes no listing for the variant the user actually owns —
 /// a Master Ball parallel, say, where TCGdex's current pricing object only
 /// carries normal, holofoil and reverse-holofoil — the answer is "unavailable".
@@ -110,12 +112,11 @@ enum CardPricing {
             )
 
         case let .magic(magic):
-            // Scryfall's finish prices are printing-wide. A named Magic
-            // treatment is a second identity axis, so `usd_foil` cannot answer
-            // a surge-foil, neon-ink, or future unclassified treatment question.
-            // The treatment-specific vendor path is deliberately separate and
-            // must prove the treatment before it can return a number.
-            guard magicTreatments.isEmpty else { return .unavailable(.scryfall) }
+            // Scryfall's price fields live on the exact printing object. Its
+            // `tcgplayer_id` and `usd_foil` therefore already describe a Surge
+            // Foil, Neon Ink, or future treated printing when that printing is
+            // the card being priced. Treatment remains a separate app identity
+            // axis, but it is not a reason to discard exact provider evidence.
             guard let prices = magic.prices else { return .unavailable(nil) }
             guard let listing = scryfallListing(for: variant),
                   let amount = prices.value(forKey: listing) else {

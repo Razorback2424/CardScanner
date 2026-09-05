@@ -78,9 +78,9 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// owned rather than every permutation the vendor publishes.
     var gradingCompany: GradingCompany? = nil
     var grade: String? = nil
-    /// Treatment ids are part of the price identity but not of the vendor's
-    /// finish lookup. A provider response may serve several treatment-aware
-    /// records; each record is still written under its own exact key.
+    /// Treatment ids are part of the price identity. A direct provider product
+    /// handle belongs to the exact printing, so a response may safely write a
+    /// treated record under its own key; only handle-less searches are refused.
     var magicTreatmentIDsRaw: [String] = []
 
     /// Whether this row exists only in the market vendor's catalogue.
@@ -293,8 +293,8 @@ final class PriceRefreshController: ObservableObject {
     ) -> [PriceTarget] {
         targets.filter { target in
             if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
-                let isStillUnsupported = target.isTreatmentQualified
-                    || (target.itemKind == .gradedCard && target.marketVariantID == nil)
+                let isStillUnsupported = target.itemKind == .gradedCard
+                    && target.marketVariantID == nil
                 if !isStillUnsupported { return true }
                 // Manual refreshes are an explicit request to re-evaluate a
                 // capability stamp. Automatic/background passes keep the long
@@ -492,8 +492,7 @@ final class PriceRefreshController: ObservableObject {
         // it never enters the catalog pass. It carries the vendor's own variant
         // handle instead and goes straight to the batched stage below.
         let unsupported = targets.filter {
-            $0.isTreatmentQualified
-                || ($0.itemKind == .gradedCard && $0.marketVariantID == nil)
+            $0.itemKind == .gradedCard && $0.marketVariantID == nil
         }
         for target in unsupported {
             stage(store.recordUnsupportedProvider(
@@ -833,13 +832,12 @@ final class PriceRefreshController: ObservableObject {
         /// identity resolved either, because it had gone down the batch path
         /// instead of the search path.
         ///
-        /// What is left is the marketplace id, and Scryfall publishes it only
-        /// for ordinary printings. Art cards and tokens — precisely the
-        /// fall-through population — come back `null`. Those have no keyed
-        /// route at all and must resolve by search once, after which the stored
+        /// For Magic, Scryfall's marketplace id belongs to the exact printing,
+        /// including treated foil printings. Art cards and tokens — precisely
+        /// the fall-through population — can still come back `null`; those have
+        /// no keyed route and must resolve by search once, after which the stored
         /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
-            guard !target.isTreatmentQualified else { return [] }
             if let catalogID = card?.providerID ?? target.catalogPrintingID,
                let variant = target.variantID.map(PhysicalVariant.resolving) {
                 let stamped = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID, variant: variant)
@@ -1004,15 +1002,6 @@ final class PriceRefreshController: ObservableObject {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
-            if candidate.target.isTreatmentQualified {
-                // The current vendor wire model has no treatment-specific
-                // identity or listing. This is a capability gap, not a vendor
-                // miss, so leave the identity store untouched; it must never
-                // consume an ordinary foil handle or create a 30-day negative.
-                completed += 1
-                publishFallbackProgress()
-                continue
-            }
             // The handle stored on the row wins. It was written when the item
             // was added out of the vendor's own catalogue, and for a sealed box
             // or a graded slab it is the only identity that exists — there is no
@@ -1257,7 +1246,6 @@ final class PriceRefreshController: ObservableObject {
         let slabs = targets.filter {
             $0.itemKind == .gradedCard
                 && $0.marketVariantID != nil
-                && !$0.isTreatmentQualified
         }
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
             return (0, false)
@@ -1471,10 +1459,12 @@ final class PriceRefreshController: ObservableObject {
         fetchedAt: Date = .now
     ) -> Bool {
         // This callback is a second line of defence after the coordinator's
-        // treatment-aware owner grouping. A generic vendor response must never
-        // be written to a treatment-qualified Magic key, even if a future
-        // caller accidentally supplies a mixed owner array.
-        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return false }
+        // treatment-aware owner grouping. A response without a direct product
+        // handle must never be written to a treatment-qualified Magic key, even
+        // if a future caller accidentally supplies a mixed owner array.
+        guard owners.allSatisfy({ !$0.isTreatmentQualified || $0.hasDirectVendorHandle }) else {
+            return false
+        }
         recordSealedArtwork(
             from: card,
             for: owners,
