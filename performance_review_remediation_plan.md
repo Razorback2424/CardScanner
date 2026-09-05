@@ -20,9 +20,9 @@ names.
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
 | 4 — R1 retention | **done; correction fixed 2026-09-05** | 400-day window, `.all` kept (decision taken 2026-09-05). `coverageIndexThrowing` clamps to the window and reports it; `PriceObservationLog.pruneCheckDays` discards rows behind it from the computation actor; `PortfolioEngine.publish` carries both stored coverage counts and `carriedForwardValue` from the close it already wrote. The non-zero retention fixture now proves a pruned day is not revised for lost evidence. Measured flat past the window — see §3.4. |
 | 5 — R3 field trimming | **done (simulator; live count profile still recommended)** | The portfolio observer no longer hashes local fetch/check timestamps; the collection token keeps presence bits and only uses exact `fetchedAt` for unstamped providers. The focused stamped/unstamped test and full simulator suite pass. A live-provider signpost count was not available in this pass, so the magnitude claim remains intentionally unquantified — see §3.6. |
-| 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
-| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. The current full simulator suite is 851 tests, 1 skipped, 0 failures. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
-| 8 — R4 ModelActor | **done (simulator; runtime signpost capture still recommended)** | Refresh target construction, `PriceRefreshDataIndex`, `PriceStore`, identity indexes, writes and saves now run in `PriceRefreshModelActor`; the main actor retains queue/status/progress/budget UI. `build-for-testing` and the full suite pass: 850 tests, 1 skipped, 0 failures. No live-provider Instruments capture was taken in this pass, so the off-main signpost check remains an explicit runtime verification item. |
+| 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` and `CollectionView` no longer observe the refresh controller as whole screens: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. The fourth-pass root-observation correction also changed `ContentView` from an `@StateObject` observer to a plain app-scoped reference, so 250 ms progress publications no longer invalidate the whole tab tree. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
+| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. The latest full simulator suite is 857 tests, 1 skipped, 0 failures. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
+| 8 — R4 ModelActor | **done (simulator; runtime signpost capture still recommended)** | Refresh target construction, `PriceRefreshDataIndex`, `PriceStore`, identity indexes, writes and saves now run in `PriceRefreshModelActor`; the main actor retains queue/status/progress/budget UI. The latest full simulator suite is 857 tests, 1 skipped, 0 failures. No live-provider Instruments capture was taken in this pass, so the off-main signpost check remains an explicit runtime verification item. |
 | 9 — device pass | **partly done; P1/U2/U3 remain hardware gates** | P3 and U4 are landed. The app-only iPhone build and signed test bundle build both succeed; the physical run executed 851 tests with 1 skip but exposed one device-only timing/fixture failure in `BrowseFeatureTests.testBrowseSearchDebouncesBeforeStartingBothSearchLanes` (a focused retry reproduced it). P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain unmodified and unverified because no OCR/thermal or manual UI lifecycle measurement was taken. |
 | 10 — R5 `#Index` | **closed by deployment decision (2026-09-05)** | The project remains iOS 17.0. `#Index` requires iOS 18, so no index or CloudKit schema migration is introduced under the current target. This follows the existing deployment guidance to keep the lower target and branch newer APIs when needed; revisit only as an explicit iOS 18 migration decision. |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
@@ -30,6 +30,11 @@ names.
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
 Suite after slices 1, 2, 3, 4, 6, 7, 11, P3/U4 and R3: **851 tests, 1 skipped, 0 failures** (846 before: the C2 convergence test, the two R1 retention tests, the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set, and the R3 freshness-token test).
+
+The completed full simulator suite after the graded-lookup fixes and the two
+source-only corrections recorded in §1.5 is **857 tests, 1 skipped, 0
+failures** in 24.814 seconds. The focused post-correction run separately
+covered 62 tests with 0 failures.
 
 ---
 
@@ -74,6 +79,12 @@ F1, F2 (with C4's magnitude corrections), F3 (with C3's refinement), F4, P1 (wit
 | T2 | R1's remedy (a) proposed reading pruned days' coverage back from `PortfolioDailyClose` without saying what that costs. | It makes pruned days immutable for coverage: `PortfolioEngine.matches` would compare recomputed coverage against the row it was derived from, so it always matches. That is fine for closed history, but a late CloudKit inventory event legitimately revises an old day (`revisionReason: .recomputed` exists for that case), and such a day's coverage would then be carried from a close computed against different holdings. Stated in R1, and the pruned-fixture assertion sharpened accordingly. |
 | T3 | R9's action for `PortfolioReconciliationTests.swift:2413` was to rewrite the assertion. | Redundant: `:2412` already asserts `engine.integrityDefects == summary.defects`. Delete `:2413` outright. Separately, `:1688` asserts the log does *not* contain a defect in a test that never triggers a recompute — and the only three writers are `replaceAll` calls in `PortfolioEngine` — so it is near-vacuous today. Neither assertion carries coverage worth preserving. |
 
+### 1.5 Fourth-pass correction (2026-09-05)
+
+| # | Problem found | Correction |
+|---|---|---|
+| T4 | Slice 6 removed refresh observation from the two large screens but left `ContentView` as an `@StateObject` observer. Its 250 ms status publications still invalidated the `TabView`, causing `CollectionView.body` and its projection-token walk to rerun at refresh cadence. | `ContentView` now keeps `PriceRefreshController.shared` as a plain stored reference. Only the small refresh controls, attention badge and activity row observe progress. Commit `43c6dc6`. The focused post-correction simulator run passed 62 tests, the generic test build succeeded, and the full suite passed 857 tests with 1 skipped and 0 failures; a SwiftUI/Instruments body-count delta remains unmeasured because no live refresh profile was captured. |
+
 ---
 
 ## 2. Findings, re-prioritised
@@ -85,7 +96,7 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 **What:** one `PriceCheckDay` per instrument per checked day, never pruned; every recompute reads all of them since epoch; every refresh reads every observation on main.
 **Why it matters:** 1,500 instruments × 365 days ≈ 550k check-day rows in year one. Recompute and refresh both slow down with calendar time.
 **Confidence:** high on growth; magnitude needs a seeded 12-month store.
-**Remedy (smallest):** two parts. (a) A retention window for `PriceCheckDay` older than the longest history range the UI can show (the `PortfolioHistoryRange.all` case needs a decision; if "all" is kept, coverage for days beyond the window can be summarised into the already-published `PortfolioDailyClose` rows, which store `refreshedInstrumentCount`/`carriedForwardInstrumentCount` per day). (b) Bound `coverageIndexThrowing` to the same window; closes before it are already published and `PortfolioEngine.publish` only revises days whose derived payload changed. Observations should **not** be pruned: they are the valuation history and grow only on value change.
+**Remedy (smallest):** two parts. (a) Keep `PortfolioHistoryRange.all` as the user-facing history choice, but retain raw `PriceCheckDay` evidence for a 400-day recomputation window; coverage for older days is carried from the already-published `PortfolioDailyClose` rows, which store `refreshedInstrumentCount`/`carriedForwardInstrumentCount` per day. (b) Bound `coverageIndexThrowing` to the same window; closes before it are already published and `PortfolioEngine.publish` only revises days whose derived payload changed. Observations should **not** be pruned: they are the valuation history and grow only on value change.
 **Consequence to accept explicitly (T2):** reading pruned days' coverage back from `PortfolioDailyClose` makes those days immutable for coverage — `PortfolioEngine.matches` would compare recomputed coverage against the row it derived it from, so it always matches. Closed history is meant to be immutable, so that is mostly the point. But a late-arriving CloudKit inventory event legitimately revises an old day (the publisher carries `revisionReason: .recomputed` for exactly that), and after pruning, that revised day's coverage counts are carried from a close computed against *different* holdings. Coverage on revised historical days therefore becomes approximate. Value, market and flow are unaffected — they replay from events and observations, neither of which is pruned.
 **Benefit:** recompute and refresh costs stop growing with age. **Risk:** moderate; touches replay inputs. **Complexity:** increases slightly (one retention pass, one window constant).
 **Verify:** row counts before/after a simulated year; `coverageIndexThrowing` and `PriceRefreshDataIndex.init` signpost durations. Extend `PortfolioReplayEngineTests` with a pruned fixture asserting the specific contract, not "same closes": **value, market, flow, added, removed and corrections reproduce identically; coverage counts on pruned days are carried from the stored close rather than recomputed** — including on a day revised by a late event, which is the case that would otherwise fail silently.
@@ -128,8 +139,8 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 **Remedy:** start the refresh as an unstructured task and return after a short delay; surface `refresh.status` in the Collection summary so entry point and progress live together (Portfolio already does this via `portfolioRefreshActivity`). **Complexity:** preserves.
 
 ### R7 — Portfolio tree re-renders at 4 Hz during refresh (P2)
-**Where:** `PortfolioView` observes `refresh` for `isRefreshing`, `portfolioRefreshActivity`, `needsPortfolioAttention`, the `.finished` hero case, and passes it to `PortfolioDetailsView`.
-**Remedy (per C5):** child view A owns the Refresh button and activity row (needs `isRefreshing` and `status`); child view B owns the attention badge (needs `fallbackStatus`). Parent stops observing `refresh`; `PortfolioDetailsView` keeps its own `@ObservedObject`. Fold P4 (`PortfolioArtwork` override fetch in `body`) in here by resolving the override filename once in `holdingSnapshots`.
+**Where:** before the fourth-pass correction, `ContentView` also observed `refresh` as a `@StateObject`. Its body did not read a published field, but each progress write still invalidated the root `TabView`, which passed non-`Equatable` closures and an existential catalog into `CollectionView`; `CollectionView.body` then reran its O(N) projection-token walk. `PortfolioView` had the same broad observation for `isRefreshing`, `portfolioRefreshActivity`, `needsPortfolioAttention`, the `.finished` hero case, and `PortfolioDetailsView`.
+**Remedy (per C5, completed):** `ContentView` now holds `PriceRefreshController.shared` as a plain stored reference. Child view A owns the Refresh button and activity row (needs `isRefreshing` and `status`); child view B owns the attention badge (needs `fallbackStatus`). `PortfolioView` and `CollectionView` no longer observe `refresh` as whole screens, while `PortfolioDetailsView` keeps its own `@ObservedObject`. P4 remains deliberately rejected; see §0.
 **Complexity:** preserves.
 
 ### R8 — Device items
@@ -192,14 +203,14 @@ today, and R1 explicitly does not prune observations. The two findings are
 independent, and slice 8 can proceed on its own numbers as soon as someone
 wants it. The dependency note in §4 is corrected accordingly.
 
-**R1 still needs one product decision before it can start.** `PortfolioHistoryRange`
-includes `.all`, so the chart can ask for history older than any retention
-window. The remedy stands — coverage for pruned days is read back from the
+**R1's product decision was made 2026-09-05.** Keep `.all` as the history
+choice, use a 400-day raw coverage window, and carry older coverage from the
 `PortfolioDailyClose` rows, which already store `refreshedInstrumentCount` and
-`carriedForwardInstrumentCount` and are not pruned — but it changes what a
-revised historical day reports (T2), and the window length is a judgement about
-how much history the app promises to recompute rather than replay. That is the
-open question blocking slice 4, and it is a decision, not a measurement.
+`carriedForwardInstrumentCount` and are not pruned. This changes what a revised
+historical day reports (T2), and that consequence is accepted and covered by
+the non-zero retention fixture in §3.4. Slice 4 is therefore implemented; the
+remaining question is whether a future product decision wants a narrower window
+or resumable replay.
 
 ### Slice 8 boundary reconciliation (2026-09-05)
 
@@ -233,6 +244,9 @@ the cross-store non-atomic window is not widened. As §2.1 records, this move
 does not fix R3's `@Query` republish amplification.
 
 ## 3.4 Slice 4 result
+
+Decision: keep `PortfolioHistoryRange.all` and retain raw check-day evidence for
+400 days. Older coverage is carried from published closes.
 
 Same fixture, after the window:
 
@@ -351,6 +365,27 @@ fixture path rather than a slice-5/8 assertion. It is recorded as a device
 follow-up because it prevents calling the physical suite green. No OCR hit-rate,
 thermal, tab-bar interaction or camera restart measurement was taken.
 
+## 3.9 Slice 6 root-observation correction
+
+The fourth-pass audit found that the original R7 split stopped `PortfolioView`
+and `CollectionView` from observing refresh progress but left their owner,
+`ContentView`, as an `@StateObject` observer. The source-only correction in
+commit `43c6dc6` makes the root reference plain while leaving observation in
+the small views that render refresh state.
+
+| Check | Result |
+|---|---|
+| `ContentView` refresh ownership | plain stored reference to `PriceRefreshController.shared`; it does not observe progress publications |
+| Focused post-correction simulator tests | 62 tests, 0 failures (`JustTCGContractTests` and `ViewConstructionSmokeTests`) |
+| Generic simulator `build-for-testing` | succeeded |
+| Full simulator suite after the correction | 857 tests, 1 skipped, 0 failures in 24.814 s |
+| SwiftUI/Instruments body-count delta | not captured; no live refresh profile was run |
+| `makeCachedProjection` / `startRecompute` event-count delta | not captured; the remaining measurement requires a live refresh profile |
+
+This correction removes the root invalidation source identified in the scale
+plan. It does not claim that checkpoint saves stop `@Query` republishing; that
+residual is the separate R3 amplifier and remains a runtime measurement item.
+
 ---
 
 ## 4. Slices, in dependency order
@@ -358,16 +393,16 @@ thermal, tab-bar interaction or camera restart measurement was taken.
 1. **Measure** (§3). Signposts and a seeding fixture only.
 2. **R2 alone**, with the C2 convergence test. Not bundled with deletions.
 3. **R9 dead code**, tests and the two production call sites in the same diff.
-4. **R1 retention + bounded coverage window**, gated on slice 1 numbers and the `PortfolioHistoryRange.all` decision. Extend `PortfolioReplayEngineTests` with a pruned fixture that reproduces the same closes.
+4. **R1 retention + bounded coverage window**, after the measured slice 1 numbers and the `.all` decision recorded in §3.2. Extend `PortfolioReplayEngineTests` with a pruned fixture that reproduces the same closes. **Implemented.**
 5. **R3 field trimming**, with the `sourceUpdatedAt` conditional and the token unit test; implemented and simulator-verified in §3.6. A live event-count profile remains recommended evidence.
-6. **R6 + R7** (R7 as two child views; P4 folded in).
+6. **R6 + R7** (R7 as two child views; the root-observation correction is recorded in §1.5). **Implemented; P4 deliberately rejected.**
 7. **De-isolate the refresh write path** (from T1): make `ProductIdentityStore`, `ProductIdentityIndex`, `recordSealedArtwork*` and `applyVendorBatchHit` context-owned rather than `@MainActor`, following `PriceStore`'s existing pattern. No behaviour change; proved by compiling, with `CollectionItemKindTests` still green. Do this whether or not slice 8 proceeds — it is cheap, independently valuable, and it is what tells you what slice 8 actually costs.
 8. **R4 ModelActor**, after slice 7 and the ownership reconciliation in §3.2; implemented and simulator-verified in this working branch. Runtime Instruments confirmation remains recommended.
 9. **Device pass**: P3/U4 are landed; P1 explicit format, U2 tab bar and U3 camera restart remain hardware validation gates.
 10. **R5 `#Index`**: closed for the current iOS 17 target by the decision in §3.7; no index/migration code is added.
 11. **R10 release checklist** at any point before the bundle id changes.
 
-Dependencies (corrected by §3.2): slice 8 depends on slice 7 (done) and **not** on slice 4 — retention cannot shrink the index build. Slice 4 depends on the `.all` decision in §3.2, not on further measurement. Slice 5's implementation is now landed; a profiled live refresh remains recommended if the magnitude of the fan-out reduction needs a runtime number.
+Dependencies (corrected by §3.2): slice 8 depends on slice 7 (done) and **not** on slice 4 — retention cannot shrink the index build. Slice 4's `.all` decision is recorded and implemented; no additional product decision blocks the current remediation. Slice 5's implementation is now landed; a profiled live refresh remains recommended if the magnitude of the fan-out reduction needs a runtime number.
 
 ---
 

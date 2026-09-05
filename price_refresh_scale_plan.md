@@ -4,9 +4,11 @@ Target: automatic price checking with no refresh button, and a UI that stays
 responsive while thousands of prices are checked, at collection sizes up to
 tens of thousands of distinct printings.
 
-Status: **planning only.** No code changed. No builds or tests run. Every
-runtime claim below is marked as either *traced statically* (I read the code
-path) or *needs measurement* (I inferred cost but did not profile).
+Status: **planning reference, partially implemented on the remediation branch.**
+The root-observation correction and the Slice 6 `@ModelActor` boundary are
+implemented; the remaining proposed scale slices are still planning-only.
+Runtime claims below remain marked as either *traced statically* (I read the
+code path) or *needs measurement* (I inferred cost but did not profile).
 
 ---
 
@@ -68,21 +70,20 @@ so: *"SwiftData has no cheap query revision; this fingerprint is still much
 less work than … rebuilding every tile row."* That is true at 500 cards. At
 20,000 cards with a long event history it is not.
 
-**(c) Progress publication re-renders the whole tab tree — likely the
-dominant cost, and previously unnoticed.**
-`ContentView` holds `@StateObject private var refresh` (`ContentView.swift:17`).
+**(c) Progress publication used to re-render the whole tab tree — corrected
+2026-09-05.** Before commit `43c6dc6`, `ContentView` held
+`@StateObject private var refresh` (`ContentView.swift:17`).
 `publishRefreshingProgress` writes `status` up to **4× per second**
-(`progressPublishInterval = 0.25`, `:1607`). Each write invalidates
-`ContentView.body`, which rebuilds the `TabView` and passes `CollectionView`
-non-`Equatable` closures (`onOpenScanner`, `onRefresh`) and an existential
-`catalog`, so `CollectionView.body` re-evaluates — which calls
-`makeProjectionToken()` — which is the O(N) walk in (b).
+(`progressPublishInterval = 0.25`), and each write invalidated `ContentView.body`.
+That rebuilt the `TabView`, passed `CollectionView` non-`Equatable` closures
+and an existential `catalog`, and reran `makeProjectionToken()`.
 
-**Net: the O(N) hash over the entire collection plausibly runs 4× per second
-for the entire duration of a refresh, purely from the progress indicator.**
-*Needs measurement* — confirm with `Self._printChanges()` on `CollectionView`
-before relying on it — but it is consistent with "becomes almost unresponsive"
-and it is the cheapest thing on this list to fix.
+`ContentView` now keeps `PriceRefreshController.shared` as a plain stored
+reference. The small refresh controls, attention badge and activity row remain
+the only views that observe the fields they render. A live body-count delta is
+still *needs measurement*; CoreSimulatorService disconnected before the final
+refresh profile could be captured. This correction does not remove the
+separate checkpoint-save `@Query` republish amplifier.
 
 **(d) A recompute storm rides along.** Each checkpoint changes
 `portfolioInputTaskID` → 300 ms debounce → `portfolio.recompute` → a full
@@ -188,6 +189,12 @@ update, and `isTransientSuccessStatus` dismissal behavior
 (`PriceRefreshController:1599`) must be unchanged.
 **Verify:** `Self._printChanges()` on `CollectionView` during a refresh —
 body passes should drop from ~4/s to ~0.
+
+**Implementation note (2026-09-05):** the root-observation bullet is landed in
+`43c6dc6`: `ContentView` now holds a plain `PriceRefreshController.shared`
+reference, while the small controls and activity views retain the observation
+they render. The stable-input and cadence bullets remain proposed work. A live
+body-count comparison was not captured in this pass.
 
 ### Slice 2 — Make the collection projection a value snapshot, computed off-main
 *Addresses 1.3(a)+(b) for the Collection tab.*
@@ -370,11 +377,14 @@ Denormalized sort/search columns and true grid paging, per 2.2.
 
 ## 5. What I have not established
 
-- No profiling. The relative weights of (a) save republish, (b) hash walks and
-  (c) progress re-render are **inferred from reading the code**, not measured.
-  (c) is a prediction, and Slice 1 is cheap enough to be worth doing as its own
-  experiment before committing to Slice 2.
+- No live refresh profiling. The relative weights of (a) save republish, (b)
+  hash walks and the post-correction residual of (c) still need an Instruments
+  capture; the source-level root-observation fix is landed and its focused
+  tests/build pass, but no body-count comparison was captured.
 - No seeded large-collection store exists to measure against. Building one
   (10k and 50k rows with realistic event history) should precede Slice 2, or we
   will not be able to tell whether any of this worked.
-- No build or test run in this session, per instruction.
+- Simulator verification is available for the implemented work: the completed
+  full suite was 857 tests, 1 skipped, 0 failures in 24.814 seconds; the
+  focused post-correction run was 62 tests with 0 failures, and generic
+  `build-for-testing` succeeded.
