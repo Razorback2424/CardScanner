@@ -373,6 +373,11 @@ private struct PortfolioInputObserver: View {
                 // is what notices a late event or a repaired row.
                 try? await Task.sleep(for: .milliseconds(300))
                 guard !Task.isCancelled else { return }
+                // CloudKit can deliver a canonical treatment row without
+                // crossing any local CollectionStore save path. Clear the
+                // settled session memo before resolving identities again so a
+                // cached negative lookup cannot split the next scan.
+                CollectionStore(context: modelContext).invalidateIdentityAliasCache()
                 portfolio.recompute(context: modelContext)
                 await refreshStalePricesIfNeeded()
             }

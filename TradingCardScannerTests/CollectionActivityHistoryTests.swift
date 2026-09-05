@@ -67,6 +67,46 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
     }
 
+    func testLegacyAliasCacheInvalidatesAfterRemoteCanonicalRowDelivery() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try magicIdentifiedCard()
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let legacyKey = try XCTUnwrap(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey).first
+        )
+
+        // The first lookup memoizes the absence a device sees before the
+        // CloudKit batch arrives.
+        XCTAssertNil(try store.card(forAnyKey: legacyKey))
+
+        // Deliver the canonical row without using a CollectionStore mutation
+        // path. This is the shape of a remote change that cannot invalidate
+        // the cache through commit().
+        context.insert(
+            CollectedCard(
+                card: card,
+                resolved: ResolvedVariant(
+                    variant: .foil,
+                    resolution: .userConfirmed
+                )
+            )
+        )
+        try context.save()
+        XCTAssertNil(
+            try store.card(forAnyKey: legacyKey),
+            "the negative memo must remain stale until the observer clears it"
+        )
+
+        // This is the settled PortfolioInputObserver path after the synced
+        // row changes the @Query-backed input identity.
+        CollectionStore(context: context).invalidateIdentityAliasCache()
+
+        let resolved = try XCTUnwrap(try store.card(forAnyKey: legacyKey))
+        XCTAssertEqual(resolved.collectionKey, canonicalKey)
+        XCTAssertEqual(resolved.quantity, 1)
+    }
+
     func testUndoLeavesOriginalActivityAndAppendsAnUndoneEntry() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
