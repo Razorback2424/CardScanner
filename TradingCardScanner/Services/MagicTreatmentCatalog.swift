@@ -9,9 +9,10 @@ struct MagicTreatmentCatalogEntry: Codable, Equatable, Hashable, Sendable {
     let id: String
     let setCode: String
     let collectorNumber: String
-    /// Stable `MagicTreatment.id` values. Strings keep the resource forward
-    /// compatible: a newer artifact can carry a treatment an older build does
-    /// not yet model, and that build preserves it as unclassified evidence.
+    /// Stable `MagicTreatment.id` values from the bundled catalog artifact.
+    /// Strings keep that artifact path forward compatible: a newer artifact can
+    /// carry a treatment an older build does not yet model, and that build
+    /// preserves it as unclassified evidence.
     let treatments: [String]
     /// Qualifiers are keyed by treatment id. Scryfall identifies Neon Ink but
     /// does not identify its color, so the audited catalog stores it as
@@ -57,12 +58,7 @@ struct MagicTreatmentCatalogEntry: Codable, Equatable, Hashable, Sendable {
     var decodedTreatments: [MagicTreatment] {
         var result: [MagicTreatment] = []
         for treatmentID in treatments {
-            let treatment: MagicTreatment?
-            if treatmentID.caseInsensitiveCompare("neonink") == .orderedSame {
-                treatment = .neonInk
-            } else {
-                treatment = MagicTreatment(id: treatmentID)
-            }
+            let treatment = MagicTreatment(id: treatmentID)
             guard let treatment, !result.contains(treatment) else { continue }
             result.append(treatment)
         }
@@ -211,6 +207,11 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
         let exactEntry = exactEntry(for: card)
         var result = exactEntry?.decodedTreatments ?? []
 
+        // Deliberately closed allowlist. `promoTypes` and `frameEffects` also
+        // carry broad visual/product labels such as `boosterfun`, `showcase`,
+        // and `extendedart`; treating every signal as a treatment would split
+        // ordinary printings and their price identities. New treatment ids must
+        // be reviewed into the model or bundled artifact first.
         let signals = Set(
             ((card.promoTypes ?? []) + (card.frameEffects ?? []))
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }

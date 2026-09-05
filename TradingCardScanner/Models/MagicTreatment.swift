@@ -5,8 +5,8 @@ import Foundation
 /// This is deliberately a second axis beside `PhysicalVariant`. Scryfall can
 /// say that a printing is both `foil` and `surgefoil`: `foil` answers how the
 /// cardboard is finished, while `surgefoil` answers which treatment the printed
-/// face carries. Treating the latter as another finish would make the provider's
-/// `usd_foil` value look like a price for every foil treatment.
+/// face carries. The provider's price remains safe when its object is this exact
+/// printing; the axes must still stay separate in the app's identity model.
 ///
 /// The axis is also independent of `MagicContentKind` and `CollectionItemKind`.
 /// A treated token can be a token, a treated regular card can be raw or graded,
@@ -109,9 +109,9 @@ enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
 /// Treatment evidence attached to an exact Magic printing.
 ///
 /// This value deliberately contains no OCR confidence and no visual guess. It
-/// is only the result of exact provider metadata plus exact, reviewed catalog
-/// enrichment. A future resolver can use it as evidence without making it part
-/// of the finish enum or the content/ownership axes.
+/// is only the result of exact provider metadata plus exact, reviewed enrichment
+/// from the bundled catalog artifact. A future resolver can use it as evidence
+/// without making it part of the finish enum or the content/ownership axes.
 struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
     let treatments: [MagicTreatment]
     /// Qualifiers are keyed by treatment id so future publisher distinctions

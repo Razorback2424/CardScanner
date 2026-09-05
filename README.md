@@ -55,9 +55,11 @@ reproducible without a network dependency in tests. The production app instead
 ships the compact `MagicTreatmentCatalog` projection, which contains only exact
 cards carrying a reviewed treatment signal plus source-backed manual mappings
 for distinctions Scryfall does not encode, such as NEO Neon Ink color.
-`ScryfallCard.magicTreatmentEvidence` combines that exact catalog enrichment with
-the live response's known treatment signals. Unknown catalog treatment ids remain
-visible as unclassified evidence instead of breaking an older build. Regenerate
+`ScryfallCard.magicTreatmentEvidence` combines that exact bundled-artifact
+enrichment with the live response's known treatment signals. Unknown treatment
+ids present in that artifact remain visible as unclassified evidence instead of
+breaking an older build; arbitrary import strings are not catalog evidence.
+Regenerate
 both resources with
 `scripts/generate_magic_treatment_snapshot.sh` when the provider feed or audit
 rule changes.
