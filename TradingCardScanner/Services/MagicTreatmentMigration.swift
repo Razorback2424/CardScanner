@@ -820,13 +820,12 @@ enum MagicTreatmentMigration {
             qualifiers: plan.qualifiers
         )
         let store = CollectionStore(context: context)
-        try store.rekey(
+        let rekeyed = try store.rekey(
             legacy,
             to: pair.newKey,
             magicTreatmentIDsRaw: plan.treatmentIDs,
             magicTreatmentQualifiers: plan.qualifiers
         )
-        let rekeyed = legacy
         restoreRawFinishIfNeeded(on: rekeyed, canonicalKey: pair.newKey)
         let qualifierChanged = try applyTreatmentMetadata(
             to: rekeyed,
@@ -1773,9 +1772,6 @@ final class MagicTreatmentMigrationCoordinator {
     ) async -> MagicTreatmentMigration.Report {
         var revisionRetries = 0
         while true {
-            if let localReport {
-                return localReport
-            }
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
@@ -1785,6 +1781,9 @@ final class MagicTreatmentMigrationCoordinator {
                     continue
                 }
                 return report
+            }
+            if let localReport {
+                return localReport
             }
             if let localTask {
                 let taskRevision = localTaskRevision ?? collectionRevision

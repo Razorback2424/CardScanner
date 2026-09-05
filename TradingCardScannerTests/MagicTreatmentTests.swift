@@ -1091,6 +1091,50 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         )
     }
 
+    func testBackgroundStylePriceRefreshWaitsForAnAlreadyRunningNetworkMigration() async throws {
+        let context = try makeContext()
+        let gate = MagicTreatmentMigrationGate()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                await gate.markStarted()
+                await gate.waitUntilOpen()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        // Populate the cached local report first. This is the state that used
+        // to let the local core return before noticing the active network task.
+        _ = await coordinator.runLocal(in: context)
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<10_000 {
+            if await gate.started() { break }
+            await Task.yield()
+        }
+        let networkStarted = await gate.started()
+        XCTAssertTrue(networkStarted)
+
+        var operationEntered = false
+        let refresh = Task { @MainActor in
+            await coordinator.withPriceRefresh(
+                in: context,
+                runsNetworkMigration: false
+            ) {
+                operationEntered = true
+            }
+        }
+        for _ in 0..<100 {
+            await Task.yield()
+        }
+        XCTAssertFalse(operationEntered)
+
+        await gate.open()
+        _ = await migration.value
+        await refresh.value
+        XCTAssertTrue(operationEntered)
+    }
+
     func testTreatmentMigrationWaitsForAnActivePriceRefresh() async throws {
         let context = try makeContext()
         let refreshGate = MagicTreatmentMigrationGate()

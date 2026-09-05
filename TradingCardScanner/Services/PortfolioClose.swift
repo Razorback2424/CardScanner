@@ -202,7 +202,14 @@ enum PortfolioClose {
             instant >= boundary && (includeEndpoint ? instant <= now : instant < now)
         }
         let periodEvents = events.filter { inPeriod($0.occurredAt) }
-        let eventByID = Dictionary(uniqueKeysWithValues: events.map { ($0.eventID, $0) })
+        // `eventID` carries no uniqueness constraint, and CloudKit can deliver
+        // the same ledger row twice before consolidation. A duplicate here used
+        // to trap mid-attribution; the first occurrence wins instead, which is
+        // the same row the reversal walk below would have resolved to.
+        let eventByID = Dictionary(
+            events.map { ($0.eventID, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
         /// Positive additions made while their instrument had no usable price.
         /// The map is intentionally scoped to this attribution window: a
         /// position that was already held before the boundary is a pricing

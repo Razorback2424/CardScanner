@@ -550,7 +550,10 @@ struct PortfolioView: View {
     }
 
     private func todayContext(_ attribution: PortfolioClose.Attribution) -> PortfolioContributorContext {
-        let today = PortfolioCalendar.day(containing: .now, in: PortfolioCalendar.timeZone())
+        let today = PortfolioCalendar.day(
+            containing: .now,
+            in: PortfolioCalendar.pinnedTimeZone() ?? .current
+        )
         return PortfolioContributorContext(
             id: "today-\(today.timeIntervalSinceReferenceDate)",
             title: "Today’s market movement",

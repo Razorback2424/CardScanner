@@ -2,6 +2,23 @@ import XCTest
 import SwiftData
 @testable import TradingCardScanner
 
+private final class CSVProgressRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var recorded: [(Int, Int)] = []
+
+    func append(_ completed: Int, _ total: Int) {
+        lock.lock()
+        recorded.append((completed, total))
+        lock.unlock()
+    }
+
+    func values() -> [(Int, Int)] {
+        lock.lock()
+        defer { lock.unlock() }
+        return recorded
+    }
+}
+
 private actor PortfolioComputationGate {
     private var permits = 0
     private var waiting = 0
@@ -279,6 +296,84 @@ final class PortfolioReconciliationTests: XCTestCase {
             quantity: quantity,
             dateAdded: Date(timeIntervalSince1970: 500)
         )
+    }
+
+    /// CSV import writes through `CollectionStore`, so it inherits every rule
+    /// the scanner path enforces rather than carrying its own transcription of
+    /// them. The graded guard is the one the second copy had already lost: a
+    /// treatment-qualified graded key can describe a *different* slab, so a
+    /// legacy/canonical pair must stay ambiguous instead of being merged.
+    func testCSVImportInheritsTheStoresGradedMergeRefusal() throws {
+        let context = try makeContext()
+        let canonicalKey = "graded:magic:slab:variant#treatment=surgefoil"
+        let legacyKey = "graded:magic:slab:variant"
+
+        for key in [legacyKey, canonicalKey] {
+            let slab = CollectedCard(
+                collectionKey: key,
+                game: .magic,
+                providerID: key,
+                name: "Slab",
+                setName: "Fixture Set",
+                setCode: "FIC",
+                cardNumber: "10",
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: nil,
+                variantResolution: .userConfirmed,
+                quantity: 1
+            )
+            slab.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            context.insert(slab)
+        }
+        try context.save()
+
+        var entry = csvEntry(key: canonicalKey, quantity: 1)
+        entry.itemKind = .gradedCard
+        entry.magicTreatmentIDsRaw = ["surgefoil"]
+        let result = try CollectionCSV.apply(
+            CollectionCSVImportPlan(entries: [entry], skippedRows: 0, skippedCSVText: nil),
+            to: context
+        )
+
+        // Refused, reported, and non-destructive: both slabs still exist and
+        // neither absorbed the other's quantity.
+        XCTAssertEqual(result.failedRows.map(\.collectionKey), [canonicalKey])
+        XCTAssertEqual(result.importedQuantity, 0)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(rows.map(\.collectionKey)), [legacyKey, canonicalKey])
+        XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 })
+    }
+
+    func testCSVImportCommitsAndReportsDurableBatches() throws {
+        let context = try makeContext()
+        let plan = CollectionCSVImportPlan(
+            entries: [
+                csvEntry(key: "batch-1", quantity: 1),
+                csvEntry(key: "batch-2", quantity: 1),
+                csvEntry(key: "batch-3", quantity: 1)
+            ],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+        let recorder = CSVProgressRecorder()
+
+        let result = try CollectionCSV.apply(
+            plan,
+            to: context,
+            batchSize: 2,
+            progress: { completed, total in
+                recorder.append(completed, total)
+            }
+        )
+
+        XCTAssertEqual(result.insertedEntries, 3)
+        XCTAssertEqual(recorder.values().map(\.0), [2, 3])
+        XCTAssertEqual(recorder.values().map(\.1), [3, 3])
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 3)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 3)
     }
 
     func testReimportingACertifiedSlabDoesNotChangeQuantityOrWriteAnEvent() throws {

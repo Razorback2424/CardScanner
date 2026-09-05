@@ -518,7 +518,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
 
-    func testCollectionReadThroughSurfacesCanonicalAndLegacyCollision() throws {
+    func testCollectionReadThroughMergesCanonicalAndLegacyCollision() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let providerID = "collision-printing"
@@ -546,21 +546,253 @@ final class CollectionActivityHistoryTests: XCTestCase {
         context.insert(row(key: canonicalKey))
         try context.save()
 
-        XCTAssertThrowsError(
+        let resolved = try XCTUnwrap(
             try store.card(
                 forAnyKey: canonicalKey,
                 magicTreatmentIDsRaw: ["surgefoil"]
             )
-        ) { error in
-            guard case let .ledgerConflict(detail) = error as? CollectionStoreError else {
-                return XCTFail("Expected a collection-key collision")
-            }
-            XCTAssertTrue(detail.contains("canonical and legacy collection keys"))
-        }
+        )
+        XCTAssertEqual(resolved.collectionKey, canonicalKey)
+        XCTAssertEqual(resolved.quantity, 2)
+        XCTAssertEqual(resolved.magicTreatmentIDsRaw, ["surgefoil"])
         XCTAssertEqual(
             try context.fetch(FetchDescriptor<CollectedCard>()).map(\.collectionKey).sorted(),
-            [canonicalKey, legacyKey].sorted()
+            [canonicalKey]
         )
+    }
+
+    func testLegacyRowRepairsToARekeyedCanonicalLedgerBeforeWriting() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try magicIdentifiedCard()
+        let legacyKey = "magic:\(card.providerID)#foil"
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let legacyRow = CollectedCard(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: card.providerID,
+            name: card.name,
+            setName: card.setName,
+            setCode: card.setCode,
+            cardNumber: card.cardNumber,
+            rarity: card.rarity,
+            imageURL: card.displayImageURL?.absoluteString,
+            thumbnailURL: card.thumbnailImageURL?.absoluteString,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1
+        )
+        context.insert(legacyRow)
+        let operationID = UUID()
+        guard case .appended = InventoryLedger(context: context).record(
+            legacyRow,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            operationID: operationID
+        ) else {
+            return XCTFail("Expected the legacy acquisition event to be appended")
+        }
+        context.insert(
+            CollectionActivity(
+                card: legacyRow,
+                source: .scan,
+                quantity: 1,
+                ledgerOperationIDs: [operationID]
+            )
+        )
+        try context.save()
+
+        let event = try XCTUnwrap(
+            try context.fetch(FetchDescriptor<InventoryEvent>()).first
+        )
+        event.collectionKey = canonicalKey
+        try context.save()
+
+        let staleRow = try XCTUnwrap(store.card(forKey: legacyKey))
+        try store.setQuantity(2, for: staleRow)
+
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.collectionKey, canonicalKey)
+        XCTAssertEqual(rows.first?.quantity, 2)
+
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(Set(events.map(\.collectionKey)), [canonicalKey])
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [canonicalKey: 2])
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertTrue(activities.allSatisfy { $0.collectionKey == canonicalKey })
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+
+        // The point of adopting the canonical key: ledger and collection agree
+        // on one identity, so the position reconciles instead of reporting a
+        // quantity mismatch against both keys and pausing portfolio history.
+        XCTAssertTrue(
+            PortfolioEngine.reconcile(
+                projection: LogicalCollection.project(
+                    cards: rows,
+                    ledger: InventoryLedger(context: context)
+                ),
+                events: events.map { PortfolioEngine.entry(from: $0) }
+            ).isEmpty
+        )
+    }
+
+    func testDuplicatePhysicalRowsAreMergedBeforeEveryOwnershipMutation() throws {
+        func seed(
+            in context: ModelContext,
+            quantities: [Int]
+        ) throws -> (
+            key: String,
+            rows: [CollectedCard],
+            activities: [CollectionActivity],
+            operationIDs: [UUID]
+        ) {
+            let key = "sv08.5-074#normal"
+            let ledger = InventoryLedger(context: context)
+            var rows: [CollectedCard] = []
+            var activities: [CollectionActivity] = []
+            var operationIDs: [UUID] = []
+
+            for (index, quantity) in quantities.enumerated() {
+                let row = makeCollectedCard(quantity: quantity)
+                row.dateAdded = Date(timeIntervalSince1970: Double(index + 1))
+                context.insert(row)
+                let operationID = UUID()
+                guard case .appended = ledger.record(
+                    row,
+                    kind: .acquire,
+                    source: .scan,
+                    deltaQuantity: quantity,
+                    operationID: operationID,
+                    occurredAt: row.dateAdded
+                ) else {
+                    throw CollectionStoreError.ledgerConflict("fixture event was not appended")
+                }
+                let activity = CollectionActivity(
+                    card: row,
+                    source: .scan,
+                    quantity: quantity,
+                    occurredAt: row.dateAdded,
+                    kind: .added,
+                    deltaQuantity: quantity,
+                    ledgerOperationIDs: [operationID]
+                )
+                context.insert(activity)
+                rows.append(row)
+                activities.append(activity)
+                operationIDs.append(operationID)
+            }
+            try context.save()
+            return (key, rows, activities, operationIDs)
+        }
+
+        func assertLogicalPosition(
+            in context: ModelContext,
+            key: String,
+            quantity: Int,
+            file: StaticString = #filePath,
+            line: UInt = #line
+        ) throws {
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+            let projection = LogicalCollection.project(
+                cards: rows,
+                ledger: InventoryLedger(context: context)
+            )
+            XCTAssertEqual(rows.count, 1, file: file, line: line)
+            XCTAssertEqual(projection.positions.count, 1, file: file, line: line)
+            XCTAssertEqual(projection.byKey[key]?.quantity, quantity, file: file, line: line)
+            let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+            XCTAssertEqual(
+                InventoryLedger.quantities(from: events),
+                [key: quantity],
+                file: file,
+                line: line
+            )
+        }
+
+        do {
+            let context = try makeContext()
+            let seeded = try seed(in: context, quantities: [1, 2])
+            let mutation = try CollectionStore(context: context).add(
+                identifiedCard(),
+                resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                source: .scan
+            )
+            XCTAssertFalse(mutation.didInsert)
+            try assertLogicalPosition(in: context, key: seeded.key, quantity: 4)
+        }
+
+        do {
+            let context = try makeContext()
+            let seeded = try seed(in: context, quantities: [1, 2])
+            let store = CollectionStore(context: context)
+            let representative = try XCTUnwrap(store.card(forKey: seeded.key))
+            try store.setQuantity(7, for: representative)
+            try assertLogicalPosition(in: context, key: seeded.key, quantity: 7)
+        }
+
+        do {
+            let context = try makeContext()
+            let seeded = try seed(in: context, quantities: [1, 2])
+            let representative = try XCTUnwrap(
+                CollectionStore(context: context).card(forKey: seeded.key)
+            )
+            _ = try CollectionStore(context: context).remove(representative)
+            XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+            XCTAssertTrue(
+                InventoryLedger.quantities(
+                    from: try context.fetch(FetchDescriptor<InventoryEvent>())
+                ).isEmpty
+            )
+        }
+
+        do {
+            let context = try makeContext()
+            let seeded = try seed(in: context, quantities: [1, 2])
+            let mutation = CollectionMutation(
+                collectionKey: seeded.key,
+                activityID: seeded.activities[0].id,
+                didInsert: false,
+                ledgerOperationIDs: [seeded.operationIDs[0]]
+            )
+            try CollectionStore(context: context).undo(mutation)
+            try assertLogicalPosition(in: context, key: seeded.key, quantity: 2)
+        }
+
+        do {
+            let context = try makeContext()
+            let seeded = try seed(in: context, quantities: [1, 2])
+            let removedRow = seeded.rows[0]
+            removedRow.quantity = 0
+            seeded.activities[0].resolvedQuantity = 1
+            let removalOperationID = UUID()
+            guard case .appended = InventoryLedger(context: context).record(
+                removedRow,
+                kind: .dispose,
+                source: .correction,
+                deltaQuantity: -1,
+                operationID: removalOperationID
+            ) else {
+                throw CollectionStoreError.ledgerConflict("fixture removal was not appended")
+            }
+            var snapshot = RemovedCardSnapshot(card: removedRow, quantity: 1)
+            snapshot.operationID = removalOperationID
+            let removal = CollectionActivity(
+                card: removedRow,
+                source: .correction,
+                quantity: 1,
+                kind: .removed,
+                deltaQuantity: -1,
+                ledgerOperationIDs: [removalOperationID],
+                removalSnapshotData: try JSONEncoder().encode(snapshot)
+            )
+            context.insert(removal)
+            try context.save()
+
+            try CollectionStore(context: context).restore(removal)
+            try assertLogicalPosition(in: context, key: seeded.key, quantity: 3)
+        }
     }
 
     private func makeContext() throws -> ModelContext {
@@ -568,7 +800,9 @@ final class CollectionActivityHistoryTests: XCTestCase {
             CollectedCard.self,
             PriceRecord.self,
             CollectionActivity.self,
-            InventoryEvent.self
+            InventoryEvent.self,
+            PriceObservation.self,
+            PriceCheckDay.self
         ])
         let container = try ModelContainer(
             for: schema,

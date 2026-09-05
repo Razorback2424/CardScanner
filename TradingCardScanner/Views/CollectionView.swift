@@ -119,22 +119,28 @@ struct CollectionView: View {
                 }
             }
         }
+        // The option tallies each walk every entry and sort the result, and a
+        // modifier's arguments are evaluated whenever `body` runs — so closed or
+        // not, they were paid for on every keystroke in the search field. Behind
+        // the presentation flag they are computed only when the inspector is up.
         .inspector(isPresented: $isShowingFilters) {
-            CollectionFilterSheet(
-                isPresented: $isShowingFilters,
-                filters: $filters,
-                sort: $sort,
-                setOptions: setOptions(snapshot),
-                finishOptions: finishOptions(snapshot),
-                treatmentOptions: treatmentOptions(snapshot),
-                gradingCompanyOptions: gradingCompanyOptions(snapshot),
-                gradeOptions: gradeOptions(snapshot)
-            )
+            if isShowingFilters {
+                CollectionFilterSheet(
+                    isPresented: $isShowingFilters,
+                    filters: $filters,
+                    sort: $sort,
+                    setOptions: setOptions(snapshot),
+                    finishOptions: finishOptions(snapshot),
+                    treatmentOptions: treatmentOptions(snapshot),
+                    gradingCompanyOptions: gradingCompanyOptions(snapshot),
+                    gradeOptions: gradeOptions(snapshot)
+                )
+            }
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
-        .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
+        .task { await catalogNormalizer.normalizeImportedCards(in: modelContext.container) }
         .task(id: searchText) {
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }
@@ -292,6 +298,7 @@ struct CollectionView: View {
                             } label: {
                                 CollectionCardTile(
                                     card: entry.card,
+                                    quantity: entry.row.quantity,
                                     price: entry.row.price,
                                     unpricedReason: entry.unpricedReason,
                                     artworkReason: entry.artworkReason
@@ -679,6 +686,11 @@ struct CollectionView: View {
 
 private struct CollectionCardTile: View {
     let card: CollectedCard
+    /// The projected quantity for the position, not `card.quantity`. The card
+    /// is one physical row, and CloudKit can legitimately split a position
+    /// across several of them; the badge and the detail view must agree about
+    /// how many are owned.
+    let quantity: Int
     let price: PriceDisplay
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
@@ -699,8 +711,8 @@ private struct CollectionCardTile: View {
             .aspectRatio(5.0 / 7.0, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(alignment: .topTrailing) {
-                if card.quantity > 1 {
-                    Text("×\(card.quantity)")
+                if quantity > 1 {
+                    Text("×\(quantity)")
                         .font(.caption.bold())
                         .padding(.horizontal, 7)
                         .padding(.vertical, 4)
@@ -882,11 +894,15 @@ private struct CollectionCardArtwork: View {
     let fullSizeURL: URL?
     let placeholderText: String?
 
-    private var primaryURL: URL? { fullSizeURL ?? thumbnailURL }
+    /// The grid draws these at tile size, so the thumbnail is the correct
+    /// request: preferring the full-size scan fetched megabytes per tile for no
+    /// visible gain. The larger asset stays as the fallback, which is what keeps
+    /// the printings described above off a permanent placeholder.
+    private var primaryURL: URL? { thumbnailURL ?? fullSizeURL }
 
     private var fallbackURL: URL? {
-        guard let thumbnailURL, thumbnailURL != primaryURL else { return nil }
-        return thumbnailURL
+        guard let fullSizeURL, fullSizeURL != primaryURL else { return nil }
+        return fullSizeURL
     }
 
     var body: some View {

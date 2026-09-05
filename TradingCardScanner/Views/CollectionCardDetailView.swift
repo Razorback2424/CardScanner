@@ -7,6 +7,7 @@ struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Bindable var card: CollectedCard
+    @Query private var collectionCards: [CollectedCard]
     @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
     private var collectionActivities: [CollectionActivity]
     let price: PriceDisplay
@@ -163,55 +164,48 @@ struct CollectionCardDetailView: View {
             activityHistory
 
             if isLogicalConflict {
-                VStack(alignment: .leading, spacing: 8) {
-                    LabeledContent("Quantity", value: "\(displayedQuantity)")
-                    Label(
-                        "This position has multiple synced rows. Reconcile it in Collection before editing.",
-                        systemImage: "exclamationmark.triangle"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                }
-                .font(.subheadline)
-                .padding(14)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-            } else {
-                Stepper(
-                    "Quantity: \(displayedQuantity)",
-                    value: Binding(
-                        get: { card.quantity },
-                        set: { newQuantity in
-                            do {
-                                try CollectionStore(context: modelContext).setQuantity(
-                                    newQuantity,
-                                    for: card
-                                )
-                            } catch {
-                                errorMessage = error.localizedDescription
-                            }
-                        }
-                    ),
-                    in: 1...999
+                Label(
+                    "Multiple synced rows will be merged automatically when this position changes.",
+                    systemImage: "arrow.triangle.merge"
                 )
-                    .padding(.horizontal)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
 
-                Button("Remove from Collection", role: .destructive) {
-                    isConfirmingRemoval = true
-                }
-                .buttonStyle(.bordered)
-                .confirmationDialog(
-                    "Remove \(card.name)?",
-                    isPresented: $isConfirmingRemoval,
-                    titleVisibility: .visible
-                ) {
-                    Button("Remove", role: .destructive) {
-                        removeCard()
+            Stepper(
+                "Quantity: \(displayedQuantity)",
+                value: Binding(
+                    get: { displayedQuantity },
+                    set: { newQuantity in
+                        do {
+                            try CollectionStore(context: modelContext).setQuantity(
+                                newQuantity,
+                                for: card
+                            )
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text(removalMessage)
+                ),
+                in: 1...999
+            )
+                .padding(.horizontal)
+
+            Button("Remove from Collection", role: .destructive) {
+                isConfirmingRemoval = true
+            }
+            .buttonStyle(.bordered)
+            .confirmationDialog(
+                "Remove \(card.name)?",
+                isPresented: $isConfirmingRemoval,
+                titleVisibility: .visible
+            ) {
+                Button("Remove", role: .destructive) {
+                    removeCard()
                 }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(removalMessage)
             }
         }
     }
@@ -311,18 +305,18 @@ struct CollectionCardDetailView: View {
     }
 
     private var displayedQuantity: Int {
-        // A logical conflict is read-only, so its projected quantity is the
-        // authoritative snapshot. For an editable single-row position, keep
-        // reading the live SwiftData value; otherwise the Stepper and holding
-        // value would remain stuck at the quantity from when the route opened.
-        isLogicalConflict ? (logicalQuantity ?? card.quantity) : card.quantity
+        // The projected quantity is authoritative while duplicate rows are
+        // being healed. Recompute it from the query rather than retaining the
+        // route-time snapshot: the first Stepper tap merges the physical rows,
+        // and the next tap must start from the merged quantity.
+        guard isLogicalConflict else { return card.quantity }
+        let projection = LogicalCollection.project(cards: collectionCards) { $0.priceKey }
+        return projection.byKey[card.collectionKey]?.quantity
+            ?? logicalQuantity
+            ?? card.quantity
     }
 
     private func removeCard() {
-        guard !isLogicalConflict else {
-            errorMessage = "This position has multiple synced rows. Reconcile it in Collection before removing it."
-            return
-        }
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
@@ -788,6 +782,18 @@ enum CollectionArtworkStore {
             .appendingPathComponent("CollectionArtwork", isDirectory: true)
     }
 
+    /// Decoded artwork, kept in memory because the collection grid asks for it
+    /// from inside `body`: every tile pass was re-reading and re-decompressing
+    /// the file on the main thread, and scrolling back over a tile paid for it
+    /// again. `save` mints a fresh UUID filename for every write, so an entry
+    /// can never go stale under its key and only deletion has to evict.
+    private static let imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 60
+        cache.totalCostLimit = 48 * 1024 * 1024
+        return cache
+    }()
+
     static func save(_ data: Data) -> String? {
         guard UIImage(data: data) != nil, let directory else { return nil }
         do {
@@ -805,11 +811,19 @@ enum CollectionArtworkStore {
 
     static func image(filename: String?) -> UIImage? {
         guard let filename, let directory else { return nil }
-        return UIImage(contentsOfFile: directory.appendingPathComponent(filename).path)
+        let cacheKey = filename as NSString
+        if let cached = imageCache.object(forKey: cacheKey) { return cached }
+        guard let image = UIImage(
+            contentsOfFile: directory.appendingPathComponent(filename).path
+        ) else { return nil }
+        let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        imageCache.setObject(image, forKey: cacheKey, cost: cost)
+        return image
     }
 
     static func remove(filename: String?) {
         guard let filename, let directory else { return }
+        imageCache.removeObject(forKey: filename as NSString)
         try? FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
     }
 }

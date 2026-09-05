@@ -167,12 +167,6 @@ enum PortfolioReplaySnapshotBuilder {
             defects.append(Self.unreadableDefect(for: "CollectionActivity", error: error))
         }
 
-        let events = reading.events.map { PortfolioEngine.entry(from: $0) }
-        let activityDefects = CollectionActivity.integrityDefects(
-            activities: activities,
-            events: reading.events
-        )
-
         // One materialisation of each table, reused. Fetching the observation
         // log twice — once to replay and once to value the collection — doubled
         // the dominant cost of the whole recomputation.
@@ -208,6 +202,24 @@ enum PortfolioReplaySnapshotBuilder {
         let projection = LogicalCollection.project(cards: cards) {
             valuations.priceStorageKey(for: $0)
         }
+        // A newer device can rekey treatment-qualified ledger rows before an
+        // older device receives the matching collection-row migration. Treat
+        // that canonical event key as an alias of the still-present legacy
+        // position until the next write heals the physical row.
+        let collectionKeyAliases = LogicalCollection.readThroughAliases(
+            projection: projection,
+            eventKeys: Set(reading.events.map(\.collectionKey))
+        )
+        let events = reading.events.map { event -> LedgerEntry in
+            var entry = PortfolioEngine.entry(from: event)
+            entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
+            return entry
+        }
+        let activityDefects = CollectionActivity.integrityDefects(
+            activities: activities,
+            events: reading.events,
+            collectionKeyAliases: collectionKeyAliases
+        )
 
         let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
         let coverage: PortfolioCoverageIndex
@@ -352,21 +364,17 @@ actor PortfolioComputationActor {
         // for the whole session; running it here closes it on the pass that
         // would otherwise report the gap, and off the main actor, which is the
         // reason this type exists.
-        let observations: [PriceObservation]
-        do {
-            let existing = try modelContext.fetch(
-                FetchDescriptor<PriceObservation>(
-                    sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
-                )
-            )
-            observations = PriceObservationLog(context: modelContext)
-                .backfillFromRecordsAndReturnObservations(
-                    existingObservations: existing
-                )
-        } catch {
-            // Preserve the builder's unreadable-store diagnosis if the initial
-            // bulk read fails; passing an empty array would incorrectly turn a
-            // failed fetch into a successful empty log.
+        // The log performs its absence check and initial fetch while holding a
+        // process-wide backfill lock. That lock must cover the fetch itself;
+        // fetching here first would let a second context carry a stale empty
+        // snapshot into the critical section.
+        let observations = PriceObservationLog(context: modelContext)
+            .backfillFromRecordsAndReturnObservations()
+        if observations.isEmpty {
+            // An empty result may be a genuinely empty log or an unreadable
+            // table. Let the builder perform its normal fetch so the latter is
+            // surfaced as an `.unreadableStore` defect rather than hidden by an
+            // explicitly supplied empty array.
             return PortfolioReplaySnapshotBuilder.compute(
                 context: modelContext,
                 epoch: epoch,
