@@ -598,7 +598,7 @@ final class PortfolioEngine: ObservableObject {
                 corrections: day.corrections,
                 newlyAddedValue: day.newlyAddedValue,
                 pricingAdjustment: day.pricingAdjustment,
-                carriedForwardValue: day.carriedForwardValue,
+                carriedForwardValue: coverage.carriedForwardValue,
                 coverage: coverage.state,
                 refreshedInstrumentCount: coverage.refreshed,
                 carriedForwardInstrumentCount: coverage.carriedForward,
@@ -652,6 +652,7 @@ final class PortfolioEngine: ObservableObject {
         var state: PortfolioCoverageState
         var refreshed: Int
         var carriedForward: Int
+        var carriedForwardValue: Money
     }
 
     private static func resolvedCoverage(
@@ -663,13 +664,15 @@ final class PortfolioEngine: ObservableObject {
             return ResolvedCoverage(
                 state: existing.coverageState,
                 refreshed: existing.refreshedInstrumentCount,
-                carriedForward: existing.carriedForwardInstrumentCount
+                carriedForward: existing.carriedForwardInstrumentCount,
+                carriedForwardValue: existing.carriedForwardValue
             )
         }
         return ResolvedCoverage(
             state: day.coverage.state,
             refreshed: day.coverage.refreshed,
-            carriedForward: day.coverage.carriedForward
+            carriedForward: day.coverage.carriedForward,
+            carriedForwardValue: day.carriedForwardValue
         )
     }
 
@@ -687,7 +690,7 @@ final class PortfolioEngine: ObservableObject {
             && stored.correctionContribution == day.corrections
             && stored.newlyAddedValue == day.newlyAddedValue
             && stored.pricingAdjustment == day.pricingAdjustment
-            && stored.carriedForwardValue == day.carriedForwardValue
+            && stored.carriedForwardValue == coverage.carriedForwardValue
             && stored.coverageState == coverage.state
             && stored.refreshedInstrumentCount == coverage.refreshed
             && stored.carriedForwardInstrumentCount == coverage.carriedForward

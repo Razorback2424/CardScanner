@@ -263,7 +263,8 @@ final class PortfolioReconciliationTests: XCTestCase {
     private func replayDay(
         _ day: Date,
         closeValue: Double,
-        coverage: PortfolioCoverage
+        coverage: PortfolioCoverage,
+        carriedForwardValue: Money = .zero
     ) -> PortfolioReplayDay {
         PortfolioReplayDay(
             displayDay: day,
@@ -279,7 +280,7 @@ final class PortfolioReconciliationTests: XCTestCase {
             pricedPositionCount: 1,
             excludedQuantity: 0,
             coverage: coverage,
-            carriedForwardValue: .zero,
+            carriedForwardValue: carriedForwardValue,
             contributions: [:],
             movementDetails: [:],
             hasEligibleMarketMovement: false
@@ -317,7 +318,12 @@ final class PortfolioReconciliationTests: XCTestCase {
         // Published while the evidence still existed.
         _ = PortfolioEngine.publish(
             [
-                replayDay(old, closeValue: 10, coverage: measured),
+                replayDay(
+                    old,
+                    closeValue: 10,
+                    coverage: measured,
+                    carriedForwardValue: money(2)
+                ),
                 replayDay(recent, closeValue: 20, coverage: measured)
             ],
             timeZone: zone,
@@ -328,7 +334,12 @@ final class PortfolioReconciliationTests: XCTestCase {
         // The rows are pruned; the replay now derives nothing for the old day.
         _ = PortfolioEngine.publish(
             [
-                replayDay(old, closeValue: 10, coverage: pruned),
+                replayDay(
+                    old,
+                    closeValue: 10,
+                    coverage: pruned,
+                    carriedForwardValue: money(9)
+                ),
                 replayDay(recent, closeValue: 20, coverage: measured)
             ],
             timeZone: zone,
@@ -344,11 +355,17 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(oldClose.refreshedInstrumentCount, 3)
         XCTAssertEqual(oldClose.carriedForwardInstrumentCount, 1)
         XCTAssertEqual(oldClose.coverageState, .partial)
+        XCTAssertEqual(oldClose.carriedForwardValue, money(2))
 
         // A late inventory event genuinely revises the same pruned day.
         _ = PortfolioEngine.publish(
             [
-                replayDay(old, closeValue: 12, coverage: pruned),
+                replayDay(
+                    old,
+                    closeValue: 12,
+                    coverage: pruned,
+                    carriedForwardValue: money(9)
+                ),
                 replayDay(recent, closeValue: 20, coverage: measured)
             ],
             timeZone: zone,
@@ -366,6 +383,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(revised.closeValue, money(12), "value still replays from events")
         XCTAssertEqual(revised.refreshedInstrumentCount, 3, "coverage is carried, not recomputed")
         XCTAssertEqual(revised.carriedForwardInstrumentCount, 1)
+        XCTAssertEqual(revised.carriedForwardValue, money(2))
 
         // Inside the window nothing is carried: a real coverage change is a
         // real revision.
