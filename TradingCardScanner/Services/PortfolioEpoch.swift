@@ -97,6 +97,16 @@ enum PortfolioEpoch {
     ) throws -> Date {
         let ledger = InventoryLedger(context: context)
 
+        // Pinned here, before any early return, because *every* path below can
+        // open the books: a device that inherits a synced ledger sets the epoch
+        // without writing a baseline, and used to leave the zone unpinned. Each
+        // reader then falls back to `TimeZone.current`, so day boundaries would
+        // follow the person as they travelled and silently recut closes that had
+        // already been published. This is also self-healing for a device already
+        // in that state: the epoch owner is the only thing that pins the zone,
+        // and it does so on the first launch that reaches this method.
+        _ = PortfolioCalendar.timeZone(defaults: defaults)
+
         if let existing = startedAt(context: context, defaults: defaults) {
             defaults.set(existing.timeIntervalSince1970, forKey: defaultsKey)
             return existing
@@ -133,10 +143,6 @@ enum PortfolioEpoch {
         ) {
             throw EstablishmentError.awaitingInitialSync
         }
-
-        // Pins the portfolio timezone at the same moment, so the zone and the
-        // first day boundary are established by one act rather than two.
-        _ = PortfolioCalendar.timeZone(defaults: defaults)
 
         do {
             // One baseline event per *position*, not per stored row.

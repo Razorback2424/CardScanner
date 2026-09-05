@@ -1091,6 +1091,50 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         )
     }
 
+    func testBackgroundStylePriceRefreshWaitsForAnAlreadyRunningNetworkMigration() async throws {
+        let context = try makeContext()
+        let gate = MagicTreatmentMigrationGate()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                await gate.markStarted()
+                await gate.waitUntilOpen()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        // Populate the cached local report first. This is the state that used
+        // to let the local core return before noticing the active network task.
+        _ = await coordinator.runLocal(in: context)
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<10_000 {
+            if await gate.started() { break }
+            await Task.yield()
+        }
+        let networkStarted = await gate.started()
+        XCTAssertTrue(networkStarted)
+
+        var operationEntered = false
+        let refresh = Task { @MainActor in
+            await coordinator.withPriceRefresh(
+                in: context,
+                runsNetworkMigration: false
+            ) {
+                operationEntered = true
+            }
+        }
+        for _ in 0..<100 {
+            await Task.yield()
+        }
+        XCTAssertFalse(operationEntered)
+
+        await gate.open()
+        _ = await migration.value
+        await refresh.value
+        XCTAssertTrue(operationEntered)
+    }
+
     func testTreatmentMigrationWaitsForAnActivePriceRefresh() async throws {
         let context = try makeContext()
         let refreshGate = MagicTreatmentMigrationGate()
@@ -1824,6 +1868,17 @@ final class MagicTreatmentMigrationTests: XCTestCase {
     func testMigrationClearsOnlyStaleTreatmentVendorNegatives() async throws {
         let context = try makeContext()
         let date = Date(timeIntervalSince1970: 4_000)
+        // The cleanup is part of the gated migration phase. Keep one pending
+        // Magic row in the fixture so this test exercises that phase instead
+        // of the steady-state no-op path.
+        context.insert(
+            makeRow(
+                key: "magic:stale-negative-cleanup#foil",
+                providerID: "stale-negative-cleanup",
+                quantity: 1,
+                treatments: []
+            )
+        )
         let treated = ProductIdentity(
             key: "magic:printing:foil:treatment=surgefoil",
             vendor: .justTCG,
@@ -1848,6 +1903,36 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertEqual(treated.attemptVersion, ProductIdentity.currentAttemptVersion)
         XCTAssertEqual(generic.unmatchedAt, date)
         XCTAssertEqual(generic.attemptVersion, 1)
+    }
+
+    func testSteadyStateMigrationLeavesTreatmentVendorNegativesUntouched() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 4_100)
+        let currentRow = makeRow(
+            key: "magic:steady-state-negative#foil",
+            providerID: "steady-state-negative",
+            quantity: 1,
+            treatments: []
+        )
+        currentRow.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+        let treated = ProductIdentity(
+            key: "magic:steady-state:foil:treatment=surgefoil",
+            vendor: .justTCG,
+            unmatchedAt: date,
+            attemptVersion: 1,
+            magicTreatmentIDs: ["surgefoil"]
+        )
+        context.insert(currentRow)
+        context.insert(treated)
+        try context.save()
+
+        let report = await MagicTreatmentMigration.runLocal(in: context, now: date)
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertEqual(report.examinedRows, 0)
+        XCTAssertEqual(report.clearedVendorNegatives, 0)
+        XCTAssertEqual(treated.unmatchedAt, date)
+        XCTAssertEqual(treated.attemptVersion, 1)
     }
 
     func testSlice9MigrationConvergesAcrossTwoDevicesWithoutChangingQuantity() async throws {

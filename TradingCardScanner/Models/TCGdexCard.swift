@@ -150,6 +150,7 @@ struct CardMarketPrice: Identifiable, Equatable, Sendable {
     let variantID: String?
     let label: String
     let value: Double
+    let currencyCode: String
 
     var id: String { label }
 }

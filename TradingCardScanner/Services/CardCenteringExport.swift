@@ -32,12 +32,20 @@ enum CardCenteringExport {
     /// The centering figures carry a slash, which a path component cannot, so it
     /// becomes a hyphen rather than being dropped — "52.3-47.7" still reads as
     /// the ratio it came from.
-    static func filename(for measurement: CardCenteringMeasurement) -> String {
+    static func filename(
+        for measurement: CardCenteringMeasurement,
+        rotationDegrees: Double = 0
+    ) -> String {
         let descriptor = [measurement.leftRightCentering, measurement.topBottomCentering]
             .filter { $0 != "—" }
             .map { $0.replacingOccurrences(of: " / ", with: "-") }
             .joined(separator: " ")
-        return descriptor.isEmpty ? "Card Centering.png" : "Card Centering \(descriptor).png"
+        let rotation = abs(rotationDegrees) >= 0.005
+            ? String(format: " rotated %.2f°", rotationDegrees)
+            : ""
+        return descriptor.isEmpty
+            ? "Card Centering\(rotation).png"
+            : "Card Centering \(descriptor)\(rotation).png"
     }
 
     static func render(

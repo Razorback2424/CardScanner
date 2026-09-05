@@ -646,6 +646,9 @@ final class PricingTests: XCTestCase {
 
         XCTAssertEqual(price.currencyCode, "EUR")
         XCTAssertNotEqual(price.currencyCode, "USD")
+
+        let published = try promoCard().marketPrices
+        XCTAssertEqual(published.first?.currencyCode, "EUR")
     }
 
     func testTCGplayerStillWinsWhenItHasAPriceForTheVariant() throws {

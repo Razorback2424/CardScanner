@@ -293,6 +293,24 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testSealedSearchCanLoadOnlyTheSelectedGame() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let client = RecordingJustTCGProviding()
+        let model = SealedBrowseModel(
+            client: client,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+
+        await model.search(query: "box", games: [.magic])
+
+        XCTAssertEqual(Set(model.searchLanes.keys), Set([CardGame.magic]))
+        let searchedGames = await client.sealedSearchGames()
+        XCTAssertEqual(searchedGames, [.magic])
+    }
+
+    @MainActor
     func testBrowseSearchDebouncesBeforeStartingBothSearchLanes() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -305,6 +323,7 @@ final class BrowseFeatureTests: XCTestCase {
         let catalog = EmptyBrowseCatalog()
         let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
 
+        model.searchScope = .all
         model.searchText = "box"
         try await Task.sleep(for: .milliseconds(150))
         let earlyCardSearchCount = await catalog.searchCount()
@@ -319,11 +338,74 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(sealedSearchCount, CardGame.allCases.count)
     }
 
+    @MainActor
+    func testBrowseCardsScopeDoesNotStartSealedSearch() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let sealedClient = RecordingJustTCGProviding()
+        let sealedModel = SealedBrowseModel(
+            client: sealedClient,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.searchScope = .cards
+        model.searchText = "box"
+        let cardSearchStarted = await waitUntil {
+            await catalog.searchCount() == CardGame.allCases.count
+        }
+        XCTAssertTrue(cardSearchStarted)
+
+        let cardSearchCount = await catalog.searchCount()
+        let sealedSearchCount = await sealedClient.sealedSearchCount()
+        XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
+        XCTAssertEqual(sealedSearchCount, 0)
+    }
+
+    @MainActor
+    func testBrowseSealedScopePassesTheSelectedGameAndSkipsCardSearch() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let sealedClient = RecordingJustTCGProviding()
+        let sealedModel = SealedBrowseModel(
+            client: sealedClient,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.selectedGame = .magic
+        model.searchScope = .sealed
+        model.searchText = "box"
+        let sealedSearchStarted = await waitUntil {
+            await sealedClient.sealedSearchCount() == 1
+        }
+        XCTAssertTrue(sealedSearchStarted)
+
+        let cardSearchCount = await catalog.searchCount()
+        let searchedGames = await sealedClient.sealedSearchGames()
+        XCTAssertEqual(cardSearchCount, 0)
+        XCTAssertEqual(searchedGames, [.magic])
+    }
+
     private func makeTemporaryCacheDirectory() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
+    }
+
+    private func waitUntil(
+        _ condition: @escaping () async -> Bool
+    ) async -> Bool {
+        for _ in 0..<300 {
+            if await condition() { return true }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        return await condition()
     }
 }
 
@@ -1882,6 +1964,40 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let counts = await secondSource.requestCounts()
         XCTAssertEqual(counts.primary, 0)
         XCTAssertEqual(counts.fallback, 0)
+    }
+
+    func testSessionCatalogCachePreservesOriginalResolutionTime() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let source = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(setID: "sv10", localID: "085")),
+            fallback: .failure(.badResponse)
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+
+        let first = try await catalog.resolution(for: identifier)
+        let second = try await catalog.resolution(for: identifier)
+
+        XCTAssertEqual(first.retrievedAt, second.retrievedAt)
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 1)
     }
 
     private func makeTCGdexCard(setID: String, localID: String) throws -> TCGdexCard {

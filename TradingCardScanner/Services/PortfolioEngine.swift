@@ -161,7 +161,6 @@ final class PortfolioEngine: ObservableObject {
             recompute(context: context, now: now)
             return
         }
-        PriceObservationLog(context: context).backfillFromRecords(receivedAt: now)
         recompute(context: context, now: now)
     }
 
@@ -169,7 +168,7 @@ final class PortfolioEngine: ObservableObject {
     /// Cheap enough to ask on every foreground.
     func needsRecomputeForNewDay(now: Date = .now) -> Bool {
         guard let lastComputedDay else { return true }
-        let timeZone = PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         return PortfolioCalendar.day(containing: now, in: timeZone) != lastComputedDay
     }
 
@@ -210,7 +209,7 @@ final class PortfolioEngine: ObservableObject {
             status = .computing
         }
 
-        let timeZone = PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
 
         let container = context.container
         let epoch = PortfolioEpoch.startedAt() ?? now
@@ -252,7 +251,6 @@ final class PortfolioEngine: ObservableObject {
         do {
             try PortfolioEpoch.establishIfNeeded(context: context, at: now)
             needsEpochRetry = false
-            PriceObservationLog(context: context).backfillFromRecords(receivedAt: now)
         } catch {
             // Still waiting, or still failing. Either way the recomputation
             // below proceeds and shows the collection's current value.
@@ -473,11 +471,13 @@ final class PortfolioEngine: ObservableObject {
     /// whole phase is built to catch.
     nonisolated static func reconcile(
         projection: LogicalCollectionProjection,
-        events: [LedgerEntry]
+        events: [LedgerEntry],
+        collectionKeyAliases: [String: String] = [:]
     ) -> [LedgerIntegrityDefect] {
         var ledgerQuantities: [String: Int] = [:]
         for event in events {
-            ledgerQuantities[event.collectionKey, default: 0] += event.deltaQuantity
+            let key = collectionKeyAliases[event.collectionKey] ?? event.collectionKey
+            ledgerQuantities[key, default: 0] += event.deltaQuantity
         }
         let collectionQuantities = projection.quantities
 

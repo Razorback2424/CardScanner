@@ -74,11 +74,37 @@ extension CollectionStoreError: LocalizedError {
 /// Auto-add means mutations now happen without a confirmation step, so the
 /// upsert, the undo, and the after-the-fact variant correction have to be one
 /// mechanism rather than three lookalike blocks scattered through views.
-@MainActor
+///
+/// Deliberately not `@MainActor`, and for the same reason `InventoryLedger`,
+/// `PriceStore`, `PriceObservationLog` and `QuoteCache` are not: the real
+/// invariant is *a store may only be used on whatever owns its `ModelContext`*,
+/// which main-actor isolation cannot express and only approximates. Annotating
+/// it forced CSV import — which owns an isolated context precisely so a large
+/// write stays off the main actor — to keep its own transcription of identity
+/// merging, and the two copies had already drifted apart. One implementation of
+/// the ownership invariant is worth more than an annotation that describes the
+/// wrong half of it.
 struct CollectionStore {
     let context: ModelContext
 
+    private static let existingCollectionBackfillVersionKey =
+        "collectionActivity.existingCollectionBackfillVersion"
+    private static let existingCollectionBackfillVersion = 1
+
     private var ledger: InventoryLedger { InventoryLedger(context: context) }
+
+    /// Read-only lineage materialized by a history screen. The write path keeps
+    /// its strict per-operation fetches, while presentation can validate every
+    /// row against one snapshot of the events already observed by SwiftUI.
+    struct LineageIndex {
+        let eventsByOperationID: [UUID: [InventoryEvent]]
+        let reversedEventIDs: Set<UUID>
+
+        init(events: [InventoryEvent]) {
+            self.eventsByOperationID = Dictionary(grouping: events, by: \.operationID)
+            self.reversedEventIDs = Set(events.compactMap(\.reversesEventID))
+        }
+    }
 
     /// Which flow a source represents.
     ///
@@ -128,6 +154,18 @@ struct CollectionStore {
     /// once, so opening the history screen cannot create one transaction per row.
     func backfillExistingCollectionIfNeeded() throws {
         do {
+            let hasLegacyActivities = try context.fetchCount(
+                FetchDescriptor<CollectionActivity>(
+                    predicate: #Predicate { $0.kindRaw == "" }
+                )
+            ) > 0
+            let hasCompletedWatermark = UserDefaults.standard.integer(
+                forKey: Self.existingCollectionBackfillVersionKey
+            ) >= Self.existingCollectionBackfillVersion
+            if !hasLegacyActivities, hasCompletedWatermark {
+                return
+            }
+
             let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
             var didChange = false
 
@@ -169,6 +207,10 @@ struct CollectionStore {
             }
 
             if didChange { try commit() }
+            UserDefaults.standard.set(
+                Self.existingCollectionBackfillVersion,
+                forKey: Self.existingCollectionBackfillVersionKey
+            )
         } catch {
             context.rollback()
             throw error
@@ -176,11 +218,14 @@ struct CollectionStore {
     }
 
     func card(forKey key: String) -> CollectedCard? {
-        var descriptor = FetchDescriptor<CollectedCard>(
+        let descriptor = FetchDescriptor<CollectedCard>(
             predicate: #Predicate { $0.collectionKey == key }
         )
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        // The projection's rule, not a second one: a read must name the row a
+        // write would keep, or the two disagree about which duplicate survives.
+        return LogicalCollection.chooseRepresentative(
+            from: (try? context.fetch(descriptor)) ?? []
+        )
     }
 
     private func cards(forKey key: String) throws -> [CollectedCard] {
@@ -199,6 +244,295 @@ struct CollectionStore {
         )
     }
 
+    /// Finds the one treatment-qualified identity that a newer device may have
+    /// written into the synced ledger while this device still has the old row.
+    /// A legacy finish can map to more than one treatment, so ambiguity is
+    /// intentionally left unresolved rather than guessed into the wrong card.
+    private func canonicalKeyForLegacyRow(_ legacyKey: String) throws -> String? {
+        // Pokémon, sealed, and imported keys cannot have Magic treatment
+        // aliases. Avoid fetching the entire ownership ledger for every
+        // ordinary scan just to prove that fact.
+        guard legacyKey.lowercased().hasPrefix("magic:") else { return nil }
+        // Only the treatment-free shape has a canonical counterpart to look
+        // for. A key that already carries its own `#treatment=` marker *is* the
+        // canonical form, and `legacyCollectionKeys` is non-empty for exactly
+        // that case — so this guard asks whether the argument is still legacy.
+        guard MagicTreatmentKeyCodec.legacyCollectionKeys(for: legacyKey).isEmpty else {
+            return nil
+        }
+        // A canonical key is this key with one or more `#treatment=` components
+        // spliced in ahead of any legacy Pokémon print-run suffix, so every
+        // candidate begins with this prefix. Narrowing on it keeps an ordinary
+        // write from materialising three whole tables.
+        let canonicalPrefix = String(legacyKey.prefix { $0 != "@" }) + "#treatment="
+        let rowKeys = try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey.starts(with: canonicalPrefix) }
+            )
+        ).map(\.collectionKey)
+        let activityKeys = try context.fetch(
+            FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.collectionKey.starts(with: canonicalPrefix) }
+            )
+        ).map(\.collectionKey)
+        let eventKeys = try context.fetch(
+            FetchDescriptor<InventoryEvent>(
+                predicate: #Predicate { $0.collectionKey.starts(with: canonicalPrefix) }
+            )
+        ).map(\.collectionKey)
+        // The prefix only narrows the search. The codec still decides identity,
+        // so a key that merely looks similar can never be adopted.
+        let candidates = Set(
+            (rowKeys + activityKeys + eventKeys).filter { canonicalKey in
+                MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey)
+                    .contains(legacyKey)
+            }
+        )
+        guard candidates.count == 1 else { return nil }
+        return candidates.first
+    }
+
+    /// Consolidates the physical rows that represent one logical position.
+    ///
+    /// CloudKit can legitimately deliver two rows for the same collection key:
+    /// each device may have passed its local uniqueness check while offline.
+    /// The projection sums those rows, so writes must use the same truth. This
+    /// helper makes one deterministic representative, retargets all durable
+    /// history and ledger rows, and deletes only the redundant collection rows.
+    /// It deliberately does not save; callers can include the merge in the
+    /// mutation transaction that caused the lookup.
+    private func mergeCollectionRows(
+        _ rows: [CollectedCard],
+        canonicalKey: String,
+        suppliedTreatmentIDs: [String] = [],
+        suppliedTreatmentQualifiers: [String: String] = [:]
+    ) throws -> CollectedCard {
+        guard let representative = LogicalCollection.chooseRepresentative(from: rows) else {
+            throw CollectionStoreError.missingDestinationRow(canonicalKey)
+        }
+
+        let sourceKeys = Set(rows.map(\.collectionKey))
+        if sourceKeys.count > 1, rows.contains(where: { $0.itemKind == .gradedCard }) {
+            // A treatment-qualified graded key can describe a different slab
+            // when the certificate/market handle is incomplete. Exact duplicate
+            // rows are still safe to consolidate, but a legacy/canonical pair
+            // must retain its explicit ambiguity until the slab is enriched.
+            throw CollectionStoreError.ledgerConflict(
+                "graded collection rows with different identities cannot be merged safely"
+            )
+        }
+        let keyTreatmentIDs = MagicTreatmentKeyCodec.collectionTreatmentIDs(from: canonicalKey)
+        let suppliedIDs = MagicTreatmentKeyCodec.storedIDs(from: suppliedTreatmentIDs)
+        let representativeIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: representative.magicTreatmentIDsRaw
+        )
+        let finalTreatmentIDs = suppliedIDs.isEmpty
+            ? (keyTreatmentIDs.isEmpty ? representativeIDs : keyTreatmentIDs)
+            : suppliedIDs
+        let finalTreatmentSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: finalTreatmentIDs))
+
+        for row in rows {
+            let rowIDs = MagicTreatmentKeyCodec.storedIDs(from: row.magicTreatmentIDsRaw)
+            let rowSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: rowIDs))
+            guard rowSet.isEmpty || rowSet == finalTreatmentSet else {
+                throw CollectionStoreError.ledgerConflict(
+                    "stored treatment ids disagree with \(canonicalKey)"
+                )
+            }
+        }
+
+        var finalQualifiers = representative.magicTreatmentQualifiers
+        for row in rows {
+            for (key, value) in row.magicTreatmentQualifiers
+                where finalTreatmentSet.contains(key) {
+                if let existing = finalQualifiers[key], existing != value {
+                    throw CollectionStoreError.ledgerConflict(
+                        "stored treatment qualifier disagrees with \(canonicalKey)"
+                    )
+                }
+                finalQualifiers[key] = value
+            }
+        }
+        for (key, value) in MagicTreatmentKeyCodec.storedQualifiers(
+            from: suppliedTreatmentQualifiers
+        ) where finalTreatmentSet.contains(key) {
+            if let existing = finalQualifiers[key], existing != value {
+                throw CollectionStoreError.ledgerConflict(
+                    "stored treatment qualifier disagrees with \(canonicalKey)"
+                )
+            }
+            finalQualifiers[key] = value
+        }
+
+        // Preserve useful fields when the deterministic representative is the
+        // older/less enriched row. The identity key and quantity remain owned by
+        // this merge, while optional metadata is filled only when absent.
+        for row in rows where row !== representative {
+            if representative.providerID.isEmpty { representative.providerID = row.providerID }
+            if representative.name.isEmpty { representative.name = row.name }
+            if representative.setName.isEmpty { representative.setName = row.setName }
+            if representative.setCode.isEmpty { representative.setCode = row.setCode }
+            if representative.cardNumber.isEmpty { representative.cardNumber = row.cardNumber }
+            if representative.rarity == nil { representative.rarity = row.rarity }
+            if representative.imageURL == nil { representative.imageURL = row.imageURL }
+            if representative.thumbnailURL == nil { representative.thumbnailURL = row.thumbnailURL }
+            if representative.userArtworkFilename == nil {
+                representative.userArtworkFilename = row.userArtworkFilename
+            }
+            if representative.variantID == nil { representative.variantID = row.variantID }
+            if representative.variantLabel == nil { representative.variantLabel = row.variantLabel }
+            if representative.catalogProviderID == nil {
+                representative.catalogProviderID = row.catalogProviderID
+            }
+            if representative.tcgplayerURL == nil { representative.tcgplayerURL = row.tcgplayerURL }
+            if representative.tcgplayerProductID == nil {
+                representative.tcgplayerProductID = row.tcgplayerProductID
+            }
+            if representative.tcgplayerSKUID == nil { representative.tcgplayerSKUID = row.tcgplayerSKUID }
+            if representative.justTCGCardID == nil { representative.justTCGCardID = row.justTCGCardID }
+            if representative.justTCGVariantID == nil {
+                representative.justTCGVariantID = row.justTCGVariantID
+            }
+            if representative.justTCGAPIVersion == nil {
+                representative.justTCGAPIVersion = row.justTCGAPIVersion
+            }
+            if representative.gradingCompanyRaw == nil {
+                representative.gradingCompanyRaw = row.gradingCompanyRaw
+            }
+            if representative.gradeRaw == nil { representative.gradeRaw = row.gradeRaw }
+            if representative.gradeLabel == nil { representative.gradeLabel = row.gradeLabel }
+            if representative.gradingQualifier == nil {
+                representative.gradingQualifier = row.gradingQualifier
+            }
+            if representative.certificationNumber == nil {
+                representative.certificationNumber = row.certificationNumber
+            }
+            if representative.marketRegionRaw == nil { representative.marketRegionRaw = row.marketRegionRaw }
+            if representative.variantResolutionRaw == nil {
+                representative.variantResolutionRaw = row.variantResolutionRaw
+            }
+            if representative.identityResolutionRaw.isEmpty {
+                representative.identityResolutionRaw = row.identityResolutionRaw
+            }
+            if representative.setReleaseOrder == 0 {
+                representative.setReleaseOrder = row.setReleaseOrder
+            }
+            if representative.itemKindRaw == CollectionItemKind.rawCard.rawValue,
+               row.itemKindRaw != CollectionItemKind.rawCard.rawValue {
+                representative.itemKindRaw = row.itemKindRaw
+            }
+            if representative.magicContentKindRaw == MagicContentKind.regular.rawValue,
+               row.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                representative.magicContentKindRaw = row.magicContentKindRaw
+            }
+        }
+        representative.collectionKey = canonicalKey
+        representative.quantity = rows.reduce(0) { $0 + $1.quantity }
+        representative.dateAdded = rows.map(\.dateAdded).max() ?? representative.dateAdded
+        representative.magicTreatmentIDsRaw = finalTreatmentIDs
+        representative.magicTreatmentQualifiers = finalQualifiers
+
+        if representative.itemKind == .rawCard,
+           representative.variantID == nil,
+           let finishID = MagicTreatmentKeyCodec.collectionKeyParts(from: canonicalKey)?.finishID {
+            representative.variantID = finishID
+            representative.variantLabel = finishID.capitalized
+        }
+
+        let allActivities = try sourceKeys.sorted().flatMap { key in
+            try activities(forKey: key)
+        }
+        var rewrittenSnapshots: [(CollectionActivity, Data?)] = []
+        rewrittenSnapshots.reserveCapacity(allActivities.count)
+        for activity in allActivities {
+            let activityIDs = MagicTreatmentKeyCodec.storedIDs(
+                from: activity.magicTreatmentIDsRaw
+            )
+            let activitySet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: activityIDs))
+            guard activitySet.isEmpty || activitySet == finalTreatmentSet else {
+                throw CollectionStoreError.ledgerConflict(
+                    "history treatment ids disagree with \(canonicalKey)"
+                )
+            }
+            var snapshotData: Data?
+            if let data = activity.removalSnapshotData {
+                guard var snapshot = try? JSONDecoder().decode(
+                    RemovedCardSnapshot.self,
+                    from: data
+                ), sourceKeys.contains(snapshot.collectionKey) || snapshot.collectionKey == canonicalKey else {
+                    throw CollectionStoreError.ledgerConflict(
+                        "removal snapshot for history entry \(activity.id.uuidString) could not be reconciled"
+                    )
+                }
+                let snapshotIDs = MagicTreatmentKeyCodec.storedIDs(
+                    from: snapshot.magicTreatmentIDsRaw ?? []
+                )
+                let snapshotSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: snapshotIDs))
+                guard snapshotSet.isEmpty || snapshotSet == finalTreatmentSet else {
+                    throw CollectionStoreError.ledgerConflict(
+                        "removal snapshot treatment ids disagree with \(canonicalKey)"
+                    )
+                }
+                snapshot.collectionKey = canonicalKey
+                if snapshotIDs.isEmpty { snapshot.magicTreatmentIDsRaw = finalTreatmentIDs }
+                if snapshot.variant == nil, representative.itemKind == .rawCard {
+                    snapshot.variant = representative.variant
+                }
+                if snapshot.magicContentKindRaw == nil,
+                   representative.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                    snapshot.magicContentKindRaw = representative.magicContentKindRaw
+                }
+                var snapshotQualifiers = MagicTreatmentKeyCodec.decodeQualifiers(
+                    snapshot.magicTreatmentQualifiersJSON
+                )
+                for (key, value) in finalQualifiers where snapshotQualifiers[key] == nil {
+                    snapshotQualifiers[key] = value
+                }
+                snapshot.magicTreatmentQualifiersJSON =
+                    MagicTreatmentKeyCodec.encodeQualifiers(snapshotQualifiers)
+                snapshotData = try JSONEncoder().encode(snapshot)
+            }
+            rewrittenSnapshots.append((activity, snapshotData))
+        }
+
+        let events = try sourceKeys.sorted().flatMap { key in
+            try context.fetch(
+                FetchDescriptor<InventoryEvent>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+            )
+        }
+        for activity in allActivities {
+            activity.collectionKey = canonicalKey
+            activity.name = representative.name
+            activity.setName = representative.setName
+            activity.setCode = representative.setCode
+            activity.cardNumber = representative.cardNumber
+            activity.variantID = representative.variantID
+            activity.variantLabel = representative.variantLabel
+            if activity.magicTreatmentIDsRaw.isEmpty {
+                activity.magicTreatmentIDsRaw = finalTreatmentIDs
+            }
+            var activityQualifiers = activity.magicTreatmentQualifiers
+            for (key, value) in finalQualifiers where activityQualifiers[key] == nil {
+                activityQualifiers[key] = value
+            }
+            activity.magicTreatmentQualifiersJSON =
+                MagicTreatmentKeyCodec.encodeQualifiers(activityQualifiers)
+            if activity.magicContentKindRaw == MagicContentKind.regular.rawValue,
+               representative.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                activity.magicContentKindRaw = representative.magicContentKindRaw
+            }
+            activity.pokemonPrintRunRaw = representative.pokemonPrintRunRaw
+        }
+        for (activity, snapshotData) in rewrittenSnapshots where snapshotData != nil {
+            activity.removalSnapshotData = snapshotData
+        }
+        for event in events { event.collectionKey = canonicalKey }
+        for row in rows where row !== representative { context.delete(row) }
+        return representative
+    }
+
     /// Resolves a collection row against its canonical identity and every
     /// treatment-free identity that preceded it. A match on a legacy key is
     /// repaired in the same context transaction as the caller's mutation, so
@@ -211,26 +545,61 @@ struct CollectionStore {
     /// they preserve the spelling of an unknown future treatment.
     func card(
         forAnyKey canonicalKey: String,
-        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = []
+        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = [],
+        resolveLegacyIdentity: Bool = true
     ) throws -> CollectedCard? {
-        let keys = [canonicalKey]
-            + MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey)
-        let rows = try keys.flatMap(cards(forKey:))
-        guard rows.count <= 1 else {
-            throw CollectionStoreError.ledgerConflict(
-                "canonical and legacy collection keys both claim \(canonicalKey)"
+        // Direct ownership lookup is still the common path, but a treatment-free
+        // Magic key cannot use an empty result as proof that no position exists.
+        // A newer device may already have synced only the treatment-qualified
+        // row, leaving no local legacy row for the direct lookup to find. Probe
+        // that shape even when `directRows` is empty, or the next scan creates a
+        // second position under the old key. Bulk callers can pass
+        // `resolveLegacyIdentity: false` after building one projection-wide
+        // alias index; that keeps a large import or delete from repeating the
+        // three unindexed prefix scans.
+        let directKeys = Array(
+            Set(
+                [canonicalKey]
+                    + MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey)
+            )
+        )
+        let directRows = try directKeys.flatMap(cards(forKey:))
+        let shouldProbeLegacyIdentity = MagicTreatmentKeyCodec
+            .collectionTreatmentIDs(from: canonicalKey)
+            .isEmpty
+        let resolvedCanonicalKey = resolveLegacyIdentity && shouldProbeLegacyIdentity
+            ? (try canonicalKeyForLegacyRow(canonicalKey) ?? canonicalKey)
+            : canonicalKey
+        let rows: [CollectedCard]
+        if resolvedCanonicalKey == canonicalKey, !directRows.isEmpty {
+            rows = directRows
+        } else {
+            let keys = Array(
+                Set(
+                    [canonicalKey, resolvedCanonicalKey]
+                        + MagicTreatmentKeyCodec.legacyCollectionKeys(for: resolvedCanonicalKey)
+                )
+            )
+            rows = try keys.flatMap(cards(forKey:))
+        }
+        let requestedTreatmentIDs = try validatedTreatmentIDs(
+            for: resolvedCanonicalKey,
+            suppliedTreatmentIDs: suppliedTreatmentIDs
+        )
+
+        guard !rows.isEmpty else { return nil }
+        if rows.count > 1 {
+            return try mergeCollectionRows(
+                rows,
+                canonicalKey: resolvedCanonicalKey,
+                suppliedTreatmentIDs: requestedTreatmentIDs
             )
         }
         guard let row = rows.first else { return nil }
 
-        let requestedTreatmentIDs = try validatedTreatmentIDs(
-            for: canonicalKey,
-            suppliedTreatmentIDs: suppliedTreatmentIDs
-        )
-
         try repairCollectionIdentity(
             row,
-            canonicalKey: canonicalKey,
+            canonicalKey: resolvedCanonicalKey,
             treatmentIDs: requestedTreatmentIDs
         )
         return row
@@ -248,29 +617,62 @@ struct CollectionStore {
         to canonicalKey: String,
         magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = [],
         magicTreatmentQualifiers suppliedTreatmentQualifiers: [String: String] = [:]
-    ) throws {
+    ) throws -> CollectedCard {
         let sourceRows = try cards(forKey: row.collectionKey)
-        guard sourceRows.count == 1, sourceRows.first === row else {
+        guard sourceRows.contains(where: { $0 === row }) else {
             throw CollectionStoreError.ledgerConflict(
                 "the migration source row is not uniquely identifiable"
             )
         }
-        guard try cards(forKey: canonicalKey).isEmpty else {
-            throw CollectionStoreError.ledgerConflict(
-                "the migration destination already exists: \(canonicalKey)"
-            )
-        }
-
+        let destinationRows = try cards(forKey: canonicalKey)
         let requestedTreatmentIDs = try validatedTreatmentIDs(
             for: canonicalKey,
             suppliedTreatmentIDs: suppliedTreatmentIDs
         )
+
+        if row.collectionKey == canonicalKey {
+            if sourceRows.count > 1 {
+                return try mergeCollectionRows(
+                    sourceRows,
+                    canonicalKey: canonicalKey,
+                    suppliedTreatmentIDs: requestedTreatmentIDs,
+                    suppliedTreatmentQualifiers: suppliedTreatmentQualifiers
+                )
+            } else {
+                try repairCollectionIdentity(
+                    row,
+                    canonicalKey: canonicalKey,
+                    treatmentIDs: requestedTreatmentIDs,
+                    treatmentQualifiers: suppliedTreatmentQualifiers
+                )
+            }
+            return row
+        }
+
+        if !destinationRows.isEmpty {
+            return try mergeCollectionRows(
+                sourceRows + destinationRows,
+                canonicalKey: canonicalKey,
+                suppliedTreatmentIDs: requestedTreatmentIDs,
+                suppliedTreatmentQualifiers: suppliedTreatmentQualifiers
+            )
+        }
+
+        guard sourceRows.count == 1 else {
+            return try mergeCollectionRows(
+                sourceRows,
+                canonicalKey: canonicalKey,
+                suppliedTreatmentIDs: requestedTreatmentIDs,
+                suppliedTreatmentQualifiers: suppliedTreatmentQualifiers
+            )
+        }
         try repairCollectionIdentity(
             row,
             canonicalKey: canonicalKey,
             treatmentIDs: requestedTreatmentIDs,
             treatmentQualifiers: suppliedTreatmentQualifiers
         )
+        return row
     }
 
     private func validatedTreatmentIDs(
@@ -445,14 +847,6 @@ struct CollectionStore {
         }
 
         let oldEvents = try ledger.events(collectionKey: oldKey)
-        let canonicalEvents = oldKey == canonicalKey
-            ? []
-            : try ledger.events(collectionKey: canonicalKey)
-        guard oldKey == canonicalKey || canonicalEvents.isEmpty else {
-            throw CollectionStoreError.ledgerConflict(
-                "the ledger already contains both \(oldKey) and \(canonicalKey); collection rekey was not applied"
-            )
-        }
 
         row.collectionKey = canonicalKey
         if let inferredRawFinish {
@@ -516,13 +910,41 @@ struct CollectionStore {
         expectedCollectionKey: String? = nil,
         expectedQuantity: Int? = nil
     ) throws -> [(UUID, [InventoryEvent])] {
+        var eventsByOperationID: [UUID: [InventoryEvent]] = [:]
+        var reversedEventIDs: Set<UUID> = []
+        for operationID in operationIDs {
+            let events = try ledger.events(forOperationID: operationID)
+            for event in events {
+                let reversals = try ledger.reversalEvents(forEventID: event.eventID)
+                if !reversals.isEmpty {
+                    reversedEventIDs.insert(event.eventID)
+                }
+            }
+            eventsByOperationID[operationID] = events
+        }
+
+        return try Self.validateLineage(
+            operationIDs,
+            eventsByOperationID: eventsByOperationID,
+            reversedEventIDs: reversedEventIDs,
+            expectedCollectionKey: expectedCollectionKey,
+            expectedQuantity: expectedQuantity
+        )
+    }
+
+    private static func validateLineage(
+        _ operationIDs: [UUID],
+        eventsByOperationID: [UUID: [InventoryEvent]],
+        reversedEventIDs: Set<UUID>,
+        expectedCollectionKey: String? = nil,
+        expectedQuantity: Int? = nil
+    ) throws -> [(UUID, [InventoryEvent])] {
         guard !operationIDs.isEmpty, Set(operationIDs).count == operationIDs.count else {
             throw CollectionStoreError.invalidLedgerOperation(UUID())
         }
 
         let lineage = try operationIDs.map { operationID in
-            let events = try ledger.events(forOperationID: operationID)
-            guard !events.isEmpty else {
+            guard let events = eventsByOperationID[operationID], !events.isEmpty else {
                 throw CollectionStoreError.missingLedgerOperation(operationID)
             }
             guard events.allSatisfy({ $0.kind != .initialBalance }) else {
@@ -543,7 +965,7 @@ struct CollectionStore {
             }
 
             for event in events {
-                guard try ledger.reversalEvents(forEventID: event.eventID).isEmpty else {
+                guard !reversedEventIDs.contains(event.eventID) else {
                     throw CollectionStoreError.ledgerConflict(
                         "\(operationID.uuidString) was already reversed"
                     )
@@ -587,6 +1009,24 @@ struct CollectionStore {
         )) != nil
     }
 
+    /// Bulk, read-only equivalent used by history rows. It intentionally shares
+    /// the same pure validator as the write preflight so disabled actions cannot
+    /// drift from the checks a mutation will enforce.
+    static func hasValidLineage(
+        _ operationIDs: [UUID],
+        for collectionKey: String,
+        quantity: Int,
+        using index: LineageIndex
+    ) -> Bool {
+        (try? validateLineage(
+            operationIDs,
+            eventsByOperationID: index.eventsByOperationID,
+            reversedEventIDs: index.reversedEventIDs,
+            expectedCollectionKey: collectionKey,
+            expectedQuantity: quantity
+        )) != nil
+    }
+
     /// Removal activities point at their disposal operation, whose sign is the
     /// inverse of an acquisition lineage. Keep this check beside the store's
     /// restore preflight so the disabled reason in the history UI is truthful.
@@ -604,6 +1044,35 @@ struct CollectionStore {
         guard let lineage = try? preflightLineage([operationID]),
               lineage.count == 1,
               lineage[0].1.count == 1 else {
+            return false
+        }
+        let event = lineage[0].1[0]
+        return event.kind == .dispose
+            && event.collectionKey == activity.collectionKey
+            && event.deltaQuantity == -snapshot.quantity
+    }
+
+    static func hasValidRemovalLineage(
+        _ activity: CollectionActivity,
+        using index: LineageIndex
+    ) -> Bool {
+        guard activity.kind == .removed,
+              let data = activity.removalSnapshotData,
+              let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
+              snapshot.collectionKey == activity.collectionKey,
+              snapshot.quantity > 0,
+              let operationID = snapshot.operationID,
+              activity.ledgerOperationIDs == [operationID] else {
+            return false
+        }
+
+        guard let lineage = try? validateLineage(
+            [operationID],
+            eventsByOperationID: index.eventsByOperationID,
+            reversedEventIDs: index.reversedEventIDs
+        ),
+        lineage.count == 1,
+        lineage[0].1.count == 1 else {
             return false
         }
         let event = lineage[0].1[0]
@@ -664,14 +1133,19 @@ struct CollectionStore {
     func setQuantity(_ newQuantity: Int, for card: CollectedCard) throws {
         guard newQuantity >= 1 else { return }
 
-        let delta = newQuantity - card.quantity
-        guard delta != 0 else { return }
-
         do {
+            guard let target = try self.card(
+                forAnyKey: card.collectionKey,
+                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+            ) else {
+                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+            }
+            let delta = newQuantity - target.quantity
+            guard delta != 0 else { return }
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
-                    card,
+                    target,
                     kind: .quantityAdjust,
                     source: .correction,
                     deltaQuantity: delta,
@@ -679,13 +1153,13 @@ struct CollectionStore {
                 )
             )
             _ = try appendActivity(
-                card,
+                target,
                 source: .correction,
                 kind: .quantityAdjusted,
                 deltaQuantity: delta,
                 ledgerOperationIDs: [operationID]
             )
-            card.quantity = newQuantity
+            target.quantity = newQuantity
             try commit()
         } catch {
             context.rollback()
@@ -716,33 +1190,50 @@ struct CollectionStore {
             let projection = LogicalCollection.project(cards: cards, ledger: ledger)
             let reading = ledger.read()
             let events = reading.events
+            let collectionKeyAliases = LogicalCollection.readThroughAliases(
+                projection: projection,
+                eventKeys: Set(events.map(\.collectionKey))
+            )
+            let normalizedEvents = events.map { event -> LedgerEntry in
+                var entry = PortfolioEngine.entry(from: event)
+                entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
+                return entry
+            }
             let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
             let activityDefects = CollectionActivity.integrityDefects(
                 activities: activities,
-                events: events
+                events: events,
+                collectionKeyAliases: collectionKeyAliases
             )
             let activeDefects = reading.defects
                 + projection.defects
                 + PortfolioEngine.reconcile(
                     projection: projection,
-                    events: events.map { PortfolioEngine.entry(from: $0) }
+                    events: normalizedEvents
                 )
                 + activityDefects
+            let requestedKeys = Set(
+                defects.map { collectionKeyAliases[$0.collectionKey] ?? $0.collectionKey }
+            )
             guard !activeDefects.isEmpty,
                   activeDefects.allSatisfy({ $0.reason == .quantityMismatch && $0.canRepairQuantity }),
-                  Set(activeDefects.map { $0.collectionKey }) == Set(defects.map { $0.collectionKey }) else {
+                  Set(activeDefects.map { $0.collectionKey }) == requestedKeys else {
                 throw CollectionStoreError.ledgerConflict(
                     "active integrity defects changed; quantity repair was not applied"
                 )
             }
             let ledgerQuantities = events.reduce(into: [String: Int]()) { quantities, event in
-                quantities[event.collectionKey, default: 0] += event.deltaQuantity
+                let key = collectionKeyAliases[event.collectionKey] ?? event.collectionKey
+                quantities[key, default: 0] += event.deltaQuantity
             }
-            let eventPriceKeys = Dictionary(grouping: events, by: { $0.collectionKey })
+            let eventPriceKeys = Dictionary(
+                grouping: events,
+                by: { collectionKeyAliases[$0.collectionKey] ?? $0.collectionKey }
+            )
                 .compactMapValues { events in
                     events.map { $0.priceStorageKey }.first(where: { !$0.isEmpty })
                 }
-            let keys = Set(defects.map { $0.collectionKey })
+            let keys = requestedKeys
 
             for key in keys {
                 let collectionQuantity = projection.quantities[key] ?? 0
@@ -1229,17 +1720,32 @@ struct CollectionStore {
         variantID: String?,
         pokemonPrintRun: PokemonPrintRun?
     ) throws -> CollectedCard? {
-        let rows = try context.fetch(FetchDescriptor<CollectedCard>()).filter {
-            ($0.providerID == providerID || $0.catalogProviderID == providerID)
-                && $0.variantID == variantID
+        // Vendor identity is an indexed equality match, so it belongs in the
+        // query rather than in a filter over every row the store has ever held.
+        // The finish and print-run rules stay in Swift: `pokemonPrintRun` is a
+        // computed view over the stored raw value, which the predicate grammar
+        // cannot reach.
+        let catalogID: String? = providerID
+        let rows = try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.providerID == providerID || $0.catalogProviderID == catalogID
+                }
+            )
+        ).filter {
+            $0.variantID == variantID
                 && (pokemonPrintRun == .unlimited
                     ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
                     : $0.pokemonPrintRun == pokemonPrintRun)
         }
         guard rows.count <= 1 else {
-            throw CollectionStoreError.ledgerConflict(
-                "more than one collection row matches catalog identity \(providerID)"
-            )
+            let keys = Set(rows.map(\.collectionKey))
+            guard keys.count == 1, let key = keys.first else {
+                throw CollectionStoreError.ledgerConflict(
+                    "more than one collection row matches catalog identity \(providerID)"
+                )
+            }
+            return try mergeCollectionRows(rows, canonicalKey: key)
         }
         return rows.first
     }
@@ -1250,11 +1756,14 @@ struct CollectionStore {
     /// value must fail and remain retryable, never become a partial undo.
     func undo(_ mutation: CollectionMutation) throws {
         do {
-            let collectionKey = mutation.collectionKey
-            let rows = try cards(forKey: collectionKey)
-            guard rows.count == 1, let row = rows.first else {
-                throw CollectionStoreError.missingDestinationRow(collectionKey)
+            guard let row = try card(forAnyKey: mutation.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
             }
+            // `card(forAnyKey:)` may have repaired a legacy row to the
+            // treatment-qualified key inferred from synced ledger events. All
+            // lineage checks and the appended inverse must use that repaired
+            // key, not the stale in-memory mutation key.
+            let collectionKey = row.collectionKey
 
             guard let activityID = mutation.activityID else {
                 throw CollectionStoreError.invalidLedgerOperation(UUID())
@@ -1331,7 +1840,7 @@ struct CollectionStore {
             guard quantity > 0, quantity == selectedActivity.remainingQuantity else {
                 throw CollectionStoreError.activityAlreadyResolved(selectedActivity.id)
             }
-            guard let row = try uniqueCard(forKey: selectedActivity.collectionKey) else {
+            guard let row = try card(forAnyKey: selectedActivity.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(selectedActivity.collectionKey)
             }
             guard row.quantity >= quantity else {
@@ -1383,7 +1892,10 @@ struct CollectionStore {
     /// activity rows that explain how each copy entered it.
     func remove(_ card: CollectedCard) throws -> RemovedCardSnapshot {
         do {
-            guard let row = try uniqueCard(forKey: card.collectionKey) else {
+            guard let row = try self.card(
+                forAnyKey: card.collectionKey,
+                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+            ) else {
                 throw CollectionStoreError.missingDestinationRow(card.collectionKey)
             }
             let quantity = row.quantity
@@ -1441,10 +1953,20 @@ struct CollectionStore {
     /// snapshots are also represented by a removal activity, so the same
     /// preflight and history append path is used.
     func restore(_ snapshot: RemovedCardSnapshot) throws {
-        let removalActivity = try context.fetch(FetchDescriptor<CollectionActivity>())
+        // Only removal rows carry a removal snapshot, so the kind is a query
+        // predicate rather than a decode-everything-then-discard filter. The
+        // order is now explicit as well: matching used to depend on whatever
+        // the unpredicated fetch returned first, which decided arbitrarily
+        // between two removals sharing an id or operation id. Newest-first is
+        // the row the undo banner is offering.
+        let removedKind = CollectionActivityKind.removed.rawValue
+        var removalDescriptor = FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate { $0.kindRaw == removedKind }
+        )
+        removalDescriptor.sortBy = [SortDescriptor(\.occurredAt, order: .reverse)]
+        let removalActivity = try context.fetch(removalDescriptor)
             .first { activity in
-                guard activity.kind == .removed,
-                      let data = activity.removalSnapshotData,
+                guard let data = activity.removalSnapshotData,
                       let stored = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data)
                 else { return false }
                 return stored.id == snapshot.id
@@ -1466,7 +1988,18 @@ struct CollectionStore {
         removalActivity: CollectionActivity?
     ) throws {
         do {
-            let existing = try uniqueCard(forKey: snapshot.collectionKey)
+            var snapshot = snapshot
+            if let canonicalKey = try canonicalKeyForLegacyRow(snapshot.collectionKey) {
+                snapshot.collectionKey = canonicalKey
+                if snapshot.magicTreatmentIDsRaw?.isEmpty ?? true {
+                    snapshot.magicTreatmentIDsRaw = MagicTreatmentKeyCodec
+                        .collectionTreatmentIDs(from: canonicalKey)
+                }
+            }
+            let existing = try card(
+                forAnyKey: snapshot.collectionKey,
+                magicTreatmentIDsRaw: snapshot.magicTreatmentIDsRaw ?? []
+            )
             guard snapshot.quantity > 0 else {
                 throw CollectionStoreError.restoreConflict("snapshot has no copies")
             }
@@ -1536,7 +2069,10 @@ struct CollectionStore {
             } else {
                 let restoredOperationID = UUID()
                 try snapshot.reinsert(in: context)
-                guard let row = try uniqueCard(forKey: snapshot.collectionKey) else {
+                guard let row = try card(
+                    forAnyKey: snapshot.collectionKey,
+                    magicTreatmentIDsRaw: snapshot.magicTreatmentIDsRaw ?? []
+                ) else {
                     throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
                 }
                 try requireAppended(
@@ -1554,7 +2090,10 @@ struct CollectionStore {
             if snapshot.operationID != nil {
                 try snapshot.reinsert(in: context)
             }
-            guard let restoredCard = try uniqueCard(forKey: snapshot.collectionKey) else {
+            guard let restoredCard = try card(
+                forAnyKey: snapshot.collectionKey,
+                magicTreatmentIDsRaw: snapshot.magicTreatmentIDsRaw ?? []
+            ) else {
                 throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
             }
             _ = try appendActivity(
@@ -1576,12 +2115,8 @@ struct CollectionStore {
 
     private func uniqueCard(forKey key: String) throws -> CollectedCard? {
         let rows = try cards(forKey: key)
-        guard rows.count <= 1 else {
-            throw CollectionStoreError.ledgerConflict(
-                "more than one collection row claims \(key)"
-            )
-        }
-        return rows.first
+        guard rows.count > 1 else { return rows.first }
+        return try mergeCollectionRows(rows, canonicalKey: key)
     }
 
     private func uniqueCard(
@@ -1599,9 +2134,31 @@ struct CollectionStore {
     /// destructive action still commits once.
     func deleteAll() throws {
         do {
-            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let physicalCards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let projection = LogicalCollection.project(cards: physicalCards, ledger: ledger)
+            let collectionKeyAliases = LogicalCollection.readThroughAliases(
+                projection: projection,
+                eventKeys: Set(ledger.read().events.map(\.collectionKey))
+            )
             let occurredAt = Date.now
-            for card in cards {
+            for position in projection.positions {
+                // If another device already rekeyed the ledger, address the
+                // position through that canonical key so the row is repaired as
+                // part of this deletion. This also keeps delete-all from
+                // invoking the per-row legacy prefix probe for every card.
+                let writeKey = collectionKeyAliases.first {
+                    $0.value == position.collectionKey
+                }?.key ?? position.collectionKey
+                guard let card = try self.card(
+                    forAnyKey: writeKey,
+                    magicTreatmentIDsRaw: position.representative.magicTreatmentIDsRaw,
+                    // `readThroughAliases` above is the bulk identity index
+                    // for this destructive operation. Avoid rebuilding the
+                    // prefix-scan alias search for every position.
+                    resolveLegacyIdentity: false
+                ) else {
+                    throw CollectionStoreError.missingDestinationRow(position.collectionKey)
+                }
                 let quantity = card.quantity
                 var snapshot = RemovedCardSnapshot(card: card)
                 let operationID = UUID()
@@ -1672,16 +2229,21 @@ struct CollectionStore {
 
         do {
         let previousBaseKey = card.collectionKey(variant: current)
-        let previousKey = previousCollectionKey
+        let requestedPreviousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
+        let previousTreatmentIDs = card.magicTreatments(for: current)
         // A stale scanner entry can outlive the collection row it was created
         // from (for example, the row may have been removed on another screen or
         // device). Do not manufacture the destination row and then record a
         // `-1` correction for a source that is no longer present: that leaves
         // the ledger permanently ahead of the collection and triggers the
         // reconciliation warning on the next portfolio pass.
-        guard let previous = try uniqueCard(forKey: previousKey) else { return nil }
+        guard let previous = try self.card(
+            forAnyKey: requestedPreviousKey,
+            magicTreatmentIDsRaw: previousTreatmentIDs.map(\.id)
+        ) else { return nil }
+        let previousKey = previous.collectionKey
 
         let candidates = try activities(forKey: previousKey)
             .filter {
@@ -1838,26 +2400,30 @@ struct CollectionStore {
         guard quantity > 0, corrected.variant != card.variant else { return nil }
 
         do {
+            guard let previous = try self.card(
+                forAnyKey: card.collectionKey,
+                magicTreatmentIDsRaw: card.magicTreatmentIDs(for: card.variant)
+            ) else {
+                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+            }
+            let previousKey = previous.collectionKey
             let activityToRetarget = try activity(id: activityID)
-            guard activityToRetarget.collectionKey == card.collectionKey,
+            guard activityToRetarget.collectionKey == previousKey,
                   activityToRetarget.kind.hasQuantityClaim,
                   activityToRetarget.signedQuantity > 0 else {
                 throw CollectionStoreError.invalidActivity(activityID)
             }
             guard activityToRetarget.remainingQuantity == quantity else {
-                throw CollectionStoreError.insufficientQuantity(card.collectionKey)
+                throw CollectionStoreError.insufficientQuantity(previousKey)
             }
             let operationIDs = activityToRetarget.ledgerOperationIDs
             _ = try preflightLineage(
                 operationIDs,
-                expectedCollectionKey: card.collectionKey,
+                expectedCollectionKey: previousKey,
                 expectedQuantity: quantity
             )
-            guard let previous = try uniqueCard(forKey: card.collectionKey) else {
-                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
-            }
             guard previous.quantity >= quantity else {
-                throw CollectionStoreError.insufficientQuantity(card.collectionKey)
+                throw CollectionStoreError.insufficientQuantity(previousKey)
             }
 
             let parts = previous.collectionKey.split(separator: "@", maxSplits: 1)
@@ -1885,12 +2451,6 @@ struct CollectionStore {
             guard destinationKey != previous.collectionKey else {
                 throw CollectionStoreError.invalidActivity(activityID)
             }
-            if try cards(forKey: destinationKey).count > 1 {
-                throw CollectionStoreError.ledgerConflict(
-                    "more than one collection row claims \(destinationKey)"
-                )
-            }
-
             let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
             let previousSnapshot = RemovedCardSnapshot(card: previous, quantity: quantity)
             if previous.quantity == quantity {
@@ -1900,7 +2460,10 @@ struct CollectionStore {
             }
 
             let correctedRow: CollectedCard
-            if let existing = try uniqueCard(forKey: destinationKey) {
+            if let existing = try self.card(
+                forAnyKey: destinationKey,
+                magicTreatmentIDsRaw: correctedTreatmentIDs
+            ) {
                 existing.quantity += quantity
                 existing.dateAdded = .now
                 if existing.magicTreatmentIDsRaw.isEmpty {
@@ -2099,8 +2662,8 @@ struct RemovedCardSnapshot: Identifiable, Codable {
     }
 
     /// Re-materialises the collection row. Ownership accounting is
-    /// `CollectionStore.restore(_:)`'s job, not this type's.
-    @MainActor
+    /// `CollectionStore.restore(_:)`'s job, not this type's. Isolation follows
+    /// the caller's context, like the rest of the store.
     func reinsert(in context: ModelContext) throws {
         let key = collectionKey
         let rows = try context.fetch(
@@ -2108,14 +2671,8 @@ struct RemovedCardSnapshot: Identifiable, Codable {
                 predicate: #Predicate { $0.collectionKey == key }
             )
         )
-        guard rows.count <= 1 else {
-            throw CollectionStoreError.ledgerConflict(
-                "more than one collection row claims \(collectionKey)"
-            )
-        }
-
-        if let existing = rows.first {
-            existing.quantity += quantity
+        if let existing = LogicalCollection.chooseRepresentative(from: rows) {
+            existing.quantity = rows.reduce(0) { $0 + $1.quantity } + quantity
             existing.dateAdded = max(existing.dateAdded, dateAdded)
             if existing.magicTreatmentIDsRaw.isEmpty {
                 existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
@@ -2129,6 +2686,9 @@ struct RemovedCardSnapshot: Identifiable, Codable {
                let magicContentKindRaw,
                magicContentKindRaw != MagicContentKind.regular.rawValue {
                 existing.magicContentKindRaw = magicContentKindRaw
+            }
+            for row in rows where row !== existing {
+                context.delete(row)
             }
         } else {
             let restored = CollectedCard(

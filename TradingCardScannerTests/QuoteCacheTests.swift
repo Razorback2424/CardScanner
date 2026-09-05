@@ -216,6 +216,39 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertFalse(result.shouldAutoRefresh)
     }
 
+    func testPriceCheckPrefersNewerLocalEvidenceOverCachedCatalogPrice() throws {
+        let context = try makeContext()
+        let cachedCatalogDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let newerLocalDate = cachedCatalogDate.addingTimeInterval(60 * 60)
+        let scan = priceCheckScan(
+            pricing: TCGdexPricing(
+                tcgplayer: TCGPlayerPricing(
+                    updated: nil,
+                    normal: TCGPlayerPricePoint(marketPrice: 10),
+                    holo: nil,
+                    holofoil: nil,
+                    reverse: nil,
+                    reverseHolofoil: nil
+                ),
+                cardmarket: nil
+            ),
+            catalogRetrievedAt: cachedCatalogDate
+        )
+        PriceStore(context: context).store(
+            quote(20, at: newerLocalDate),
+            game: .pokemon,
+            printingID: "sv10-085",
+            variantID: nil,
+            at: newerLocalDate
+        )
+
+        let result = PriceCheckCoordinator(context: context).present(scan)
+
+        XCTAssertEqual(result.display.amount, 20)
+        XCTAssertEqual(result.display.fetchedAt, newerLocalDate)
+        XCTAssertNotEqual(result.display.amount, 10)
+    }
+
     func testPriceCheckStartsWithoutUnavailableStateWhenNoQuoteExists() throws {
         let context = try makeContext()
         let coordinator = PriceCheckCoordinator(
@@ -284,7 +317,8 @@ final class QuoteCacheTests: XCTestCase {
 
     private func priceCheckScan(
         variant: PhysicalVariant? = nil,
-        pricing: TCGdexPricing? = nil
+        pricing: TCGdexPricing? = nil,
+        catalogRetrievedAt: Date = .now
     ) -> ResolvedScan {
         let card = TCGdexCard(
             id: "sv10-085",
@@ -320,7 +354,8 @@ final class QuoteCacheTests: XCTestCase {
                 resolution: variant == nil ? .catalogSilent : .userConfirmed
             ),
             pokemonPrintRun: nil,
-            options: variant.map { [$0] } ?? []
+            options: variant.map { [$0] } ?? [],
+            catalogRetrievedAt: catalogRetrievedAt
         )
     }
 }

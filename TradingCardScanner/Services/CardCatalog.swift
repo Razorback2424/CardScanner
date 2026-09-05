@@ -10,6 +10,10 @@ enum CatalogFailure: Equatable {
     /// Network or server trouble. Nothing was written and nothing is known to be
     /// wrong with the card, so the very next reading should be allowed through.
     case transient
+    /// The provider is actively cooling down after a server/rate-limit outage.
+    /// Keep the physical card latched so a held card cannot turn the outage into
+    /// a request loop; a later presentation can try again after the circuit opens.
+    case providerUnavailable
 }
 
 enum PokemonHistoricalCatalogError: Error, Sendable {
@@ -341,6 +345,10 @@ actor TCGdexCircuitBreaker {
     /// breaker each meant the second caller re-paid the connect timeout the
     /// first had already established was hopeless.
     static let shared = TCGdexCircuitBreaker()
+    /// Scryfall has a separate quota and outage domain from TCGdex, but uses the
+    /// same circuit implementation. Keeping a distinct instance prevents a
+    /// Scryfall outage from suppressing Pokémon lookups (and vice versa).
+    static let scryfallShared = TCGdexCircuitBreaker()
 
     /// How badly the provider failed, which decides how long to stay away.
     ///
@@ -353,11 +361,14 @@ actor TCGdexCircuitBreaker {
         case serverError
         /// Nothing answered: connection refused, DNS failure, or timeout.
         case unreachable
+        /// The provider explicitly asked the client to wait.
+        case rateLimited
 
         var base: TimeInterval {
             switch self {
             case .serverError: return 10
             case .unreachable: return 30
+            case .rateLimited: return 60
             }
         }
 
@@ -365,6 +376,7 @@ actor TCGdexCircuitBreaker {
             switch self {
             case .serverError: return 60
             case .unreachable: return 600
+            case .rateLimited: return 600
             }
         }
     }
@@ -397,9 +409,15 @@ actor TCGdexCircuitBreaker {
         consecutiveFailures = 0
     }
 
-    func recordFailure(_ failure: Failure = .unreachable, now: Date = .now) {
+    func recordFailure(
+        _ failure: Failure = .unreachable,
+        now: Date = .now,
+        cooldownOverride: TimeInterval? = nil
+    ) {
         consecutiveFailures += 1
-        unavailableUntil = now.addingTimeInterval(cooldown(for: failure))
+        unavailableUntil = now.addingTimeInterval(
+            max(cooldownOverride ?? cooldown(for: failure), 0)
+        )
     }
 
     private func cooldown(for failure: Failure) -> TimeInterval {
@@ -532,6 +550,12 @@ actor ResolvedPokemonCardCache {
     private var entries: [String: Entry] = [:]
     private var didLoad = false
 
+    struct CachedCard: Sendable {
+        let card: TCGdexCard
+        let setCode: String
+        let storedAt: Date
+    }
+
     init(root: URL? = nil, appVersion: String? = nil) {
         let cacheRoot = root ?? FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
@@ -547,7 +571,7 @@ actor ResolvedPokemonCardCache {
         loadIfNeeded()
     }
 
-    func card(for key: String) -> (card: TCGdexCard, setCode: String)? {
+    func card(for key: String) -> CachedCard? {
         loadIfNeeded()
         guard let entry = entries[key] else { return nil }
         guard Date.now.timeIntervalSince(entry.storedAt) <= Self.maxAge else {
@@ -596,7 +620,7 @@ actor ResolvedPokemonCardCache {
                     )
                 }
         )
-        return (card, entry.setCode)
+        return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt)
     }
 
     func store(
@@ -724,18 +748,33 @@ actor CardCatalog {
     struct CatalogResolution: Sendable {
         let card: IdentifiedCard
         let isPersistable: Bool
+        /// The time the card payload was obtained. A session-cache hit keeps
+        /// this original provider time instead of manufacturing a new price
+        /// retrieval timestamp at the next scan.
+        let retrievedAt: Date
 
-        init(_ card: IdentifiedCard, isPersistable: Bool = false) {
+        init(
+            _ card: IdentifiedCard,
+            isPersistable: Bool = false,
+            retrievedAt: Date = .now
+        ) {
             self.card = card
             self.isPersistable = isPersistable
+            self.retrievedAt = retrievedAt
         }
     }
 
     /// Bounded: see `BoundedCache`. Large enough that re-scanning a stack never
     /// evicts anything the user is actually working through, small enough that
     /// unstable OCR cannot grow it without limit.
-    private var resolved = BoundedCache<ScanIdentifier, IdentifiedCard>(capacity: 256)
-    private var inFlight: [ScanIdentifier: Task<CatalogResolution, Error>] = [:]
+    private var resolved = BoundedCache<ScanIdentifier, CatalogResolution>(capacity: 256)
+    /// The token travels with the task so a stale completion can never clear a
+    /// newer lookup registered for the same identifier.
+    private struct InFlightLookup {
+        let token: UUID
+        let task: Task<CatalogResolution, Error>
+    }
+    private var inFlight: [ScanIdentifier: InFlightLookup] = [:]
 
     init(
         source: any PokemonCardSource = LivePokemonCardSource(),
@@ -762,18 +801,22 @@ actor CardCatalog {
     /// affect anything on its own.
     func prefetch(_ identifier: ScanIdentifier) {
         guard resolved[identifier] == nil, inFlight[identifier] == nil else { return }
-        let task = start(identifier)
-        Task { _ = await self.complete(identifier, task: task) }
+        let lookup = start(identifier)
+        Task { _ = await self.complete(identifier, lookup: lookup) }
     }
 
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
+        try await resolution(for: identifier).card
+    }
+
+    func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
         if let card = resolved[identifier] { return card }
-        let task = inFlight[identifier] ?? start(identifier)
-        return try await complete(identifier, task: task).get()
+        let lookup = inFlight[identifier] ?? start(identifier)
+        return try await complete(identifier, lookup: lookup).get()
     }
 
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
-        resolved[identifier]
+        resolved[identifier]?.card
     }
 
     func card(
@@ -791,12 +834,16 @@ actor CardCatalog {
              ScryfallError.cardNotFound, ScryfallError.identityMismatch,
              ScryfallError.unsupportedPrinting, ScryfallError.invalidURL:
             return .notInCatalog
+        case ScryfallError.endpointNotFound,
+             ScryfallError.rateLimited,
+             ScryfallError.providerUnavailable:
+            return .providerUnavailable
         default:
             return .transient
         }
     }
 
-    private func start(_ identifier: ScanIdentifier) -> Task<CatalogResolution, Error> {
+    private func start(_ identifier: ScanIdentifier) -> InFlightLookup {
         let pokemonSource = pokemonSource
         let offline = offline
         let resolvedDiskCache = resolvedDiskCache
@@ -807,7 +854,10 @@ actor CardCatalog {
         let task = Task<CatalogResolution, Error> {
             if let diskKey,
                let cached = await resolvedDiskCache.card(for: diskKey) {
-                return CatalogResolution(.pokemon(cached.card, setCode: cached.setCode))
+                return CatalogResolution(
+                    .pokemon(cached.card, setCode: cached.setCode),
+                    retrievedAt: cached.storedAt
+                )
             }
 
             switch identifier {
@@ -898,8 +948,9 @@ actor CardCatalog {
                 return CatalogResolution(.magic(card))
             }
         }
-        inFlight[identifier] = task
-        return task
+        let lookup = InFlightLookup(token: UUID(), task: task)
+        inFlight[identifier] = lookup
+        return lookup
     }
 
     private static func persistentKey(for identifier: ScanIdentifier) -> String? {
@@ -1080,12 +1131,13 @@ actor CardCatalog {
 
     private func complete(
         _ identifier: ScanIdentifier,
-        task: Task<CatalogResolution, Error>
-    ) async -> Result<IdentifiedCard, Error> {
-        let result = await task.result
-        if case let .success(resolution) = result {
+        lookup: InFlightLookup
+    ) async -> Result<CatalogResolution, Error> {
+        let result = await lookup.task.result
+        let ownsRegistration = inFlight[identifier]?.token == lookup.token
+        if ownsRegistration, case let .success(resolution) = result {
             let card = resolution.card
-            resolved[identifier] = card
+            resolved[identifier] = resolution
             // Only a live primary-provider response is written through. A
             // degraded fallback record would otherwise outlive the outage that
             // produced it, and a bundled-checklist record is already on disk
@@ -1113,8 +1165,10 @@ actor CardCatalog {
         }
         // Only successes are remembered. A failed lookup leaves no trace, so the
         // next attempt is a real attempt rather than a replayed failure.
-        inFlight[identifier] = nil
-        return result.map(\.card)
+        if inFlight[identifier]?.token == lookup.token {
+            inFlight[identifier] = nil
+        }
+        return result
     }
 }
 

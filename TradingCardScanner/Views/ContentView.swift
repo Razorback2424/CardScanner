@@ -5,10 +5,6 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
-    private var cards: [CollectedCard]
-    @Query private var priceRecords: [PriceRecord]
-
     private enum Tab: Hashable {
         case portfolio
         case collection
@@ -157,9 +153,8 @@ struct ContentView: View {
         // lives in its own view rather than here because deciding whether the
         // inputs changed means walking every row of four tables, and this view
         // re-renders for reasons that have nothing to do with them — most of
-        // all a running refresh, which republishes its progress once per
-        // answered printing. Down there it observes only what it actually
-        // reacts to.
+        // all a running refresh, which publishes progress while it runs. Down
+        // there it observes only what it actually reacts to.
         .background(
             PortfolioInputObserver(
                 portfolio: portfolio,
@@ -171,12 +166,20 @@ struct ContentView: View {
         .task { await recomputeAtDayRollover() }
         .task(id: scenePhase) {
             if scenePhase == .active {
-                await updateFallbackAvailability()
-                guard !Task.isCancelled else { return }
                 await browseCatalog.prepareCatalog()
             } else {
                 await browseCatalog.suspendCatalogRefresh()
             }
+        }
+        .task(id: fallbackAvailabilityTaskID) {
+            guard scenePhase == .active, hasStartedPortfolio else { return }
+            // This value only controls settings/status affordances. Let the
+            // scene settle before projecting the collection for its count, and
+            // cancel the work when a rapid phase or preference change supersedes
+            // it.
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled, scenePhase == .active, hasStartedPortfolio else { return }
+            await updateFallbackAvailability()
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background {
@@ -197,15 +200,20 @@ struct ContentView: View {
 
     @MainActor
     private func updateFallbackAvailability() async {
+        let targets = (try? PriceRefreshTargets.make(
+            context: modelContext,
+            usesPriceFallback: usesPriceFallback,
+            includeImported: true
+        )) ?? []
         let pending = PriceRefreshController.staleTargets(
-            from: PriceRefreshTargets.make(
-                cards: cards,
-                priceRecords: priceRecords,
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true
-            )
+            from: targets,
+            usesPriceFallback: usesPriceFallback
         ).count
         await refresh.updateFallbackAvailability(pending: pending)
+    }
+
+    private var fallbackAvailabilityTaskID: String {
+        "\(scenePhase)-\(hasStartedPortfolio)-\(usesPriceFallback)"
     }
 
     private var isBrowseDebugRoute: Bool {
@@ -243,12 +251,16 @@ struct ContentView: View {
             } catch {
                 return false
             }
-            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            let targets = PriceRefreshController.staleTargets(
+                from: currentTargets,
+                usesPriceFallback: usesPriceFallback,
+                forceUnsupportedRetry: true
+            )
             guard !targets.isEmpty else {
                 refresh.markRecentlyChecked()
                 return false
             }
-            await refresh.refresh(targets, store: PriceStore(context: modelContext))
+            await refresh.refresh(targets, container: modelContext.container)
             return true
         }
         if didRefresh {
@@ -269,7 +281,7 @@ struct ContentView: View {
     @MainActor
     private func recomputeAtDayRollover() async {
         while !Task.isCancelled {
-            let timeZone = PortfolioCalendar.timeZone()
+            let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
             let today = PortfolioCalendar.day(containing: .now, in: timeZone)
             let next = PortfolioCalendar.boundary(afterDay: today, in: timeZone)
             try? await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow + 0.5)))
@@ -323,10 +335,10 @@ struct ContentView: View {
 ///
 /// Its own view precisely so that deciding "did anything change?" is not paid
 /// for on every unrelated redraw. Answering that means walking every row of
-/// four tables, and the parent re-renders whenever a refresh publishes its
-/// progress — once per answered printing, hundreds of times a pass. The
-/// controller is therefore held as a plain reference rather than an
-/// `ObservedObject`: this view calls it, but must never re-render because of it.
+/// four tables, and the parent can re-render whenever a refresh publishes its
+/// progress. The controller is therefore held as a plain reference rather than
+/// an `ObservedObject`: this view calls it, but must never re-render because of
+/// it.
 private struct PortfolioInputObserver: View {
     @Environment(\.modelContext) private var modelContext
 
@@ -352,6 +364,15 @@ private struct PortfolioInputObserver: View {
             // tables are part of the trigger; CloudKit can deliver either first.
             .task(id: portfolioInputTaskID) {
                 guard hasStartedPortfolio else { return }
+                // A refresh pass or an arriving CloudKit batch changes these
+                // tables many times in quick succession, and each change used to
+                // buy its own full recompute. Settling first collapses the burst
+                // into one; `task(id:)` cancels the sleep when the next change
+                // supersedes it. This paces the recompute only — the identity
+                // above is still derived from every payload field, because that
+                // is what notices a late event or a repaired row.
+                try? await Task.sleep(for: .milliseconds(300))
+                guard !Task.isCancelled else { return }
                 portfolio.recompute(context: modelContext)
                 await refreshStalePricesIfNeeded()
             }
@@ -477,9 +498,12 @@ private struct PortfolioInputObserver: View {
                 hasCheckedForStalePrices = false
                 return false
             }
-            let targets = PriceRefreshController.staleTargets(from: currentTargets)
+            let targets = PriceRefreshController.staleTargets(
+                from: currentTargets,
+                usesPriceFallback: usesPriceFallback
+            )
             guard !targets.isEmpty else { return false }
-            await refresh.refresh(targets, store: PriceStore(context: modelContext))
+            await refresh.refresh(targets, container: modelContext.container)
             return true
         }
         guard didRefresh else { return }

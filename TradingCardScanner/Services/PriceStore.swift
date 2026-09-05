@@ -17,6 +17,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedMarketPriceNull = "graded_market_price_null"
     case justTCGVariantUnresolved = "justtcg_variant_unresolved"
     case invalidProviderQuote = "invalid_provider_quote"
+    case noSupportedProvider = "no_supported_provider"
 
     var title: String {
         switch self {
@@ -30,6 +31,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedMarketPriceNull: return "Graded market price unavailable"
         case .justTCGVariantUnresolved: return "Market variant not resolved"
         case .invalidProviderQuote: return "Invalid provider quote rejected"
+        case .noSupportedProvider: return "No supported price provider"
         }
     }
 
@@ -55,6 +57,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "The marketplace card was identified, but its exact physical variant was not."
         case .invalidProviderQuote:
             return "The provider returned a non-finite or unrepresentable amount. The quote was rejected and the prior value was kept."
+        case .noSupportedProvider:
+            return "This item has no provider that can answer its exact identity. It will be retried occasionally rather than on every refresh."
         }
     }
 }
@@ -64,6 +68,9 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if record?.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+            return .noSupportedProvider
+        }
         if record?.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue {
             return .invalidProviderQuote
         }
@@ -132,8 +139,13 @@ enum ArtworkDiagnosticReason: String, Equatable, Sendable {
 }
 
 enum ArtworkDiagnostics {
-    static func reason(for card: CollectedCard) -> ArtworkDiagnosticReason? {
-        guard card.userArtworkFilename == nil, card.imageURL == nil else { return nil }
+    static func reason(
+        for card: CollectedCard,
+        hasLocalOverride: Bool = false
+    ) -> ArtworkDiagnosticReason? {
+        guard !hasLocalOverride, card.userArtworkFilename == nil, card.imageURL == nil else {
+            return nil
+        }
 
         if card.itemKind == .sealedProduct {
             if CollectionCatalogNormalizer.isDefinitiveSealedMiss(card) {
@@ -163,6 +175,131 @@ enum ArtworkDiagnostics {
     }
 }
 
+/// The refresh pipeline owns one of these for its isolated context. It replaces
+/// the three per-instrument predicate scans with one materialization per pass,
+/// while keeping the scalar store APIs best-effort when no pass index is used.
+/// This type is context-owned rather than `@MainActor`: callers must create and
+/// use it on the executor that owns its `ModelContext`, just like `PriceStore`
+/// and `CollectionStore`. The foreground refresh currently owns both on the
+/// main actor, but the type does not impose that policy on other context owners.
+final class PriceRefreshDataIndex {
+    struct CheckDayKey: Hashable {
+        let instrumentKey: String
+        let portfolioDay: Date
+    }
+
+    private(set) var recordsByKey: [String: [PriceRecord]]
+    /// Refresh decisions only need the newest observation for each instrument.
+    /// Keeping the full append-only history here made a multi-minute refresh
+    /// retain every observation ever recorded on the device.
+    private(set) var newestObservationsByInstrumentKey: [String: PriceObservation]
+    private(set) var checkDaysByKey: [CheckDayKey: PriceCheckDay]
+    private(set) var indexedPortfolioDays: Set<Date>
+    private let loadedSuccessfully: Bool
+
+    init(context: ModelContext) {
+        do {
+            let records = try context.fetch(FetchDescriptor<PriceRecord>())
+            let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+            let indexedDay = PortfolioCalendar.day(
+                containing: .now,
+                in: PortfolioCalendar.pinnedTimeZone() ?? .current
+            )
+            let checkDays = try context.fetch(
+                FetchDescriptor<PriceCheckDay>(
+                    predicate: #Predicate { $0.portfolioDay == indexedDay }
+                )
+            )
+            self.recordsByKey = Dictionary(grouping: records, by: \.key)
+            var newestByInstrumentKey: [String: PriceObservation] = [:]
+            for observation in observations {
+                guard let incumbent = newestByInstrumentKey[observation.instrumentKey] else {
+                    newestByInstrumentKey[observation.instrumentKey] = observation
+                    continue
+                }
+                if Self.isNewer(observation, than: incumbent) {
+                    newestByInstrumentKey[observation.instrumentKey] = observation
+                }
+            }
+            self.newestObservationsByInstrumentKey = newestByInstrumentKey
+            self.checkDaysByKey = Dictionary(
+                checkDays.map {
+                    (CheckDayKey(instrumentKey: $0.instrumentKey, portfolioDay: $0.portfolioDay), $0)
+                },
+                uniquingKeysWith: { first, _ in first }
+            )
+            self.indexedPortfolioDays = [indexedDay]
+            self.loadedSuccessfully = true
+        } catch {
+            // Fall back to the original keyed fetches if one table cannot be
+            // read. A partial index must never be mistaken for an empty store.
+            self.recordsByKey = [:]
+            self.newestObservationsByInstrumentKey = [:]
+            self.checkDaysByKey = [:]
+            self.indexedPortfolioDays = []
+            self.loadedSuccessfully = false
+        }
+    }
+
+    var isUsable: Bool { loadedSuccessfully }
+
+    func records(forKey key: String) -> [PriceRecord] {
+        recordsByKey[key] ?? []
+    }
+
+    func allRecords() -> [PriceRecord] {
+        recordsByKey.values.flatMap { $0 }
+    }
+
+    func setRecords(_ records: [PriceRecord], forKey key: String) {
+        if records.isEmpty { recordsByKey.removeValue(forKey: key) }
+        else { recordsByKey[key] = records }
+    }
+
+    func insert(_ record: PriceRecord) {
+        recordsByKey[record.key, default: []].append(record)
+    }
+
+    func newestObservation(forInstrumentKey key: String) -> PriceObservation? {
+        newestObservationsByInstrumentKey[key]
+    }
+
+    func insert(_ observation: PriceObservation) {
+        guard let incumbent = newestObservationsByInstrumentKey[observation.instrumentKey] else {
+            newestObservationsByInstrumentKey[observation.instrumentKey] = observation
+            return
+        }
+        if Self.isNewer(observation, than: incumbent) {
+            newestObservationsByInstrumentKey[observation.instrumentKey] = observation
+        }
+    }
+
+    func checkDay(instrumentKey: String, day: Date) -> PriceCheckDay? {
+        checkDaysByKey[CheckDayKey(instrumentKey: instrumentKey, portfolioDay: day)]
+    }
+
+    func canReadCheckDay(_ day: Date) -> Bool {
+        indexedPortfolioDays.contains(day)
+    }
+
+    func insert(_ checkDay: PriceCheckDay) {
+        checkDaysByKey[
+            CheckDayKey(instrumentKey: checkDay.instrumentKey, portfolioDay: checkDay.portfolioDay)
+        ] = checkDay
+        indexedPortfolioDays.insert(checkDay.portfolioDay)
+    }
+
+    private static func isNewer(
+        _ candidate: PriceObservation,
+        than incumbent: PriceObservation
+    ) -> Bool {
+        if candidate.receivedAt != incumbent.receivedAt {
+            return candidate.receivedAt > incumbent.receivedAt
+        }
+        return candidate.id.uuidString > incumbent.id.uuidString
+    }
+}
+
 /// Reads and writes `PriceRecord`s.
 ///
 /// Prices are keyed by printing plus variant, never by collection row, so eight
@@ -170,11 +307,103 @@ enum ArtworkDiagnostics {
 /// to keep fresh.
 struct PriceStore {
     let context: ModelContext
+    let index: PriceRefreshDataIndex?
+
+    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+        self.context = context
+        self.index = index
+    }
 
     func record(forKey key: String) -> PriceRecord? {
-        var descriptor = FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        if let index, index.isUsable {
+            let indexedMatches = index.records(forKey: key)
+            if !indexedMatches.isEmpty {
+                return Self.authoritativeRecord(in: indexedMatches)
+            }
+
+            // The refresh index predates writes made through a sibling
+            // context. Recheck an indexed miss before treating the instrument
+            // as unknown; the same stale window that can duplicate a write can
+            // otherwise make an unchanged price look like a new one.
+            let fetchedMatches = (try? context.fetch(
+                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+            )) ?? []
+            if !fetchedMatches.isEmpty {
+                index.setRecords(fetchedMatches, forKey: key)
+            }
+            return Self.authoritativeRecord(in: fetchedMatches)
+        }
+
+        let matches = (try? context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+        )) ?? []
+        return Self.authoritativeRecord(in: matches)
+    }
+
+    /// The CloudKit schema has no unique constraint, so a concurrent first
+    /// write can deliver more than one row for one instrument. Reads must not
+    /// depend on SwiftData's fetch order while a repair is pending.
+    static func authoritativeRecord(in records: [PriceRecord]) -> PriceRecord? {
+        records.reduce(nil) { current, candidate in
+            guard let current else { return candidate }
+            return isPreferred(candidate, over: current) ? candidate : current
+        }
+    }
+
+    /// Selects the row with the newest knowledge/invalidation watermark. An
+    /// invalidation wins ties so a duplicate cannot resurrect a withdrawn
+    /// value. The remaining fingerprint is only a deterministic tie-breaker;
+    /// price magnitude is deliberately not part of the preference rule.
+    static func isPreferred(_ candidate: PriceRecord, over incumbent: PriceRecord) -> Bool {
+        let candidateDate = knowledgeDate(for: candidate)
+        let incumbentDate = knowledgeDate(for: incumbent)
+        if candidateDate != incumbentDate { return candidateDate > incumbentDate }
+        if candidate.isInvalidated != incumbent.isInvalidated {
+            return candidate.isInvalidated
+        }
+        return fingerprint(for: candidate) > fingerprint(for: incumbent)
+    }
+
+    /// Repairs all duplicate keys visible in this context before a refresh.
+    /// The returned count is the number of redundant rows removed, so callers
+    /// can report a repair only after the surrounding save succeeds.
+    @discardableResult
+    func reconcileDuplicateRecords() -> Int {
+        let recordsByKey = Dictionary(grouping: allRecords(), by: \.key)
+        var removed = 0
+        for records in recordsByKey.values where records.count > 1 {
+            guard let authoritative = Self.authoritativeRecord(in: records) else { continue }
+            for duplicate in records where duplicate !== authoritative {
+                context.delete(duplicate)
+                removed += 1
+            }
+            index?.setRecords([authoritative], forKey: authoritative.key)
+        }
+        return removed
+    }
+
+    private static func knowledgeDate(for record: PriceRecord) -> Date {
+        [
+            record.invalidatedAt,
+            record.lastSuccessfulCheckAt,
+            record.fetchedAt,
+            record.lastCheckedAt
+        ]
+        .compactMap { $0 }
+        .max() ?? .distantPast
+    }
+
+    private static func fingerprint(for record: PriceRecord) -> String {
+        [
+            record.isInvalidated ? "1" : "0",
+            record.sourceRaw ?? "",
+            record.sourceVariantID ?? "",
+            record.marketVariantID ?? "",
+            record.currencyCode,
+            record.unitMarketPriceUSD.map { String($0) } ?? "",
+            record.sourceUpdatedAt?.timeIntervalSince1970.description ?? "",
+            record.fetchedAt?.timeIntervalSince1970.description ?? ""
+        ].joined(separator: "\u{1F}  ")
     }
 
     /// Resolves the record for a write without treating an unreadable store as
@@ -190,10 +419,31 @@ struct PriceStore {
         treatmentIDs: [String] = []
     ) -> PriceRecord? {
         do {
-            let matches = try context.fetch(
-                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
-            )
-            guard matches.count <= 1 else { return nil }
+            let matches: [PriceRecord]
+            if let index, index.isUsable {
+                let indexedMatches = index.records(forKey: key)
+                // The refresh index predates writes made through a sibling
+                // context. Recheck the store before creating a row so a scan
+                // that saved this instrument after the index was built cannot
+                // cause a duplicate PriceRecord.
+                matches = indexedMatches.isEmpty
+                    ? try context.fetch(
+                        FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+                    )
+                    : indexedMatches
+            } else {
+                matches = try context.fetch(
+                    FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+                )
+            }
+            if matches.count > 1,
+               let authoritative = Self.authoritativeRecord(in: matches) {
+                for duplicate in matches where duplicate !== authoritative {
+                    context.delete(duplicate)
+                }
+                index?.setRecords([authoritative], forKey: key)
+                return authoritative
+            }
             if let existing = matches.first {
                 if existing.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
                     existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
@@ -211,6 +461,7 @@ struct PriceStore {
                 magicTreatmentIDs: treatmentIDs
             )
             context.insert(created)
+            index?.insert(created)
             return created
         } catch {
             return nil
@@ -218,7 +469,8 @@ struct PriceStore {
     }
 
     func allRecords() -> [PriceRecord] {
-        (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
+        if let index, index.isUsable { return index.allRecords() }
+        return (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
     }
 
     nonisolated static func record(
@@ -268,6 +520,17 @@ struct PriceStore {
         )
     }
 
+    /// Persistent identifiers are safe to retain while a paced provider request
+    /// is suspended. Model objects are not: another context operation can delete
+    /// or invalidate them before the response returns.
+    func importedCardIDsByProviderID() -> [String: [PersistentIdentifier]] {
+        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return cards.filter { $0.providerID.hasPrefix("csv:") }
+            .reduce(into: [String: [PersistentIdentifier]]()) { result, card in
+                result[card.providerID, default: []].append(card.persistentModelID)
+            }
+    }
+
     /// Records what a provider said about one variant, creating the record if
     /// this is the first time the app has asked.
     ///
@@ -281,6 +544,7 @@ struct PriceStore {
     /// because provenance is part of what is being observed: a vendor remapping
     /// a card from one variant object to another worth the same $42 has changed
     /// what is priced, and the record still holds the *old* id at this point.
+    @discardableResult
     func store(
         _ lookup: PriceLookup,
         game: CardGame,
@@ -289,7 +553,7 @@ struct PriceStore {
         marketVariantID: String? = nil,
         at date: Date = .now,
         treatmentIDs: [String] = []
-    ) {
+    ) -> Bool {
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,
@@ -302,9 +566,9 @@ struct PriceStore {
             printingID: printingID,
             variantID: variantID,
             treatmentIDs: treatmentIDs
-        ) else { return }
+        ) else { return false }
 
-        let observationDecision = PriceObservationLog(context: context).ingest(
+        let observationDecision = PriceObservationLog(context: context, index: index).ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,
@@ -314,23 +578,33 @@ struct PriceStore {
         if observationDecision == .rejectedInvalidQuote {
             record.recordFailure(at: date)
             record.lastFailureReasonRaw = PricingDiagnosticReason.invalidProviderQuote.rawValue
-            return
+            return false
         }
         if observationDecision == .ignoredAfterInvalidation {
-            return
+            return false
         }
 
         switch lookup {
         case let .price(price):
-            guard record.apply(price) else { return }
+            guard record.apply(price) else { return false }
+            record.lastFailureReasonRaw = nil
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
+            // A real amount clears every prior diagnosis. "The provider had
+            // nothing for this variant" does not: it is the same answer the
+            // capability stamp already records, and the scanner writes it on
+            // every commit of a treatment-qualified Magic card. Clearing here
+            // let one scan withdraw the 30-day terminal state and put the card
+            // back into the refresh queue it was just taken out of.
+            if record.lastFailureReasonRaw != PricingDiagnosticReason.noSupportedProvider.rawValue {
+                record.lastFailureReasonRaw = nil
+            }
         }
-        record.lastFailureReasonRaw = nil
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
         }
+        return true
     }
 
     func storeImported(
@@ -363,7 +637,7 @@ struct PriceStore {
         // engine and its whole value would surface as unexplained. But an
         // import is not a provider check, so it writes no `PriceCheckDay`:
         // coverage means "a provider answered today", and a CSV did not.
-        PriceObservationLog(context: context).ingest(
+        PriceObservationLog(context: context, index: index).ingest(
             .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: amount,
@@ -386,13 +660,14 @@ struct PriceStore {
     /// A refresh attempt that never reached an answer. The previous price stays
     /// exactly where it was — an offline phone should show yesterday's price
     /// labelled as yesterday's, not nothing at all.
+    @discardableResult
     func recordFailure(
         game: CardGame,
         printingID: String,
         variantID: String?,
         at date: Date = .now,
         treatmentIDs: [String] = []
-    ) {
+    ) -> Bool {
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,
@@ -405,11 +680,62 @@ struct PriceStore {
             printingID: printingID,
             variantID: variantID,
             treatmentIDs: treatmentIDs
-        ) else { return }
+        ) else { return false }
         record.recordFailure(at: date)
+        // A target can become supported after a catalog/schema/provider update.
+        // Once that target is actually attempted, the old capability stamp must
+        // not continue to suppress it for the long terminal retry interval.
+        if record.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+            record.lastFailureReasonRaw = nil
+        }
+        return true
     }
 
-    func save() {
-        try? context.save()
+    /// Stamps a capability gap rather than a provider failure. This is used for
+    /// identities the live catalog cannot represent at all (for example a
+    /// treatment-qualified Magic card or a graded row without a vendor handle).
+    /// It intentionally writes no observation and no coverage row: no provider
+    /// answered the question.
+    @discardableResult
+    func recordUnsupportedProvider(
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        at date: Date = .now,
+        treatmentIDs: [String] = []
+    ) -> Bool {
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        ) else { return false }
+        record.lastCheckedAt = date
+        record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
+        record.lastFailureAt = nil
+        return true
+    }
+
+    /// Saves only this store's context. A failed save is rolled back immediately
+    /// so a later caller cannot inherit a half-staged price write and commit it
+    /// together with unrelated work. Production refreshes use a dedicated
+    /// context as an additional isolation boundary.
+    @discardableResult
+    func save() -> Bool {
+        guard context.hasChanges else { return true }
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 }

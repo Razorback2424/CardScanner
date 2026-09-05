@@ -173,7 +173,7 @@ struct ScanReviewSheet: View {
                     Text("\(price.label) market")
                         .font(.subheadline.weight(isResolved ? .semibold : .regular))
                     Spacer()
-                    Text(price.value, format: .currency(code: "USD"))
+                    Text(price.value, format: .currency(code: price.currencyCode))
                         .font(.subheadline.weight(isResolved ? .semibold : .regular))
                         .monospacedDigit()
                 }

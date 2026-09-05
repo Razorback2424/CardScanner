@@ -116,14 +116,38 @@ enum PriceObservationRules {
 /// the app legitimately holds. Only an `explicitInvalidation` can do that.
 struct PriceObservationLog {
     let context: ModelContext
-    var timeZone: TimeZone = PortfolioCalendar.timeZone()
+    let index: PriceRefreshDataIndex?
+
+    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+        self.context = context
+        self.index = index
+    }
+
+    /// Observation rows are local-only, so two SwiftData contexts in the same
+    /// process can otherwise both observe the same absence and seed it. The
+    /// portfolio computation actor is the production owner, while this narrow
+    /// process-wide lock keeps a background computation and a foreground retry
+    /// from racing during the handoff. The second context fetches again after
+    /// the first context saves, so the absence check remains idempotent without
+    /// adding a synced schema watermark to `PriceRecord`.
+    private static let backfillLock = NSLock()
+    /// Reading the log must not be able to establish the portfolio epoch as a
+    /// side effect. The epoch owner pins the zone explicitly; this fallback is
+    /// only for callers that operate before an epoch exists.
+    var timeZone: TimeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
 
     // MARK: - Reading
 
     func newestObservation(instrumentKey: String) -> PriceObservation? {
+        if let index, index.isUsable {
+            return index.newestObservation(forInstrumentKey: instrumentKey)
+        }
         var descriptor = FetchDescriptor<PriceObservation>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey },
-            sortBy: [SortDescriptor(\.receivedAt, order: .reverse)]
+            sortBy: [
+                SortDescriptor(\.receivedAt, order: .reverse),
+                SortDescriptor(\.id, order: .reverse)
+            ]
         )
         descriptor.fetchLimit = 1
         return try? context.fetch(descriptor).first
@@ -132,12 +156,18 @@ struct PriceObservationLog {
     func observations(instrumentKey: String) -> [PriceObservation] {
         let descriptor = FetchDescriptor<PriceObservation>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey },
-            sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+            sortBy: [
+                SortDescriptor(\.receivedAt, order: .forward),
+                SortDescriptor(\.id, order: .forward)
+            ]
         )
         return (try? context.fetch(descriptor)) ?? []
     }
 
     func checkDay(instrumentKey: String, day: Date) -> PriceCheckDay? {
+        if let index, index.isUsable, index.canReadCheckDay(day) {
+            return index.checkDay(instrumentKey: instrumentKey, day: day)
+        }
         var descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey && $0.portfolioDay == day }
         )
@@ -214,7 +244,7 @@ struct PriceObservationLog {
         source: PriceSource,
         at date: Date = .now
     ) -> PriceObservation? {
-        let record = PriceStore(context: context).record(forKey: instrumentKey)
+        let record = PriceStore(context: context, index: index).record(forKey: instrumentKey)
         let previous = newestObservation(instrumentKey: instrumentKey)
 
         // Invalidation is idempotent. This also repairs a record created by an
@@ -248,6 +278,7 @@ struct PriceObservationLog {
         )
         if let record, !record.invalidate(at: date) { return nil }
         context.insert(observation)
+        index?.insert(observation)
         return observation
     }
 
@@ -265,43 +296,49 @@ struct PriceObservationLog {
                 existing.lastSuccessfulCheckAt = date
                 existing.sourceRaw = source?.rawValue ?? existing.sourceRaw
             }
+            index?.insert(existing)
             return
         }
-        context.insert(
-            PriceCheckDay(
-                instrumentKey: instrumentKey,
-                portfolioDay: day,
-                lastSuccessfulCheckAt: date,
-                source: source
-            )
+        let checkDay = PriceCheckDay(
+            instrumentKey: instrumentKey,
+            portfolioDay: day,
+            lastSuccessfulCheckAt: date,
+            source: source
         )
+        context.insert(checkDay)
+        index?.insert(checkDay)
     }
 
-    // MARK: - Backfill
+    // MARK: - Synced-record reconciliation
 
-    /// Gives every already-priced instrument a first observation.
+    /// Reconciles the current synced price-record state into this device's
+    /// local knowledge history.
     ///
     /// `PriceRecord` overwrites in place, so every valuation this app computed
     /// before the log existed is already gone. What survives is the *current*
     /// value and when it was fetched, and that is enough to open the log
     /// honestly: "as of this moment, this is what the app believed".
     ///
-    /// Runs on every launch and is idempotent — it writes only where an
-    /// instrument has a usable value and no observation at all. That also
-    /// covers the case the ledger baseline cannot: a second device inherits the
-    /// synced `PriceRecord`s but none of the first device's local observations,
-    /// and seeds its own.
+    /// A record can arrive from another device after this device has already
+    /// observed an older value. Comparing only for an absent observation — the
+    /// old backfill rule — leaves the portfolio walk on that older value. A
+    /// materially different current record therefore becomes a new local
+    /// observation, with `localKnowledgeTime` as `receivedAt`. The remote
+    /// device's `fetchedAt` is never copied into this device's history.
     ///
-    /// The caller owns the context and must serialize writes for that context.
-    /// A process-local mutex cannot make two SwiftData contexts or two devices
-    /// observe one another's uncommitted work; durable idempotency belongs at
-    /// the persisted observation boundary, not in a thread-blocking lock.
+    /// Explicitly invalidated records are reconciled too, including when this
+    /// device has no prior local observation. An invalidation is authoritative
+    /// state, not a missing-price fallback.
+    ///
+    /// A process-local mutex serializes the app's main and computation
+    /// contexts, but it cannot deduplicate two devices' local-only observations;
+    /// that cross-device limitation is intentional and remains value-neutral.
     @discardableResult
     func backfillFromRecords(
         receivedAt localKnowledgeTime: Date = .now,
         existingObservations: [PriceObservation]? = nil
     ) -> Int {
-        backfill(
+        synchronizeRecords(
             receivedAt: localKnowledgeTime,
             existingObservations: existingObservations
         ).written
@@ -314,7 +351,19 @@ struct PriceObservationLog {
         receivedAt localKnowledgeTime: Date = .now,
         existingObservations: [PriceObservation]? = nil
     ) -> [PriceObservation] {
-        backfill(
+        reconcileSyncedRecordsAndReturnObservations(
+            learnedAt: localKnowledgeTime,
+            existingObservations: existingObservations
+        )
+    }
+
+    /// Reconciles changed or invalidated synced records into the local
+    /// observation history and returns the materialised rows for replay.
+    func reconcileSyncedRecordsAndReturnObservations(
+        learnedAt localKnowledgeTime: Date = .now,
+        existingObservations: [PriceObservation]? = nil
+    ) -> [PriceObservation] {
+        synchronizeRecords(
             receivedAt: localKnowledgeTime,
             existingObservations: existingObservations
         ).observations
@@ -329,7 +378,7 @@ struct PriceObservationLog {
         receivedAt localKnowledgeTime: Date = .now,
         fetchExistingObservations: @escaping () throws -> [PriceObservation]
     ) -> Int {
-        backfill(
+        synchronizeRecords(
             receivedAt: localKnowledgeTime,
             existingObservations: nil,
             fetchExistingObservations: fetchExistingObservations
@@ -337,12 +386,24 @@ struct PriceObservationLog {
     }
     #endif
 
-    private func backfill(
+    private func synchronizeRecords(
         receivedAt localKnowledgeTime: Date,
         existingObservations: [PriceObservation]?,
         fetchExistingObservations: (() throws -> [PriceObservation])? = nil
     ) -> (written: Int, observations: [PriceObservation]) {
-        let records = PriceStore(context: context).allRecords()
+        Self.backfillLock.lock()
+        defer { Self.backfillLock.unlock() }
+
+        let allRecords = PriceStore(context: context, index: index).allRecords()
+        var recordsByKey: [String: PriceRecord] = [:]
+        for record in allRecords {
+            if let existing = recordsByKey[record.key],
+               !PriceStore.isPreferred(record, over: existing) {
+                continue
+            }
+            recordsByKey[record.key] = record
+        }
+        let records = recordsByKey.values.sorted { $0.key < $1.key }
         var observations: [PriceObservation]
         if let existingObservations {
             observations = existingObservations
@@ -358,43 +419,139 @@ struct PriceObservationLog {
                 return (0, [])
             }
         }
-        var existingInstrumentKeys = Set(observations.map(\.instrumentKey))
+        var newestByInstrument: [String: PriceObservation] = [:]
+        for observation in observations {
+            if let existing = newestByInstrument[observation.instrumentKey] {
+                let existingIsNewer =
+                    existing.receivedAt > observation.receivedAt
+                    || (existing.receivedAt == observation.receivedAt
+                        && existing.id.uuidString >= observation.id.uuidString)
+                if existingIsNewer { continue }
+            }
+            newestByInstrument[observation.instrumentKey] = observation
+        }
         var written = 0
 
         for record in records {
+            let previous = newestByInstrument[record.key]
+
+            if record.isInvalidated {
+                guard previous?.kind != .explicitInvalidation else { continue }
+                if let previous, isOutOfOrder(record: record, comparedTo: previous) {
+                    continue
+                }
+                let observation = PriceObservation(
+                    instrumentKey: record.key,
+                    kind: .explicitInvalidation,
+                    amount: nil,
+                    currencyCode: record.currencyCode,
+                    source: record.source ?? previous?.source ?? .justTCG,
+                    sourceVariantID: record.sourceVariantID ?? previous?.sourceVariantID,
+                    marketVariantID: record.marketVariantID ?? previous?.marketVariantID,
+                    effectiveAt: localKnowledgeTime,
+                    receivedAt: localKnowledgeTime,
+                    isSourceStamped: false
+                )
+                context.insert(observation)
+                observations.append(observation)
+                newestByInstrument[record.key] = observation
+                written += 1
+                continue
+            }
+
             guard let amount = record.effectiveUnitMarketPriceUSD,
                   record.currencyCode == "USD",
                   let source = record.source,
-                  let money = Money(rounding: amount),
-                  !existingInstrumentKeys.contains(record.key) else { continue }
+                  let money = Money(rounding: amount) else { continue }
+            if let previous, isOutOfOrder(record: record, comparedTo: previous) {
+                continue
+            }
+
+            let candidate = PriceObservationRules.Candidate(
+                value: PriceObservationValue(
+                    amount: money,
+                    currencyCode: record.currencyCode,
+                    sourceRaw: source.rawValue,
+                    sourceVariantID: record.sourceVariantID,
+                    marketVariantID: record.marketVariantID
+                ),
+                source: source,
+                sourceUpdatedAt: record.sourceUpdatedAt,
+                // A synced PriceRecord's fetchedAt belongs to the device that
+                // originally fetched it. This device learned the inherited
+                // value now and must not fabricate history by copying that
+                // remote timestamp into local knowledge time.
+                receivedAt: localKnowledgeTime
+            )
+            guard case let .append(kind) = PriceObservationRules.decide(
+                candidate: candidate,
+                previous: previous.map {
+                    PriceObservationRules.Previous(
+                        value: $0.value,
+                        effectiveAt: $0.effectiveAt,
+                        receivedAt: $0.receivedAt,
+                        isSourceStamped: $0.isSourceStamped
+                    )
+                }
+            ) else { continue }
 
             let observation = PriceObservation(
                 instrumentKey: record.key,
-                kind: .marketUpdate,
-                amount: money,
-                currencyCode: record.currencyCode,
-                source: source,
-                sourceVariantID: record.sourceVariantID,
-                marketVariantID: record.marketVariantID,
-                effectiveAt: record.sourceUpdatedAt ?? localKnowledgeTime,
-                // A synced PriceRecord's fetchedAt belongs to the device
-                // that originally fetched it. This device learned the
-                // inherited value now and must never fabricate history by
-                // copying the remote timestamp into local knowledge time.
-                receivedAt: localKnowledgeTime,
-                isSourceStamped: source.publishesSourceTimestamp && record.sourceUpdatedAt != nil
+                kind: kind,
+                amount: candidate.value.amount,
+                currencyCode: candidate.value.currencyCode,
+                source: candidate.source,
+                sourceVariantID: candidate.value.sourceVariantID,
+                marketVariantID: candidate.value.marketVariantID,
+                effectiveAt: candidate.effectiveAt,
+                receivedAt: candidate.receivedAt,
+                isSourceStamped: candidate.isSourceStamped
             )
             context.insert(observation)
             observations.append(observation)
-            existingInstrumentKeys.insert(record.key)
+            newestByInstrument[record.key] = observation
             written += 1
         }
 
-        if written > 0 { try? context.save() }
+        if written > 0 {
+            do {
+                try context.save()
+            } catch {
+                // Reconciliation is best effort, but unsaved in-memory
+                // observations must not be returned as durable evidence or
+                // remain staged for a later unrelated save. The computation
+                // actor will retry on its next pass.
+                context.rollback()
+                return (0, [])
+            }
+        }
         return (written, observations)
     }
 
     // MARK: -
+
+    /// A delayed CloudKit row can expose an older remote record after this
+    /// device has already learned a newer one. Source-stamped providers can be
+    /// compared by their market clock; unstamped providers use the remote
+    /// fetch/check watermark conservatively. A local invalidation is exempt so
+    /// a genuinely newly learned recovery can restore a value.
+    private func isOutOfOrder(record: PriceRecord, comparedTo previous: PriceObservation) -> Bool {
+        guard previous.kind != .explicitInvalidation else { return false }
+        let remoteKnowledge = [
+            record.fetchedAt,
+            record.lastSuccessfulCheckAt,
+            record.lastCheckedAt
+        ]
+        .compactMap { $0 }
+        .max() ?? .distantPast
+
+        if let sourceUpdatedAt = record.sourceUpdatedAt,
+           previous.isSourceStamped,
+           sourceUpdatedAt < previous.effectiveAt {
+            return remoteKnowledge <= previous.receivedAt
+        }
+        return remoteKnowledge <= previous.receivedAt
+    }
 
     private func previous(forKey key: String) -> PriceObservationRules.Previous? {
         guard let newest = newestObservation(instrumentKey: key) else { return nil }
@@ -411,19 +568,19 @@ struct PriceObservationLog {
         kind: PriceObservationKind,
         instrumentKey: String
     ) {
-        context.insert(
-            PriceObservation(
-                instrumentKey: instrumentKey,
-                kind: kind,
-                amount: candidate.value.amount,
-                currencyCode: candidate.value.currencyCode,
-                source: candidate.source,
-                sourceVariantID: candidate.value.sourceVariantID,
-                marketVariantID: candidate.value.marketVariantID,
-                effectiveAt: candidate.effectiveAt,
-                receivedAt: candidate.receivedAt,
-                isSourceStamped: candidate.isSourceStamped
-            )
+        let observation = PriceObservation(
+            instrumentKey: instrumentKey,
+            kind: kind,
+            amount: candidate.value.amount,
+            currencyCode: candidate.value.currencyCode,
+            source: candidate.source,
+            sourceVariantID: candidate.value.sourceVariantID,
+            marketVariantID: candidate.value.marketVariantID,
+            effectiveAt: candidate.effectiveAt,
+            receivedAt: candidate.receivedAt,
+            isSourceStamped: candidate.isSourceStamped
         )
+        context.insert(observation)
+        index?.insert(observation)
     }
 }

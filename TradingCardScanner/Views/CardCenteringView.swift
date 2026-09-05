@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 final class CardCenteringViewModel: ObservableObject {
     @Published var selectedPhoto: PhotosPickerItem?
     @Published var image: UIImage?
+    @Published private(set) var imageRevision = 0
     @Published var measurement: CardCenteringMeasurement?
     @Published var rotationDegrees = 0.0
     @Published var isAnalyzing = false
@@ -151,7 +152,12 @@ final class CardCenteringViewModel: ObservableObject {
         }
 
         let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent(CardCenteringExport.filename(for: measurement))
+            .appendingPathComponent(
+                CardCenteringExport.filename(
+                    for: measurement,
+                    rotationDegrees: rotationDegrees
+                )
+            )
         do {
             try data.write(to: url, options: .atomic)
             return url
@@ -174,6 +180,7 @@ final class CardCenteringViewModel: ObservableObject {
                 switch result {
                 case let .success(analysis):
                     self.image = analysis.image
+                    self.imageRevision &+= 1
                     self.measurement = analysis.measurement
                     // `analysis.image` is already straightened when the card was
                     // skewed, and the measurement is in that image's
@@ -204,6 +211,12 @@ struct CardCenteringView: View {
     /// windows and as a sheet in narrow ones, which a hand-rolled
     /// `UIActivityViewController` does not.
     @State private var exportURL: URL?
+
+    private struct ExportInput: Equatable {
+        let imageRevision: Int
+        let measurement: CardCenteringMeasurement?
+        let rotationDegrees: Double
+    }
 
     var body: some View {
         NavigationStack {
@@ -357,7 +370,21 @@ struct CardCenteringView: View {
                     }
                 }
             }
-            .task(id: model.measurement) {
+            .task(
+                id: ExportInput(
+                    imageRevision: model.imageRevision,
+                    measurement: model.measurement,
+                    rotationDegrees: model.rotationDegrees
+                )
+            ) {
+                // Guide steppers can emit a burst of values while a control is
+                // held. Coalesce that burst, and key the task by every input
+                // that changes the pixels so a rotation or a new image cannot
+                // leave the previous export attached to ShareLink.
+                exportURL = nil
+                guard model.image != nil, model.measurement != nil else { return }
+                try? await Task.sleep(for: .milliseconds(180))
+                guard !Task.isCancelled else { return }
                 exportURL = model.makeExportFile()
             }
             .sheet(isPresented: $isShowingSettings) {

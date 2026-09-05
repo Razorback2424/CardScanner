@@ -36,11 +36,28 @@ struct CollectionCSVImportPlan: Sendable {
 struct CollectionCSVImportResult: Sendable {
     let insertedEntries: Int
     let mergedEntries: Int
+    /// Quantity whose ownership rows and ledger entries were committed. This
+    /// can be lower than `totalQuantity` when a bad row is skipped.
+    let importedQuantity: Int
     let totalQuantity: Int
     let skippedRows: Int
+    let failedRows: [CollectionCSVImportFailure]
+
+    /// Normalized entries whose row transaction rolled back. These are kept
+    /// separate from `skippedRows`: skipped source rows were never importable,
+    /// while failed entries are safe candidates for a selective retry.
+    var failedEntries: [CollectionCSVEntry] {
+        failedRows.map(\.entry)
+    }
 }
 
-struct CollectionCSVEntry: Sendable {
+struct CollectionCSVImportFailure: Sendable, Equatable {
+    let collectionKey: String
+    let detail: String
+    let entry: CollectionCSVEntry
+}
+
+struct CollectionCSVEntry: Sendable, Equatable {
     let collectionKey: String
     let game: CardGame
     let providerID: String
@@ -159,6 +176,46 @@ enum CollectionCSV {
         return CollectionCSVDocument(text: text)
     }
 
+    /// Re-exports only entries whose individual import transaction failed.
+    /// The normalized rows are intentionally written in the same schema as a
+    /// collection export, so the result can be selected for a focused retry
+    /// without re-importing rows that already committed.
+    static func exportFailedEntries(_ entries: [CollectionCSVEntry]) -> CollectionCSVDocument {
+        let formatter = ISO8601DateFormatter()
+        let rows = entries.map { entry in
+            [
+                entry.game.rawValue,
+                entry.providerID,
+                entry.name,
+                entry.setName,
+                entry.setCode,
+                entry.cardNumber,
+                entry.variant?.id ?? "",
+                entry.variant?.label ?? "",
+                String(entry.quantity),
+                entry.rarity ?? "",
+                entry.imageURL ?? "",
+                entry.thumbnailURL ?? "",
+                formatter.string(from: entry.dateAdded),
+                entry.itemKind.rawValue,
+                entry.justTCGCardID ?? "",
+                entry.justTCGVariantID ?? "",
+                entry.justTCGAPIVersion ?? "",
+                entry.gradingCompany?.rawValue ?? "",
+                entry.grade?.value ?? "",
+                entry.grade?.label ?? "",
+                entry.grade?.qualifier ?? "",
+                entry.certificationNumber ?? "",
+                entry.marketRegionRaw ?? "",
+                entry.pokemonPrintRun?.rawValue ?? "",
+                encodedTreatmentIDs(entry.magicTreatmentIDsRaw),
+                MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
+                entry.magicContentKindRaw
+            ]
+        }
+        return CollectionCSVDocument(text: csvText(headers: exportHeaders, rows: rows))
+    }
+
     /// Daily closes, one row per revision.
     ///
     /// Phase 1 history is device-local, and an export is what keeps it from
@@ -261,10 +318,11 @@ enum CollectionCSV {
     /// is temporarily offline is deliberately not classified as missing data.
     static func exportMissingArtwork(
         _ cards: [CollectedCard],
-        priceRecords: [PriceRecord]
+        priceRecords: [PriceRecord],
+        localArtworkKeys: Set<String> = []
     ) -> CollectionCSVDocument {
         diagnosticExport(
-            cards.filter { $0.highImageURL == nil },
+            cards.filter { $0.highImageURL == nil && !localArtworkKeys.contains($0.collectionKey) },
             priceRecords: priceRecords,
             diagnostic: { card, _ in
                 ArtworkDiagnostics.reason(for: card)?.rawValue ?? "artwork_available"
@@ -424,215 +482,386 @@ enum CollectionCSV {
         )
     }
 
-    @MainActor
-    static func apply(_ plan: CollectionCSVImportPlan, to context: ModelContext) throws -> CollectionCSVImportResult {
+    static func apply(
+        _ plan: CollectionCSVImportPlan,
+        to context: ModelContext,
+        batchSize: Int = 100,
+        progress: (@Sendable (Int, Int) -> Void)? = nil
+    ) throws -> CollectionCSVImportResult {
         do {
-            let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
             let priceStore = PriceStore(context: context)
             let ledger = InventoryLedger(context: context)
+            // The same store the scanner writes through. An import is an
+            // ownership mutation like any other; it does not get its own rules
+            // for identity, history or the ledger.
+            let collectionStore = CollectionStore(context: context)
             let priceRecords = try context.fetch(FetchDescriptor<PriceRecord>())
             let priceObservations = try context.fetch(FetchDescriptor<PriceObservation>())
             let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
                 observations: priceObservations,
                 records: priceRecords
             )
-            // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, and a
-            // duplicate `collectionKey` is a state CloudKit produces on its own —
-            // so importing a CSV into a collection that had ever synced a duplicate
-            // crashed. Merging into the projection's representative row adds the
-            // imported copies to the position exactly once.
-            let storedProjection = LogicalCollection.project(cards: storedCards) {
-                valuations.priceStorageKey(for: $0)
+            func loadCardsByKey() throws -> (
+                cardsByKey: [String: CollectedCard],
+                claimedKeys: Set<String>,
+                canonicalKeysByLegacy: [String: Set<String>]
+            ) {
+                let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
+                // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key,
+                // and a duplicate `collectionKey` is a state CloudKit produces
+                // on its own. The projection's deterministic representative is
+                // the import target; its sibling rows remain in the context and
+                // continue contributing their quantity to the next projection.
+                let storedProjection = LogicalCollection.project(cards: storedCards) {
+                    valuations.priceStorageKey(for: $0)
+                }
+                var cardsByKey = storedProjection
+                    .byKey
+                    .mapValues(\.representative)
+                // Keep physical-key presence separate from the representative
+                // lookup. An ambiguous legacy alias must not resolve to a row,
+                // but it still proves that the identity is already claimed. If
+                // it were removed from both maps, an import would insert a new
+                // physical row under a key that already exists.
+                var claimedKeys = Set(storedCards.map(\.collectionKey))
+                var canonicalKeysByLegacy: [String: Set<String>] = [:]
+                // A pre-Slice-5 export has only the finish-qualified key. If the
+                // current store already knows the same printing under its newer
+                // treatment-qualified key, make that legacy key an import alias
+                // too. Keep the alias only while it is unambiguous; two canonical
+                // treatments sharing one legacy identity must not be guessed into
+                // one another.
+                var ambiguousLegacyKeys = Set<String>()
+                for position in storedProjection.positions {
+                    for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
+                        for: position.collectionKey
+                    ) {
+                        claimedKeys.insert(legacyKey)
+                        canonicalKeysByLegacy[legacyKey, default: []].insert(
+                            position.collectionKey
+                        )
+                        guard !ambiguousLegacyKeys.contains(legacyKey) else { continue }
+                        if let existing = cardsByKey[legacyKey],
+                           existing.collectionKey != position.collectionKey {
+                            cardsByKey.removeValue(forKey: legacyKey)
+                            ambiguousLegacyKeys.insert(legacyKey)
+                        } else {
+                            cardsByKey[legacyKey] = position.representative
+                        }
+                    }
+                }
+                // A mixed-version device may have received the canonical
+                // ledger lineage before the collection row was rekeyed. Treat
+                // those event keys as identity evidence too, otherwise a CSV
+                // entry using the legacy key would be written back under that
+                // key and split the ledger a second time.
+                for eventKey in Set(ledger.read().events.map(\.collectionKey)) {
+                    for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
+                        for: eventKey
+                    ) {
+                        claimedKeys.insert(legacyKey)
+                        canonicalKeysByLegacy[legacyKey, default: []].insert(eventKey)
+                        if canonicalKeysByLegacy[legacyKey]?.count ?? 0 > 1 {
+                            cardsByKey.removeValue(forKey: legacyKey)
+                            ambiguousLegacyKeys.insert(legacyKey)
+                        }
+                    }
+                }
+                return (cardsByKey, claimedKeys, canonicalKeysByLegacy)
             }
-            var cardsByKey = storedProjection
-                .byKey
-                .mapValues(\.representative)
-            // A pre-Slice-5 export has only the finish-qualified key. If the
-            // current store already knows the same printing under its newer
-            // treatment-qualified key, make that legacy key an import alias
-            // too. Keep the alias only while it is unambiguous; two canonical
-            // treatments sharing one legacy identity must not be guessed into
-            // one another.
-            var ambiguousLegacyKeys = Set<String>()
-            for position in storedProjection.positions {
+
+            let initialIndex = try loadCardsByKey()
+            var cardsByKey = initialIndex.cardsByKey
+            var claimedKeys = initialIndex.claimedKeys
+            var canonicalKeysByLegacy = initialIndex.canonicalKeysByLegacy
+            func indexCard(_ card: CollectedCard) {
+                cardsByKey[card.collectionKey] = card
+                claimedKeys.insert(card.collectionKey)
                 for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
-                    for: position.collectionKey
+                    for: card.collectionKey
                 ) {
-                    guard !ambiguousLegacyKeys.contains(legacyKey) else { continue }
-                    if let existing = cardsByKey[legacyKey],
-                       existing.collectionKey != position.collectionKey {
-                        cardsByKey.removeValue(forKey: legacyKey)
-                        ambiguousLegacyKeys.insert(legacyKey)
+                    claimedKeys.insert(legacyKey)
+                    canonicalKeysByLegacy[legacyKey, default: []].insert(card.collectionKey)
+                    if canonicalKeysByLegacy[legacyKey]?.count == 1 {
+                        cardsByKey[legacyKey] = card
                     } else {
-                        cardsByKey[legacyKey] = position.representative
+                        cardsByKey.removeValue(forKey: legacyKey)
                     }
                 }
             }
-            let collectionStore = CollectionStore(context: context)
             // One instant for the whole import, so every row lands on the same side
             // of a day boundary no matter how long the import takes.
             let recordedAt = Date.now
             var inserted = 0
             var merged = 0
+            var importedQuantity = 0
+            var failedRows: [CollectionCSVImportFailure] = []
 
-            for entry in plan.entries {
-                let storedCard: CollectedCard
-                var deltaQuantity = 0
-                // A newer CSV can carry a treatment-qualified key while the
-                // destination store still has its treatment-free row. Let the
-                // same read-through/repair path used by scanning adopt it
-                // before deciding whether this import is an insert or merge.
-                let existing: CollectedCard?
-                if let directMatch = cardsByKey[entry.collectionKey] {
-                    existing = directMatch
-                } else {
-                    existing = try collectionStore.card(
-                        forAnyKey: entry.collectionKey,
-                        magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw
-                    )
-                }
-                if let existing {
-                    if !existing.allowsQuantityAggregation || isCertified(entry) {
-                        // A non-aggregating row is one physical object. A
-                        // repeated import is metadata refresh, never a second
-                        // ownership event and never a silent quantity repair.
-                    } else {
-                        existing.quantity += entry.quantity
-                        deltaQuantity = entry.quantity
-                    }
-                    existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
-                    if existing.imageURL == nil { existing.imageURL = entry.imageURL }
-                    if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
-                    if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
-                    if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
-                    if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
-                    if existing.magicTreatmentIDsRaw.isEmpty {
-                        existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
-                            from: entry.magicTreatmentIDsRaw
+            let safeBatchSize = max(1, batchSize)
+            var batchStart = 0
+            progress?(0, plan.entries.count)
+            while batchStart < plan.entries.count {
+                let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
+                for index in batchStart..<batchEnd {
+                    // A row failure must not replay or re-project the already
+                    // committed prefix of this progress batch. These value
+                    // snapshots restore the in-memory accelerator after the
+                    // context rolls back the failed row.
+                    let cardsBeforeRow = cardsByKey
+                    let claimedKeysBeforeRow = claimedKeys
+                    let canonicalKeysBeforeRow = canonicalKeysByLegacy
+                    var rowInserted = 0
+                    var rowMerged = 0
+                    var rowImportedQuantity = 0
+
+                    do {
+                            let entry = plan.entries[index]
+                            let storedCard: CollectedCard
+                            var deltaQuantity = 0
+                            // A newer CSV can carry a treatment-qualified key while
+                            // the destination store still has its treatment-free
+                            // row — and CloudKit can have delivered two physical
+                            // rows for one position. Both are ownership-identity
+                            // repairs, so both go through the same store the
+                            // scanner writes with rather than a second copy of it.
+                            //
+                            // The index accelerates the common case but is not
+                            // treated as a complete identity oracle. Presence
+                            // and resolution are separate: an ambiguous legacy
+                            // alias still sends the row to the store, where it
+                            // fails conservatively instead of being inserted.
+                            let candidateKeys = [entry.collectionKey]
+                                + MagicTreatmentKeyCodec.legacyCollectionKeys(for: entry.collectionKey)
+                            let claimsThisEntry = candidateKeys.contains {
+                                claimedKeys.contains($0)
+                            }
+                            if canonicalKeysByLegacy[entry.collectionKey]?.count ?? 0 > 1 {
+                                throw CollectionStoreError.ledgerConflict(
+                                    "CSV entry matches multiple treatment identities"
+                                )
+                            }
+                            // A treatment-qualified CSV key carries the identity
+                            // needed to rekey a legacy row. Do not replace it with
+                            // the legacy alias just because that is the indexed
+                            // representative: `CollectionStore` needs the
+                            // canonical key to validate and persist the treatment
+                            // axis. For a treatment-free entry, resolve an
+                            // unambiguous canonical alias when one is present.
+                            let entryHasTreatment = !MagicTreatmentKeyCodec
+                                .collectionTreatmentIDs(from: entry.collectionKey)
+                                .isEmpty
+                            let lookupKey = entryHasTreatment
+                                ? entry.collectionKey
+                                : candidateKeys.compactMap { key in
+                                    if let canonicalKeys = canonicalKeysByLegacy[key],
+                                       canonicalKeys.count == 1 {
+                                        return canonicalKeys.first
+                                    }
+                                    return cardsByKey[key]?.collectionKey
+                                }.first ?? entry.collectionKey
+                            let existing = claimsThisEntry
+                                ? try collectionStore.card(
+                                    forAnyKey: lookupKey,
+                                    magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw,
+                                    // The import index already resolved the
+                                    // legacy/canonical relationship for this
+                                    // row. Do not repeat the three-table
+                                    // prefix probe once per CSV entry.
+                                    resolveLegacyIdentity: false
+                                )
+                                : nil
+                            if claimsThisEntry, existing == nil {
+                                throw CollectionStoreError.ledgerConflict(
+                                    "CSV entry matches an ambiguous collection identity"
+                                )
+                            }
+                            if let existing {
+                                if !existing.allowsQuantityAggregation || isCertified(entry) {
+                                    // A non-aggregating row is one physical object. A
+                                    // repeated import is metadata refresh, never a second
+                                    // ownership event and never a silent quantity repair.
+                                } else {
+                                    existing.quantity += entry.quantity
+                                    deltaQuantity = entry.quantity
+                                }
+                                existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
+                                if existing.imageURL == nil { existing.imageURL = entry.imageURL }
+                                if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
+                                if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
+                                if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
+                                if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
+                                if existing.magicTreatmentIDsRaw.isEmpty {
+                                    existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                                        from: entry.magicTreatmentIDsRaw
+                                    )
+                                }
+                                if existing.magicTreatmentQualifiers.isEmpty,
+                                   !entry.magicTreatmentQualifiers.isEmpty {
+                                    existing.magicTreatmentQualifiers = entry.magicTreatmentQualifiers
+                                }
+                                if existing.magicContentKindRaw == MagicContentKind.regular.rawValue,
+                                   entry.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                                    existing.magicContentKindRaw = entry.magicContentKindRaw
+                                }
+                                storedCard = existing
+                                cardsByKey[entry.collectionKey] = existing
+                                claimedKeys.insert(entry.collectionKey)
+                                indexCard(existing)
+                                rowMerged += 1
+                            } else {
+                                let card = CollectedCard(
+                                    collectionKey: entry.collectionKey,
+                                    game: entry.game,
+                                    providerID: entry.providerID,
+                                    name: entry.name,
+                                    setName: entry.setName,
+                                    setCode: entry.setCode,
+                                    cardNumber: entry.cardNumber,
+                                    rarity: entry.rarity,
+                                    imageURL: entry.imageURL,
+                                    thumbnailURL: entry.thumbnailURL,
+                                    variant: entry.variant,
+                                    variantResolution: .imported,
+                                    identityResolution: .imported,
+                                    quantity: entry.quantity,
+                                    dateAdded: entry.dateAdded,
+                                    magicTreatments: entry.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
+                                    magicTreatmentQualifiers: entry.magicTreatmentQualifiers,
+                                    magicContentKind: MagicContentKind(rawValue: entry.magicContentKindRaw) ?? .regular
+                                )
+                                // What kind of object this is, and — for a slab — the grade the
+                                // export stated. The vendor's variant UUID is not known from a
+                                // CSV and is adopted later, when pricing resolves it.
+                                card.itemKindRaw = entry.itemKind.rawValue
+                                card.gradingCompanyRaw = entry.gradingCompany?.rawValue
+                                card.gradeRaw = entry.grade?.value
+                                card.gradeLabel = entry.grade?.label
+                                card.gradingQualifier = entry.grade?.qualifier
+                                card.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
+                                card.justTCGCardID = entry.justTCGCardID
+                                card.justTCGVariantID = entry.justTCGVariantID
+                                card.justTCGAPIVersion = entry.justTCGAPIVersion
+                                card.certificationNumber = entry.certificationNumber
+                                card.marketRegionRaw = entry.marketRegionRaw
+                                // Preserve an unknown future content-kind string even
+                                // though the current computed enum projects it to regular.
+                                card.magicContentKindRaw = entry.magicContentKindRaw
+                                context.insert(card)
+                                indexCard(card)
+                                storedCard = card
+                                deltaQuantity = entry.quantity
+                                rowInserted += 1
+                            }
+
+                            if let amount = entry.importedMarketPriceUSD {
+                                priceStore.storeImported(
+                                    amount: amount,
+                                    sourceUpdatedAt: entry.importedPriceAsOf,
+                                    game: entry.game,
+                                    printingID: storedCard.priceStorageID,
+                                    variantID: storedCard.variantID,
+                                    at: recordedAt,
+                                    treatmentIDs: storedCard.priceTreatmentIDs
+                                )
+                            }
+
+                            // After the price, so the event is stamped with the value the
+                            // import just established rather than with nothing.
+                            //
+                            // `recordExisting`, not `initialBalance`: a CSV describes a
+                            // collection the person already had, but it is new to the app
+                            // today, so it belongs in today's reconciliation. Left out, a
+                            // seven-thousand-dollar import would surface as Unexplained — a
+                            // lie about what the system knows. The CSV's own acquisition date
+                            // is kept as `acquiredAt`; recorded and acquired are not the same
+                            // fact.
+                            if deltaQuantity > 0 {
+                                let operationID = UUID()
+                                let outcome = ledger.record(
+                                    storedCard,
+                                    kind: .recordExisting,
+                                    source: .csvImport,
+                                    deltaQuantity: deltaQuantity,
+                                    operationID: operationID,
+                                    occurredAt: recordedAt,
+                                    acquiredAt: entry.dateAdded
+                                )
+                                switch outcome {
+                                case .appended:
+                                    break
+                                case .duplicate:
+                                    throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
+                                case let .conflict(defect):
+                                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                                case let .unreadableStore(defect):
+                                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                                }
+                                _ = try collectionStore.appendActivity(
+                                    storedCard,
+                                    source: .csvImport,
+                                    kind: .added,
+                                    deltaQuantity: deltaQuantity,
+                                    ledgerOperationIDs: [operationID],
+                                    occurredAt: recordedAt
+                                )
+                                rowImportedQuantity += deltaQuantity
+                            }
+                        // Commit each row. `ModelContext.rollback()` is context-wide,
+                        // so a batch save cannot safely isolate a malformed row from
+                        // its valid siblings. `batchSize` remains the progress and
+                        // scheduling granularity, not the durability boundary.
+                        try context.save()
+                        inserted += rowInserted
+                        merged += rowMerged
+                        importedQuantity += rowImportedQuantity
+                    } catch {
+                        failedRows.append(
+                            CollectionCSVImportFailure(
+                                collectionKey: plan.entries[index].collectionKey,
+                                detail: error.localizedDescription,
+                                entry: plan.entries[index]
+                            )
                         )
+                        context.rollback()
+                        cardsByKey = cardsBeforeRow
+                        claimedKeys = claimedKeysBeforeRow
+                        canonicalKeysByLegacy = canonicalKeysBeforeRow
                     }
-                    if existing.magicTreatmentQualifiers.isEmpty,
-                       !entry.magicTreatmentQualifiers.isEmpty {
-                        existing.magicTreatmentQualifiers = entry.magicTreatmentQualifiers
-                    }
-                    if existing.magicContentKindRaw == MagicContentKind.regular.rawValue,
-                       entry.magicContentKindRaw != MagicContentKind.regular.rawValue {
-                        existing.magicContentKindRaw = entry.magicContentKindRaw
-                    }
-                    storedCard = existing
-                    cardsByKey[entry.collectionKey] = existing
-                    cardsByKey[existing.collectionKey] = existing
-                    merged += 1
-                } else {
-                    let card = CollectedCard(
-                        collectionKey: entry.collectionKey,
-                        game: entry.game,
-                        providerID: entry.providerID,
-                        name: entry.name,
-                        setName: entry.setName,
-                        setCode: entry.setCode,
-                        cardNumber: entry.cardNumber,
-                        rarity: entry.rarity,
-                        imageURL: entry.imageURL,
-                        thumbnailURL: entry.thumbnailURL,
-                        variant: entry.variant,
-                        variantResolution: .imported,
-                        identityResolution: .imported,
-                        quantity: entry.quantity,
-                        dateAdded: entry.dateAdded,
-                        magicTreatments: entry.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
-                        magicTreatmentQualifiers: entry.magicTreatmentQualifiers,
-                        magicContentKind: MagicContentKind(rawValue: entry.magicContentKindRaw) ?? .regular
-                    )
-                    // What kind of object this is, and — for a slab — the grade the
-                    // export stated. The vendor's variant UUID is not known from a
-                    // CSV and is adopted later, when pricing resolves it.
-                    card.itemKindRaw = entry.itemKind.rawValue
-                    card.gradingCompanyRaw = entry.gradingCompany?.rawValue
-                    card.gradeRaw = entry.grade?.value
-                    card.gradeLabel = entry.grade?.label
-                    card.gradingQualifier = entry.grade?.qualifier
-                    card.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
-                    card.justTCGCardID = entry.justTCGCardID
-                    card.justTCGVariantID = entry.justTCGVariantID
-                    card.justTCGAPIVersion = entry.justTCGAPIVersion
-                    card.certificationNumber = entry.certificationNumber
-                    card.marketRegionRaw = entry.marketRegionRaw
-                    // Preserve an unknown future content-kind string even
-                    // though the current computed enum projects it to regular.
-                    card.magicContentKindRaw = entry.magicContentKindRaw
-                    context.insert(card)
-                    cardsByKey[entry.collectionKey] = card
-                    storedCard = card
-                    deltaQuantity = entry.quantity
-                    inserted += 1
                 }
-
-                if let amount = entry.importedMarketPriceUSD {
-                    priceStore.storeImported(
-                        amount: amount,
-                        sourceUpdatedAt: entry.importedPriceAsOf,
-                        game: entry.game,
-                        printingID: storedCard.priceStorageID,
-                        variantID: storedCard.variantID,
-                        at: recordedAt,
-                        treatmentIDs: storedCard.priceTreatmentIDs
-                    )
-                }
-
-                // After the price, so the event is stamped with the value the
-                // import just established rather than with nothing.
-                //
-                // `recordExisting`, not `initialBalance`: a CSV describes a
-                // collection the person already had, but it is new to the app
-                // today, so it belongs in today's reconciliation. Left out, a
-                // seven-thousand-dollar import would surface as Unexplained — a
-                // lie about what the system knows. The CSV's own acquisition date
-                // is kept as `acquiredAt`; recorded and acquired are not the same
-                // fact.
-                if deltaQuantity > 0 {
-                    let operationID = UUID()
-                    let outcome = ledger.record(
-                        storedCard,
-                        kind: .recordExisting,
-                        source: .csvImport,
-                        deltaQuantity: deltaQuantity,
-                        operationID: operationID,
-                        occurredAt: recordedAt,
-                        acquiredAt: entry.dateAdded
-                    )
-                    switch outcome {
-                    case .appended:
-                        break
-                    case .duplicate:
-                        throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
-                    case let .conflict(defect):
-                        throw CollectionStoreError.ledgerConflict(defect.detail)
-                    case let .unreadableStore(defect):
-                        throw CollectionStoreError.ledgerConflict(defect.detail)
-                    }
-                    _ = try CollectionStore(context: context).appendActivity(
-                        storedCard,
-                        source: .csvImport,
-                        kind: .added,
-                        deltaQuantity: deltaQuantity,
-                        ledgerOperationIDs: [operationID],
-                        occurredAt: recordedAt
-                    )
-                }
+                progress?(batchEnd, plan.entries.count)
+                batchStart = batchEnd
             }
 
-            try context.save()
             return CollectionCSVImportResult(
                 insertedEntries: inserted,
                 mergedEntries: merged,
+                importedQuantity: importedQuantity,
                 totalQuantity: plan.totalQuantity,
-                skippedRows: plan.skippedRows
+                skippedRows: plan.skippedRows,
+                failedRows: failedRows
             )
         } catch {
             context.rollback()
             throw error
         }
+    }
+
+    /// UI imports get their own model actor and context. The synchronous
+    /// overload above remains useful for deterministic tests and callers that
+    /// intentionally own a context; production import work must not share the
+    /// main actor with scanner mutations or price refresh checkpoints.
+    static func applyIsolated(
+        _ plan: CollectionCSVImportPlan,
+        to container: ModelContainer,
+        batchSize: Int = 100,
+        progress: (@Sendable (Int, Int) -> Void)? = nil
+    ) async throws -> CollectionCSVImportResult {
+        let importer = CollectionCSVImportActor(modelContainer: container)
+        return try await importer.apply(
+            plan,
+            batchSize: batchSize,
+            progress: progress
+        )
     }
 
     private static func entries(from row: [String: String]) -> [CollectionCSVEntry] {
@@ -1316,5 +1545,24 @@ enum CollectionCSV {
         ([headers] + rows)
             .map { $0.map(escape).joined(separator: ",") }
             .joined(separator: "\n") + "\n"
+    }
+}
+
+/// Keeps large imports off the main actor. SwiftData contexts are isolated to
+/// the actor that owns them, so the import can yield between durable batches
+/// without sharing the scanner's pending transaction or UI context.
+@ModelActor
+actor CollectionCSVImportActor {
+    func apply(
+        _ plan: CollectionCSVImportPlan,
+        batchSize: Int,
+        progress: (@Sendable (Int, Int) -> Void)?
+    ) throws -> CollectionCSVImportResult {
+        try CollectionCSV.apply(
+            plan,
+            to: modelContext,
+            batchSize: batchSize,
+            progress: progress
+        )
     }
 }

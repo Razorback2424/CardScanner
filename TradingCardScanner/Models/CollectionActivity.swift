@@ -223,17 +223,21 @@ extension CollectionActivity {
     /// a diagnostic rather than silently treated as zero activity.
     static func integrityDefects(
         activities: [CollectionActivity],
-        events: [InventoryEvent]
+        events: [InventoryEvent],
+        collectionKeyAliases: [String: String] = [:]
     ) -> [LedgerIntegrityDefect] {
-        let activityKeys = Set(activities.map(\.collectionKey))
-            .union(events.map(\.collectionKey))
+        let normalizedKey: (String) -> String = { key in
+            collectionKeyAliases[key] ?? key
+        }
+        let activityKeys = Set(activities.map { normalizedKey($0.collectionKey) })
+            .union(events.map { normalizedKey($0.collectionKey) })
         guard !activityKeys.isEmpty else { return [] }
 
         let activityQuantities = activities.reduce(into: [String: Int]()) { result, activity in
-            result[activity.collectionKey, default: 0] += activity.signedQuantity
+            result[normalizedKey(activity.collectionKey), default: 0] += activity.signedQuantity
         }
         let ledgerQuantities = events.reduce(into: [String: Int]()) { result, event in
-            result[event.collectionKey, default: 0] += event.deltaQuantity
+            result[normalizedKey(event.collectionKey), default: 0] += event.deltaQuantity
         }
 
         return activityKeys

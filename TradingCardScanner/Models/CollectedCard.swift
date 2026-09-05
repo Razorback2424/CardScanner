@@ -35,8 +35,9 @@ final class CollectedCard {
     /// Scryfall normal-image URL. game selects the appropriate representation.
     @Attribute(originalName: "imageBaseURL") var imageURL: String?
     var thumbnailURL: String?
-    /// Optional user-supplied artwork, stored in Application Support. It is a
-    /// visual override only and never changes catalog or marketplace identity.
+    /// Legacy bridge for stores written before user artwork became device-local.
+    /// Launch migration copies it into `LocalArtworkOverride` and clears this
+    /// synced field; new artwork writes never publish a local filename.
     var userArtworkFilename: String?
     var quantity: Int = 1
     var dateAdded: Date = Date.now
@@ -516,5 +517,24 @@ final class CollectedCard {
         let path = URL(string: imageURL)?.path.lowercased() ?? ""
         return path.hasSuffix(".jpg") || path.hasSuffix(".jpeg")
             || path.hasSuffix(".png") || path.hasSuffix(".webp")
+    }
+}
+
+/// Device-local ownership for user-selected artwork.
+///
+/// The image bytes live in this device's Application Support directory, so the
+/// filename that points at them must not be a CloudKit field on `CollectedCard`.
+/// The collection key is shared only as a stable local lookup key; two devices
+/// can therefore choose different photos for the same physical position.
+@Model
+final class LocalArtworkOverride {
+    var collectionKey: String = ""
+    var filename: String = ""
+    var updatedAt: Date = Date.now
+
+    init(collectionKey: String, filename: String, updatedAt: Date = Date.now) {
+        self.collectionKey = collectionKey
+        self.filename = filename
+        self.updatedAt = updatedAt
     }
 }

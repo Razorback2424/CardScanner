@@ -300,14 +300,21 @@ struct InventoryLedger {
 
     // MARK: - Valuation
 
-    /// The price key this position is valued through, preferring a legacy key
-    /// that actually holds a value — the same preference `PriceStore` applies,
-    /// so the ledger and the grid never disagree about which number is being
-    /// used.
+    /// The price key this position is valued through. An explicit invalidation
+    /// is authoritative even when a legacy alias still has a usable amount;
+    /// otherwise the ledger can attribute the position to the value the
+    /// invalidation withdrew.
     func priceStorageKey(for card: CollectedCard) -> String {
         let keys = card.priceLookupKeys
-        for key in keys where usableValue(forPriceKey: key) != nil {
-            return key
+        let prices = PriceStore(context: context)
+        let observations = PriceObservationLog(context: context)
+        for key in keys {
+            let isExplicitlyInvalidated =
+                prices.record(forKey: key)?.isInvalidated == true
+                || observations.newestObservation(instrumentKey: key)?.kind == .explicitInvalidation
+            if isExplicitlyInvalidated || usableValue(forPriceKey: key) != nil {
+                return key
+            }
         }
         return keys.first ?? card.priceKey
     }

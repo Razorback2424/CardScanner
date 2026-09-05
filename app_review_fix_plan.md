@@ -117,6 +117,224 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Follow-up against updated review
+
+### Scanner foreground recovery
+
+- [x] After an active-scene transition starts the visible camera session,
+  immediately call `resumeRecognitionIfPossible()` so recognition does not
+  remain paused after `invalidatePendingScan()` paused it in the inactive
+  branch.
+- [x] Keep the existing eligibility, Price Check, pending-question, tab, and
+  presentation guards in the resume helper.
+
+Status: implemented in `38ca38a`. Generic iOS app and test-target builds passed;
+Control Center, app-switching, permission-prompt, interruption, and physical
+camera verification remain deferred because CoreSimulatorService has no
+discoverable runtime and no physical device is attached.
+
+The updated performance findings remain intentionally unstarted. They are
+measure-first work, not high-confidence correctness fixes: no changes were
+made to collection projection memoization, migration gates, fallback indexing,
+refresh progress cadence, image caching, activity-log bulk indexing, or refresh
+context ownership.
+
+## Review remediation implementation — remaining planned slices
+
+The remaining roadmap slices are implemented in `29ca750`.
+
+### Slice 5 — synced price evidence and duplicate records
+
+- [x] Reconcile changed and explicitly invalidated synced `PriceRecord` rows
+  into the device-local observation log at the time this device learns them.
+- [x] Preserve local knowledge time rather than copying another device's fetch
+  time, and reject delayed remote evidence that is older than the newest local
+  knowledge.
+- [x] Select duplicate price rows deterministically by knowledge watermark,
+  invalidation state, and stable provenance; never by price magnitude.
+- [x] Repair redundant rows on the next write/refresh and report the repair
+  only after the surrounding save succeeds.
+- [x] Add changed-price, out-of-order, invalidation, duplicate, and
+  invalidation-precedence regressions.
+
+Status: implemented in `29ca750`. The scalar ledger, bulk replay, collection
+display, and portfolio computation now share the same authoritative evidence
+rules. Two-device CloudKit convergence remains unverified because the available
+environment has no working simulator runtime or second device.
+
+### Slice 7 — scoped browse searches
+
+- [x] Pass the visible Cards/Sealed/All scope into search scheduling.
+- [x] Restrict sealed requests to the selected game and defer omitted lanes
+  until the user selects them.
+- [x] Add transport-count regressions for Cards-only and single-game searches.
+
+Status: implemented in `29ca750`. Cached sealed results remain available
+offline; only missing or stale requested lanes with credentials reach the
+vendor.
+
+### Slice 9 — centering export freshness
+
+- [x] Key export preparation by image revision, measurement, and rotation.
+- [x] Coalesce guide changes before preparing the shareable file, and clear the
+  prior URL while a newer export is pending.
+- [x] Preserve rotation in the rendered export and filename.
+
+Status: implemented in `29ca750`. The stale-export path is covered in source
+and filename tests. The PNG render/encode/write remains synchronous on the
+main actor; no runtime hitch measurement was available, so moving it to a
+background renderer was intentionally deferred rather than guessed.
+
+### Slice 10 — CSV import progress and selective recovery
+
+- [x] Publish row progress, disable a second import from Settings while one is
+  active, and invalidate queued progress callbacks on completion.
+- [x] Preserve row-level transaction isolation and expose normalized failed
+  entries as a retry-only CSV.
+- [x] Distinguish partial completion from complete success in the completion
+  message.
+
+Status: implemented in `29ca750`. Persistence failures and parser exclusions
+remain separate in the import result; the partial-completion action prioritizes
+exporting persistence-failed rows for safe retry.
+
+### Slice 11 — device-local custom artwork ownership
+
+- [x] Add a device-local `LocalArtworkOverride` mapping keyed by collection key.
+- [x] Migrate legacy filename values at launch, then clear the legacy bridge for
+  new writes so another device cannot overwrite a local filename.
+- [x] Update collection, portfolio, diagnostics, and missing-artwork export
+  paths to read the local mapping.
+
+Status: implemented in `29ca750`. Intentional compatibility deviation: the
+legacy `CollectedCard.userArtworkFilename` property remains in the model schema
+as a temporary migration bridge rather than being removed in one destructive
+schema change. Launch migration copies it locally and clears it; all new
+artwork writes use the local mapping. Full image synchronization was not added,
+consistent with the plan's product boundary.
+
+### Slice 12 — truthful storage/sync status
+
+- [x] Report the actual local-only versus CloudKit-backed container mode chosen
+  at launch.
+- [x] Correct Settings wording so Sign in with Apple is described as the cloud
+  configuration gate, while the private database follows the device's iCloud
+  account.
+- [x] Keep restart requirements explicit after account changes.
+
+Status: implemented in `29ca750`. CloudKit account behavior and fallback paths
+still require device/account checks in an environment with iCloud provisioning.
+
+### Slice 13 — Magic set-page cache expiry
+
+- [x] Apply a 24-hour age policy to disk-backed Magic card pages.
+- [x] Revalidate stale pages, retain stale content when the provider is
+  unreachable, and leave the old timestamp in place so a later visit retries.
+
+Status: implemented in `29ca750`. The existing cache and offline behavior were
+retained; no new cache layer was introduced.
+
+### Cleanup — reference-only portfolio calculation
+
+- [x] Remove the unused legacy calculation walk from the production target.
+- [x] Move it into `PortfolioCloseReference.swift` in the test target so the
+  independent reference oracle and existing tests remain available.
+
+Status: implemented in `29ca750`. Production keeps only the attribution result
+type used by UI/history models.
+
+### Final verification for these slices
+
+- `xcodebuild build` for `generic/platform=iOS` — passed after `29ca750`.
+- `xcodebuild build-for-testing` for `generic/platform=iOS` — passed after
+  `29ca750`.
+- `git diff --check` — clean.
+- Simulator XCTest execution — not available: CoreSimulatorService reports no
+  discoverable runtime.
+- Not claimed: physical-camera lifecycle checks, two-device CloudKit
+  convergence, provider-network behavior, centering frame-time measurements,
+  large-import scaling, or activity-log/collection performance measurements.
+
+## Review against `ef689ce` — planned remediation
+
+The following slices track the supplied static review in its stated roadmap
+order. Runtime claims remain limited to the verification recorded for each
+slice; physical-camera, two-device CloudKit, and provider behavior require
+their corresponding environments.
+
+### Baseline
+
+- Branch retained as `codex/review-fixes` to preserve the reviewed commit and
+  existing user-owned history; this differs from the generic
+  `fix/app-review-preflight` branch name in the safe-fixer template.
+- `xcodebuild build-for-testing -quiet -project TradingCardScanner.xcodeproj
+  -scheme TradingCardScanner -destination 'generic/platform=iOS Simulator'
+  -derivedDataPath /private/tmp/trading-card-scanner-baseline
+  SWIFT_ENABLE_EXPLICIT_MODULES=NO` — passed.
+- Simulator test execution is currently unavailable: CoreSimulatorService
+  reports no discoverable runtime.
+
+### Slice 1 — scanner lifecycle eligibility
+
+- [x] Add explicit scene-active, scanner-visible, presentation-blocked, and
+  camera-interruption eligibility; use it for all recognition resumes.
+- [x] Restart the capture session when the visible scanner returns to an active
+  scene, without requiring `interruptionEndedNotification`.
+- [x] Add pure eligibility regression coverage.
+
+Status: implemented in `320050c`, awaiting simulator execution. Generic
+build-for-testing passes; source changes are limited to `ScannerViewModel`,
+`ScannerView`, and the existing `CardLatchTests` file. Rollback is the
+slice-local commit.
+
+### Slice 2 — catalog price freshness
+
+- [x] Preserve catalog resolution time through session and disk identity-cache
+  hits.
+- [x] Carry that time through scanner finish/print-run choices, collection
+  commits, corrections, and Price Check.
+- [x] Compare a catalog quote with newer local evidence before selecting it;
+  stale selected evidence keeps the existing auto-refresh path enabled.
+- [x] Add regressions for session timestamp preservation and a cached `$10`
+  catalog quote versus a newer local `$20` quote.
+
+Status: implemented in `822135a`, generic build-for-testing passes. Simulator test execution
+is unavailable because CoreSimulatorService has no discoverable runtime.
+
+### Slice 3 — currency propagation
+
+- [x] Carry the provider currency into `CardMarketPrice`.
+- [x] Format catalog detail and scan review values using the quote currency.
+- [x] Exclude non-USD master-set quotes from USD browse sorting.
+- [x] Add Cardmarket display-currency regression coverage.
+
+Status: implemented in `1c7fa64`, generic build-for-testing passes. No exchange-rate behavior
+was introduced.
+
+### Slice 4 — canonical invalidation precedence
+
+- [x] Make scalar ledger key selection preserve an explicitly invalidated
+  canonical key.
+- [x] Carry the same authoritative-key marker into bulk portfolio replay.
+- [x] Verify collection read, scalar ledger, and bulk valuation precedence
+  against a priced legacy alias.
+
+Status: implemented in `10de4f4`, generic build-for-testing passes.
+
+### Slice 6 — persistence outcomes
+
+- [x] Make `PriceStore` write, failure-stamp, and unsupported-provider paths
+  return whether their mutation was accepted; keep save rollback outcomes
+  observable.
+- [x] Count catalog, fallback, and graded prices only after a successful save;
+  surface partial persistence failure in the refresh summary and Portfolio UI.
+- [x] Make JustTCG batch application/checkpoint callbacks return persistence
+  outcomes and prevent a failed batch from advancing the delta checkpoint.
+- [x] Add regression coverage for a failed JustTCG checkpoint.
+
+Status: implemented in `0548cf1`. Generic device build completed after
+the simulator service recovered; simulator XCTest execution remains unverified.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on

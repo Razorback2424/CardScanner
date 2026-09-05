@@ -30,6 +30,55 @@ enum PriceFallbackQuoteResolution: Equatable {
     }
 }
 
+/// A value snapshot of the collection identity needed by the fallback lookup.
+/// SwiftData model objects are context-bound and must not be retained across
+/// the paced network await. Callers capture this before starting the task, then
+/// the resolver can safely use a context owned by that task.
+struct PriceFallbackCardInput: Sendable {
+    let game: CardGame
+    let printingID: String
+    let catalogID: String?
+    let name: String
+    let setName: String
+    let cardNumber: String
+    let variant: PhysicalVariant?
+    let pokemonPrintRun: PokemonPrintRun?
+    let treatmentIDs: [String]
+    let marketVariantID: String?
+    let lookupCandidates: [JustTCGBatchLookup]
+
+    @MainActor
+    init(
+        card: CollectedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) {
+        game = card.cardGame
+        printingID = card.priceStorageID
+        catalogID = card.catalogProviderID ?? (card.providerID.hasPrefix("csv:") ? nil : card.providerID)
+        name = card.name
+        setName = card.setName
+        cardNumber = card.cardNumber
+        self.variant = variant
+        self.pokemonPrintRun = pokemonPrintRun
+        treatmentIDs = card.magicTreatmentIDs(for: variant)
+        marketVariantID = variant?.id == card.variantID
+            ? card.justTCGVariantID
+            : nil
+
+        var candidates: [JustTCGBatchLookup] = []
+        if let tcgplayerProductID = card.tcgplayerProductID,
+           !tcgplayerProductID.isEmpty {
+            candidates.append(.tcgplayerID(tcgplayerProductID))
+        }
+        if let justTCGCardID = card.justTCGCardID,
+           !justTCGCardID.isEmpty {
+            candidates.append(.cardID(justTCGCardID))
+        }
+        lookupCandidates = candidates
+    }
+}
+
 /// Reuses collection fallback matching for an individual quote without giving
 /// Price Check ownership of collection valuation records.
 ///
@@ -94,34 +143,27 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceFallbackQuoteResolution {
-        let treatmentIDs = card.magicTreatmentIDs(for: variant)
-        let knownVariantID: String?
-        if let variant, card.variantID == variant.id {
-            knownVariantID = card.justTCGVariantID
-        } else {
-            knownVariantID = nil
-        }
-        var lookupCandidates: [JustTCGBatchLookup] = []
-        if let tcgplayerProductID = card.tcgplayerProductID,
-           !tcgplayerProductID.isEmpty {
-            lookupCandidates.append(.tcgplayerID(tcgplayerProductID))
-        }
-        if let justTCGCardID = card.justTCGCardID,
-           !justTCGCardID.isEmpty {
-            lookupCandidates.append(.cardID(justTCGCardID))
-        }
-        return await resolve(
-            game: card.cardGame,
-            printingID: card.priceStorageID,
-            catalogID: card.catalogProviderID ?? (card.providerID.hasPrefix("csv:") ? nil : card.providerID),
-            name: card.name,
-            setName: card.setName,
-            cardNumber: card.cardNumber,
+        let input = PriceFallbackCardInput(
+            card: card,
             variant: variant,
-            pokemonPrintRun: pokemonPrintRun,
-            treatmentIDs: treatmentIDs,
-            marketVariantID: knownVariantID,
-            lookupCandidates: lookupCandidates
+            pokemonPrintRun: pokemonPrintRun
+        )
+        return await resolve(input)
+    }
+
+    func resolve(_ input: PriceFallbackCardInput) async -> PriceFallbackQuoteResolution {
+        return await resolve(
+            game: input.game,
+            printingID: input.printingID,
+            catalogID: input.catalogID,
+            name: input.name,
+            setName: input.setName,
+            cardNumber: input.cardNumber,
+            variant: input.variant,
+            pokemonPrintRun: input.pokemonPrintRun,
+            treatmentIDs: input.treatmentIDs,
+            marketVariantID: input.marketVariantID,
+            lookupCandidates: input.lookupCandidates
         )
     }
 

@@ -2,6 +2,23 @@ import XCTest
 import SwiftData
 @testable import TradingCardScanner
 
+private final class CSVProgressRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var recorded: [(Int, Int)] = []
+
+    func append(_ completed: Int, _ total: Int) {
+        lock.lock()
+        recorded.append((completed, total))
+        lock.unlock()
+    }
+
+    func values() -> [(Int, Int)] {
+        lock.lock()
+        defer { lock.unlock() }
+        return recorded
+    }
+}
+
 private actor PortfolioComputationGate {
     private var permits = 0
     private var waiting = 0
@@ -279,6 +296,161 @@ final class PortfolioReconciliationTests: XCTestCase {
             quantity: quantity,
             dateAdded: Date(timeIntervalSince1970: 500)
         )
+    }
+
+    /// CSV import writes through `CollectionStore`, so it inherits every rule
+    /// the scanner path enforces rather than carrying its own transcription of
+    /// them. The graded guard is the one the second copy had already lost: a
+    /// treatment-qualified graded key can describe a *different* slab, so a
+    /// legacy/canonical pair must stay ambiguous instead of being merged.
+    func testCSVImportInheritsTheStoresGradedMergeRefusal() throws {
+        let context = try makeContext()
+        let canonicalKey = "graded:magic:slab:variant#treatment=surgefoil"
+        let legacyKey = "graded:magic:slab:variant"
+
+        for key in [legacyKey, canonicalKey] {
+            let slab = CollectedCard(
+                collectionKey: key,
+                game: .magic,
+                providerID: key,
+                name: "Slab",
+                setName: "Fixture Set",
+                setCode: "FIC",
+                cardNumber: "10",
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: nil,
+                variantResolution: .userConfirmed,
+                quantity: 1
+            )
+            slab.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            context.insert(slab)
+        }
+        try context.save()
+
+        var entry = csvEntry(key: canonicalKey, quantity: 1)
+        entry.itemKind = .gradedCard
+        entry.magicTreatmentIDsRaw = ["surgefoil"]
+        let result = try CollectionCSV.apply(
+            CollectionCSVImportPlan(entries: [entry], skippedRows: 0, skippedCSVText: nil),
+            to: context
+        )
+
+        // Refused, reported, and non-destructive: both slabs still exist and
+        // neither absorbed the other's quantity.
+        XCTAssertEqual(result.failedRows.map(\.collectionKey), [canonicalKey])
+        XCTAssertEqual(result.failedEntries.map(\.collectionKey), [canonicalKey])
+        // csvEntry uses its collection key as providerID, so the normalized
+        // failed export must carry the canonical key that was refused.
+        XCTAssertTrue(
+            CollectionCSV.exportFailedEntries(result.failedEntries).text.contains(canonicalKey)
+        )
+        XCTAssertEqual(result.importedQuantity, 0)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(rows.map(\.collectionKey)), [legacyKey, canonicalKey])
+        XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 })
+    }
+
+    func testCSVImportMergesLegacyAndCanonicalRowsInsteadOfInsertingAThirdRow() throws {
+        let context = try makeContext()
+        let legacyKey = "magic:csv-ambiguous#foil"
+        let canonicalKey = legacyKey + "#treatment=surgefoil"
+
+        let legacy = CollectedCard(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1
+        )
+        let canonical = CollectedCard(
+            collectionKey: canonicalKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: "https://example.com/card.png",
+            thumbnailURL: "https://example.com/card-thumb.png",
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(legacy)
+        context.insert(canonical)
+        try context.save()
+
+        let entry = CollectionCSVEntry(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: 1,
+            dateAdded: Date(timeIntervalSince1970: 500)
+        )
+        let result = try CollectionCSV.apply(
+            CollectionCSVImportPlan(entries: [entry], skippedRows: 0, skippedCSVText: nil),
+            to: context
+        )
+
+        XCTAssertEqual(result.insertedEntries, 0)
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.failedRows.count, 0)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.collectionKey), [canonicalKey])
+        XCTAssertEqual(rows.first?.quantity, 3)
+        XCTAssertEqual(rows.first?.imageURL, "https://example.com/card.png")
+    }
+
+    func testCSVImportCommitsAndReportsDurableBatches() throws {
+        let context = try makeContext()
+        let plan = CollectionCSVImportPlan(
+            entries: [
+                csvEntry(key: "batch-1", quantity: 1),
+                csvEntry(key: "batch-2", quantity: 1),
+                csvEntry(key: "batch-3", quantity: 1)
+            ],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+        let recorder = CSVProgressRecorder()
+
+        let result = try CollectionCSV.apply(
+            plan,
+            to: context,
+            batchSize: 2,
+            progress: { completed, total in
+                recorder.append(completed, total)
+            }
+        )
+
+        XCTAssertEqual(result.insertedEntries, 3)
+        XCTAssertEqual(recorder.values().map(\.0), [0, 2, 3])
+        XCTAssertEqual(recorder.values().map(\.1), [3, 3, 3])
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 3)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 3)
     }
 
     func testReimportingACertifiedSlabDoesNotChangeQuantityOrWriteAnEvent() throws {
@@ -993,6 +1165,205 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
     }
 
+    func testSyncedPriceRecordChangeBecomesLocalKnowledgeAtReconciliationTime() throws {
+        let context = try makeContext()
+        let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)
+        let localLearned = remoteFetch.addingTimeInterval(7 * 86_400)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v2",
+                sourceUpdatedAt: remoteFetch,
+                fetchedAt: remoteFetch
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(10),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v1",
+                marketVariantID: nil,
+                effectiveAt: remoteFetch.addingTimeInterval(-120),
+                receivedAt: remoteFetch.addingTimeInterval(-60),
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: localLearned)
+        let newest = try XCTUnwrap(
+            rows.filter { $0.instrumentKey == "instrument" }
+                .max(by: { $0.receivedAt < $1.receivedAt })
+        )
+        XCTAssertEqual(newest.amount, money(20))
+        XCTAssertEqual(newest.receivedAt, localLearned)
+        XCTAssertEqual(newest.effectiveAt, remoteFetch)
+    }
+
+    func testOutOfOrderSyncedPriceDoesNotOverwriteNewerLocalKnowledge() throws {
+        let context = try makeContext()
+        let newerKnowledge = Date(timeIntervalSince1970: 2_000)
+        let staleRemoteFetch = Date(timeIntervalSince1970: 1_000)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "stale",
+                sourceUpdatedAt: staleRemoteFetch,
+                fetchedAt: staleRemoteFetch
+            )
+        )
+        context.insert(record)
+        let existing = PriceObservation(
+            instrumentKey: "instrument",
+            kind: .marketUpdate,
+            amount: money(20),
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "newer",
+            marketVariantID: nil,
+            effectiveAt: newerKnowledge,
+            receivedAt: newerKnowledge,
+            isSourceStamped: true
+        )
+        context.insert(existing)
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(
+                learnedAt: newerKnowledge.addingTimeInterval(60)
+            )
+        XCTAssertEqual(rows.filter { $0.instrumentKey == "instrument" }.count, 1)
+        XCTAssertEqual(rows.first?.amount, money(20))
+    }
+
+    func testSyncedInvalidationCreatesLocalKnowledgeEvenWithoutPriorObservation() throws {
+        let context = try makeContext()
+        let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)
+        let localLearned = remoteFetch.addingTimeInterval(7 * 86_400)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "remote-v2",
+                sourceUpdatedAt: remoteFetch,
+                fetchedAt: remoteFetch
+            )
+        )
+        _ = record.invalidate(at: remoteFetch.addingTimeInterval(60))
+        context.insert(record)
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: localLearned)
+        let invalidation = try XCTUnwrap(rows.first)
+        XCTAssertEqual(invalidation.kind, .explicitInvalidation)
+        XCTAssertNil(invalidation.amount)
+        XCTAssertEqual(invalidation.receivedAt, localLearned)
+    }
+
+    func testDuplicatePriceRecordsResolveByEvidenceAndConvergeOnWrite() throws {
+        let context = try makeContext()
+        let key = PriceRecord.key(game: .pokemon, printingID: "p", variantID: nil)
+        let older = PriceRecord(key: key, game: .pokemon, printingID: "p", variantID: nil)
+        older.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "older",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        let newer = PriceRecord(key: key, game: .pokemon, printingID: "p", variantID: nil)
+        newer.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "newer",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 200)
+            )
+        )
+        context.insert(older)
+        context.insert(newer)
+        try context.save()
+
+        XCTAssertEqual(PriceStore(context: context).record(forKey: key)?.unitMarketPriceUSD, 20)
+        XCTAssertTrue(
+            PriceStore(context: context).store(
+                .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 30,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: "repaired",
+                        sourceUpdatedAt: nil,
+                        fetchedAt: Date(timeIntervalSince1970: 300)
+                    )
+                ),
+                game: .pokemon,
+                printingID: "p",
+                variantID: nil,
+                at: Date(timeIntervalSince1970: 300)
+            )
+        )
+        XCTAssertTrue(PriceStore(context: context).save())
+        let records = try context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+        )
+        XCTAssertEqual(records.count, 1)
+        XCTAssertEqual(records.first?.unitMarketPriceUSD, 30)
+    }
+
+    func testDuplicateInvalidationWinsOverAnOlderUsableRecord() throws {
+        let context = try makeContext()
+        let usable = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        usable.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usable",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        let invalidated = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        invalidated.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 99,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "withdrawn",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        _ = invalidated.invalidate(at: Date(timeIntervalSince1970: 200))
+        context.insert(usable)
+        context.insert(invalidated)
+        try context.save()
+
+        let selected = try XCTUnwrap(PriceStore(context: context).record(forKey: "instrument"))
+        XCTAssertTrue(selected.isInvalidated)
+        XCTAssertNil(selected.effectiveUnitMarketPriceUSD)
+    }
+
     func testSyncedOwnershipEpochDoesNotBackdateLocalKnowledgeEpoch() throws {
         let context = try makeContext()
         let defaults = UserDefaults(suiteName: #function)!
@@ -1513,6 +1884,21 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertNil(visible?.unitMarketPriceUSD)
         XCTAssertNil(visible?.display.amount)
         XCTAssertEqual(canonical.invalidatedAt, invalidatedAt)
+
+        XCTAssertEqual(
+            InventoryLedger(context: context).priceStorageKey(for: card),
+            canonical.key,
+            "Scalar ledger attribution must retain the invalidated canonical key."
+        )
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+        XCTAssertEqual(
+            bulk.priceStorageKey(for: card),
+            canonical.key,
+            "Bulk attribution must retain the invalidated canonical key."
+        )
     }
 
     func testInvalidationStillWinsOverNewerUnusableObservationInScalarAndBulkReads() throws {

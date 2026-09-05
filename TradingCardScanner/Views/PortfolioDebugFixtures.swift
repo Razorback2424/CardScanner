@@ -9,7 +9,7 @@ enum PortfolioDebugFixtures {
     static func seedMovementIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
-        let timeZone = PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         let today = PortfolioCalendar.day(containing: .now, in: timeZone)
         let epochDay = PortfolioCalendar.day(
             containing: today.addingTimeInterval(-3 * 86_400),
@@ -86,7 +86,7 @@ enum PortfolioDebugFixtures {
     static func seedHistoryIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
-        let timeZone = PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         let today = PortfolioCalendar.day(containing: .now, in: timeZone)
         let epochDay = PortfolioCalendar.day(
             containing: today.addingTimeInterval(-5 * 86_400),
@@ -159,7 +159,7 @@ enum PortfolioDebugFixtures {
     static func seedTodayIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
-        let timeZone = PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         let today = PortfolioCalendar.day(containing: .now, in: timeZone)
         let epoch = PortfolioCalendar.day(
             containing: today.addingTimeInterval(-2 * 86_400),

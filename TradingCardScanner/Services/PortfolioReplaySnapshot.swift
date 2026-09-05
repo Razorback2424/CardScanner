@@ -24,22 +24,29 @@ import SwiftData
 /// two.
 struct InstrumentValuationIndex: Sendable {
     private let byInstrument: [String: InventoryValuation]
+    private let explicitlyAuthoritativeKeys: Set<String>
 
-    init(byInstrument: [String: InventoryValuation]) {
+    init(
+        byInstrument: [String: InventoryValuation],
+        explicitlyAuthoritativeKeys: Set<String> = []
+    ) {
         self.byInstrument = byInstrument
+        self.explicitlyAuthoritativeKeys = explicitlyAuthoritativeKeys
     }
 
     func valuation(for instrument: String) -> InventoryValuation {
         byInstrument[instrument] ?? .unpriced
     }
 
-    /// The key a card is valued through: the first of its lookup keys that
-    /// actually holds a value, matching what `PriceStore` prefers so the ledger
-    /// and the grid never disagree about which number is in use.
+    /// The key a card is valued through. Explicit invalidation is authoritative
+    /// even when a legacy alias still has a value, matching scalar ledger reads
+    /// and `PriceStore`'s canonical precedence.
     func priceStorageKey(for card: CollectedCard) -> String {
         let keys = card.priceLookupKeys
-        for key in keys where byInstrument[key]?.unitPrice != nil {
-            return key
+        for key in keys {
+            if explicitlyAuthoritativeKeys.contains(key) || byInstrument[key]?.unitPrice != nil {
+                return key
+            }
         }
         return keys.first ?? card.priceKey
     }
@@ -121,7 +128,7 @@ enum PortfolioReplaySnapshotBuilder {
         projection: LogicalCollectionProjection,
         valuations: InstrumentValuationIndex
     ) -> [PortfolioHoldingSnapshot] {
-        projection.positions.compactMap { position in
+        let holdings: [PortfolioHoldingSnapshot] = projection.positions.compactMap { position in
             guard position.quantity > 0 else { return nil }
             let card = position.representative
             let price = valuations.valuation(for: position.priceStorageKey).unitPrice
@@ -139,6 +146,24 @@ enum PortfolioReplaySnapshotBuilder {
                 quantity: position.quantity,
                 currentValue: price?.multiplied(by: position.quantity)
             )
+        }
+
+        // The dashboard's largest-holdings section only needs the first five.
+        // Publish the expensive ordering with the snapshot so SwiftUI does not
+        // sort the entire portfolio every time an unrelated state change redraws
+        // the screen. Priced holdings remain ahead of unpriced holdings.
+        return holdings.sorted { lhs, rhs in
+            switch (lhs.currentValue, rhs.currentValue) {
+            case let (lhsValue?, rhsValue?):
+                if lhsValue != rhsValue { return lhsValue > rhsValue }
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            case (nil, nil):
+                break
+            }
+            return lhs.collectionKey < rhs.collectionKey
         }
     }
 
@@ -166,12 +191,6 @@ enum PortfolioReplaySnapshotBuilder {
             activities = []
             defects.append(Self.unreadableDefect(for: "CollectionActivity", error: error))
         }
-
-        let events = reading.events.map { PortfolioEngine.entry(from: $0) }
-        let activityDefects = CollectionActivity.integrityDefects(
-            activities: activities,
-            events: reading.events
-        )
 
         // One materialisation of each table, reused. Fetching the observation
         // log twice — once to replay and once to value the collection — doubled
@@ -208,6 +227,24 @@ enum PortfolioReplaySnapshotBuilder {
         let projection = LogicalCollection.project(cards: cards) {
             valuations.priceStorageKey(for: $0)
         }
+        // A newer device can rekey treatment-qualified ledger rows before an
+        // older device receives the matching collection-row migration. Treat
+        // that canonical event key as an alias of the still-present legacy
+        // position until the next write heals the physical row.
+        let collectionKeyAliases = LogicalCollection.readThroughAliases(
+            projection: projection,
+            eventKeys: Set(reading.events.map(\.collectionKey))
+        )
+        let events = reading.events.map { event -> LedgerEntry in
+            var entry = PortfolioEngine.entry(from: event)
+            entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
+            return entry
+        }
+        let activityDefects = CollectionActivity.integrityDefects(
+            activities: activities,
+            events: reading.events,
+            collectionKeyAliases: collectionKeyAliases
+        )
 
         let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
         let coverage: PortfolioCoverageIndex
@@ -270,7 +307,11 @@ enum PortfolioReplaySnapshotBuilder {
         }
 
         var recordsByKey: [String: PriceRecord] = [:]
-        for record in records where recordsByKey[record.key] == nil {
+        for record in records {
+            if let existing = recordsByKey[record.key],
+               !PriceStore.isPreferred(record, over: existing) {
+                continue
+            }
             recordsByKey[record.key] = record
         }
 
@@ -282,7 +323,17 @@ enum PortfolioReplaySnapshotBuilder {
             )
         }
 
-        return InstrumentValuationIndex(byInstrument: index)
+        let explicitlyAuthoritativeKeys = Set(
+            newest
+                .filter { $0.value.kind == .explicitInvalidation }
+                .map(\.key)
+        ).union(
+            records.filter(\.isInvalidated).map(\.key)
+        )
+        return InstrumentValuationIndex(
+            byInstrument: index,
+            explicitlyAuthoritativeKeys: explicitlyAuthoritativeKeys
+        )
     }
 
     /// One query for the whole range, reduced in memory.
@@ -352,21 +403,17 @@ actor PortfolioComputationActor {
         // for the whole session; running it here closes it on the pass that
         // would otherwise report the gap, and off the main actor, which is the
         // reason this type exists.
-        let observations: [PriceObservation]
-        do {
-            let existing = try modelContext.fetch(
-                FetchDescriptor<PriceObservation>(
-                    sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
-                )
-            )
-            observations = PriceObservationLog(context: modelContext)
-                .backfillFromRecordsAndReturnObservations(
-                    existingObservations: existing
-                )
-        } catch {
-            // Preserve the builder's unreadable-store diagnosis if the initial
-            // bulk read fails; passing an empty array would incorrectly turn a
-            // failed fetch into a successful empty log.
+        // The log performs its absence check and initial fetch while holding a
+        // process-wide backfill lock. That lock must cover the fetch itself;
+        // fetching here first would let a second context carry a stale empty
+        // snapshot into the critical section.
+        let observations = PriceObservationLog(context: modelContext)
+            .reconcileSyncedRecordsAndReturnObservations()
+        if observations.isEmpty {
+            // An empty result may be a genuinely empty log or an unreadable
+            // table. Let the builder perform its normal fetch so the latter is
+            // surfaced as an `.unreadableStore` defect rather than hidden by an
+            // explicitly supplied empty array.
             return PortfolioReplaySnapshotBuilder.compute(
                 context: modelContext,
                 epoch: epoch,

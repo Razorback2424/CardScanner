@@ -70,6 +70,34 @@ struct LogicalCollectionProjection {
 /// reasonable and collectively wrong; there is now a single answer to what is
 /// owned.
 enum LogicalCollection {
+    /// Builds the safe read-through aliases needed while an older device still
+    /// has a treatment-free row but a newer device has already written
+    /// treatment-qualified ledger/activity keys. A legacy key is only aliased
+    /// when exactly one canonical key claims it; two treatments sharing the same
+    /// legacy identity remain an explicit integrity problem rather than being
+    /// guessed together.
+    static func readThroughAliases(
+        projection: LogicalCollectionProjection,
+        eventKeys: Set<String>
+    ) -> [String: String] {
+        let projectedKeys = Set(projection.positions.map(\.collectionKey))
+        var candidatesByLegacyKey: [String: Set<String>] = [:]
+
+        for eventKey in eventKeys where !projectedKeys.contains(eventKey) {
+            for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(for: eventKey) {
+                candidatesByLegacyKey[legacyKey, default: []].insert(eventKey)
+            }
+        }
+
+        var aliases: [String: String] = [:]
+        for (legacyKey, canonicalKeys) in candidatesByLegacyKey {
+            guard projectedKeys.contains(legacyKey), canonicalKeys.count == 1,
+                  let canonicalKey = canonicalKeys.first else { continue }
+            aliases[canonicalKey] = legacyKey
+        }
+        return aliases
+    }
+
     /// `priceStorageKey` is supplied rather than looked up so the bulk callers
     /// can answer from an in-memory index instead of one fetch per position.
     static func project(
@@ -97,7 +125,7 @@ enum LogicalCollection {
         for key in order {
             guard let rows = groups[key], let first = rows.first else { continue }
 
-            let representative = rows.count == 1 ? first : chooseRepresentative(from: rows)
+            let representative = rows.count == 1 ? first : (chooseRepresentative(from: rows) ?? first)
             let instrument = priceStorageKey(representative)
 
             // Rows agreeing on identity but disagreeing on what they are priced
@@ -143,12 +171,18 @@ enum LogicalCollection {
     /// The oldest acquisition wins, because it is the row the rest of the
     /// collection's history refers to. Remaining ties break on stable identity
     /// fields so two devices projecting the same store agree.
-    private static func chooseRepresentative(from rows: [CollectedCard]) -> CollectedCard {
+    ///
+    /// Internal rather than private because every writer has to agree with the
+    /// projection about which row survives a merge. When this rule lived in
+    /// four places they had already diverged — one copy compared three fields
+    /// instead of four — which is enough to make a write delete the row a read
+    /// had just decided to keep.
+    static func chooseRepresentative(from rows: [CollectedCard]) -> CollectedCard? {
         rows.min { lhs, rhs in
             if lhs.dateAdded != rhs.dateAdded { return lhs.dateAdded < rhs.dateAdded }
             if lhs.providerID != rhs.providerID { return lhs.providerID < rhs.providerID }
             if lhs.name != rhs.name { return lhs.name < rhs.name }
             return (lhs.catalogProviderID ?? "") < (rhs.catalogProviderID ?? "")
-        } ?? rows[0]
+        }
     }
 }

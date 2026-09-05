@@ -264,7 +264,7 @@ final class PortfolioHistoryStore: ObservableObject {
             result = nil
             return
         }
-        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? PortfolioCalendar.timeZone()
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         // Closes only. The chart plots published days and needs no replay of
         // its own — the factors arrive from the computation the engine already
         // performed.

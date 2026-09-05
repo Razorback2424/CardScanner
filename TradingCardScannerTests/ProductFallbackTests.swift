@@ -16,6 +16,7 @@ final class ProductFallbackTests: XCTestCase {
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: CollectedCard.self, PriceRecord.self, ProductIdentity.self,
+            PriceObservation.self, PriceCheckDay.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         self.container = container
@@ -388,14 +389,100 @@ final class ProductFallbackTests: XCTestCase {
 
         XCTAssertTrue(target(kind: .sealedProduct, handle: "v-sealed").isVendorNative)
         XCTAssertTrue(target(kind: .sealedProduct, handle: nil).isVendorNative)
-        // A slab has an underlying catalog identity, and an imported one still
-        // needs the catalog pass to resolve it and fetch artwork. It reaches the
-        // vendor as an ordinary fallback candidate instead.
-        XCTAssertFalse(target(kind: .gradedCard, handle: "v-graded").isVendorNative)
+        // A slab with its vendor variant handle can be priced directly. A slab
+        // without that handle is not queryable by any provider and is handled
+        // as a terminal unsupported target before the catalog pass.
+        XCTAssertTrue(target(kind: .gradedCard, handle: "v-graded").isVendorNative)
+        XCTAssertFalse(target(kind: .gradedCard, handle: nil).isVendorNative)
         // Likewise a raw card that already has a handle: skipping the catalog
         // would forfeit a free price it may publish later.
         XCTAssertFalse(target(kind: .rawCard, handle: "v-resolved").isVendorNative)
         XCTAssertFalse(target(kind: .rawCard, handle: nil).isVendorNative)
+    }
+
+    func testUnsupportedTargetBacksOffWithoutClaimingProviderCoverage() throws {
+        let context = try makeContext()
+        let checkedAt = Date(timeIntervalSince1970: 10_000)
+        let store = PriceStore(context: context)
+        store.recordUnsupportedProvider(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            at: checkedAt,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+        try context.save()
+
+        let key = PriceRecord.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+        let record = try XCTUnwrap(
+            try context.fetch(FetchDescriptor<PriceRecord>()).first { $0.key == key }
+        )
+        XCTAssertEqual(
+            record.lastFailureReasonRaw,
+            PricingDiagnosticReason.noSupportedProvider.rawValue
+        )
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
+
+        let target = PriceTarget(
+            game: .magic,
+            printingID: "printing",
+            catalogPrintingID: "printing",
+            setCode: "FIC",
+            variantID: PhysicalVariant.foil.id,
+            importedIdentity: nil,
+            catalogMetadataCheckedAt: nil,
+            lastFailureAt: nil,
+            lastFailureReasonRaw: PricingDiagnosticReason.noSupportedProvider.rawValue,
+            hasPrice: false,
+            lastCheckedAt: checkedAt,
+            itemKind: .rawCard,
+            marketVariantID: nil,
+            magicTreatmentIDsRaw: [MagicTreatment.surgeFoil.id]
+        )
+
+        XCTAssertTrue(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt.addingTimeInterval(
+                    PriceRefreshController.noSupportedProviderRetryInterval - 1
+                )
+            ).isEmpty
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt.addingTimeInterval(
+                    PriceRefreshController.noSupportedProviderRetryInterval
+                )
+            ).count,
+            1
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt,
+                usesPriceFallback: false,
+                forceUnsupportedRetry: true
+            ).count,
+            1,
+            "an explicit refresh must revisit a capability stamp even when fallback is off"
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt,
+                usesPriceFallback: true,
+                forceUnsupportedRetry: true
+            ).count,
+            1,
+            "enabling fallback must reopen an existing unsupported stamp immediately"
+        )
     }
 
     // MARK: - WotC editions
@@ -715,6 +802,36 @@ final class PokemonCatalogFallbackTests: XCTestCase {
         let harshPermits = await harsh.permitsRequest(now: start.addingTimeInterval(60))
         XCTAssertTrue(lenientPermits)
         XCTAssertFalse(harshPermits)
+    }
+
+    func testScryfallRateLimitUsesTheProviderUnavailableClassification() async {
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.rateLimited(retryAfter: 120)),
+            .providerUnavailable
+        )
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.providerUnavailable),
+            .providerUnavailable
+        )
+
+        let breaker = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+        await breaker.recordFailure(
+            .rateLimited,
+            now: start,
+            cooldownOverride: 120
+        )
+        let blocked = await breaker.permitsRequest(now: start.addingTimeInterval(119))
+        let reopened = await breaker.permitsRequest(now: start.addingTimeInterval(120))
+        XCTAssertFalse(blocked)
+        XCTAssertTrue(reopened)
+    }
+
+    func testScryfallMissingNonCardEndpointIsProviderUnavailable() {
+        XCTAssertEqual(
+            CardCatalog.classify(ScryfallError.endpointNotFound),
+            .providerUnavailable
+        )
     }
 
     func testSuccessClearsEscalation() async {

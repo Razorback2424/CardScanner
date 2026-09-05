@@ -5,7 +5,42 @@ import SwiftData
 struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var scannerModel = ScannerViewModel()
-    static let container = TradingCardScannerApp.makeContainer()
+    enum StorageMode: Equatable {
+        case cloudKit
+        case localOnly
+
+        var label: String {
+            switch self {
+            case .cloudKit: return "iCloud sync enabled"
+            case .localOnly: return "On this device only"
+            }
+        }
+
+        var detail: String {
+            switch self {
+            case .cloudKit:
+                return "The collection uses this device's iCloud account."
+            case .localOnly:
+                return "The collection is stored locally; this launch is not using a CloudKit-backed container."
+            }
+        }
+
+        var isCloudSyncing: Bool {
+            self == .cloudKit
+        }
+    }
+
+    /// The actual SwiftData configuration selected during this launch. This is
+    /// intentionally separate from Sign in with Apple: that credential gates
+    /// whether the cloud configuration is attempted, while CloudKit uses the
+    /// device's iCloud account for its private database.
+    private(set) static var activeStorageMode: StorageMode = .localOnly
+
+    static let container: ModelContainer = {
+        let container = TradingCardScannerApp.makeContainer()
+        CollectionArtworkStore.migrateLegacyMappings(in: ModelContext(container))
+        return container
+    }()
 
     var body: some Scene {
         WindowGroup {
@@ -39,7 +74,8 @@ struct TradingCardScannerApp: App {
         ReferenceQuote.self,
         PriceObservation.self,
         PriceCheckDay.self,
-        PortfolioDailyClose.self
+        PortfolioDailyClose.self,
+        LocalArtworkOverride.self
     ])
 
     private static let fullSchema = Schema([
@@ -51,17 +87,17 @@ struct TradingCardScannerApp: App {
         ReferenceQuote.self,
         PriceObservation.self,
         PriceCheckDay.self,
-        PortfolioDailyClose.self
+        PortfolioDailyClose.self,
+        LocalArtworkOverride.self
     ])
 
-    /// CloudKit sync is opt-in, decided once per launch from whether the
-    /// person is signed in with Apple (`AppleAccountCredentials`) — not from
-    /// whatever iCloud account happens to be signed into the device. Signing
-    /// in or out again takes effect on the *next* launch rather than
-    /// mid-session: SwiftData does not support moving a live store between a
-    /// local-only and a CloudKit-mirrored configuration, so
-    /// `AccountSettingsSection` says "restart to finish" instead of quietly
-    /// doing nothing.
+    /// CloudKit sync is attempted once per launch when the app's sign-in gate
+    /// is present. The private database itself belongs to the device's iCloud
+    /// account, not the Sign in with Apple credential. Signing in or out again
+    /// takes effect on the next launch rather than mid-session: SwiftData does
+    /// not support moving a live store between a local-only and a CloudKit-
+    /// mirrored configuration, so `AccountSettingsSection` says "restart to
+    /// finish" instead of quietly doing nothing.
     ///
     /// If a CloudKit-backed container can't actually be created — the
     /// expected case during development without a paid Apple Developer
@@ -89,6 +125,7 @@ struct TradingCardScannerApp: App {
                 for: fullSchema,
                 configurations: [cloudConfiguration, localOnlyConfiguration]
             ) {
+                activeStorageMode = .cloudKit
                 return container
             }
         }
@@ -99,6 +136,7 @@ struct TradingCardScannerApp: App {
             for: fullSchema,
             configurations: [localConfiguration, localOnlyConfiguration]
         ) {
+            activeStorageMode = .localOnly
             return container
         }
 

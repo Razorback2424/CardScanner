@@ -677,6 +677,10 @@ final class CardScanner: NSObject, ObservableObject {
 
     private var isConfigured = false
     private var isPaused = false
+    /// Wall-clock time at which recognition was paused. The latch's absence
+    /// clock is compensated on resume because no OCR observations were produced
+    /// during this interval.
+    private var recognitionPausedAt: CFAbsoluteTime?
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
@@ -739,10 +743,25 @@ final class CardScanner: NSObject, ObservableObject {
             forName: AVCaptureSession.wasInterruptedNotification,
             object: session,
             queue: nil
-        ) { [weak self] _ in
-            DispatchQueue.main.async { [weak self] in
-                self?.onCameraInterruption?()
+        ) { [weak self] notification in
+            // iOS reports the ordinary app-background transition through the
+            // same interruption notification as real camera contention. It is
+            // expected lifecycle, not a camera fault worth showing to the user.
+            let notify = {
+                DispatchQueue.main.async { [weak self] in
+                    self?.onCameraInterruption?()
+                }
             }
+            guard let reasonNumber = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as? NSNumber,
+                  let reason = AVCaptureSession.InterruptionReason(rawValue: reasonNumber.intValue) else {
+                // Missing or future interruption reasons are not known-benign.
+                // Reset pending scan state rather than letting an interruption
+                // silently leave a stale latch and confirmation window alive.
+                notify()
+                return
+            }
+            guard reason != .videoDeviceNotAvailableInBackground else { return }
+            notify()
         }
         interruptionEndedObserver = NotificationCenter.default.addObserver(
             forName: AVCaptureSession.interruptionEndedNotification,
@@ -813,17 +832,42 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    func pauseRecognition() {
+    /// Stops the camera and clears all presentation-scoped recognition state.
+    /// The view model calls this at a real scanner-session boundary, not for an
+    /// ordinary recognition pause.
+    func endSession() {
         visionQueue.async { [weak self] in
             guard let self else { return }
+            self.recognitionPausedAt = nil
+            self.isPaused = false
+            self.resetObservationState()
+        }
+        sessionQueue.async { [weak self] in
+            guard let self, self.session.isRunning else { return }
+            self.session.stopRunning()
+        }
+    }
+
+    func pauseRecognition(at pausedAt: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            if !self.isPaused {
+                self.recognitionPausedAt = pausedAt
+            }
             self.isPaused = true
             self.cancelHeldRepeatAuthorizationOnVisionQueue()
         }
     }
 
-    func resumeRecognition() {
+    func resumeRecognition(at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()) {
         visionQueue.async { [weak self] in
             guard let self else { return }
+            if let pausedAt = self.recognitionPausedAt {
+                self.latch.advanceObservedClock(
+                    by: max(0, now - pausedAt)
+                )
+                self.recognitionPausedAt = nil
+            }
             self.confirmationWindow.reset()
             self.isPaused = false
         }

@@ -113,7 +113,12 @@ enum BackgroundPriceRefresh {
     }
 
     private static func nextProcessingWindow(now: Date = .now) -> Date {
-        let calendar = PortfolioCalendar.calendar(in: PortfolioCalendar.timeZone())
+        // Scheduling must never establish portfolio tracking. AppDelegate runs
+        // before the epoch owner and otherwise the first launch's current zone
+        // would become the permanent portfolio timezone merely because a
+        // background request was registered.
+        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
+        let calendar = PortfolioCalendar.calendar(in: timeZone)
         let time = DateComponents(hour: 2, minute: 30)
         return calendar.nextDate(
             after: now,
@@ -185,7 +190,11 @@ enum BackgroundPriceRefresh {
                 return
             }
 
-            let staleTargets = PriceRefreshController.staleTargets(from: allTargets)
+            let usesPriceFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
+            let staleTargets = PriceRefreshController.staleTargets(
+                from: allTargets,
+                usesPriceFallback: usesPriceFallback
+            )
                 .sorted {
                     ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
                 }
@@ -200,7 +209,7 @@ enum BackgroundPriceRefresh {
             if !targets.isEmpty {
                 await PriceRefreshController.shared.refresh(
                     targets,
-                    store: PriceStore(context: context)
+                    container: context.container
                 )
             }
         }

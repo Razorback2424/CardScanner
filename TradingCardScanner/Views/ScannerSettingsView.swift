@@ -18,17 +18,38 @@ struct SettingsView: View {
     @State private var csvExportFilename = "CardScanner Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
     @State private var csvMessage: CSVMessage?
+    @State private var csvImportProgress: CSVImportProgress?
+    @State private var csvImportToken = UUID()
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
     @Query private var priceRecords: [PriceRecord]
+    @Query private var artworkOverrides: [LocalArtworkOverride]
 
     private struct CSVMessage: Identifiable {
         let id = UUID()
         let title: String
         let message: String
         let skippedCSVText: String?
+        let failedCSVText: String?
+
+        init(
+            title: String,
+            message: String,
+            skippedCSVText: String?,
+            failedCSVText: String? = nil
+        ) {
+            self.title = title
+            self.message = message
+            self.skippedCSVText = skippedCSVText
+            self.failedCSVText = failedCSVText
+        }
+    }
+
+    private struct CSVImportProgress: Equatable {
+        let completedEntries: Int
+        let totalEntries: Int
     }
 
     var body: some View {
@@ -124,6 +145,13 @@ struct SettingsView: View {
                 if let plan = pendingCSVImport { Text(importConfirmationMessage(plan)) }
             }
             .alert(item: $csvMessage) { message in
+                if let failedCSVText = message.failedCSVText {
+                    return Alert(title: Text(message.title), message: Text(message.message), primaryButton: .default(Text("Export Failed Rows")) {
+                        csvExportDocument = CollectionCSVDocument(text: failedCSVText)
+                        csvExportFilename = "CardScanner Failed Import Rows"
+                        isShowingCSVExporter = true
+                    }, secondaryButton: .cancel(Text("Done")))
+                }
                 if let skippedCSVText = message.skippedCSVText {
                     return Alert(title: Text(message.title), message: Text(message.message), primaryButton: .default(Text("Export Skipped Rows")) {
                         csvExportDocument = CollectionCSVDocument(text: skippedCSVText)
@@ -138,9 +166,29 @@ struct SettingsView: View {
 
     private var collectionSection: some View {
         Section("Collection") {
+            if let progress = csvImportProgress {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        ProgressView()
+                        Text("Importing collection…")
+                    }
+                    ProgressView(
+                        value: Double(progress.completedEntries),
+                        total: Double(max(1, progress.totalEntries))
+                    )
+                    Text("Saved " + String(progress.completedEntries) + " of " + String(progress.totalEntries) + " entries")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Importing collection")
+                .accessibilityValue("\(progress.completedEntries) of \(progress.totalEntries) entries saved")
+            }
+
             Button("Import CSV", systemImage: "square.and.arrow.down") {
                 isShowingCSVImporter = true
             }
+            .disabled(csvImportProgress != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
                 csvExportDocument = CollectionCSV.export(cards)
@@ -226,7 +274,11 @@ struct SettingsView: View {
                 .disabled(priceRecords.isEmpty)
 
                 Button("Export Missing Artwork", systemImage: "photo") {
-                    csvExportDocument = CollectionCSV.exportMissingArtwork(cards, priceRecords: priceRecords)
+                    csvExportDocument = CollectionCSV.exportMissingArtwork(
+                        cards,
+                        priceRecords: priceRecords,
+                        localArtworkKeys: Set(artworkOverrides.map(\.collectionKey))
+                    )
                     csvExportFilename = "CardScanner Missing Artwork"
                     isShowingCSVExporter = true
                 }
@@ -260,17 +312,60 @@ struct SettingsView: View {
 
     @MainActor
     private func importCSV(_ plan: CollectionCSVImportPlan) {
+        guard csvImportProgress == nil else { return }
         pendingCSVImport = nil
-        do {
-            let result = try CollectionCSV.apply(plan, to: modelContext)
-            Task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
-            var details = "Added \(result.totalQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
-            if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
-            if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
-            details += " Artwork loads automatically. Refresh prices when you're ready."
-            csvMessage = CSVMessage(title: "Import Complete", message: details, skippedCSVText: plan.skippedCSVText)
-        } catch {
-            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+        let container = modelContext.container
+        let token = UUID()
+        csvImportToken = token
+        csvImportProgress = CSVImportProgress(
+            completedEntries: 0,
+            totalEntries: plan.entries.count
+        )
+        Task { @MainActor in
+            defer {
+                if csvImportToken == token {
+                    // Progress callbacks are delivered through unstructured
+                    // MainActor tasks from the isolated importer. Invalidate
+                    // the token before clearing the row so a final queued
+                    // callback cannot resurrect an "in progress" state after
+                    // completion has already been published.
+                    csvImportToken = UUID()
+                    csvImportProgress = nil
+                }
+            }
+            do {
+                let result = try await CollectionCSV.applyIsolated(
+                    plan,
+                    to: container,
+                    progress: { completedEntries, totalEntries in
+                        Task { @MainActor in
+                            guard csvImportToken == token else { return }
+                            csvImportProgress = CSVImportProgress(
+                                completedEntries: completedEntries,
+                                totalEntries: totalEntries
+                            )
+                        }
+                    }
+                )
+                Task { await catalogNormalizer.normalizeImportedCards(in: container) }
+                var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
+                if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
+                if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
+                if !result.failedRows.isEmpty {
+                    details += " Could not import \(result.failedRows.count) entries. Export the failed rows to retry only those entries."
+                }
+                details += " Artwork loads automatically. Refresh prices when you're ready."
+                csvMessage = CSVMessage(
+                    title: result.failedRows.isEmpty ? "Import Complete" : "Import Partially Complete",
+                    message: details,
+                    skippedCSVText: result.failedRows.isEmpty ? plan.skippedCSVText : nil,
+                    failedCSVText: result.failedEntries.isEmpty
+                        ? nil
+                        : CollectionCSV.exportFailedEntries(result.failedEntries).text
+                )
+            } catch {
+                csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+            }
         }
     }
 
@@ -432,16 +527,15 @@ struct PriceFallbackSettingsSection: View {
 
 }
 
-/// Sign in with Apple, kept deliberately as the only account option. It exists
-/// to answer one question — should this collection sync to iCloud, or stay
-/// local-only — not to build a user-account system the app otherwise has no
-/// use for.
+/// Sign in with Apple, kept deliberately as the only account option. It gates
+/// whether the app attempts its cloud-backed configuration; the private
+/// CloudKit database itself follows the device's iCloud account.
 ///
 /// Whether the *store* SwiftData hands the app is CloudKit-backed is decided
-/// once per launch, in `TradingCardScannerApp.makeContainer()`, from
-/// `AppleAccountCredentials.isSignedIn`. Signing in or out here only updates
-/// that stored state — it cannot swap the live store underneath the running
-/// app, so both directions say "restart" rather than silently doing nothing.
+/// once per launch, in `TradingCardScannerApp.makeContainer()`, and the
+/// selected mode is shown below. Signing in or out here only updates the gate —
+/// it cannot swap the live store underneath the running app, so both directions
+/// say "restart" rather than silently doing nothing.
 struct AccountSettingsSection: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var isSignedIn = AppleAccountCredentials.isSignedIn
@@ -451,6 +545,13 @@ struct AccountSettingsSection: View {
 
     var body: some View {
         Section {
+            LabeledContent(
+                "Collection storage",
+                value: TradingCardScannerApp.activeStorageMode.label
+            )
+            Text(TradingCardScannerApp.activeStorageMode.detail)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
 #if LOCAL_ONLY_SIGNING
             // Sign in with Apple and iCloud need a paid Apple Developer Program
             // membership to provision. Offering the button in a build that
@@ -481,9 +582,13 @@ struct AccountSettingsSection: View {
 #if LOCAL_ONLY_SIGNING
             Text("Your collection is stored locally and is not backed up by this app.")
 #else
-            Text(isSignedIn
-                 ? "Your collection syncs to iCloud under this Apple ID. If you just signed in, restart the app to start syncing."
-                 : "Optional. Sign in to back up your collection and sync it across your devices with iCloud. Everything works fully signed out — it just stays on this device.")
+            if TradingCardScannerApp.activeStorageMode.isCloudSyncing {
+                Text("Collection sync uses this device's iCloud account. Sign in with Apple only controls whether the cloud-backed configuration is attempted; restart after changing that sign-in state.")
+            } else if isSignedIn {
+                Text("Sign in with Apple is saved, but this launch is using local storage. Restart after checking iCloud and app provisioning to try the cloud-backed configuration again.")
+            } else {
+                Text("Optional. Sign in with Apple to allow a cloud-backed configuration on the next launch. The actual iCloud account is the device's iCloud account; signed-out use stays on this device.")
+            }
 #endif
         }
         .task { await refreshCredentialState() }
@@ -510,7 +615,7 @@ struct AccountSettingsSection: View {
                 isSignedIn = true
                 displayName = AppleAccountCredentials.displayName
                 statusIsError = false
-                statusMessage = "Signed in. Restart the app to start syncing to iCloud."
+                statusMessage = "Signed in. Restart the app to re-evaluate collection storage."
             } catch {
                 statusIsError = true
                 statusMessage = error.localizedDescription
@@ -533,7 +638,7 @@ struct AccountSettingsSection: View {
         isSignedIn = false
         displayName = nil
         statusIsError = false
-        statusMessage = "Signed out. Restart the app to finish turning sync off."
+        statusMessage = "Signed out. Restart the app to re-evaluate collection storage."
     }
 
     /// Sign-in with Apple can be revoked from the device's Settings app at any
@@ -552,6 +657,6 @@ struct AccountSettingsSection: View {
         isSignedIn = false
         displayName = nil
         statusIsError = true
-        statusMessage = "Your Apple ID sign-in was revoked. Restart the app to finish turning sync off."
+        statusMessage = "Your Apple ID sign-in was revoked. Restart the app to re-evaluate collection storage."
     }
 }

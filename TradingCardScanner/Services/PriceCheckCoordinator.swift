@@ -169,33 +169,37 @@ final class PriceCheckCoordinator {
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
             magicTreatments: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant),
-            pokemonPrintRun: resolvedScan.pokemonPrintRun
+            pokemonPrintRun: resolvedScan.pokemonPrintRun,
+            at: resolvedScan.catalogRetrievedAt
         )
         let key = quoteKey(for: resolvedScan)
+        let localEvidence = newestLocalEvidence(for: key)
 
-        if Self.isUsableUSD(catalogQuote) {
+        if Self.isUsableUSD(catalogQuote),
+           let catalogEvidence = Self.evidence(from: catalogQuote),
+           localEvidence.map({ catalogEvidence.retrievedAt > $0.retrievedAt }) ?? true {
             _ = cache.store(
                 catalogQuote,
                 game: key.game,
                 printingID: key.printingID,
                 variantID: key.variantID,
+                at: catalogEvidence.retrievedAt,
                 treatmentIDs: key.treatmentIDs
             )
             return PriceCheckResult(
                 resolvedScan: resolvedScan,
                 quote: catalogQuote,
-                checkedAt: .now,
+                checkedAt: catalogEvidence.retrievedAt,
                 quoteState: .current,
-                // This quote came from the successful provider response that
-                // resolved the scan. A second forced request would only add
-                // latency and could turn a fresh quote into a false outage.
-                shouldAutoRefresh: false
+                // Identification stays fast, but an old session-cache payload
+                // must not disable the newer-price check.
+                shouldAutoRefresh: Self.isStale(catalogEvidence)
             )
         }
 
         // Initial presentation is read-only with respect to collection pricing:
         // it reuses only exact, successful evidence that already exists.
-        if let local = newestLocalEvidence(for: key) {
+        if let local = localEvidence {
             _ = cache.store(
                 .price(local.price),
                 game: key.game,
@@ -208,7 +212,8 @@ final class PriceCheckCoordinator {
                 resolvedScan: resolvedScan,
                 quote: .price(local.price),
                 checkedAt: local.retrievedAt,
-                quoteState: .current
+                quoteState: .current,
+                shouldAutoRefresh: Self.isStale(local)
             )
         }
 
@@ -355,6 +360,19 @@ final class PriceCheckCoordinator {
             ),
             retrievedAt: retrievedAt
         )
+    }
+
+    private static func evidence(from lookup: PriceLookup) -> LocalEvidence? {
+        guard case let .price(price) = lookup,
+              Money(rounding: price.unitMarketPriceUSD) != nil,
+              !price.sourceVariantID.isEmpty else {
+            return nil
+        }
+        return LocalEvidence(price: price, retrievedAt: price.fetchedAt)
+    }
+
+    private static func isStale(_ evidence: LocalEvidence, now: Date = .now) -> Bool {
+        now.timeIntervalSince(evidence.retrievedAt) > PriceDisplay.staleAfter
     }
 
     static func isUsableUSD(_ quote: PriceLookup) -> Bool {

@@ -307,7 +307,10 @@ struct PortfolioView: View {
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
         if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
         if case let .finished(result) = refresh.status {
-            return result.providerUnreachable || result.failed > 0
+            return result.providerUnreachable
+                || result.failed > 0
+                || result.persistenceFailed
+                || result.reconciledDuplicateRecords > 0
         }
         return false
     }
@@ -480,12 +483,10 @@ struct PortfolioView: View {
 
     @ViewBuilder
     private var largestHoldings: some View {
-        let ranked = portfolio.holdings
-            .filter { $0.currentValue != nil }
-            .sorted { lhs, rhs in
-                if lhs.currentValue != rhs.currentValue { return (lhs.currentValue ?? .zero) > (rhs.currentValue ?? .zero) }
-                return lhs.collectionKey < rhs.collectionKey
-            }
+        // The publisher orders priced holdings before unpriced holdings, so
+        // stop at the first missing value instead of allocating a filtered
+        // copy of the entire holdings array on every body evaluation.
+        let ranked = portfolio.holdings.prefix(while: { $0.currentValue != nil })
 
         if !ranked.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
@@ -501,7 +502,7 @@ struct PortfolioView: View {
                         .accessibilityHint("Opens Collection sorted by price, highest first")
                     }
                 }
-                ForEach(Array(ranked.prefix(5))) { holding in
+                ForEach(ranked.prefix(5)) { holding in
                     NavigationLink {
                         PortfolioOwnedCardDestination(
                             collectionKey: holding.collectionKey,
@@ -550,7 +551,10 @@ struct PortfolioView: View {
     }
 
     private func todayContext(_ attribution: PortfolioClose.Attribution) -> PortfolioContributorContext {
-        let today = PortfolioCalendar.day(containing: .now, in: PortfolioCalendar.timeZone())
+        let today = PortfolioCalendar.day(
+            containing: .now,
+            in: PortfolioCalendar.pinnedTimeZone() ?? .current
+        )
         return PortfolioContributorContext(
             id: "today-\(today.timeIntervalSinceReferenceDate)",
             title: "Today’s market movement",
@@ -985,11 +989,18 @@ private struct PortfolioMagnitudeBar: View {
 }
 
 private struct PortfolioArtwork: View {
+    @Environment(\.modelContext) private var modelContext
     let holding: PortfolioHoldingSnapshot
 
     var body: some View {
         Group {
-            if let image = CollectionArtworkStore.image(filename: holding.userArtworkFilename) {
+            if let image = CollectionArtworkStore.image(
+                filename: CollectionArtworkStore.filename(
+                    for: holding.collectionKey,
+                    legacyFilename: holding.userArtworkFilename,
+                    in: modelContext
+                )
+            ) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -1010,6 +1021,7 @@ private struct PortfolioOwnedCardDestination: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CollectedCard.dateAdded, order: .forward) private var cards: [CollectedCard]
     @Query private var priceRecords: [PriceRecord]
+    @Query private var artworkOverrides: [LocalArtworkOverride]
     let collectionKey: String
     @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
@@ -1032,7 +1044,10 @@ private struct PortfolioOwnedCardDestination: View {
                 unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
                     ? PricingDiagnostics.unpricedReason(for: card, record: record)
                     : nil,
-                artworkReason: ArtworkDiagnostics.reason(for: card),
+                artworkReason: ArtworkDiagnostics.reason(
+                    for: card,
+                    hasLocalOverride: artworkOverrides.contains { $0.collectionKey == card.collectionKey }
+                ),
                 logicalQuantity: position.quantity,
                 isLogicalConflict: position.physicalRowCount > 1,
                 onRemoved: onRemoved
@@ -1180,11 +1195,24 @@ private struct PortfolioDetailsView: View {
             case let .refreshing(completed, total):
                 LabeledContent("Checking prices", value: "\(completed) of \(total)")
             case let .finished(result):
-                Text(result.providerUnreachable
-                     ? "The card catalog is unreachable. Check your connection and try again."
-                     : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened)).")
+                Text(
+                    result.providerUnreachable
+                        ? "The card catalog is unreachable. Check your connection and try again."
+                        : result.persistenceFailed
+                            ? "Some price updates could not be saved. Try again."
+                            : result.reconciledDuplicateRecords > 0
+                                ? "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
+                            : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
+                )
                     .font(.subheadline)
-                    .foregroundStyle(result.providerUnreachable || result.failed > 0 ? PortfolioPalette.attention : .secondary)
+                    .foregroundStyle(
+                        result.providerUnreachable
+                            || result.failed > 0
+                            || result.persistenceFailed
+                            || result.reconciledDuplicateRecords > 0
+                            ? PortfolioPalette.attention
+                            : .secondary
+                    )
             case .recentlyChecked:
                 Text("Prices were checked recently.")
                     .font(.subheadline)

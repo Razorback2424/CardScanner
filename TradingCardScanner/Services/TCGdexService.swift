@@ -246,7 +246,15 @@ struct PokemonTCGAPIService: Sendable {
 enum ScryfallError: LocalizedError {
     case invalidURL
     case cardNotFound
+    /// The provider answered, but the requested non-card endpoint does not
+    /// exist. Keeping this distinct lets card endpoints translate the same HTTP
+    /// status into catalog evidence while directory/collection endpoints fail
+    /// closed as provider availability, rather than falling into JSON decoding
+    /// and scanner retry logic.
+    case endpointNotFound
     case badResponse
+    case rateLimited(retryAfter: TimeInterval?)
+    case providerUnavailable
     case unsupportedPrinting
     case identityMismatch
 
@@ -254,7 +262,14 @@ enum ScryfallError: LocalizedError {
         switch self {
         case .invalidURL: return "Could not build the Scryfall request."
         case .cardNotFound: return "That identifier did not match a Magic card in Scryfall."
+        case .endpointNotFound: return "Scryfall did not provide the requested endpoint."
         case .badResponse: return "Scryfall returned an unexpected response."
+        case let .rateLimited(retryAfter):
+            if let retryAfter {
+                return "Scryfall asked us to wait \(Int(retryAfter.rounded(.up))) seconds."
+            }
+            return "Scryfall asked us to wait before trying again."
+        case .providerUnavailable: return "Scryfall is temporarily unavailable."
         case .unsupportedPrinting: return "This printing is not one the scanner supports yet."
         case .identityMismatch: return "Scryfall returned a different card identity."
         }
@@ -262,6 +277,12 @@ enum ScryfallError: LocalizedError {
 }
 
 struct ScryfallService: Sendable {
+    private static let childSetCache = ScryfallChildSetCache()
+    private let breaker: TCGdexCircuitBreaker
+
+    init(breaker: TCGdexCircuitBreaker = .scryfallShared) {
+        self.breaker = breaker
+    }
     /// Magic 2015 introduced the printed collector-number footer this scanner
     /// reads. Before it there is no printed identifier to have read, so an older
     /// printing cannot be what is in front of the camera.
@@ -286,10 +307,7 @@ struct ScryfallService: Sendable {
         guard let url = URL(string: "https://api.scryfall.com/sets") else {
             throw ScryfallError.invalidURL
         }
-        let (data, response) = try await URLSession.shared.data(for: request(for: url))
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw ScryfallError.badResponse
-        }
+        let (data, _) = try await requestData(for: request(for: url))
 
         let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
         return directory.data.compactMap { set in
@@ -320,14 +338,16 @@ struct ScryfallService: Sendable {
     /// are Substitute Cards and regional promo tokens — different products that
     /// a prefix rule would happily return instead.
     func fetchChildSets() async throws -> [String: [MagicChildSet]] {
+        try await Self.childSetCache.value {
+            try await self.fetchChildSetsFromNetwork()
+        }
+    }
+
+    private func fetchChildSetsFromNetwork() async throws -> [String: [MagicChildSet]] {
         guard let url = URL(string: "https://api.scryfall.com/sets") else {
             throw ScryfallError.invalidURL
         }
-        let (data, response) = try await URLSession.shared.data(for: request(for: url))
-        guard let http = response as? HTTPURLResponse,
-              (200..<300).contains(http.statusCode) else {
-            throw ScryfallError.badResponse
-        }
+        let (data, _) = try await requestData(for: request(for: url))
 
         let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
         var result: [String: [MagicChildSet]] = [:]
@@ -386,11 +406,7 @@ struct ScryfallService: Sendable {
         guard let url = URL(string: "https://api.scryfall.com/sets") else {
             throw ScryfallError.invalidURL
         }
-        let (data, response) = try await URLSession.shared.data(for: request(for: url))
-        guard let http = response as? HTTPURLResponse,
-              (200..<300).contains(http.statusCode) else {
-            throw ScryfallError.badResponse
-        }
+        let (data, _) = try await requestData(for: request(for: url))
         let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
         return directory.data.compactMap { set in
             guard !set.digital else { return nil }
@@ -408,11 +424,7 @@ struct ScryfallService: Sendable {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(ScryfallCollectionRequest(identifiers: identifiers))
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse,
-              (200..<300).contains(http.statusCode) else {
-            throw ScryfallError.badResponse
-        }
+        let (data, _) = try await requestData(for: request)
         return try JSONDecoder().decode(ScryfallCollectionResponse.self, from: data).data
     }
 
@@ -422,11 +434,14 @@ struct ScryfallService: Sendable {
               let url = URL(string: "https://api.scryfall.com/cards/\(encoded)") else {
             throw ScryfallError.invalidURL
         }
-        let (data, response) = try await URLSession.shared.data(for: request(for: url, ignoringCache: ignoringCache))
-        guard let http = response as? HTTPURLResponse else { throw ScryfallError.badResponse }
-        if http.statusCode == 404 { throw ScryfallError.cardNotFound }
-        guard (200..<300).contains(http.statusCode) else { throw ScryfallError.badResponse }
-        return try JSONDecoder().decode(ScryfallCard.self, from: data)
+        do {
+            let (data, _) = try await requestData(
+                for: request(for: url, ignoringCache: ignoringCache)
+            )
+            return try JSONDecoder().decode(ScryfallCard.self, from: data)
+        } catch ScryfallError.endpointNotFound {
+            throw ScryfallError.cardNotFound
+        }
     }
 
     func fetchCard(
@@ -445,12 +460,14 @@ struct ScryfallService: Sendable {
         ) else {
             throw ScryfallError.invalidURL
         }
-        let (data, response) = try await URLSession.shared.data(
-            for: request(for: url, ignoringCache: ignoringCache)
-        )
-        guard let http = response as? HTTPURLResponse else { throw ScryfallError.badResponse }
-        if http.statusCode == 404 { throw ScryfallError.cardNotFound }
-        guard (200..<300).contains(http.statusCode) else { throw ScryfallError.badResponse }
+        let data: Data
+        do {
+            (data, _) = try await requestData(
+                for: request(for: url, ignoringCache: ignoringCache)
+            )
+        } catch ScryfallError.endpointNotFound {
+            throw ScryfallError.cardNotFound
+        }
 
         let card = try JSONDecoder().decode(ScryfallCard.self, from: data)
         guard card.setCode.lowercased() == normalizedSet,
@@ -464,6 +481,77 @@ struct ScryfallService: Sendable {
             try validateSupported(card)
         }
         return card
+    }
+
+    /// A single guarded transport seam keeps every Scryfall endpoint behind the
+    /// same circuit. A 429 uses the server's Retry-After value when present;
+    /// 5xx and transport failures use the exponential provider breaker.
+    private func requestData(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        guard await breaker.permitsRequest() else {
+            throw ScryfallError.providerUnavailable
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                await breaker.recordFailure(.unreachable)
+                throw ScryfallError.providerUnavailable
+            }
+            // A missing card is definitive catalog evidence, but a missing
+            // directory/collection endpoint is provider availability trouble
+            // from the caller's point of view. The two card endpoints translate
+            // this shared transport error to `cardNotFound`; every other
+            // endpoint keeps `endpointNotFound` so it cannot become a decoding
+            // error and re-enter scanner retry logic.
+            if http.statusCode == 404 {
+                await breaker.recordSuccess()
+                throw ScryfallError.endpointNotFound
+            }
+            if http.statusCode == 429 {
+                let serverRetryAfter = Self.retryAfter(
+                    from: http.value(forHTTPHeaderField: "Retry-After"),
+                    now: .now
+                )
+                // A zero/expired header is still a rate-limit signal. Keep a
+                // small provider-specific floor so a fleet of newly presented
+                // cards cannot turn that response into a tight retry loop.
+                let retryAfter = max(
+                    serverRetryAfter ?? TCGdexCircuitBreaker.Failure.rateLimited.base,
+                    TCGdexCircuitBreaker.Failure.rateLimited.base
+                )
+                await breaker.recordFailure(
+                    .rateLimited,
+                    cooldownOverride: retryAfter
+                )
+                throw ScryfallError.rateLimited(retryAfter: retryAfter)
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                await breaker.recordFailure(.serverError)
+                throw ScryfallError.providerUnavailable
+            }
+            await breaker.recordSuccess()
+            return (data, http)
+        } catch let error as ScryfallError {
+            throw error
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
+        } catch {
+            await breaker.recordFailure(.unreachable)
+            throw ScryfallError.providerUnavailable
+        }
+    }
+
+    nonisolated private static func retryAfter(from value: String?, now: Date) -> TimeInterval? {
+        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !value.isEmpty else { return nil }
+        if let seconds = TimeInterval(value), seconds >= 0 { return seconds }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        return formatter.date(from: value).map { max($0.timeIntervalSince(now), 0) }
     }
 
     /// What the scanner is prepared to record, stated explicitly.
@@ -551,6 +639,33 @@ struct ScryfallService: Sendable {
             : Int(numericText)
         guard let numeric else { return compact.lowercased() }
         return String(numeric) + compact.dropFirst(numericText.count).lowercased()
+    }
+}
+
+/// Session-scoped, coalescing cache for Scryfall's relatively static set
+/// directory. The actor prevents a burst of token/art-card scans from starting
+/// one `/sets` request per identifier.
+private actor ScryfallChildSetCache {
+    private let lifetime: TimeInterval = 60 * 60
+    private var cached: [String: [MagicChildSet]]?
+    private var fetchedAt: Date?
+    private var inFlight: Task<[String: [MagicChildSet]], Error>?
+
+    func value(
+        loader: @escaping @Sendable () async throws -> [String: [MagicChildSet]]
+    ) async throws -> [String: [MagicChildSet]] {
+        if let cached, let fetchedAt, Date.now.timeIntervalSince(fetchedAt) < lifetime {
+            return cached
+        }
+        if let inFlight { return try await inFlight.value }
+
+        let task = Task { try await loader() }
+        inFlight = task
+        defer { inFlight = nil }
+        let value = try await task.value
+        cached = value
+        fetchedAt = .now
+        return value
     }
 }
 

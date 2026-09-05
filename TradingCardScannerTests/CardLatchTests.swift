@@ -5,6 +5,25 @@ import XCTest
 /// The latch is the reason automatic collection entry is defensible, so these
 /// cases are written as the physical situations they stand for.
 final class CardLatchTests: XCTestCase {
+    func testRecognitionEligibilityRequiresActiveVisibleUnblockedScanner() {
+        var eligibility = ScannerRecognitionEligibility()
+        XCTAssertFalse(eligibility.allowsRecognition)
+
+        eligibility.isScannerVisible = true
+        XCTAssertTrue(eligibility.allowsRecognition)
+
+        eligibility.isSceneActive = false
+        XCTAssertFalse(eligibility.allowsRecognition)
+        eligibility.isSceneActive = true
+
+        eligibility.isBlockedByPresentation = true
+        XCTAssertFalse(eligibility.allowsRecognition)
+        eligibility.isBlockedByPresentation = false
+
+        eligibility.isCameraInterrupted = true
+        XCTAssertFalse(eligibility.allowsRecognition)
+    }
+
     func testTrackerFeedsLatestObservationIntoTheNextRequest() {
         let seed = VNDetectedObjectObservation(
             boundingBox: CGRect(x: 0.2, y: 0.2, width: 0.4, height: 0.4)
@@ -126,6 +145,22 @@ final class CardLatchTests: XCTestCase {
         XCTAssertNil(latch.latched)
 
         _ = latch.observe(card, at: 1.75)
+        XCTAssertFalse(latch.admits(card))
+    }
+
+    func testPausedRecognitionDoesNotAgeConsumedPrinting() {
+        var latch = CardLatch(presumedGoneAfter: 6.0)
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+
+        // No observation reaches the latch while a presentation sheet owns the
+        // camera. The explicit clock shift is what the real scanner performs
+        // on resume; without it this first blurry/empty frame would make the
+        // stationary card look as though it had been gone for 30 seconds.
+        latch.advanceObservedClock(by: 30)
+        _ = latch.observe(nil, cardPresent: false, at: 30.25)
+        _ = latch.observe(card, cardPresent: true, at: 30.50)
+
         XCTAssertFalse(latch.admits(card))
     }
 
@@ -542,7 +577,7 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
-    func testCollectionRoutingUsesProofAndLastCommittedIdentityOnly() {
+    func testCollectionRoutingUsesProofAndCommittedIdentity() {
         let prior = committedSessionScan(identity: "pokemon:obf-223")
         let proof = SpatialResetProof(
             encounterID: prior.encounterID,
@@ -574,6 +609,39 @@ final class CardLatchTests: XCTestCase {
                 proofs: []
             ),
             .automatic
+        )
+    }
+
+    func testCollectionRoutingProtectsAnOlderCommittedPrintingToo() {
+        let older = committedSessionScan(identity: "pokemon:obf-223")
+        let latest = committedSessionScan(identity: "pokemon:pal-204")
+        let sameAsOlder = ConsecutiveScanIdentity(canonicalID: older.identity.canonicalID)
+
+        // The OCR/latch memory is bounded but intentionally wider than one
+        // commit. A later unrelated card must not erase the older printing's
+        // duplicate protection.
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older, latest],
+                proofs: []
+            ),
+            .suppress
+        )
+
+        let proof = SpatialResetProof(
+            encounterID: older.encounterID,
+            presentationToken: older.presentationToken
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older, latest],
+                proofs: [proof]
+            ),
+            .duplicate(proof)
         )
     }
 
@@ -687,9 +755,10 @@ final class CardLatchTests: XCTestCase {
             CollectionCandidateRoutingPolicy.decision(
                 for: ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223"),
                 previous: committedB,
+                history: [first, committedB],
                 proofs: []
             ),
-            .automatic
+            .suppress
         )
     }
 

@@ -10,6 +10,11 @@ struct PortfolioHistoryView: View {
 
     @State private var selectedPointID: String?
     @State private var lastHapticPointID: String?
+    /// Held and re-armed rather than built per tick, for the reason
+    /// `ScanFeedback` documents: a cold generator answers late enough to break
+    /// the coupling between the finger crossing a point and the click that
+    /// reports it.
+    @State private var selectionFeedback = UISelectionFeedbackGenerator()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -118,7 +123,9 @@ struct PortfolioHistoryView: View {
                         guard nearestID != selectedPointID else { return }
                         selectedPointID = nearestID
                         if nearestID != lastHapticPointID {
-                            UISelectionFeedbackGenerator().selectionChanged()
+                            selectionFeedback.selectionChanged()
+                            // Re-arm for the next point the scrub crosses.
+                            selectionFeedback.prepare()
                             lastHapticPointID = nearestID
                         }
                     }
@@ -127,6 +134,7 @@ struct PortfolioHistoryView: View {
                         .contentShape(Rectangle())
                         .simultaneousGesture(DragGesture(minimumDistance: 8).onChanged { gesture in
                             guard abs(gesture.translation.width) > abs(gesture.translation.height) else { return }
+                            selectionFeedback.prepare()
                             selectPoint(gesture.location)
                         }.onEnded { _ in
                             resetSelection()

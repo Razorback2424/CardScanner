@@ -184,7 +184,10 @@ struct CatalogCardDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
                 ForEach(card.marketPrices) { price in
-                    LabeledContent(price.label, value: price.value.formatted(.currency(code: "USD")))
+                    LabeledContent(
+                        price.label,
+                        value: price.value.formatted(.currency(code: price.currencyCode))
+                    )
                 }
             }
             .padding(14)
@@ -280,7 +283,12 @@ struct CatalogCardDetailView: View {
               PriceVendorCredentials.hasKey else { return }
 
         fallbackQuoteTask?.cancel()
-        let resolver = PriceFallbackQuoteResolver(context: modelContext)
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: variant)
+        )
+        let fallbackContext = ModelContext(prices.context.container)
+        let fallbackPrices = PriceStore(context: fallbackContext)
+        let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTask = Task { @MainActor in
             switch await resolver.resolve(
                 card: card,
@@ -293,23 +301,19 @@ struct CatalogCardDetailView: View {
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
-                    treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
-                        from: card.magicTreatments(for: variant)
-                    )
+                    treatmentIDs: treatmentIDs
                 )
-                let marketVariantID = ProductIdentityStore(context: prices.context)
+                let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                prices.store(
+                fallbackPrices.store(
                     quote,
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
                     marketVariantID: marketVariantID,
-                    treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
-                        from: card.magicTreatments(for: variant)
-                    )
+                    treatmentIDs: treatmentIDs
                 )
-                prices.save()
+                _ = fallbackPrices.save()
             case .failed:
                 break
             }

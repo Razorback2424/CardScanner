@@ -153,7 +153,8 @@ enum CardPricing {
             return CardMarketPrice(
                 variantID: variant.id,
                 label: displayLabel(for: variant),
-                value: price.unitMarketPriceUSD
+                value: price.unitMarketPriceUSD,
+                currencyCode: price.currencyCode
             )
         }
     }

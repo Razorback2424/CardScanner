@@ -82,8 +82,12 @@ struct MarketRefreshReport: Equatable, Sendable {
     var variantsUpdated = 0
     var variantsRequested = 0
     /// True only when every batch succeeded. The sync checkpoint may only
-    /// advance when this holds.
+    /// advance when this holds and every successful response was persisted.
     var completedFully = false
+    /// At least one returned response could not be staged or durably saved.
+    /// A successful network response is not reported as a completed refresh in
+    /// this state, and the delta checkpoint remains unchanged.
+    var persistenceFailed = false
     var stoppedReason: StopReason?
 
     enum StopReason: Equatable, Sendable {
@@ -161,9 +165,9 @@ struct JustTCGRefreshCoordinator {
         lane: JustTCGRequestLane = .background,
         useDelta: Bool = false,
         onProgress: (MarketRefreshReport) -> Void = { _ in },
-        apply: (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Void,
+        apply: (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Bool,
         unmatched: ([MarketPriceTarget]) -> Void = { _ in },
-        checkpoint: () -> Void
+        checkpoint: () -> Bool
     ) async -> MarketRefreshReport {
         let (batched, unresolved) = Self.deduplicate(targets)
         var report = MarketRefreshReport()
@@ -214,6 +218,8 @@ struct JustTCGRefreshCoordinator {
                     lane: lane
                 )
                 report.requestsUsed += 1
+                var batchAppliedCount = 0
+                var batchPersistenceFailed = false
 
                 for lookup in chunk {
                     guard let owners = batched[lookup] else { continue }
@@ -255,18 +261,32 @@ struct JustTCGRefreshCoordinator {
                             if cutoff == nil { unmatched(finishOwners) }
                             continue
                         }
-                        apply(card, variant, finishOwners)
-                        applied = true
+                        if apply(card, variant, finishOwners) {
+                            applied = true
+                        } else {
+                            batchPersistenceFailed = true
+                        }
                     }
                     // Keep this counter at one per network lookup, preserving
                     // the report's existing meaning even when one response
                     // contains several owned finishes.
-                    report.variantsUpdated += applied ? 1 : 0
+                    batchAppliedCount += applied ? 1 : 0
                 }
 
+                // Commit per batch so an interruption keeps what it bought. A
+                // failed save rolls the context back, so none of this batch is
+                // counted as durable and the delta clock must not advance.
+                guard checkpoint() else {
+                    report.persistenceFailed = true
+                    return report
+                }
                 report.batchesCompleted += 1
-                // Committed per batch so an interruption keeps what it bought.
-                checkpoint()
+                report.variantsUpdated += batchAppliedCount
+                if batchPersistenceFailed {
+                    report.persistenceFailed = true
+                    onProgress(report)
+                    return report
+                }
                 onProgress(report)
             } catch let error as JustTCGTransport.TransportError {
                 report.stoppedReason = Self.stopReason(for: error)
@@ -279,6 +299,7 @@ struct JustTCGRefreshCoordinator {
 
         // Only a pass where every batch succeeded may advance the delta clock.
         report.completedFully = report.batchesCompleted == report.batchesPlanned
+            && !report.persistenceFailed
         if report.completedFully, unresolved.isEmpty {
             syncLedger.recordCompleteSync(game: game, apiVersion: JustTCGV1Client.apiVersion)
         }

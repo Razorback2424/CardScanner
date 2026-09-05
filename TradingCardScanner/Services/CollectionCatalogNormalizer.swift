@@ -81,6 +81,14 @@ final class CollectionCatalogNormalizer: ObservableObject {
     nonisolated static let metadataVersion = 8
     private var requestsAnotherPass = false
 
+    /// Production callers use a context dedicated to catalog normalization.
+    /// A network-paced task must not hold the UI context's pending mutations or
+    /// let its save/rollback interact with a scanner transaction.
+    func normalizeImportedCards(in container: ModelContainer) async {
+        let normalizationContext = ModelContext(container)
+        await normalizeImportedCards(in: normalizationContext)
+    }
+
     func normalizeImportedCards(in context: ModelContext) async {
         if case .normalizing = status {
             requestsAnotherPass = true
@@ -88,33 +96,17 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
 
         let now = Date.now
-        let allCards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        if Self.repairLegacySealedArtworkURLs(in: allCards) {
-            try? context.save()
-        }
-        let candidates = allCards.filter { Self.needsNormalization($0, now: now) }
-
-        let requests = Dictionary(
-            candidates.map { card in
-                (
-                    card.providerID,
-                    ImportedCatalogRequest(
-                        sourceProviderID: card.providerID,
-                        game: card.cardGame,
-                        name: card.name,
-                        setName: card.setName,
-                        cardNumber: card.cardNumber,
-                        itemKind: card.itemKind
-                    )
-                )
-            },
-            uniquingKeysWith: { first, _ in first }
-        ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
+        let inputs = normalizationInputs(in: context, now: now)
+        let requests = inputs.requests
 
         guard !requests.isEmpty else {
             requestsAnotherPass = false
             return
         }
+        // Network resolution may take minutes. Keep only persistent ids across
+        // that suspension; a CollectedCard reference can be deleted or
+        // invalidated by another context before the response returns.
+        let cardIDsByProviderID = inputs.cardIDsByProviderID
         status = .normalizing(total: requests.count)
 
         let resolution = await resolver.resolve(Array(requests))
@@ -125,10 +117,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
             return
         }
 
-        let cardsByProviderID = Dictionary(grouping: candidates, by: \.providerID)
         let priceLog = PriceObservationLog(context: context)
         for request in requests {
-            let rows = cardsByProviderID[request.sourceProviderID] ?? []
+            let rows = (cardIDsByProviderID[request.sourceProviderID] ?? [])
+                .compactMap { context.model(for: $0) as? CollectedCard }
             if let metadata = matches[request.sourceProviderID] {
                 for row in rows {
                     let previousVariantID = row.justTCGVariantID
@@ -201,6 +193,53 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 self?.status = .idle
             }
         }
+    }
+
+    /// Materialises model objects only long enough to repair local artwork and
+    /// capture value requests plus persistent ids. The returned inputs contain
+    /// no SwiftData references, so the paced resolver cannot outlive the rows it
+    /// inspected.
+    private func normalizationInputs(
+        in context: ModelContext,
+        now: Date
+    ) -> (
+        requests: [ImportedCatalogRequest],
+        cardIDsByProviderID: [String: [PersistentIdentifier]]
+    ) {
+        let allCards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        if Self.repairLegacySealedArtworkURLs(in: allCards) {
+            do {
+                try context.save()
+            } catch {
+                // This context is dedicated to normalization. Discard only the
+                // failed artwork rewrite before continuing with the network
+                // pass; a later normalization can retry it safely.
+                context.rollback()
+            }
+        }
+        let candidates = allCards.filter { Self.needsNormalization($0, now: now) }
+        let requests = Dictionary(
+            candidates.map { card in
+                (
+                    card.providerID,
+                    ImportedCatalogRequest(
+                        sourceProviderID: card.providerID,
+                        game: card.cardGame,
+                        name: card.name,
+                        setName: card.setName,
+                        cardNumber: card.cardNumber,
+                        itemKind: card.itemKind
+                    )
+                )
+            },
+            uniquingKeysWith: { first, _ in first }
+        ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
+        let cardIDsByProviderID = candidates.reduce(
+            into: [String: [PersistentIdentifier]]()
+        ) { result, card in
+            result[card.providerID, default: []].append(card.persistentModelID)
+        }
+        return (requests, cardIDsByProviderID)
     }
 
     /// Definitive sealed misses stay asleep until the resolver version changes.
