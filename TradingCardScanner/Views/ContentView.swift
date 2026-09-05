@@ -429,16 +429,18 @@ private struct PortfolioInputObserver: View {
         }
 
         // Price records can arrive independently through CloudKit. Include
-        // their value and freshness fields so the portfolio is recomputed when
-        // another device changes the evidence it is valued from.
+        // their value and provider freshness fields so the portfolio is
+        // recomputed when another device changes the evidence it is valued
+        // from. Deliberately omit local fetch/check timestamps: refresh paths
+        // explicitly recompute after completion, while including those fields
+        // would replay the entire portfolio on every checkpoint save without
+        // changing its value or market inputs.
         for record in priceRecords {
             hasher.combine(record.key)
             hasher.combine(record.effectiveUnitMarketPriceUSD)
             hasher.combine(record.currencyCode)
             hasher.combine(record.sourceRaw)
             hasher.combine(record.sourceUpdatedAt)
-            hasher.combine(record.fetchedAt)
-            hasher.combine(record.lastSuccessfulCheckAt)
             hasher.combine(record.invalidatedAt)
         }
 

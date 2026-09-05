@@ -1,12 +1,15 @@
 # Performance Review — Remediation Plan (revised)
 
-Status: **remediation in progress.** Slices 1–8 and 11 are implemented on the
-working branch; device-gated work remains open. Every claim below was re-read
-against the source after a second-pass audit of the first review; the audit's
-corrections are recorded in §1 with a verdict each. A third pass then checked
-the second pass's own new claims — three needed correcting, and those
-corrections are applied in the findings below and recorded in §1.4. Line
-numbers drift; follow symbol names.
+Status: **implementation complete for the current iOS 17 target; runtime gates
+remain explicit.** Slices 1–8 and 11 are implemented on the working branch,
+R5 is closed by the deployment-target decision recorded below, and the
+remaining P1/U2/U3 items are deliberately hardware-validation gates rather
+than unmeasured code changes. Every claim below was re-read against the source
+after a second-pass audit of the first review; the audit's corrections are
+recorded in §1 with a verdict each. A third pass then checked the second pass's
+own new claims — three needed correcting, and those corrections are applied in
+the findings below and recorded in §1.4. Line numbers drift; follow symbol
+names.
 
 ## 0. Progress
 
@@ -16,17 +19,17 @@ numbers drift; follow symbol names.
 | 2 — R2 holding-detail projection | **done** | `PortfolioOwnedCardDestination` uses the closure overload; `testHoldingDetailResolvesTheSameInstrumentAsTheGrid` pins the C2 convergence on the one input where the two rules disagree. |
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
 | 4 — R1 retention | **done; correction fixed 2026-09-05** | 400-day window, `.all` kept (decision taken 2026-09-05). `coverageIndexThrowing` clamps to the window and reports it; `PriceObservationLog.pruneCheckDays` discards rows behind it from the computation actor; `PortfolioEngine.publish` carries both stored coverage counts and `carriedForwardValue` from the close it already wrote. The non-zero retention fixture now proves a pruned day is not revised for lost evidence. Measured flat past the window — see §3.4. |
-| 5 — R3 field trimming | still gated | Its two signposts are counts during a live refresh, which a seeded store cannot produce. Needs one profiled refresh against a real provider. |
+| 5 — R3 field trimming | **done (simulator; live count profile still recommended)** | The portfolio observer no longer hashes local fetch/check timestamps; the collection token keeps presence bits and only uses exact `fetchedAt` for unstamped providers. The focused stamped/unstamped test and full simulator suite pass. A live-provider signpost count was not available in this pass, so the magnitude claim remains intentionally unquantified — see §3.6. |
 | 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
-| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. The current full suite is 850 tests, 1 skipped, 0 failures. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
+| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. The current full simulator suite is 851 tests, 1 skipped, 0 failures. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
 | 8 — R4 ModelActor | **done (simulator; runtime signpost capture still recommended)** | Refresh target construction, `PriceRefreshDataIndex`, `PriceStore`, identity indexes, writes and saves now run in `PriceRefreshModelActor`; the main actor retains queue/status/progress/budget UI. `build-for-testing` and the full suite pass: 850 tests, 1 skipped, 0 failures. No live-provider Instruments capture was taken in this pass, so the off-main signpost check remains an explicit runtime verification item. |
-| 9 — device pass | **partly done** | P3 and U4 are code changes whose *magnitude* needed a device but whose correctness did not; both are landed. P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain — each needs a device to verify it did not make things worse, and changing the capture format without checking OCR hit rate would be a worse trade than leaving it. |
-| 10 — R5 `#Index` | not started | Needs the iOS 18 deployment-target decision, which `design_slices_plan.md` also depends on. Slice 4 shrank the largest table this would index, so its value is lower than when the plan was written. |
+| 9 — device pass | **partly done; P1/U2/U3 remain hardware gates** | P3 and U4 are landed. The app-only iPhone build and signed test bundle build both succeed; the physical run executed 851 tests with 1 skip but exposed one device-only timing/fixture failure in `BrowseFeatureTests.testBrowseSearchDebouncesBeforeStartingBothSearchLanes` (a focused retry reproduced it). P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain unmodified and unverified because no OCR/thermal or manual UI lifecycle measurement was taken. |
+| 10 — R5 `#Index` | **closed by deployment decision (2026-09-05)** | The project remains iOS 17.0. `#Index` requires iOS 18, so no index or CloudKit schema migration is introduced under the current target. This follows the existing deployment guidance to keep the lower target and branch newer APIs when needed; revisit only as an explicit iOS 18 migration decision. |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
 
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
-Suite after slices 1, 2, 3, 4, 6, 7, 11 and the P3/U4 cleanup: **850 tests, 1 skipped, 0 failures** (846 before: the C2 convergence test, the two R1 retention tests, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
+Suite after slices 1, 2, 3, 4, 6, 7, 11, P3/U4 and R3: **851 tests, 1 skipped, 0 failures** (846 before: the C2 convergence test, the two R1 retention tests, the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set, and the R3 freshness-token test).
 
 ---
 
@@ -253,7 +256,7 @@ value changes. The fixture uses a published `carriedForwardValue` of `$2` and
 a pruned replay value of `$9`, so the value carry is tested rather than
 accidentally equal on both sides.
 
-## 3.3 Measurement plan (remaining)
+## 3.3 Measurement plan and remaining runtime evidence
 
 Seed a store representing 12 months of use for ~1,500 instruments (check days daily, observations on ~5% of checks). Add `os_signpost` intervals, no behaviour change:
 
@@ -290,6 +293,64 @@ background request. The old main-actor catalog/fallback/graded implementation
 and its provider properties were removed rather than retained as a second
 refresh path.
 
+## 3.6 Slice 5 result — R3 field trimming
+
+The two refresh-sensitive invalidation fingerprints now retain only fields that
+can change the value or freshness answer they drive:
+
+- `PortfolioInputObserver.portfolioInputTaskID` still hashes the record key,
+  effective price, currency, source, provider `sourceUpdatedAt`, and
+  invalidation state, but not local `fetchedAt` or `lastSuccessfulCheckAt`.
+  The explicit refresh completion recompute remains the coverage trigger.
+- `CollectionProjectionToken.make` hashes the presence of `fetchedAt` and
+  `lastCheckedAt`, and includes exact `fetchedAt` only when the provider has no
+  `sourceUpdatedAt`. This preserves unknown/not-checked transitions and the
+  unstamped-provider fallback without replaying a stamped tile for local clock
+  churn.
+
+Measured verification:
+
+| Check | Result |
+|---|---|
+| Focused `CollectionProjectionTokenTests` | 2 tests, 0 failures |
+| Full simulator `xcodebuild test` | 851 tests, 1 skipped, 0 failures |
+| `git diff --check` | clean |
+| Live-provider `makeCachedProjection` / `startRecompute` event count | not captured; no live refresh profile was available in this pass |
+
+The code and regression coverage are landed. The last row is deliberately not
+filled with a seeded-store number: the plan's question is refresh fan-out, and
+only a live-provider pass can measure that event count honestly.
+
+## 3.7 Slice 10 result — R5 deployment-target decision
+
+The app and test targets remain `IPHONEOS_DEPLOYMENT_TARGET = 17.0`.
+`#Index` is an iOS 18 API, so adding it would require a deliberate target
+raise plus a CloudKit schema migration review. The existing deployment guidance
+recommends keeping the lower target and branching newer APIs when practical.
+Following that decision, R5 is closed for this target with no speculative
+indexes or migration. If the product later raises the minimum to iOS 18, the
+seven keyed fields listed in R5 can be re-evaluated as a separate migration
+slice.
+
+## 3.8 Device-pass result
+
+The physical iPhone target is reachable and signs with the local development
+team:
+
+| Check | Result |
+|---|---|
+| App-only iPhone build | succeeded |
+| Signed physical `build-for-testing` | succeeded with the local development team override |
+| Full physical test run | 851 tests, 1 skipped, 1 failure |
+| Failing physical test | `BrowseFeatureTests.testBrowseSearchDebouncesBeforeStartingBothSearchLanes`; a focused retry reproduced the provider-start count mismatch (`0` vs `2`) |
+| P1/U2/U3 runtime validation | not performed; capture format, tab-bar behavior and camera restart code remain unchanged |
+
+The physical result is not used to claim a remediation regression: the
+simulator suite remains 851/1/0, and the failing test is a provider/timing
+fixture path rather than a slice-5/8 assertion. It is recorded as a device
+follow-up because it prevents calling the physical suite green. No OCR hit-rate,
+thermal, tab-bar interaction or camera restart measurement was taken.
+
 ---
 
 ## 4. Slices, in dependency order
@@ -298,15 +359,15 @@ refresh path.
 2. **R2 alone**, with the C2 convergence test. Not bundled with deletions.
 3. **R9 dead code**, tests and the two production call sites in the same diff.
 4. **R1 retention + bounded coverage window**, gated on slice 1 numbers and the `PortfolioHistoryRange.all` decision. Extend `PortfolioReplayEngineTests` with a pruned fixture that reproduces the same closes.
-5. **R3 field trimming**, with the `sourceUpdatedAt` conditional and the token unit test.
+5. **R3 field trimming**, with the `sourceUpdatedAt` conditional and the token unit test; implemented and simulator-verified in §3.6. A live event-count profile remains recommended evidence.
 6. **R6 + R7** (R7 as two child views; P4 folded in).
 7. **De-isolate the refresh write path** (from T1): make `ProductIdentityStore`, `ProductIdentityIndex`, `recordSealedArtwork*` and `applyVendorBatchHit` context-owned rather than `@MainActor`, following `PriceStore`'s existing pattern. No behaviour change; proved by compiling, with `CollectionItemKindTests` still green. Do this whether or not slice 8 proceeds — it is cheap, independently valuable, and it is what tells you what slice 8 actually costs.
 8. **R4 ModelActor**, after slice 7 and the ownership reconciliation in §3.2; implemented and simulator-verified in this working branch. Runtime Instruments confirmation remains recommended.
-9. **Device pass**: P1 explicit format, P3, U2, U3, U4.
-10. **R5 `#Index`**: separate decision tied to the deployment-target choice in `design_slices_plan.md`.
+9. **Device pass**: P3/U4 are landed; P1 explicit format, U2 tab bar and U3 camera restart remain hardware validation gates.
+10. **R5 `#Index`**: closed for the current iOS 17 target by the decision in §3.7; no index/migration code is added.
 11. **R10 release checklist** at any point before the bundle id changes.
 
-Dependencies (corrected by §3.2): slice 8 depends on slice 7 (done) and **not** on slice 4 — retention cannot shrink the index build. Slice 4 depends on the `.all` decision in §3.2, not on further measurement. Slice 5 is the only one still waiting on slice 1, and needs a profiled live refresh rather than a seeded store.
+Dependencies (corrected by §3.2): slice 8 depends on slice 7 (done) and **not** on slice 4 — retention cannot shrink the index build. Slice 4 depends on the `.all` decision in §3.2, not on further measurement. Slice 5's implementation is now landed; a profiled live refresh remains recommended if the magnitude of the fan-out reduction needs a runtime number.
 
 ---
 

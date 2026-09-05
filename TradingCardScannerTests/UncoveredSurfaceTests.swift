@@ -458,6 +458,65 @@ final class CollectionProjectionTokenTests: XCTestCase {
         )
         XCTAssertNotEqual(afterPriceWrite, baseline)
     }
+
+    func testFreshnessTokenIgnoresLocalFetchChurnForStampedPrices() throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: Schema([CollectedCard.self, PriceRecord.self, LocalArtworkOverride.self])
+        )
+        let context = container.mainContext
+        let card = UncoveredSurfaceFixtures.collectedCard(
+            collectionKey: "projection-freshness",
+            providerID: "test-set-001"
+        )
+        let record = PriceRecord(
+            key: card.priceKey,
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+        record.unitMarketPriceUSD = 12.34
+        record.sourceUpdatedAt = Date(timeIntervalSince1970: 100)
+        record.fetchedAt = Date(timeIntervalSince1970: 200)
+        record.lastCheckedAt = Date(timeIntervalSince1970: 200)
+        context.insert(card)
+        context.insert(record)
+        try context.save()
+
+        let baseline = CollectionProjectionToken.make(
+            cards: [card],
+            priceRecords: [record],
+            artworkOverrides: []
+        )
+
+        record.fetchedAt = Date(timeIntervalSince1970: 300)
+        record.lastCheckedAt = Date(timeIntervalSince1970: 300)
+        XCTAssertEqual(
+            CollectionProjectionToken.make(
+                cards: [card],
+                priceRecords: [record],
+                artworkOverrides: []
+            ),
+            baseline,
+            "a provider timestamp makes local fetch/check timestamps irrelevant to tile freshness"
+        )
+
+        record.sourceUpdatedAt = nil
+        let unstampedBaseline = CollectionProjectionToken.make(
+            cards: [card],
+            priceRecords: [record],
+            artworkOverrides: []
+        )
+        record.fetchedAt = Date(timeIntervalSince1970: 400)
+        XCTAssertNotEqual(
+            CollectionProjectionToken.make(
+                cards: [card],
+                priceRecords: [record],
+                artworkOverrides: []
+            ),
+            unstampedBaseline,
+            "an unstamped provider uses fetchedAt as its effective freshness"
+        )
+    }
 }
 
 @MainActor

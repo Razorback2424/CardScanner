@@ -56,8 +56,16 @@ enum CollectionProjectionToken {
             hasher.combine(record.sourceRaw)
             hasher.combine(record.sourceVariantID)
             hasher.combine(record.sourceUpdatedAt)
-            hasher.combine(record.fetchedAt)
-            hasher.combine(record.lastCheckedAt)
+            // A stamped provider's market timestamp is the freshness fact the
+            // tile renders. The local fetch time and exact check time only
+            // churn the token without changing that answer. Unstamped
+            // providers fall back to `fetchedAt`, so keep that exact value for
+            // them; the presence bits preserve unknown/not-checked changes.
+            hasher.combine(record.fetchedAt != nil)
+            hasher.combine(record.lastCheckedAt != nil)
+            if record.sourceUpdatedAt == nil {
+                hasher.combine(record.fetchedAt)
+            }
             hasher.combine(record.lastFailureAt)
             hasher.combine(record.lastFailureReasonRaw)
             hasher.combine(record.invalidatedAt)
