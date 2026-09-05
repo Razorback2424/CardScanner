@@ -117,6 +117,28 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Follow-up against updated review
+
+### Scanner foreground recovery
+
+- [x] After an active-scene transition starts the visible camera session,
+  immediately call `resumeRecognitionIfPossible()` so recognition does not
+  remain paused after `invalidatePendingScan()` paused it in the inactive
+  branch.
+- [x] Keep the existing eligibility, Price Check, pending-question, tab, and
+  presentation guards in the resume helper.
+
+Status: implemented in `38ca38a`. Generic iOS app and test-target builds passed;
+Control Center, app-switching, permission-prompt, interruption, and physical
+camera verification remain deferred because CoreSimulatorService has no
+discoverable runtime and no physical device is attached.
+
+The updated performance findings remain intentionally unstarted. They are
+measure-first work, not high-confidence correctness fixes: no changes were
+made to collection projection memoization, migration gates, fallback indexing,
+refresh progress cadence, image caching, activity-log bulk indexing, or refresh
+context ownership.
+
 ## Review remediation implementation — remaining planned slices
 
 The remaining roadmap slices are implemented in `29ca750`.
