@@ -738,7 +738,13 @@ final class PortfolioEngine: ObservableObject {
             // exactly one place in the app decides what "not in the total"
             // means.
             amount: row.effectiveUSDAmount,
-            receivedAt: row.receivedAt
+            receivedAt: row.receivedAt,
+            // An explicit invalidation withdraws the prior USD evidence even if
+            // its provenance currency is unusual. Other non-USD rows are kept
+            // for history but are ignored by the USD replay, matching the
+            // current-value fallback in InventoryLedger.
+            participatesInPortfolioValue: row.kind == .explicitInvalidation
+                || row.currencyCode == "USD"
         )
     }
 }

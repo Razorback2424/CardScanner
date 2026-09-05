@@ -367,7 +367,11 @@ private struct PortfolioInputObserver: View {
                 // settled session memo before resolving identities again so a
                 // cached negative lookup cannot split the next scan.
                 CollectionStore(context: modelContext).invalidateIdentityAliasCache()
-                portfolio.recompute(context: modelContext)
+                // Finish the baseline replay before the automatic refresh can
+                // write new price evidence. Otherwise the replay's `through`
+                // time can precede the current valuation's price rows and the
+                // first pass reports a false unexplained change.
+                await portfolio.recomputeAndWait(context: modelContext)
                 await refreshStalePricesIfNeeded()
             }
             .task(id: portfolioHistoryTaskID) {

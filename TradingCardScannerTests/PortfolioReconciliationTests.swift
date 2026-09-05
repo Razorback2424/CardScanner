@@ -2606,6 +2606,87 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(bulk.valuation(for: "instrument"), scalar)
     }
 
+    func testAsOfBulkValuationMatchesReplayWhenRefreshEvidenceArrivesAfterCutoff() throws {
+        let context = try makeContext()
+        let cutoff = Date(timeIntervalSince1970: 1_700_000_000)
+        let before = cutoff.addingTimeInterval(-60)
+        let after = cutoff.addingTimeInterval(60)
+
+        let record = PriceRecord(
+            key: "instrument",
+            game: .pokemon,
+            printingID: "p",
+            variantID: nil
+        )
+        _ = record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 1.21,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "new-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: after
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(0.99),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "old-listing",
+                marketVariantID: nil,
+                effectiveAt: before,
+                receivedAt: before,
+                isSourceStamped: false
+            )
+        )
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(1.21),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "new-listing",
+                marketVariantID: nil,
+                effectiveAt: after,
+                receivedAt: after,
+                isSourceStamped: false
+            )
+        )
+        try context.save()
+
+        let rows = try context.fetch(FetchDescriptor<PriceObservation>())
+        let records = try context.fetch(FetchDescriptor<PriceRecord>())
+        let asOf = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: rows,
+            records: records,
+            asOf: cutoff
+        )
+        XCTAssertEqual(asOf.valuation(for: "instrument").unitPrice, money(0.99))
+
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: [entry(
+                    kind: .initialBalance,
+                    delta: 1,
+                    at: before.addingTimeInterval(1),
+                    instrument: "instrument"
+                )],
+                observations: rows.map(PortfolioEngine.observationEntry(from:)),
+                epoch: before.addingTimeInterval(-1),
+                through: cutoff,
+                timeZoneIdentifier: "UTC"
+            )
+        )
+        var attribution = try XCTUnwrap(replay.live?.attribution)
+        attribution.currentValue = try XCTUnwrap(asOf.valuation(for: "instrument").unitPrice)
+        XCTAssertEqual(attribution.unexplained, .zero)
+    }
+
     // MARK: - Initial-sync deferral
 
     private func epochDefaults(_ name: String) -> UserDefaults {

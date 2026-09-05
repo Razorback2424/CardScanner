@@ -219,9 +219,17 @@ enum PortfolioReplaySnapshotBuilder {
             records = []
             defects.append(Self.unreadableDefect(for: "PriceRecord", error: error))
         }
-        let valuations = valuationIndex(observations: rows, records: records)
+        let valuations = valuationIndex(
+            observations: rows,
+            records: records,
+            asOf: through
+        )
         let otherCurrencyInstruments = Set(
-            records
+            recordsForValuation(
+                records: records,
+                observations: rows,
+                asOf: through
+            )
                 .filter { $0.effectiveUnitMarketPriceUSD != nil && $0.currencyCode != "USD" }
                 .map(\.key)
         )
@@ -298,17 +306,30 @@ enum PortfolioReplaySnapshotBuilder {
     /// in `InventoryLedger` and is shared with scalar reads.
     static func valuationIndex(
         observations: [PriceObservation],
-        records: [PriceRecord]
+        records: [PriceRecord],
+        asOf: Date? = nil
     ) -> InstrumentValuationIndex {
+        let observationsForValuation: [PriceObservation]
+        if let asOf {
+            observationsForValuation = observations.filter { $0.receivedAt <= asOf }
+        } else {
+            observationsForValuation = observations
+        }
+        let eligibleRecords = recordsForValuation(
+            records: records,
+            observations: observations,
+            asOf: asOf
+        )
+
         var newest: [String: PriceObservation] = [:]
-        for observation in observations {
+        for observation in observationsForValuation {
             if let existing = newest[observation.instrumentKey],
-               existing.receivedAt >= observation.receivedAt { continue }
+               !isNewer(observation, than: existing) { continue }
             newest[observation.instrumentKey] = observation
         }
 
         var recordsByKey: [String: PriceRecord] = [:]
-        for record in records {
+        for record in eligibleRecords {
             if let existing = recordsByKey[record.key],
                !PriceStore.isPreferred(record, over: existing) {
                 continue
@@ -329,12 +350,51 @@ enum PortfolioReplaySnapshotBuilder {
                 .filter { $0.value.kind == .explicitInvalidation }
                 .map(\.key)
         ).union(
-            records.filter(\.isInvalidated).map(\.key)
+            eligibleRecords.filter(\.isInvalidated).map(\.key)
         )
         return InstrumentValuationIndex(
             byInstrument: index,
             explicitlyAuthoritativeKeys: explicitlyAuthoritativeKeys
         )
+    }
+
+    private static func recordsForValuation(
+        records: [PriceRecord],
+        observations: [PriceObservation],
+        asOf: Date?
+    ) -> [PriceRecord] {
+        guard let asOf else { return records }
+        let futureObservationKeys = Set(
+            observations
+                .filter { $0.receivedAt > asOf }
+                .map(\.instrumentKey)
+        )
+        return records.filter { record in
+            // PriceRecord is mutable. Once a refresh writes a newer value in
+            // place, its old amount cannot be reconstructed from that row, so
+            // it is not evidence for an earlier replay cutoff.
+            guard record.fetchedAt.map({ $0 <= asOf }) ?? true else { return false }
+            // An invalidation also mutates the row in place. If it happened
+            // after the cutoff, let an older observation (if any) represent the
+            // earlier state instead of treating today's nil as already
+            // withdrawn.
+            guard record.invalidatedAt.map({ $0 <= asOf }) ?? true else { return false }
+            // A backfill or refresh can append an observation after the replay
+            // cutoff while the mutable record still carries an older watermark.
+            // Do not let that record reintroduce a value the replay is
+            // intentionally not allowed to see.
+            return !futureObservationKeys.contains(record.key)
+        }
+    }
+
+    private static func isNewer(
+        _ candidate: PriceObservation,
+        than incumbent: PriceObservation
+    ) -> Bool {
+        if candidate.receivedAt != incumbent.receivedAt {
+            return candidate.receivedAt > incumbent.receivedAt
+        }
+        return candidate.id.uuidString > incumbent.id.uuidString
     }
 
     /// One query for the whole range, reduced in memory.

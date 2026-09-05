@@ -195,7 +195,7 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.live?.attribution.unexplained, .zero)
     }
 
-    func testCurrencyFlipBecomesPricingAdjustmentAfterUSDEvidenceIsWithdrawn() {
+    func testCurrencyFlipKeepsUSDFallbackAsPortfolioEvidence() {
         let first = PriceObservation(
             instrumentKey: "instrument",
             kind: .marketUpdate,
@@ -222,6 +222,7 @@ final class PortfolioReplayEngineTests: XCTestCase {
         )
         let entries = [first, foreign].map(PortfolioEngine.observationEntry(from:))
         XCTAssertNil(entries.last?.amount)
+        XCTAssertFalse(entries.last?.participatesInPortfolioValue == true)
 
         let result = PortfolioReplayEngine.replay(
             input(
@@ -233,7 +234,12 @@ final class PortfolioReplayEngineTests: XCTestCase {
         )
 
         XCTAssertEqual(result.live?.attribution.market, .zero)
-        XCTAssertEqual(result.live?.attribution.pricingAdjustment, -usd(10))
+        XCTAssertEqual(
+            result.live?.attribution.pricingAdjustment,
+            .zero,
+            "a non-USD observation cannot withdraw the USD fallback value"
+        )
+        XCTAssertEqual(result.live?.attribution.currentValue, usd(10))
         XCTAssertEqual(result.live?.attribution.unexplained, .zero)
     }
 
