@@ -144,7 +144,7 @@ their corresponding environments.
   scene, without requiring `interruptionEndedNotification`.
 - [x] Add pure eligibility regression coverage.
 
-Status: implemented in `557e935`, awaiting simulator execution. Generic
+Status: implemented in `320050c`, awaiting simulator execution. Generic
 build-for-testing passes; source changes are limited to `ScannerViewModel`,
 `ScannerView`, and the existing `CardLatchTests` file. Rollback is the
 slice-local commit.
