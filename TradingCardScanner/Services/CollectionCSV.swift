@@ -100,6 +100,7 @@ enum CollectionCSVError: LocalizedError {
     case unreadableFile
     case missingColumns
     case noCards
+    case invalidTreatmentID(String)
 
     var errorDescription: String? {
         switch self {
@@ -109,6 +110,8 @@ enum CollectionCSVError: LocalizedError {
             return "The CSV does not include enough card information."
         case .noCards:
             return "No importable cards were found in this CSV."
+        case let .invalidTreatmentID(id):
+            return "The CSV contains an unsupported Magic treatment id: \(id)."
         }
     }
 }
@@ -615,9 +618,10 @@ enum CollectionCSV {
                     var rowImportedQuantity = 0
 
                     do {
-                            let entry = plan.entries[index]
-                            let storedCard: CollectedCard
-                            var deltaQuantity = 0
+                        let entry = plan.entries[index]
+                        try validateImportedTreatmentIDs(entry.magicTreatmentIDsRaw)
+                        let storedCard: CollectedCard
+                        var deltaQuantity = 0
                             // A newer CSV can carry a treatment-qualified key while
                             // the destination store still has its treatment-free
                             // row — and CloudKit can have delivered two physical
@@ -1421,6 +1425,40 @@ enum CollectionCSV {
             return []
         }
         return MagicTreatmentKeyCodec.storedIDs(from: ids)
+    }
+
+    /// Catalog artifacts are the only forward-compatible import authority. An
+    /// arbitrary spreadsheet string such as `surge foil` must not silently become
+    /// a new identity, while a future id already present in the bundled artifact
+    /// may pass through an older build as unclassified evidence.
+    private static func validateImportedTreatmentIDs(_ ids: [String]) throws {
+        guard !ids.isEmpty else { return }
+        let bundledArtifactIDs = Set(
+            MagicTreatmentCatalogStore.bundledDefault.artifact.entries
+                .flatMap { $0.treatments }
+                .map(normalizedTreatmentID)
+                .filter { !$0.isEmpty }
+        )
+        for rawID in ids {
+            let normalized = normalizedTreatmentID(rawID)
+            guard let treatment = MagicTreatment(id: rawID) else {
+                throw CollectionCSVError.invalidTreatmentID(rawID)
+            }
+            let isModeled: Bool
+            switch treatment {
+            case .surgeFoil, .neonInk:
+                isModeled = true
+            case .unclassified:
+                isModeled = false
+            }
+            guard isModeled || bundledArtifactIDs.contains(normalized) else {
+                throw CollectionCSVError.invalidTreatmentID(rawID)
+            }
+        }
+    }
+
+    private static func normalizedTreatmentID(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
     /// Magic collector numbers may carry a letter suffix (`523b`, `525a`).

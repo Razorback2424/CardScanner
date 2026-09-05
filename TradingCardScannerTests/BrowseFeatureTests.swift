@@ -542,9 +542,9 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
     }
 
-    func testCSVImportStoresUnknownTreatmentAndContentKindWithoutProjectingIt() throws {
+    func testCSVImportRejectsAnArbitraryTreatmentIDWithoutCreatingARow() throws {
         let context = try makeContext()
-        let unknown = try XCTUnwrap(MagicTreatment(id: "Future / Foil"))
+        let unknown = try XCTUnwrap(MagicTreatment(id: "surge foil"))
         let source = CollectedCard(
             collectionKey: MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
                 base: "magic:printing",
@@ -571,16 +571,11 @@ final class BrowseCollectionTests: XCTestCase {
         let plan = try CollectionCSV.parse(
             Data(CollectionCSV.export([source]).text.utf8)
         )
-        _ = try CollectionCSV.apply(plan, to: context)
-        let stored = try XCTUnwrap(
-            context.fetch(FetchDescriptor<CollectedCard>()).first
-        )
+        let result = try CollectionCSV.apply(plan, to: context)
 
-        XCTAssertEqual(stored.magicTreatmentIDsRaw, ["Future / Foil"])
-        XCTAssertEqual(stored.magicTreatmentQualifiers, ["future / foil": "publisher stamp"])
-        XCTAssertEqual(stored.magicContentKindRaw, "future-face")
-        XCTAssertEqual(stored.magicContentKind, .regular)
-        XCTAssertEqual(stored.variant, .foil)
+        XCTAssertEqual(result.failedRows.count, 1)
+        XCTAssertEqual(result.failedEntries.first?.magicTreatmentIDsRaw, ["surge foil"])
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
     func testNewCatalogSelectionStoresCatalogProvenanceAndUndoes() throws {
