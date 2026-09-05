@@ -14,7 +14,11 @@ struct ContentView: View {
 
     @State private var selectedTab: Tab
     @StateObject private var portfolio = PortfolioEngine()
-    @StateObject private var refresh: PriceRefreshController
+    /// The root passes this app-scoped service to the small views that observe
+    /// the fields they render. It must remain a plain reference here: refresh
+    /// progress publishes every 250 ms, and observing it at the root would
+    /// rebuild the whole tab tree and re-run CollectionView's projection token.
+    private let refresh = PriceRefreshController.shared
     @StateObject private var history = PortfolioHistoryStore()
     /// One catalog actor is shared by every Collection/Browse route in this
     /// app session. Its protected checklist and in-memory caches therefore do
@@ -32,7 +36,6 @@ struct ContentView: View {
 #endif
 
     init() {
-        _refresh = StateObject(wrappedValue: PriceRefreshController.shared)
         _browseCatalog = State(initialValue: BrowseCatalog())
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
