@@ -123,6 +123,15 @@ final class PortfolioTrustPassTests: XCTestCase {
         )
     }
 
+    func testAGradedLookupMissIsNotTransientFeedback() {
+        var result = summary(failed: 0, unreachable: false)
+        result.gradedLookupMisses = 1
+
+        XCTAssertFalse(
+            PriceRefreshController.isTransientSuccessStatus(.finished(result))
+        )
+    }
+
     func testASuccessfulRefreshIsTransientFeedbackAndResolvesTheFailure() {
         // A clean retry is both dismissable and the thing that clears the
         // attention state, because the status it replaces is the state.

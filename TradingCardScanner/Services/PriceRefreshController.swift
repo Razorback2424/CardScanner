@@ -116,6 +116,7 @@ actor PriceRefreshModelActor {
         var checkedUnstampedProvider = false
         var changedPrices = false
         var persistenceFailed = false
+        var gradedLookupMisses = 0
         var reconciledDuplicateRecords = 0
         var stagedPriced = 0
         var stagedChangedPrices = false
@@ -362,6 +363,7 @@ actor PriceRefreshModelActor {
             changedPrices = true
         }
         persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
+        gradedLookupMisses += gradedResult.lookupMisses
 
         if Task.isCancelled { return .cancelled }
         let latest = latestSourceUpdate ?? previousLatest
@@ -376,6 +378,7 @@ actor PriceRefreshModelActor {
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
                 providerUnreachable: providerUnreachable,
                 persistenceFailed: persistenceFailed,
+                gradedLookupMisses: gradedLookupMisses,
                 reconciledDuplicateRecords: reconciledDuplicateRecords
             )
         )
@@ -696,12 +699,12 @@ actor PriceRefreshModelActor {
         _ targets: [PriceTarget],
         usesPriceFallback: Bool,
         store: PriceStore
-    ) async -> (priced: Int, persistenceFailed: Bool) {
+    ) async -> (priced: Int, persistenceFailed: Bool, lookupMisses: Int) {
         let slabs = targets.filter {
             $0.itemKind == .gradedCard && $0.marketVariantID != nil
         }
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
-            return (0, false)
+            return (0, false, 0)
         }
 
         var byCard: [String: [PriceTarget]] = [:]
@@ -713,19 +716,27 @@ actor PriceRefreshModelActor {
         let client = JustTCGV2GradedClient(transport: sharedTransport)
         var priced = 0
         var persistenceFailed = false
+        var lookupMisses = 0
         for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
             if Task.isCancelled { break }
             guard let identity = group.first?.gradedIdentity,
                   let game = group.first?.game else { continue }
             let variants: [GradedVariant]
             do {
-                variants = try await client.gradedVariants(
+                let lookup = try await client.lookup(
                     identity: identity,
                     game: game,
                     companies: Set(group.compactMap(\.gradingCompany)),
                     grades: Set(group.compactMap(\.grade)),
                     lane: .background
                 )
+                switch lookup {
+                case let .matched(values):
+                    variants = values
+                case .cardFoundWithoutGradedVariants, .noProductMatch:
+                    lookupMisses += group.count
+                    continue
+                }
             } catch {
                 break
             }
@@ -736,9 +747,12 @@ actor PriceRefreshModelActor {
             )
             var stagedPriced = 0
             for target in group {
-                guard let handle = target.marketVariantID,
-                      let variant = byVariantID[handle],
-                      let amount = variant.marketPriceUSD else { continue }
+                guard let handle = target.marketVariantID else { continue }
+                guard let variant = byVariantID[handle] else {
+                    lookupMisses += 1
+                    continue
+                }
+                guard let amount = variant.marketPriceUSD else { continue }
                 let accepted = store.store(
                     .price(
                         NormalizedPrice(
@@ -766,7 +780,7 @@ actor PriceRefreshModelActor {
             if store.save() { priced += stagedPriced }
             else { persistenceFailed = true }
         }
-        return (priced, persistenceFailed)
+        return (priced, persistenceFailed, lookupMisses)
     }
 }
 
@@ -914,6 +928,10 @@ fileprivate struct PriceRefreshWorkResult: Sendable {
     let foundNothingNewer: Bool
     let providerUnreachable: Bool
     let persistenceFailed: Bool
+    /// Owned graded targets for which the vendor returned no matching graded
+    /// product or variant. This is distinct from a priced target and remains
+    /// visible instead of being reported as though no slab needed attention.
+    let gradedLookupMisses: Int
     let reconciledDuplicateRecords: Int
 }
 
@@ -973,6 +991,8 @@ final class PriceRefreshController: ObservableObject {
         var persistenceFailed = false
         /// Number of redundant synced rows repaired and durably removed.
         var reconciledDuplicateRecords = 0
+        /// Owned graded targets with no matching vendor graded result.
+        var gradedLookupMisses = 0
     }
 
     enum Status: Equatable {
@@ -1112,7 +1132,8 @@ final class PriceRefreshController: ObservableObject {
                 foundNothingNewer: result.foundNothingNewer,
                 providerUnreachable: result.providerUnreachable,
                 persistenceFailed: result.persistenceFailed,
-                reconciledDuplicateRecords: result.reconciledDuplicateRecords
+                reconciledDuplicateRecords: result.reconciledDuplicateRecords,
+                gradedLookupMisses: result.gradedLookupMisses
             )
         )
     }
@@ -1715,6 +1736,7 @@ final class PriceRefreshController: ObservableObject {
             return !summary.providerUnreachable
                 && summary.failed == 0
                 && !summary.persistenceFailed
+                && summary.gradedLookupMisses == 0
                 && summary.reconciledDuplicateRecords == 0
         case .recentlyChecked:
             return true

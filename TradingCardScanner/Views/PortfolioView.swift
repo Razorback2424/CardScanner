@@ -1174,6 +1174,8 @@ private struct PortfolioDetailsView: View {
                         ? "The card catalog is unreachable. Check your connection and try again."
                         : result.persistenceFailed
                             ? "Some price updates could not be saved. Try again."
+                            : result.gradedLookupMisses > 0
+                                ? "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
                             : result.reconciledDuplicateRecords > 0
                                 ? "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
                             : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
@@ -1183,6 +1185,7 @@ private struct PortfolioDetailsView: View {
                         result.providerUnreachable
                             || result.failed > 0
                             || result.persistenceFailed
+                            || result.gradedLookupMisses > 0
                             || result.reconciledDuplicateRecords > 0
                             ? PortfolioPalette.attention
                             : .secondary
@@ -1248,6 +1251,7 @@ private struct PortfolioAttentionBadge: ViewModifier {
             return result.providerUnreachable
                 || result.failed > 0
                 || result.persistenceFailed
+                || result.gradedLookupMisses > 0
                 || result.reconciledDuplicateRecords > 0
         }
         return false
