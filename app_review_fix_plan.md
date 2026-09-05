@@ -183,6 +183,20 @@ was introduced.
 
 Status: implemented in `10de4f4`, generic build-for-testing passes.
 
+### Slice 6 — persistence outcomes
+
+- [x] Make `PriceStore` write, failure-stamp, and unsupported-provider paths
+  return whether their mutation was accepted; keep save rollback outcomes
+  observable.
+- [x] Count catalog, fallback, and graded prices only after a successful save;
+  surface partial persistence failure in the refresh summary and Portfolio UI.
+- [x] Make JustTCG batch application/checkpoint callbacks return persistence
+  outcomes and prevent a failed batch from advancing the delta checkpoint.
+- [x] Add regression coverage for a failed JustTCG checkpoint.
+
+Status: implemented in `0548cf1`. Generic device build completed after
+the simulator service recovered; simulator XCTest execution remains unverified.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on
