@@ -250,3 +250,55 @@ struct ProductSetDirectory: Sendable {
         return slugs.contains(derived) ? derived : nil
     }
 }
+
+/// Shared by the raw and graded clients because the vendor's set directory is
+/// the identity boundary for both. A refresh can ask both paths for the same
+/// game; fetching the directory twice adds a request without adding evidence.
+/// The vendor's set list changes rarely, so a bounded cache is enough and keeps
+/// a newly launched app from retaining stale mappings indefinitely.
+actor ProductSetDirectoryProvider {
+    static let shared = ProductSetDirectoryProvider()
+
+    private struct Entry: Sendable {
+        let directory: ProductSetDirectory
+        let fetchedAt: Date
+    }
+
+    private let ttl: TimeInterval
+    private var entries: [ProductCatalogIdentity.Game: Entry] = [:]
+    private var inFlight: [ProductCatalogIdentity.Game: Task<ProductSetDirectory, Error>] = [:]
+
+    init(ttl: TimeInterval = 6 * 60 * 60) {
+        self.ttl = ttl
+    }
+
+    func directory(
+        for game: ProductCatalogIdentity.Game,
+        now: Date = .now,
+        load: @escaping @Sendable () async throws -> ProductSetDirectory
+    ) async throws -> ProductSetDirectory {
+        if let entry = entries[game],
+           now >= entry.fetchedAt,
+           now.timeIntervalSince(entry.fetchedAt) < ttl {
+            return entry.directory
+        }
+
+        if let task = inFlight[game] {
+            return try await task.value
+        }
+
+        let task = Task<ProductSetDirectory, Error> {
+            try await load()
+        }
+        inFlight[game] = task
+        do {
+            let directory = try await task.value
+            inFlight[game] = nil
+            entries[game] = Entry(directory: directory, fetchedAt: now)
+            return directory
+        } catch {
+            inFlight[game] = nil
+            throw error
+        }
+    }
+}

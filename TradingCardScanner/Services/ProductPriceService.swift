@@ -120,20 +120,20 @@ actor ProductPriceService {
     private let session: URLSession
     private let pacer: JustTCGPacer
     private let budget: ProductFallbackBudget
-    /// The vendor's set directory, per game. Fetched once per refresh and used
-    /// to find the vendor's set for a catalog set name.
-    private var knownSets: [ProductCatalogIdentity.Game: ProductSetDirectory] = [:]
+    private let setDirectoryProvider: ProductSetDirectoryProvider
 
     init(
         configuration: Configuration = Configuration(),
         session: URLSession = .shared,
         pacer: JustTCGPacer = .shared,
-        budget: ProductFallbackBudget = .shared
+        budget: ProductFallbackBudget = .shared,
+        setDirectoryProvider: ProductSetDirectoryProvider = .shared
     ) {
         self.configuration = configuration
         self.session = session
         self.pacer = pacer
         self.budget = budget
+        self.setDirectoryProvider = setDirectoryProvider
     }
 
     func budgetSnapshot() async -> ProductFallbackBudget.Snapshot {
@@ -311,7 +311,15 @@ actor ProductPriceService {
         for game: ProductCatalogIdentity.Game,
         lane: JustTCGRequestLane
     ) async throws -> ProductSetDirectory {
-        if let cached = knownSets[game] { return cached }
+        try await setDirectoryProvider.directory(for: game) { [self] in
+            try await fetchSetDirectory(for: game, lane: lane)
+        }
+    }
+
+    private func fetchSetDirectory(
+        for game: ProductCatalogIdentity.Game,
+        lane: JustTCGRequestLane
+    ) async throws -> ProductSetDirectory {
         let response: ProductSetsResponse = try await get(
             path: "sets",
             query: [("game", game.rawValue)],
@@ -320,13 +328,11 @@ actor ProductPriceService {
         if let metadata = response.metadata {
             await budget.syncFromServer(metadata)
         }
-        let directory = ProductSetDirectory(
+        return ProductSetDirectory(
             sets: response.data.compactMap { set in
                 set.id.map { (id: $0, name: set.name) }
             }
         )
-        knownSets[game] = directory
-        return directory
     }
 
     private func fetchCards(

@@ -41,10 +41,17 @@ final class GradedVariantModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            variants = try await client.gradedVariants(identity: identity, game: game)
-            errorMessage = variants.isEmpty
-                ? "No graded prices are published for this card yet."
-                : nil
+            switch try await client.lookup(identity: identity, game: game) {
+            case let .matched(values):
+                variants = values
+                errorMessage = nil
+            case .cardFoundWithoutGradedVariants:
+                variants = []
+                errorMessage = "No graded prices are published for this card yet."
+            case .noProductMatch:
+                variants = []
+                errorMessage = "Couldn't find this card at the pricing vendor."
+            }
         } catch {
             errorMessage = SealedBrowseModel.message(for: error)
         }

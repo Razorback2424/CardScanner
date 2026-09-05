@@ -65,13 +65,72 @@ struct GradedCardIdentity: Hashable, Sendable {
     }
 }
 
+enum GradedVariantLookupResult: Equatable, Sendable {
+    case matched([GradedVariant])
+    case cardFoundWithoutGradedVariants
+    case noProductMatch
+}
+
 struct JustTCGV2GradedClient: Sendable {
     static let apiVersion = "v2"
 
     private let transport: JustTCGTransport
+    private let setDirectoryProvider: ProductSetDirectoryProvider
 
-    init(transport: JustTCGTransport) {
+    init(
+        transport: JustTCGTransport,
+        setDirectoryProvider: ProductSetDirectoryProvider = .shared
+    ) {
         self.transport = transport
+        self.setDirectoryProvider = setDirectoryProvider
+    }
+
+    /// Keep the outgoing query testable as a value. A missing set is a
+    /// deliberate fallback, not a fabricated slug derived from catalog text.
+    static func requestQuery(
+        identity: GradedCardIdentity,
+        game: CardGame,
+        setSlug: String?,
+        companies: Set<GradingCompany> = [],
+        grades: Set<String> = []
+    ) -> [(String, String)] {
+        var query: [(String, String)] = [
+            ("game", JustTCGV1Client.gameSlug(for: game)),
+            ("q", identity.name),
+            ("graded", "only"),
+            ("include_price_history", "false")
+        ]
+        if let setSlug {
+            query.insert(("set", setSlug), at: 1)
+        }
+        if companies.count == 1, let company = companies.first {
+            query.append(("grading_company", company.rawValue))
+            if grades.count == 1, let grade = grades.first {
+                query.append(("grade", grade))
+            }
+        }
+        return query
+    }
+
+    /// Resolve the vendor set before constructing the graded request. An empty
+    /// directory is not evidence for a derived slug, so it uses the safe
+    /// unfiltered fallback and lets identity matching decide what returned.
+    static func resolvedSetSlug(
+        identity: GradedCardIdentity,
+        game: CardGame,
+        directory: ProductSetDirectory
+    ) -> String? {
+        guard !directory.slugs.isEmpty else { return nil }
+        let vendorGame = ProductCatalogIdentity.game(for: game, catalogID: nil)
+        guard let plain = ProductCatalogIdentity.setSlug(
+            setName: identity.setName,
+            japaneseSetID: nil,
+            game: vendorGame,
+            directory: directory
+        ) else {
+            return nil
+        }
+        return ProductEdition.unspecified.setSlug(plain: plain, knownSlugs: directory.slugs)
     }
 
     /// Every graded variant of one card, narrowed to what the user actually owns.
@@ -92,22 +151,36 @@ struct JustTCGV2GradedClient: Sendable {
     ///
     /// Set plus name narrows it to one card, verified against `identity` before
     /// anything is returned, so a browse can never be mistaken for a match.
-    func gradedVariants(
+    func lookup(
         identity: GradedCardIdentity,
         game: CardGame,
         companies: Set<GradingCompany> = [],
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
-    ) async throws -> [GradedVariant] {
-        let gameSlug = JustTCGV1Client.gameSlug(for: game)
-        var query: [(String, String)] = [
-            ("game", gameSlug),
-            ("set", "\(ProductCatalogIdentity.slugify(identity.setName))-\(gameSlug)"),
-            ("q", identity.name),
-            ("graded", "only"),
-            // Routine pricing never asks for history.
-            ("include_price_history", "false")
-        ]
+    ) async throws -> GradedVariantLookupResult {
+        let vendorGame = ProductCatalogIdentity.game(for: game, catalogID: nil)
+        let directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
+            let response: GradedSetsResponse = try await transport.get(
+                "v1/sets",
+                query: [("game", vendorGame.rawValue)],
+                lane: lane
+            )
+            return ProductSetDirectory(
+                sets: response.data.compactMap { set in
+                    set.id.map { (id: $0, name: set.name) }
+                }
+            )
+        }
+        let setSlug = Self.resolvedSetSlug(
+            identity: identity,
+            game: game,
+            directory: directory
+        )
+        var query = Self.requestQuery(
+            identity: identity,
+            game: game,
+            setSlug: setSlug
+        )
         // The parameter is `grading_company`, not `company`: sending the latter
         // is accepted right up until a `grade` accompanies it, at which point v2
         // answers 400 — "grade requires grading_company". And only a single
@@ -130,7 +203,8 @@ struct JustTCGV2GradedClient: Sendable {
         )
 
         // Only cards that are demonstrably the one asked for.
-        return response.data.filter { identity.matches($0, game: game) }.flatMap { card in
+        let matchingCards = response.data.filter { identity.matches($0, game: game) }
+        let variants = matchingCards.flatMap { card in
             (card.variants ?? []).compactMap { variant -> GradedVariant? in
                 guard let id = variant.variantId,
                       let grading = variant.grading,
@@ -152,6 +226,29 @@ struct JustTCGV2GradedClient: Sendable {
                     updatedAt: variant.updatedAt
                 )
             }
+        }
+        if !variants.isEmpty { return .matched(variants) }
+        return matchingCards.isEmpty
+            ? .noProductMatch
+            : .cardFoundWithoutGradedVariants
+    }
+
+    func gradedVariants(
+        identity: GradedCardIdentity,
+        game: CardGame,
+        companies: Set<GradingCompany> = [],
+        grades: Set<String> = [],
+        lane: JustTCGRequestLane = .interactive
+    ) async throws -> [GradedVariant] {
+        switch try await lookup(
+            identity: identity,
+            game: game,
+            companies: companies,
+            grades: grades,
+            lane: lane
+        ) {
+        case let .matched(variants): return variants
+        case .cardFoundWithoutGradedVariants, .noProductMatch: return []
         }
     }
 
@@ -177,5 +274,14 @@ struct JustTCGV2GradedClient: Sendable {
             case data
             case metadata = "_metadata"
         }
+    }
+
+    private struct GradedSetsResponse: Decodable {
+        let data: [GradedSet]
+    }
+
+    private struct GradedSet: Decodable {
+        let id: String?
+        let name: String?
     }
 }

@@ -901,6 +901,72 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertFalse(asked.matches(returned, game: .pokemon))
     }
 
+    func testGradedRequestUsesTheResolvedVendorSetName() throws {
+        let identity = GradedCardIdentity(
+            name: "The One Ring",
+            setName: "Commander: The Lord of the Rings",
+            collectorNumber: ""
+        )
+        let directory = ProductSetDirectory(sets: [
+            (
+                id: "the-lord-of-the-rings-commander-magic-the-gathering",
+                name: "The Lord of the Rings Commander"
+            )
+        ])
+
+        let setSlug = try XCTUnwrap(
+            JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity,
+                game: .magic,
+                directory: directory
+            )
+        )
+        XCTAssertEqual(
+            setSlug,
+            "the-lord-of-the-rings-commander-magic-the-gathering"
+        )
+
+        let query = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .magic,
+            setSlug: setSlug
+        )
+        XCTAssertEqual(
+            query.first { $0.0 == "set" }?.1,
+            "the-lord-of-the-rings-commander-magic-the-gathering"
+        )
+        XCTAssertNotEqual(
+            query.first { $0.0 == "set" }?.1,
+            "commander-the-lord-of-the-rings-magic-the-gathering"
+        )
+    }
+
+    func testGradedRequestOmitsSetWhenTheDirectoryCannotResolveIt() {
+        let identity = GradedCardIdentity(
+            name: "The One Ring",
+            setName: "Commander: The Lord of the Rings",
+            collectorNumber: ""
+        )
+        let directory = ProductSetDirectory(sets: [
+            (id: "unrelated-set-magic-the-gathering", name: "Unrelated Set")
+        ])
+
+        XCTAssertNil(
+            JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity,
+                game: .magic,
+                directory: directory
+            )
+        )
+        let query = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .magic,
+            setSlug: nil
+        )
+        XCTAssertNil(query.first { $0.0 == "set" })
+        XCTAssertEqual(query.first { $0.0 == "game" }?.1, "magic-the-gathering")
+    }
+
     /// One request must serve every owned grade of one card, or a shelf of PSA
     /// 8/9/10 copies costs three requests where it should cost one.
     func testEveryGradeOfOneCardSharesARequest() {

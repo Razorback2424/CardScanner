@@ -1,9 +1,48 @@
 import XCTest
 @testable import TradingCardScanner
 
+private actor DirectoryLoadCounter {
+    private(set) var count = 0
+
+    func increment() {
+        count += 1
+    }
+}
+
 /// Every case here is taken from the live coverage spike. The rejections are
 /// real wrong answers the vendor returned, not invented ones.
 final class ProductCatalogIdentityTests: XCTestCase {
+
+    func testSetDirectoryProviderCachesPerGameUntilTTL() async throws {
+        let provider = ProductSetDirectoryProvider(ttl: 60)
+        let counter = DirectoryLoadCounter()
+        let directory = ProductSetDirectory(sets: [
+            (id: "base-set-pokemon", name: "Base Set")
+        ])
+        let first = Date(timeIntervalSince1970: 1_000)
+
+        _ = try await provider.directory(for: .pokemon, now: first) {
+            await counter.increment()
+            return directory
+        }
+        _ = try await provider.directory(
+            for: .pokemon,
+            now: first.addingTimeInterval(59)
+        ) {
+            await counter.increment()
+            return directory
+        }
+        _ = try await provider.directory(
+            for: .pokemon,
+            now: first.addingTimeInterval(60)
+        ) {
+            await counter.increment()
+            return directory
+        }
+
+        let loads = await counter.count
+        XCTAssertEqual(loads, 2)
+    }
 
     // MARK: - Set slugs
 
