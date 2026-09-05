@@ -27,7 +27,15 @@ enum TCGdexLocale: String, Sendable {
     case ja
 }
 
-struct TCGdexService: Sendable {
+/// The TCGdex catalog reads used by import normalization and price checks.
+/// Keeping the provider boundary injectable lets tests use recorded catalog
+/// responses without depending on URL loading or the provider's availability.
+protocol TCGdexCatalogSource: Sendable {
+    func fetchSetDirectory(locale: TCGdexLocale) async throws -> [CatalogSetReference]
+    func fetchSet(id: String, locale: TCGdexLocale) async throws -> TCGdexSetCatalog
+}
+
+struct TCGdexService: TCGdexCatalogSource, Sendable {
     func fetchSetDirectory(locale: TCGdexLocale = .en) async throws -> [CatalogSetReference] {
         guard let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/sets") else {
             throw TCGdexError.invalidURL

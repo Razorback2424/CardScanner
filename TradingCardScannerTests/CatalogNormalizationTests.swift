@@ -2,6 +2,96 @@ import XCTest
 import SwiftData
 @testable import TradingCardScanner
 
+private struct RecordedTCGdexSource: TCGdexCatalogSource {
+    func fetchSetDirectory(locale: TCGdexLocale) async throws -> [CatalogSetReference] {
+        []
+    }
+
+    func fetchSet(id: String, locale: TCGdexLocale) async throws -> TCGdexSetCatalog {
+        guard id == "M2", locale == .ja else {
+            throw TCGdexError.cardNotFound
+        }
+        return try JSONDecoder().decode(TCGdexSetCatalog.self, from: Self.setResponse)
+    }
+
+    func fetchCard(id: String, locale: TCGdexLocale) async throws -> TCGdexCard {
+        guard id == "M2-001", locale == .ja else {
+            throw TCGdexError.cardNotFound
+        }
+        return try JSONDecoder().decode(TCGdexCard.self, from: Self.cardResponse)
+    }
+
+    private static let setResponse = Data(
+        """
+        {
+          "id": "M2",
+          "name": "Inferno X",
+          "cards": [
+            {
+              "id": "M2-001",
+              "localId": "001",
+              "name": "Oddish",
+              "image": "https://assets.example.test/m2-001"
+            },
+            {
+              "id": "M2-002",
+              "localId": "002",
+              "name": "Gloom",
+              "image": "https://assets.example.test/m2-002"
+            }
+          ],
+          "logo": null,
+          "symbol": null,
+          "releaseDate": null,
+          "tcgOnline": null,
+          "cardCount": {
+            "total": 80,
+            "official": 80
+          }
+        }
+        """.utf8
+    )
+
+    private static let cardResponse = Data(
+        """
+        {
+          "id": "M2-001",
+          "localId": "001",
+          "name": "Oddish",
+          "image": "https://assets.example.test/m2-001",
+          "rarity": "Common",
+          "set": {
+            "id": "M2",
+            "name": "Inferno X",
+            "cardCount": {
+              "total": 80,
+              "official": 80
+            }
+          },
+          "variants": {
+            "firstEdition": false,
+            "holo": false,
+            "normal": true,
+            "reverse": false,
+            "wPromo": false
+          },
+          "pricing": {
+            "tcgplayer": null,
+            "cardmarket": {
+              "updated": "2026-01-01T00:00:00Z",
+              "unit": "EUR",
+              "avg30": 1.20,
+              "avg7": 1.15,
+              "trend": 1.25,
+              "avg": 1.10
+            }
+          },
+          "variants_detailed": null
+        }
+        """.utf8
+    )
+}
+
 /// Identity resolution has to keep being attempted for exactly the cards that
 /// have not got any, which is the case these tests protect.
 @MainActor
@@ -49,15 +139,16 @@ final class CatalogNormalizationTests: XCTestCase {
     // MARK: - Japanese-exclusive sets
 
     /// The English edition does not carry these sets under any name, so they are
-    /// routed to `ja` by an explicit map. Live call: it is the mapping against
-    /// the real catalogue that is worth protecting, not a stubbed copy of it.
+    /// routed to the Japanese edition by an explicit map. The recorded source
+    /// proves the normalizer asks that edition without relying on the live catalog.
     func testJapaneseExclusiveSetResolvesAgainstTheJapaneseEdition() async throws {
         let context = try makeContext()
         let card = importedCard(setName: "Inferno X", cardNumber: "001/080", name: "Oddish")
         context.insert(card)
         try context.save()
 
-        await CollectionCatalogNormalizer().normalizeImportedCards(in: context)
+        await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
+            .normalizeImportedCards(in: context)
 
         XCTAssertEqual(card.catalogProviderID, "M2-001")
         XCTAssertEqual(card.setCode, "M2")
@@ -101,11 +192,13 @@ final class CatalogNormalizationTests: XCTestCase {
     /// card with a real Cardmarket price. Fetched from the English one it is a
     /// 404, which is how these cards spent their whole life reported as
     /// unreachable.
+    /// The response is recorded so this remains a deterministic provider-shape
+    /// test.
     ///
     /// The price arrives in euros: these are not TCGplayer products, so there is
     /// no dollar figure to be had, and the currency travels with the number.
     func testJapaneseCardIsPriceableFromTheJapaneseEdition() async throws {
-        let card = try await TCGdexService().fetchCard(id: "M2-001", locale: .ja)
+        let card = try await RecordedTCGdexSource().fetchCard(id: "M2-001", locale: .ja)
         XCTAssertEqual(card.id, "M2-001")
 
         guard case let .price(price) = CardPricing.price(
@@ -162,7 +255,8 @@ final class CatalogNormalizationTests: XCTestCase {
         context.insert(card)
         try context.save()
 
-        await CollectionCatalogNormalizer().normalizeImportedCards(in: context)
+        await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
+            .normalizeImportedCards(in: context)
 
         XCTAssertEqual(card.catalogProviderID, "M2-002")
         XCTAssertGreaterThan(card.catalogMetadataVersion, 3)

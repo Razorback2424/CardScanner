@@ -68,7 +68,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
     @Published private(set) var status: Status = .idle
 
-    private let resolver = ImportedCatalogBatchResolver()
+    private let resolver: ImportedCatalogBatchResolver
     private static let retryInterval: TimeInterval = 8 * 60 * 60
     /// Bumped whenever the resolver learns to match something it previously
     /// could not, so existing collections re-run against the new rules instead
@@ -80,6 +80,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// and locally rewrite legacy gateway URLs without spending a request.
     nonisolated static let metadataVersion = 8
     private var requestsAnotherPass = false
+
+    init(tcgdex: any TCGdexCatalogSource = TCGdexService()) {
+        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex)
+    }
 
     /// Production callers use a context dedicated to catalog normalization.
     /// A network-paced task must not hold the UI context's pending mutations or
@@ -321,11 +325,15 @@ final class CollectionCatalogNormalizer: ObservableObject {
 /// Stateless and Sendable so the two provider-specific strategies can run in
 /// parallel without sharing mutable lookup state.
 private struct ImportedCatalogBatchResolver: Sendable {
-    private let tcgdex = TCGdexService()
+    private let tcgdex: any TCGdexCatalogSource
     private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
     private let justTCG = JustTCGV1Client(transport: JustTCGTransport.shared)
     private static let pokemonConcurrency = 4
+
+    init(tcgdex: any TCGdexCatalogSource = TCGdexService()) {
+        self.tcgdex = tcgdex
+    }
 
     func resolve(_ requests: [ImportedCatalogRequest]) async -> ImportedCatalogResolution {
         // Sealed identity is the only artwork pass here that consumes the
@@ -519,7 +527,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         _ requests: [ImportedCatalogRequest]
     ) async -> [String: ImportedCatalogMetadata] {
         guard !requests.isEmpty,
-              let directory = try? await tcgdex.fetchSetDirectory() else {
+              let directory = try? await tcgdex.fetchSetDirectory(locale: .en) else {
             return [:]
         }
 
@@ -588,7 +596,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         id: String,
         requests: [ImportedCatalogRequest],
         locale: TCGdexLocale = .en,
-        service: TCGdexService
+        service: any TCGdexCatalogSource
     ) async -> [String: ImportedCatalogMetadata] {
         guard let set = try? await service.fetchSet(id: id, locale: locale) else { return [:] }
         let cardsByNumber = Dictionary(grouping: set.cards) {
