@@ -9,8 +9,8 @@ remediation plan and the shared pricing-cache plan.
 | --- | --- | --- |
 | G1 — resolve the vendor set directory | Done | Raw and graded clients share a per-game TTL cache; the Magic divergence test uses the vendor directory slug. |
 | G2 — never send a guessed set | Done | An unresolved set omits set and falls back to strict identity matching. |
-| G3 — Japanese and edition identity | Open | Pending after G1/G2/G4. |
-| G4 — pin outgoing requests | Done | Tests cover divergent Magic naming and the no-guess fallback query. |
+| G3 — Japanese and edition identity | Done | The request uses pokemon-japan plus the Japanese set ID, and Base Set 1st Edition resolves to the shadowless vendor set. |
+| G4 — pin outgoing requests | Done | Tests cover divergent Magic naming, no-guess fallback, Japanese Pokémon, and Base Set 1st Edition. |
 | G5 — surface refresh misses | Done | Refresh counts owned graded targets without a matching vendor result and keeps the condition in the summary and attention state. |
 
 ## Boundary

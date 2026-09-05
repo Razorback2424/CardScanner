@@ -51,7 +51,14 @@ enum PriceRefreshTargets {
                 marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
                 needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
                 gradedIdentity: card.itemKind == .gradedCard
-                    ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
+                    ? GradedCardIdentity(
+                        name: card.name,
+                        setName: card.setName,
+                        collectorNumber: card.cardNumber,
+                        catalogID: card.catalogProviderID
+                            ?? (card.providerID.hasPrefix("csv:") ? nil : card.providerID),
+                        pokemonPrintRun: card.pokemonPrintRun
+                    )
                     : nil,
                 gradingCompany: card.gradingCompany,
                 grade: card.gradeRaw,

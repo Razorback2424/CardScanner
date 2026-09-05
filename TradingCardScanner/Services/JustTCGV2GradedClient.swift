@@ -25,25 +25,45 @@ struct GradedCardIdentity: Hashable, Sendable {
     let name: String
     let setName: String
     let collectorNumber: String
+    let catalogID: String?
+    let pokemonPrintRun: PokemonPrintRun?
 
-    init(name: String, setName: String, collectorNumber: String) {
+    init(
+        name: String,
+        setName: String,
+        collectorNumber: String,
+        catalogID: String? = nil,
+        pokemonPrintRun: PokemonPrintRun? = nil
+    ) {
         self.name = name
         self.setName = setName
         self.collectorNumber = collectorNumber
+        self.catalogID = catalogID
+        self.pokemonPrintRun = pokemonPrintRun
     }
 
-    init(_ card: IdentifiedCard) {
+    init(_ card: IdentifiedCard, pokemonPrintRun: PokemonPrintRun? = nil) {
         self.init(
             name: card.name,
             setName: card.setName,
-            collectorNumber: card.cardNumber
+            collectorNumber: card.cardNumber,
+            catalogID: card.providerID,
+            pokemonPrintRun: pokemonPrintRun
         )
+    }
+
+    func vendorGame(for game: CardGame) -> ProductCatalogIdentity.Game {
+        ProductCatalogIdentity.game(for: game, catalogID: catalogID)
+    }
+
+    var japaneseSetID: String? {
+        catalogID.flatMap(PriceFallbackQuoteResolver.japaneseSetID(forCatalogCardID:))
     }
 
     /// Identifies the underlying card, so every owned grade of it shares one
     /// request.
     func groupingKey(game: CardGame) -> String {
-        [game.rawValue, setName, collectorNumber, name]
+        [vendorGame(for: game).rawValue, setName, collectorNumber, name]
             .map { $0.lowercased() }
             .joined(separator: "|")
     }
@@ -95,7 +115,7 @@ struct JustTCGV2GradedClient: Sendable {
         grades: Set<String> = []
     ) -> [(String, String)] {
         var query: [(String, String)] = [
-            ("game", JustTCGV1Client.gameSlug(for: game)),
+            ("game", identity.vendorGame(for: game).rawValue),
             ("q", identity.name),
             ("graded", "only"),
             ("include_price_history", "false")
@@ -121,16 +141,19 @@ struct JustTCGV2GradedClient: Sendable {
         directory: ProductSetDirectory
     ) -> String? {
         guard !directory.slugs.isEmpty else { return nil }
-        let vendorGame = ProductCatalogIdentity.game(for: game, catalogID: nil)
+        let vendorGame = identity.vendorGame(for: game)
         guard let plain = ProductCatalogIdentity.setSlug(
             setName: identity.setName,
-            japaneseSetID: nil,
+            japaneseSetID: identity.japaneseSetID,
             game: vendorGame,
             directory: directory
         ) else {
             return nil
         }
-        return ProductEdition.unspecified.setSlug(plain: plain, knownSlugs: directory.slugs)
+        return ProductEdition.from(identity.pokemonPrintRun).setSlug(
+            plain: plain,
+            knownSlugs: directory.slugs
+        )
     }
 
     /// Every graded variant of one card, narrowed to what the user actually owns.
@@ -158,7 +181,7 @@ struct JustTCGV2GradedClient: Sendable {
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
     ) async throws -> GradedVariantLookupResult {
-        let vendorGame = ProductCatalogIdentity.game(for: game, catalogID: nil)
+        let vendorGame = identity.vendorGame(for: game)
         let directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
             let response: GradedSetsResponse = try await transport.get(
                 "v1/sets",

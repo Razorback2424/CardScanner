@@ -62,15 +62,22 @@ final class GradedVariantModel: ObservableObject {
 struct GradedVariantPickerView: View {
     let card: IdentifiedCard
     let setReleaseOrder: Int?
+    let pokemonPrintRun: PokemonPrintRun?
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model: GradedVariantModel
     @State private var addedSummary: String?
 
-    init(card: IdentifiedCard, setReleaseOrder: Int?, transport: JustTCGTransport) {
+    init(
+        card: IdentifiedCard,
+        setReleaseOrder: Int?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        transport: JustTCGTransport
+    ) {
         self.card = card
         self.setReleaseOrder = setReleaseOrder
+        self.pokemonPrintRun = pokemonPrintRun
         _model = StateObject(wrappedValue: GradedVariantModel(transport: transport))
     }
 
@@ -123,7 +130,10 @@ struct GradedVariantPickerView: View {
                 }
             }
             .task {
-                await model.load(identity: GradedCardIdentity(card), game: card.game)
+                await model.load(
+                    identity: GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun),
+                    game: card.game
+                )
             }
         }
     }

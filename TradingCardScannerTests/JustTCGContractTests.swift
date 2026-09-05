@@ -967,6 +967,69 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(query.first { $0.0 == "game" }?.1, "magic-the-gathering")
     }
 
+    func testGradedRequestRoutesJapanesePokemonThroughItsOwnGameAndSet() throws {
+        let identity = GradedCardIdentity(
+            name: "Inferno X Card",
+            setName: "Inferno X",
+            collectorNumber: "001",
+            catalogID: "M2-001"
+        )
+        let directory = ProductSetDirectory(sets: [
+            (id: "m2-inferno-x-pokemon-japan", name: nil)
+        ])
+
+        let setSlug = try XCTUnwrap(
+            JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity,
+                game: .pokemon,
+                directory: directory
+            )
+        )
+        let query = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: setSlug
+        )
+
+        XCTAssertEqual(query.first { $0.0 == "game" }?.1, "pokemon-japan")
+        XCTAssertEqual(
+            query.first { $0.0 == "set" }?.1,
+            "m2-inferno-x-pokemon-japan"
+        )
+    }
+
+    func testGradedRequestUsesTheShadowlessSetForBaseSetFirstEdition() throws {
+        let identity = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004",
+            catalogID: "base1-004",
+            pokemonPrintRun: .firstEdition
+        )
+        let directory = ProductSetDirectory(sets: [
+            (id: "base-set-pokemon", name: "Base Set"),
+            (id: "base-set-shadowless-pokemon", name: "Base Set Shadowless")
+        ])
+
+        let setSlug = try XCTUnwrap(
+            JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity,
+                game: .pokemon,
+                directory: directory
+            )
+        )
+        let query = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: setSlug
+        )
+
+        XCTAssertEqual(
+            query.first { $0.0 == "set" }?.1,
+            "base-set-shadowless-pokemon"
+        )
+    }
+
     /// One request must serve every owned grade of one card, or a shelf of PSA
     /// 8/9/10 copies costs three requests where it should cost one.
     func testEveryGradeOfOneCardSharesARequest() {

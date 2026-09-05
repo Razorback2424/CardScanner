@@ -56,6 +56,7 @@ struct CatalogCardDetailView: View {
                 GradedVariantPickerView(
                     card: details.card,
                     setReleaseOrder: details.set.releaseOrder,
+                    pokemonPrintRun: details.set.pokemonPrintRun,
                     transport: marketTransport
                 )
             }
