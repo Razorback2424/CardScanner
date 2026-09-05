@@ -701,6 +701,9 @@ final class ScannerViewModel: ObservableObject {
     private var prices: PriceStore?
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
+    /// What the scanner was last given, so an unchanged directory costs a
+    /// comparison rather than a regex compile. See `installMagicDefinitions`.
+    private var installedMagicDefinitions: [MagicSetDefinition]?
     private var noteTask: Task<Void, Never>?
     private var receiptTask: Task<Void, Never>?
     private var magicDirectoryTask: Task<Void, Never>?
@@ -913,7 +916,7 @@ final class ScannerViewModel: ObservableObject {
         // Magic's OCR vocabulary is its set directory, so the compiled-in
         // snapshot goes in before the first frame rather than after a network
         // round trip. The camera is useful immediately, and offline.
-        scanner.useMagicDefinitions(magicSetDefinitions)
+        installMagicDefinitions(magicSetDefinitions)
         resumeRecognitionIfPossible()
         if shouldRefreshMagicDirectory {
             refreshMagicDirectory()
@@ -925,6 +928,17 @@ final class ScannerViewModel: ObservableObject {
     /// latch's consumed-printing memory is what stops the card still lying in
     /// the band from being counted twice on return. Both are kept; only the
     /// camera stops. `endSession()` remains the one deliberate reset.
+    /// `useMagicDefinitions` compiles the vocabulary regex on the caller's
+    /// thread and only then hands it to the vision queue, which compares it
+    /// against what is already installed. `start` runs on every Scan-tab
+    /// appearance, so that comparison was being paid for with a compile.
+    /// Answer the same question here, before the work.
+    private func installMagicDefinitions(_ definitions: [MagicSetDefinition]) {
+        guard installedMagicDefinitions != definitions else { return }
+        installedMagicDefinitions = definitions
+        scanner.useMagicDefinitions(definitions)
+    }
+
     func viewDisappeared() {
         recognitionEligibility.isScannerVisible = false
         invalidatePendingScan()
@@ -2412,7 +2426,7 @@ final class ScannerViewModel: ObservableObject {
 
             self.magicSetDefinitions = definitions
             self.hasRefreshedMagicDirectory = true
-            self.scanner.useMagicDefinitions(definitions)
+            self.installMagicDefinitions(definitions)
         }
     }
 }

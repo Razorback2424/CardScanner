@@ -19,13 +19,13 @@ numbers drift; follow symbol names.
 | 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
 | 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
 | 8 — R4 ModelActor | **un-gated** (slice 7 done) | §3.1 crosses the plan's own 100 ms threshold. It is **not** gated on slice 4 — see the correction in §3.2. |
-| 9 — device pass | blocked (device) | |
+| 9 — device pass | **partly done** | P3 and U4 are code changes whose *magnitude* needed a device but whose correctness did not; both are landed. P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain — each needs a device to verify it did not make things worse, and changing the capture format without checking OCR hit rate would be a worse trade than leaving it. |
 | 10 — R5 `#Index` | not started | deployment-target decision |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
 
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
-Suite after slices 1, 2, 3, 6, 7 and 11: **848 tests, 1 skipped, 0 failures** (846 before; the C2 convergence test, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
+Suite after slices 1, 2, 3, 6, 7, 11 and the P3/U4 cleanup: **848 tests, 1 skipped, 0 failures** (846 before; the C2 convergence test, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
 
 ---
 
@@ -128,7 +128,14 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 **Remedy (per C5):** child view A owns the Refresh button and activity row (needs `isRefreshing` and `status`); child view B owns the attention badge (needs `fallbackStatus`). Parent stops observing `refresh`; `PortfolioDetailsView` keeps its own `@ObservedObject`. Fold P4 (`PortfolioArtwork` override fetch in `body`) in here by resolving the override filename once in `holdingSnapshots`.
 **Complexity:** preserves.
 
-### R8 — Device-only items
+### R8 — Device items
+- **P3 (done):** `ScannerViewModel.installMagicDefinitions` compares the
+  directory before handing it to `useMagicDefinitions`, which compiled the
+  vocabulary regex on the caller's thread before the vision queue got to make
+  the same comparison. `start` runs on every Scan-tab appearance.
+- **U4 (done):** `CatalogCardDetailView` dedupes fallback quotes by instrument
+  key instead of cancelling the previous card's in-flight request, adopting the
+  rule `ScannerViewModel.fallbackQuoteTasks` already used.
 - **P1 pixel format:** set `videoOutput.videoSettings` to `kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange` explicitly (C6). Verify OCR hit rate and thermal state over a 10-minute session.
 - **P3:** `useMagicDefinitions` compiles `MagicScanProfile` before the vision-queue equality guard, on every Scan-tab appearance. Compare definitions first.
 - **U2:** tab bar hides per receipt (every scan, 5 s). Evaluate on device; if it reads as flicker, hide while `recent` is non-empty instead.

@@ -17,7 +17,11 @@ struct CatalogCardDetailView: View {
     /// Kept separate from `error`, which replaces the whole page with a load
     /// failure. A failed add must not blank the card the user is looking at.
     @State private var addFailure: String?
-    @State private var fallbackQuoteTask: Task<Void, Never>?
+    /// Keyed by instrument, not a single slot. Cancelling the previous card's
+    /// quote on each add meant adding two cards quickly left the first one
+    /// unpriced until the next refresh — the request was already in flight and
+    /// its answer was thrown away. Same rule the scanner already uses.
+    @State private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     @State private var showsGradedPicker = false
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
@@ -282,14 +286,22 @@ struct CatalogCardDetailView: View {
         guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
               PriceVendorCredentials.hasKey else { return }
 
-        fallbackQuoteTask?.cancel()
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: card.magicTreatments(for: variant)
         )
+        let key = PriceRecord.key(
+            game: card.game,
+            printingID: printingID,
+            variantID: variant?.id,
+            treatmentIDs: treatmentIDs
+        )
+        guard fallbackQuoteTasks[key] == nil else { return }
+
         let fallbackContext = ModelContext(prices.context.container)
         let fallbackPrices = PriceStore(context: fallbackContext)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
-        fallbackQuoteTask = Task { @MainActor in
+        fallbackQuoteTasks[key] = Task { @MainActor in
+            defer { fallbackQuoteTasks[key] = nil }
             switch await resolver.resolve(
                 card: card,
                 variant: variant,
