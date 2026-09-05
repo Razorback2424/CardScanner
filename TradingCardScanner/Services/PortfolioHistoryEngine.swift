@@ -78,10 +78,20 @@ enum PortfolioHistoryEngine {
             previousDate = close.date
         }
 
-        let liveIsDistinct = input.now > (points.last?.instant ?? .distantPast)
-        if liveIsDistinct {
+        // Resolve the accounting interval before plotting its optional live
+        // endpoint. The chart and every accounting/contribution consumer must
+        // use this same live-day decision.
+        let includesLiveDay = input.now > (points.last?.instant ?? .distantPast)
+        let interval = PortfolioAccountingInterval(
+            anchorDate: anchor.date,
+            includedClosedDays: Array(selected.dropFirst().map(\.date)),
+            includesLiveDay: includesLiveDay,
+            liveDay: includesLiveDay
+                ? PortfolioCalendar.day(containing: input.now, in: timeZone)
+                : nil
+        )
+        if interval.includesLiveDay, let liveDay = interval.liveDay {
             var cursor = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
-            let liveDay = PortfolioCalendar.day(containing: input.now, in: timeZone)
             while cursor <= liveDay {
                 guard let link = cursor == liveDay
                     ? input.factors.live
@@ -106,12 +116,6 @@ enum PortfolioHistoryEngine {
 
         let selectedDates = Set(selected.map(\.date))
         let audit = revisionAudit(closes: input.closes, dates: selectedDates)
-        let interval = PortfolioAccountingInterval(
-            anchorDate: anchor.date,
-            includedClosedDays: Array(selected.dropFirst().map(\.date)),
-            includesLiveDay: liveIsDistinct,
-            liveDay: liveIsDistinct ? PortfolioCalendar.day(containing: input.now, in: timeZone) : nil
-        )
         let accounting = accounting(
             anchor: anchor,
             interval: interval,
@@ -128,7 +132,10 @@ enum PortfolioHistoryEngine {
             accounting: accounting,
             performanceFactor: performanceFactor,
             performanceAvailable: factorAvailable,
-            coverage: coverage(selected: selected, live: liveIsDistinct ? input.summary.coverage : nil),
+            coverage: coverage(
+                selected: selected,
+                live: interval.includesLiveDay ? input.summary.coverage : nil
+            ),
             revisions: audit,
             trackingBeganDate: requestedStart < anchor.date ? anchor.date : nil,
             hasTwoPublishedPoints: selected.count >= 2,
@@ -147,21 +154,24 @@ enum PortfolioHistoryEngine {
         endValue: Money
     ) -> PortfolioHistoryAccounting {
         var market = Money.zero
-        var flow = Money.zero
+        var added = Money.zero
+        var removed = Money.zero
         var corrections = Money.zero
         var newlyAddedValue = Money.zero
         var pricing = Money.zero
         for day in interval.includedClosedDays {
             guard let close = closes[day] else { continue }
             market += close.market
-            flow += close.flow
+            added += close.added
+            removed += close.removed
             corrections += close.corrections
             newlyAddedValue += close.newlyAddedValue
             pricing += close.pricingAdjustment
         }
         if interval.includesLiveDay, let live = liveAttribution {
             market += live.market
-            flow += live.added - live.removed
+            added += live.added
+            removed += live.removed
             corrections += live.corrections
             newlyAddedValue += live.newlyAddedValue
             pricing += live.pricingAdjustment
@@ -170,11 +180,12 @@ enum PortfolioHistoryEngine {
             anchorValue: anchor.closeValue,
             endValue: endValue,
             market: market,
-            netInventoryActivity: flow,
+            added: added,
+            removed: removed,
             corrections: corrections,
             newlyAddedValue: newlyAddedValue,
             pricingAdjustments: pricing,
-            unexplained: endValue - anchor.closeValue - market - flow - corrections - newlyAddedValue - pricing
+            unexplained: endValue - anchor.closeValue - market - (added - removed) - corrections - newlyAddedValue - pricing
         )
     }
 
@@ -288,7 +299,8 @@ final class PortfolioHistoryStore: ObservableObject {
                 refreshedInstrumentCount: $0.refreshedInstrumentCount,
                 carriedForwardInstrumentCount: $0.carriedForwardInstrumentCount,
                 pricedPositionCount: $0.pricedPositionCount, excludedCount: $0.excludedCount,
-                revisionReason: $0.revisionReason
+                revisionReason: $0.revisionReason, added: $0.addedContribution,
+                removed: $0.removedContribution
             )
         }
         result = PortfolioHistoryEngine.calculate(

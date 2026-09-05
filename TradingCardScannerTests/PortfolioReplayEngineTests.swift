@@ -177,6 +177,66 @@ final class PortfolioReplayEngineTests: XCTestCase {
         )
     }
 
+    func testExplicitInvalidationIsPricingAdjustmentNotMarketMovement() {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [event(.initialBalance, delta: 1, at: at(1, hour: 9))],
+                observations: [
+                    observation(10, at: at(1, hour: 8)),
+                    observation(nil, at: at(2, hour: 9), kind: .explicitInvalidation)
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, .zero)
+        XCTAssertEqual(result.live?.attribution.pricingAdjustment, -usd(10))
+        XCTAssertEqual(result.live?.attribution.unexplained, .zero)
+    }
+
+    func testCurrencyFlipBecomesPricingAdjustmentAfterUSDEvidenceIsWithdrawn() {
+        let first = PriceObservation(
+            instrumentKey: "instrument",
+            kind: .marketUpdate,
+            amount: usd(10),
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "usd-listing",
+            marketVariantID: nil,
+            effectiveAt: at(1, hour: 8),
+            receivedAt: at(1, hour: 8),
+            isSourceStamped: false
+        )
+        let foreign = PriceObservation(
+            instrumentKey: "instrument",
+            kind: .sourceTransition,
+            amount: usd(12),
+            currencyCode: "EUR",
+            source: .cardmarket,
+            sourceVariantID: "eur-listing",
+            marketVariantID: nil,
+            effectiveAt: at(2, hour: 9),
+            receivedAt: at(2, hour: 9),
+            isSourceStamped: true
+        )
+        let entries = [first, foreign].map(PortfolioEngine.observationEntry(from:))
+        XCTAssertNil(entries.last?.amount)
+
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [event(.initialBalance, delta: 1, at: at(1, hour: 9))],
+                observations: entries,
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, .zero)
+        XCTAssertEqual(result.live?.attribution.pricingAdjustment, -usd(10))
+        XCTAssertEqual(result.live?.attribution.unexplained, .zero)
+    }
+
     func testSameTimestampBasisMatchesLegacyEngineInBothDirections() {
         let instant = at(3, hour: 11)
         for basis in [instant, at(1, hour: 8)] {

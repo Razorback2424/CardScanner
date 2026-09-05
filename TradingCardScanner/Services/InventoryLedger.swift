@@ -15,6 +15,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
     case duplicatePositionPricingConflict = "duplicate_position_pricing_conflict"
     case unreadableStore = "unreadable_store"
     case moneyArithmeticOverflow = "money_arithmetic_overflow"
+    case unattributedValueChange = "unattributed_value_change"
 
     var title: String {
         switch self {
@@ -24,6 +25,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
         case .duplicatePositionPricingConflict: return "Duplicate rows disagree"
         case .unreadableStore: return "Stored data unavailable"
         case .moneyArithmeticOverflow: return "Value exceeds safe range"
+        case .unattributedValueChange: return "Unexplained portfolio change"
         }
     }
 
@@ -41,6 +43,8 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
             return "The app could not read one of its stored data sets. The current portfolio is not authoritative until the data can be read again."
         case .moneyArithmeticOverflow:
             return "A price multiplied by the stored quantity exceeded the safe accounting range. The affected total is withheld until the provider quote or collection quantity is corrected."
+        case .unattributedValueChange:
+            return "The portfolio value changed without a matching market, inventory, correction, or pricing-adjustment record. History is paused until the accounting path is repaired."
         }
     }
 }
@@ -56,6 +60,11 @@ struct LedgerIntegrityDefect: Identifiable, Equatable, Sendable {
     /// quantity repair action can correct the collection against the ledger,
     /// but it cannot safely reconstruct a missing or altered history row.
     var canRepairQuantity: Bool = true
+    /// Value-attribution defects carry the residual and the period they cover
+    /// as data, so support and tests never need to parse display text.
+    var amount: Money?
+    var periodStart: Date?
+    var periodEnd: Date?
 }
 
 /// Where integrity defects accumulate for display.

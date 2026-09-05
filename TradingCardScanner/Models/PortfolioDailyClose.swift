@@ -48,6 +48,11 @@ final class PortfolioDailyClose {
     var closeValueTenThousandths: Int64 = 0
     var marketContributionTenThousandths: Int64 = 0
     var flowContributionTenThousandths: Int64 = 0
+    /// Added after the original close schema, so old rows may have no
+    /// side-specific values. Those rows fall back to the sign of `flow` until
+    /// a replay republishes an exact attribution.
+    var addedContributionTenThousandths: Int64?
+    var removedContributionTenThousandths: Int64?
     var correctionContributionTenThousandths: Int64 = 0
     var newlyAddedValueTenThousandths: Int64 = 0
     var pricingAdjustmentTenThousandths: Int64 = 0
@@ -86,7 +91,9 @@ final class PortfolioDailyClose {
         excludedCount: Int,
         inputsFingerprint: String,
         revisionReason: PortfolioRevisionReason?,
-        computedAt: Date = .now
+        computedAt: Date = .now,
+        added: Money? = nil,
+        removed: Money? = nil
     ) {
         self.date = date
         self.revision = revision
@@ -94,6 +101,8 @@ final class PortfolioDailyClose {
         self.closeValueTenThousandths = closeValue.tenThousandths
         self.marketContributionTenThousandths = market.tenThousandths
         self.flowContributionTenThousandths = flow.tenThousandths
+        self.addedContributionTenThousandths = added?.tenThousandths
+        self.removedContributionTenThousandths = removed?.tenThousandths
         self.correctionContributionTenThousandths = corrections.tenThousandths
         self.newlyAddedValueTenThousandths = newlyAddedValue.tenThousandths
         self.pricingAdjustmentTenThousandths = pricingAdjustment.tenThousandths
@@ -111,6 +120,12 @@ final class PortfolioDailyClose {
     var closeValue: Money { Money(tenThousandths: closeValueTenThousandths) }
     var marketContribution: Money { Money(tenThousandths: marketContributionTenThousandths) }
     var flowContribution: Money { Money(tenThousandths: flowContributionTenThousandths) }
+    var addedContribution: Money {
+        Money(tenThousandths: addedContributionTenThousandths ?? max(0, flowContributionTenThousandths))
+    }
+    var removedContribution: Money {
+        Money(tenThousandths: removedContributionTenThousandths ?? max(0, -flowContributionTenThousandths))
+    }
     var correctionContribution: Money { Money(tenThousandths: correctionContributionTenThousandths) }
     var newlyAddedValue: Money { Money(tenThousandths: newlyAddedValueTenThousandths) }
     var pricingAdjustment: Money { Money(tenThousandths: pricingAdjustmentTenThousandths) }

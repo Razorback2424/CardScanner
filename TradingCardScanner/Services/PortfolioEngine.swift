@@ -315,26 +315,10 @@ final class PortfolioEngine: ObservableObject {
         )
         summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
-        integrityDefects = summary.defects
-        LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
-
-#if DEBUG
-        if !summary.defects.isEmpty {
-            print("🚨 PORTFOLIO RECONCILIATION FAILED")
-            print("Defect count: \(summary.defects.count)")
-
-            for defect in summary.defects {
-                print("""
-                ---
-                Reason: \(defect.reason.rawValue)
-                Collection key: \(defect.collectionKey)
-                Detail: \(defect.detail)
-                """)
-            }
-        }
-#endif
 
         guard let epoch = PortfolioEpoch.startedAt() else {
+            integrityDefects = summary.defects
+            LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
             lastUsableSummary = summary
             status = .ready(summary)
             return
@@ -363,26 +347,54 @@ final class PortfolioEngine: ObservableObject {
         // Migration day has no yesterday, so there is nothing to attribute
         // against and nothing is invented. The first legitimate close forms at
         // the first midnight boundary.
-        //
-        // A non-authoritative ledger is treated the same way for publication:
-        // the value above is still shown, but nothing is written down as
-        // history until the conflict is resolved.
         if !summary.isMigrationDay, summary.isAuthoritative {
             summary.closeDate = PortfolioCalendar.day(
                 containing: today.addingTimeInterval(-1),
                 in: timeZone
             )
-            summary.revisionNote = Self.publish(replay.days, timeZone: timeZone, context: context)?
-                .revisionNote
-
             if var attribution = replay.live?.attribution {
                 // Current value is still measured independently, from the
                 // collection itself. Feeding the replay's own ending value back
                 // in would make the residual vacuous.
                 attribution.currentValue = valuation.value
                 summary.attribution = attribution
+
+                if let defect = Self.unattributedValueChangeDefect(
+                    attribution: attribution,
+                    periodStart: summary.closeDate ?? epoch,
+                    periodEnd: now
+                ) {
+                    summary.defects.append(defect)
+                }
+            }
+
+            // The current value is independently measured from the collection,
+            // so an explanation defect does not make the close itself unsafe.
+            // Keep publishing the close while surfacing the residual below.
+            if summary.isAuthoritative {
+                summary.revisionNote = Self.publish(replay.days, timeZone: timeZone, context: context)?
+                    .revisionNote
             }
         }
+
+        integrityDefects = summary.defects
+        LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
+
+#if DEBUG
+        if !summary.defects.isEmpty {
+            print("🚨 PORTFOLIO RECONCILIATION FAILED")
+            print("Defect count: \(summary.defects.count)")
+
+            for defect in summary.defects {
+                print("""
+                ---
+                Reason: \(defect.reason.rawValue)
+                Collection key: \(defect.collectionKey)
+                Detail: \(defect.detail)
+                """)
+            }
+        }
+#endif
 
         // Retain the fully decorated value. A later unreadable pass republishes
         // this snapshot, so capturing it before coverage and attribution are
@@ -459,6 +471,30 @@ final class PortfolioEngine: ObservableObject {
 
         valuation.instrumentsHeld = Array(instruments)
         return valuation
+    }
+
+    /// Turns an independently measured replay residual into the same defect
+    /// vocabulary used for ledger disagreements. The residual is never
+    /// absorbed into market movement: a nonzero value is evidence that a
+    /// mechanism changed the portfolio without emitting an attributable row.
+    nonisolated static func unattributedValueChangeDefect(
+        attribution: PortfolioClose.Attribution,
+        periodStart: Date,
+        periodEnd: Date,
+        detectedAt: Date = .now
+    ) -> LedgerIntegrityDefect? {
+        let amount = attribution.unexplained
+        guard !amount.isZero else { return nil }
+        return LedgerIntegrityDefect(
+            reason: .unattributedValueChange,
+            collectionKey: "portfolio",
+            detail: "Unexplained value change of \(amount.formatted()) between \(periodStart.formatted(date: .abbreviated, time: .omitted)) and \(periodEnd.formatted(date: .abbreviated, time: .omitted)).",
+            detectedAt: detectedAt,
+            canRepairQuantity: false,
+            amount: amount,
+            periodStart: periodStart,
+            periodEnd: periodEnd
+        )
     }
 
     // MARK: - The ledger/projection assertion
@@ -558,7 +594,9 @@ final class PortfolioEngine: ObservableObject {
                 // incomplete: observations are read by knowledge time, so a
                 // vendor backdating a price cannot reach a day that has already
                 // closed. The wording stays at what the evidence supports.
-                revisionReason: existing == nil ? nil : .recomputed
+                revisionReason: existing == nil ? nil : .recomputed,
+                added: day.added,
+                removed: day.removed
             )
             context.insert(close)
             insertedCloses.append(close)
@@ -586,6 +624,8 @@ final class PortfolioEngine: ObservableObject {
         stored.closeValue == day.closeValue
             && stored.marketContribution == day.market
             && stored.flowContribution == day.flow
+            && stored.addedContribution == day.added
+            && stored.removedContribution == day.removed
             && stored.correctionContribution == day.corrections
             && stored.newlyAddedValue == day.newlyAddedValue
             && stored.pricingAdjustment == day.pricingAdjustment

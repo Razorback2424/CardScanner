@@ -1,6 +1,22 @@
 import Foundation
 import SwiftData
 
+/// Versioned rules for deciding which stored price evidence can participate in
+/// valuation. The stamp is local because observations are local; it lets a
+/// release that changes a read rule reconcile the value transition once rather
+/// than silently changing the replay's basis underneath the user.
+enum PriceReadabilityRules {
+    /// Version 1 is the first stamped release. It covers the treatment-aware
+    /// price keys and the legacy aliases that became readable without a new
+    /// provider response.
+    static let currentVersion = 1
+    static let defaultsKey = "priceReadabilityRulesVersion"
+
+    static func lastAppliedVersion(defaults: UserDefaults) -> Int {
+        (defaults.object(forKey: defaultsKey) as? NSNumber)?.intValue ?? 0
+    }
+}
+
 /// The classification rules for the price observation log, as pure functions
 /// over value types.
 ///
@@ -336,11 +352,13 @@ struct PriceObservationLog {
     @discardableResult
     func backfillFromRecords(
         receivedAt localKnowledgeTime: Date = .now,
-        existingObservations: [PriceObservation]? = nil
+        existingObservations: [PriceObservation]? = nil,
+        defaults: UserDefaults = .standard
     ) -> Int {
         synchronizeRecords(
             receivedAt: localKnowledgeTime,
-            existingObservations: existingObservations
+            existingObservations: existingObservations,
+            defaults: defaults
         ).written
     }
 
@@ -349,11 +367,13 @@ struct PriceObservationLog {
     /// builder does not issue a second full-table fetch.
     func backfillFromRecordsAndReturnObservations(
         receivedAt localKnowledgeTime: Date = .now,
-        existingObservations: [PriceObservation]? = nil
+        existingObservations: [PriceObservation]? = nil,
+        defaults: UserDefaults = .standard
     ) -> [PriceObservation] {
         reconcileSyncedRecordsAndReturnObservations(
             learnedAt: localKnowledgeTime,
-            existingObservations: existingObservations
+            existingObservations: existingObservations,
+            defaults: defaults
         )
     }
 
@@ -361,11 +381,13 @@ struct PriceObservationLog {
     /// observation history and returns the materialised rows for replay.
     func reconcileSyncedRecordsAndReturnObservations(
         learnedAt localKnowledgeTime: Date = .now,
-        existingObservations: [PriceObservation]? = nil
+        existingObservations: [PriceObservation]? = nil,
+        defaults: UserDefaults = .standard
     ) -> [PriceObservation] {
         synchronizeRecords(
             receivedAt: localKnowledgeTime,
-            existingObservations: existingObservations
+            existingObservations: existingObservations,
+            defaults: defaults
         ).observations
     }
 
@@ -376,12 +398,14 @@ struct PriceObservationLog {
     @discardableResult
     func backfillFromRecordsForTesting(
         receivedAt localKnowledgeTime: Date = .now,
-        fetchExistingObservations: @escaping () throws -> [PriceObservation]
+        fetchExistingObservations: @escaping () throws -> [PriceObservation],
+        defaults: UserDefaults = .standard
     ) -> Int {
         synchronizeRecords(
             receivedAt: localKnowledgeTime,
             existingObservations: nil,
-            fetchExistingObservations: fetchExistingObservations
+            fetchExistingObservations: fetchExistingObservations,
+            defaults: defaults
         ).written
     }
     #endif
@@ -389,7 +413,8 @@ struct PriceObservationLog {
     private func synchronizeRecords(
         receivedAt localKnowledgeTime: Date,
         existingObservations: [PriceObservation]?,
-        fetchExistingObservations: (() throws -> [PriceObservation])? = nil
+        fetchExistingObservations: (() throws -> [PriceObservation])? = nil,
+        defaults: UserDefaults = .standard
     ) -> (written: Int, observations: [PriceObservation]) {
         Self.backfillLock.lock()
         defer { Self.backfillLock.unlock() }
@@ -431,6 +456,46 @@ struct PriceObservationLog {
             newestByInstrument[observation.instrumentKey] = observation
         }
         var written = 0
+
+        let previousRulesVersion = PriceReadabilityRules.lastAppliedVersion(defaults: defaults)
+        let readabilityTransitionKeys: Set<String>
+        if previousRulesVersion < PriceReadabilityRules.currentVersion {
+            readabilityTransitionKeys = readRuleTransitionKeys(recordsByKey: recordsByKey)
+        } else {
+            readabilityTransitionKeys = []
+        }
+
+        // A read-rule migration is an app-knowledge transition, not a market
+        // update. Force the one new usable value through the existing
+        // `.sourceTransition` bucket so the replay can explain it. If the
+        // newest observation already carries the same usable value, the
+        // current replay has no value delta to reconcile and no duplicate row
+        // is warranted.
+        for key in readabilityTransitionKeys.sorted() {
+            guard let record = recordsByKey[key],
+                  let candidate = candidate(for: record, receivedAt: localKnowledgeTime)
+            else { continue }
+            let previous = newestByInstrument[key]
+            if let previous, previous.value == candidate.value {
+                continue
+            }
+            let observation = PriceObservation(
+                instrumentKey: key,
+                kind: .sourceTransition,
+                amount: candidate.value.amount,
+                currencyCode: candidate.value.currencyCode,
+                source: candidate.source,
+                sourceVariantID: candidate.value.sourceVariantID,
+                marketVariantID: candidate.value.marketVariantID,
+                effectiveAt: candidate.effectiveAt,
+                receivedAt: candidate.receivedAt,
+                isSourceStamped: candidate.isSourceStamped
+            )
+            context.insert(observation)
+            observations.append(observation)
+            newestByInstrument[key] = observation
+            written += 1
+        }
 
         for record in records {
             let previous = newestByInstrument[record.key]
@@ -525,7 +590,66 @@ struct PriceObservationLog {
                 return (0, [])
             }
         }
+        if previousRulesVersion < PriceReadabilityRules.currentVersion {
+            defaults.set(PriceReadabilityRules.currentVersion, forKey: PriceReadabilityRules.defaultsKey)
+        }
         return (written, observations)
+    }
+
+    /// Identifies values whose readability changed in the stamped release.
+    /// Treatment-qualified records are exact provider identities. The alias
+    /// pass covers the separate `priceLookupKeys` change: a treatment row may
+    /// now read a real value already stored under its treatment-free identity.
+    private func readRuleTransitionKeys(recordsByKey: [String: PriceRecord]) -> Set<String> {
+        var keys = Set(
+            recordsByKey.keys.filter { key in
+                !MagicTreatmentKeyCodec.priceTreatmentIDs(from: key).isEmpty
+            }
+        )
+
+        guard let cards = try? context.fetch(FetchDescriptor<CollectedCard>()) else {
+            return keys
+        }
+        for card in cards where card.priceLookupKeys.count > 1 {
+            let canonicalHasValue = card.priceLookupKeys.first
+                .flatMap { recordsByKey[$0] }
+                .flatMap { usableAmount(for: $0) } != nil
+            guard !canonicalHasValue else { continue }
+            for key in card.legacyPriceKeys {
+                if let record = recordsByKey[key], usableAmount(for: record) != nil {
+                    keys.insert(key)
+                }
+            }
+        }
+        return keys
+    }
+
+    private func candidate(
+        for record: PriceRecord,
+        receivedAt: Date
+    ) -> PriceObservationRules.Candidate? {
+        guard let amount = record.effectiveUnitMarketPriceUSD,
+              record.currencyCode == "USD",
+              let source = record.source,
+              let money = Money(rounding: amount) else { return nil }
+        return PriceObservationRules.Candidate(
+            value: PriceObservationValue(
+                amount: money,
+                currencyCode: record.currencyCode,
+                sourceRaw: source.rawValue,
+                sourceVariantID: record.sourceVariantID,
+                marketVariantID: record.marketVariantID
+            ),
+            source: source,
+            sourceUpdatedAt: record.sourceUpdatedAt,
+            receivedAt: receivedAt
+        )
+    }
+
+    private func usableAmount(for record: PriceRecord) -> Money? {
+        guard record.currencyCode == "USD",
+              let amount = record.effectiveUnitMarketPriceUSD else { return nil }
+        return Money(rounding: amount)
     }
 
     // MARK: -

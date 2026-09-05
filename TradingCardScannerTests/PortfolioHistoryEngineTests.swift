@@ -57,6 +57,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         revision: Int = 1,
         market: Int64 = 0,
         flow: Int64 = 0,
+        added: Int64? = nil,
+        removed: Int64? = nil,
         newlyAddedValue: Int64 = 0,
         coverage: PortfolioCoverageState = .complete,
         reason: PortfolioRevisionReason? = nil
@@ -68,7 +70,8 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             pricingAdjustment: .zero, carriedForwardValue: .zero,
             coverage: coverage, refreshedInstrumentCount: 1,
             carriedForwardInstrumentCount: coverage == .partial ? 1 : 0,
-            pricedPositionCount: 1, excludedCount: 0, revisionReason: reason
+            pricedPositionCount: 1, excludedCount: 0, revisionReason: reason,
+            added: added.map { money($0) }, removed: removed.map { money($0) }
         )
     }
 
@@ -219,6 +222,49 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             ),
             Optional(money(-17))
         )
+    }
+
+    func testHistoryAccountingSeparatesAddedAndRemovedValue() {
+        var attribution = PortfolioClose.Attribution()
+        attribution.added = money(500)
+        attribution.removed = money(300)
+
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [close(1, value: 100)],
+                currentValue: 300,
+                now: date(2, hour: 1),
+                attribution: attribution
+            ),
+            mode: .value,
+            range: .all
+        )
+
+        XCTAssertEqual(result.accounting?.added, money(500))
+        XCTAssertEqual(result.accounting?.removed, money(300))
+        XCTAssertEqual(result.accounting?.totalChange, money(200))
+        XCTAssertEqual(result.accounting?.unexplained, .zero)
+    }
+
+    func testClosedClosePreservesAddedAndRemovedSides() throws {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100),
+                    close(2, value: 300, flow: 200, added: 500, removed: 300)
+                ],
+                currentValue: 300,
+                now: date(3, hour: 1)
+            ),
+            mode: .value,
+            range: .all
+        )
+        let accounting = try XCTUnwrap(result.accounting)
+
+        XCTAssertEqual(accounting.added, money(500))
+        XCTAssertEqual(accounting.removed, money(300))
+        XCTAssertEqual(accounting.totalChange, money(200))
+        XCTAssertEqual(accounting.unexplained, .zero)
     }
 
     func testMarketMovementSeriesStartsAtZeroAndEndsAtAccountingMarket() {
@@ -797,6 +843,79 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(afterBoundary.points.count, 2)
         XCTAssertEqual(afterBoundary.points.last?.isLive, true)
         XCTAssertFalse(afterBoundary.hasTwoPublishedPoints)
+    }
+
+    func testContributionsAreScopedToTheSelectedHistoryRange() {
+        let historyInput = PortfolioHistoryInput(
+            closes: [
+                close(1, value: 100),
+                close(2, value: 112, market: 12),
+                close(3, value: 112),
+                close(4, value: 112)
+            ],
+            summary: PortfolioSummary(currentValue: money(112)),
+            epoch: date(1),
+            timeZoneIdentifier: "UTC",
+            now: date(10),
+            contributions: PortfolioContributionIndex(
+                byDay: [date(2): ["card": money(12)]]
+            )
+        )
+        let resultForThreeMonths = PortfolioHistoryEngine.calculate(
+            input: historyInput,
+            mode: .marketMovement,
+            range: .threeMonths
+        )
+        let resultForOneWeek = PortfolioHistoryEngine.calculate(
+            input: historyInput,
+            mode: .marketMovement,
+            range: .oneWeek
+        )
+
+        XCTAssertEqual(resultForThreeMonths.contributions, ["card": money(12)])
+        XCTAssertTrue(resultForOneWeek.contributions.isEmpty)
+        XCTAssertNotEqual(
+            resultForThreeMonths.accountingInterval?.anchorDate,
+            resultForOneWeek.accountingInterval?.anchorDate
+        )
+    }
+
+    func testHistoryPointsUseTheSameLiveDayWindowAsAccounting() throws {
+        let historyInput = PortfolioHistoryInput(
+            closes: [
+                close(1, value: 100),
+                close(2, value: 100),
+                close(3, value: 100),
+                close(4, value: 100)
+            ],
+            summary: PortfolioSummary(currentValue: money(100)),
+            epoch: date(1),
+            timeZoneIdentifier: "UTC",
+            now: date(10)
+        )
+
+        for range in PortfolioHistoryRange.allCases {
+            let result = PortfolioHistoryEngine.calculate(
+                input: historyInput,
+                mode: .value,
+                range: range
+            )
+            let interval = try XCTUnwrap(result.accountingInterval)
+            let expectedDays = Set(
+                interval.includedClosedDays
+                    + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+            )
+            // The first point is the anchor close, not a contribution inside
+            // the selected period. All later points must match the interval.
+            let plottedDays = Set(result.points.dropFirst().map(\.displayDay))
+
+            XCTAssertEqual(plottedDays, expectedDays, "range \(range.rawValue)")
+            XCTAssertEqual(
+                result.points.contains(where: \.isLive),
+                interval.includesLiveDay,
+                "range \(range.rawValue)"
+            )
+        }
     }
 
     func testShuffledInputsProduceIdenticalHistory() {

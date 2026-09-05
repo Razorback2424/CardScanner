@@ -839,6 +839,35 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(projection.byKey["dupe"]?.dateAdded, Date(timeIntervalSince1970: 900))
     }
 
+    func testDuplicateRowsDoNotMoveTheValuedPortfolio() {
+        let first = card(key: "dupe", quantity: 1)
+        let second = card(key: "dupe", quantity: 2)
+        let merged = LogicalCollection.project(cards: [first, second]) { _ in "instrument" }
+        let single = LogicalCollection.project(cards: [card(key: "dupe", quantity: 3)]) { _ in "instrument" }
+        let valuations = InstrumentValuationIndex(
+            byInstrument: ["instrument": InventoryValuation(
+                unitPrice: money(10), source: .justTCG, effectiveAt: nil,
+                receivedAt: nil, observationID: nil
+            )]
+        )
+
+        let mergedValue = PortfolioEngine.currentValuation(
+            projection: merged,
+            valuations: valuations,
+            otherCurrencyInstruments: []
+        )
+        let singleValue = PortfolioEngine.currentValuation(
+            projection: single,
+            valuations: valuations,
+            otherCurrencyInstruments: []
+        )
+
+        XCTAssertEqual(mergedValue.value, singleValue.value)
+        XCTAssertEqual(mergedValue.value, money(30))
+        XCTAssertEqual(mergedValue.unpricedCount, singleValue.unpricedCount)
+        XCTAssertEqual(mergedValue.otherCurrencyCount, singleValue.otherCurrencyCount)
+    }
+
     func testMigrationBaselinesDuplicateRowsAsOneEventWithTheSummedQuantity() throws {
         // The bug this exists to stop: iterating physical rows gave both rows
         // the same deterministic baseline id, so one was deduplicated away and
@@ -2160,6 +2189,228 @@ final class PortfolioReconciliationTests: XCTestCase {
         let defaults = UserDefaults(suiteName: suite)!
         defaults.removePersistentDomain(forName: suite)
         return defaults
+    }
+
+    func testReadabilityRuleMigrationAttributesAnExistingTreatmentPrice() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let epoch = Date(timeIntervalSince1970: 2_000_000_000)
+        let learnedAt = epoch.addingTimeInterval(3_600)
+        let key = PriceRecord.key(
+            game: .magic,
+            printingID: "neo-429",
+            variantID: "foil",
+            treatmentIDs: ["surgefoil"]
+        )
+        let record = PriceRecord(
+            key: key,
+            game: .magic,
+            printingID: "neo-429",
+            variantID: "foil",
+            magicTreatmentIDs: ["surgefoil"]
+        )
+        _ = record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 605.66,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "surge-foil-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: learnedAt
+            )
+        )
+        context.insert(record)
+        try context.save()
+
+        let log = PriceObservationLog(context: context)
+        let learned = log.reconcileSyncedRecordsAndReturnObservations(
+            learnedAt: learnedAt,
+            defaults: defaults
+        )
+        let transition = try XCTUnwrap(learned.first { $0.instrumentKey == key })
+        XCTAssertEqual(transition.kind, .sourceTransition)
+        XCTAssertEqual(transition.amount, money(605.66))
+        XCTAssertEqual(
+            defaults.integer(forKey: PriceReadabilityRules.defaultsKey),
+            PriceReadabilityRules.currentVersion
+        )
+
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: [entry(
+                    kind: .initialBalance,
+                    delta: 1,
+                    at: epoch.addingTimeInterval(60),
+                    instrument: key
+                )],
+                observations: learned.map(PortfolioEngine.observationEntry(from:)),
+                epoch: epoch,
+                through: learnedAt,
+                timeZoneIdentifier: "UTC"
+            )
+        )
+
+        XCTAssertEqual(replay.live?.attribution.pricingAdjustment, money(605.66))
+        XCTAssertEqual(replay.live?.attribution.unexplained, .zero)
+        XCTAssertEqual(
+            log.reconcileSyncedRecordsAndReturnObservations(
+                learnedAt: learnedAt.addingTimeInterval(1),
+                defaults: defaults
+            ).filter { $0.instrumentKey == key }.count,
+            1,
+            "the process-wide version gate must be idempotent"
+        )
+    }
+
+    func testReadabilityRuleMigrationAttributesAReadThroughTreatmentPrice() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let epoch = Date(timeIntervalSince1970: 2_000_000_000)
+        let learnedAt = epoch.addingTimeInterval(3_600)
+        let card = CollectedCard(
+            collectionKey: "magic:neo-429#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "neo-429",
+            name: "Surge Foil Fixture",
+            setName: "Kamigawa: Neon Dynasty",
+            setCode: "NEO",
+            cardNumber: "429",
+            rarity: "Rare",
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .imported,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(card)
+
+        let legacyKey = try XCTUnwrap(card.legacyPriceKeys.first)
+        let record = PriceRecord(
+            key: legacyKey,
+            game: .magic,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+        _ = record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 12,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "generic-foil-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: learnedAt
+            )
+        )
+        context.insert(record)
+        try context.save()
+
+        let learned = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(
+                learnedAt: learnedAt,
+                defaults: defaults
+            )
+        let transition = try XCTUnwrap(learned.first { $0.instrumentKey == legacyKey })
+        XCTAssertEqual(transition.kind, .sourceTransition)
+        XCTAssertEqual(transition.amount, money(12))
+
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: [entry(
+                    kind: .initialBalance,
+                    delta: 1,
+                    at: epoch.addingTimeInterval(60),
+                    position: card.collectionKey,
+                    instrument: legacyKey
+                )],
+                observations: learned.map(PortfolioEngine.observationEntry(from:)),
+                epoch: epoch,
+                through: learnedAt,
+                timeZoneIdentifier: "UTC"
+            )
+        )
+
+        XCTAssertEqual(replay.live?.attribution.pricingAdjustment, money(12))
+        XCTAssertEqual(replay.live?.attribution.unexplained, .zero)
+    }
+
+    func testPortfolioHistoryExportPreservesAddedAndRemovedContributions() {
+        let close = PortfolioDailyClose(
+            date: Date(timeIntervalSince1970: 1_700_000_000),
+            revision: 1,
+            timeZoneIdentifier: "UTC",
+            closeValue: money(202),
+            market: money(0),
+            flow: money(2),
+            corrections: .zero,
+            pricingAdjustment: .zero,
+            carriedForwardValue: .zero,
+            coverage: .complete,
+            refreshedInstrumentCount: 1,
+            carriedForwardInstrumentCount: 0,
+            pricedPositionCount: 1,
+            excludedCount: 0,
+            inputsFingerprint: "fixture",
+            revisionReason: nil,
+            added: money(5),
+            removed: money(3)
+        )
+
+        let csv = CollectionCSV.exportPortfolioHistory([close]).text
+
+        XCTAssertTrue(csv.contains("added_contribution_usd"))
+        XCTAssertTrue(csv.contains("removed_contribution_usd"))
+        XCTAssertTrue(csv.contains("5.0000"))
+        XCTAssertTrue(csv.contains("3.0000"))
+    }
+
+    func testUnexplainedValueChangeBecomesAnIntegrityDefect() async throws {
+        let context = try makeContext()
+        let epoch = Date(timeIntervalSince1970: 2_000_000_000)
+        let now = epoch.addingTimeInterval(2 * 86_400 + 3_600)
+        let value = money(42)
+        let defaults = UserDefaults.standard
+        let previousEpoch = defaults.object(forKey: PortfolioEpoch.defaultsKey)
+        defaults.set(epoch.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
+        defer {
+            if let previousEpoch {
+                defaults.set(previousEpoch, forKey: PortfolioEpoch.defaultsKey)
+            } else {
+                defaults.removeObject(forKey: PortfolioEpoch.defaultsKey)
+            }
+        }
+
+        let provider: PortfolioComputationProvider = { _, _, _, _ in
+            let replay = PortfolioReplayEngine.replay(
+                PortfolioReplayInput(
+                    events: [], observations: [], epoch: epoch, through: now,
+                    timeZoneIdentifier: "UTC"
+                )
+            )
+            return PortfolioReplaySnapshotBuilder.Computation(
+                valuation: PortfolioEngine.CurrentValuation(value: value),
+                defects: [],
+                isAuthoritative: true,
+                replay: replay,
+                coverage: PortfolioCoverageIndex(),
+                holdings: []
+            )
+        }
+        let engine = PortfolioEngine(computationProvider: provider)
+
+        await engine.recomputeAndWait(context: context, now: now)
+
+        let summary = try XCTUnwrap(engine.summary)
+        let defect = try XCTUnwrap(summary.defects.first)
+        XCTAssertEqual(defect.reason, .unattributedValueChange)
+        XCTAssertEqual(defect.amount, value)
+        XCTAssertEqual(defect.periodEnd, now)
+        XCTAssertTrue(summary.isAuthoritative)
+        XCTAssertFalse(
+            try context.fetch(FetchDescriptor<PortfolioDailyClose>()).isEmpty,
+            "an attribution defect must not discard the independently measured close"
+        )
+        XCTAssertEqual(engine.integrityDefects, summary.defects)
+        XCTAssertEqual(LedgerIntegrityLog.shared.defects, summary.defects)
     }
 
     /// A local-only device cannot be waiting on anything, so a collection with

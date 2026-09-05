@@ -136,7 +136,7 @@ struct PortfolioView: View {
                     portfolioHero
 
                     if let summary = portfolio.summary {
-                        if !summary.isAuthoritative {
+                        if !summary.defects.isEmpty {
                             integrityWarning(summary.defects)
                         }
 
@@ -435,49 +435,48 @@ struct PortfolioView: View {
     @ViewBuilder
     private func biggestMovers() -> some View {
         let active = activeHistoryResult
-        let contributions = active?.contributions ?? [:]
-        let hasEligibleMovement = active?.hasEligibleMarketMovement ?? false
-        let total = active?.accounting?.market ?? .zero
-        if active == nil {
+        if let active {
+            if !active.hasEligibleMarketMovement {
+                Label("No market movement in \(active.range.rawValue)", systemImage: "minus.circle")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                let contributions = active.contributions
+                let total = active.accounting?.market ?? .zero
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(alignment: .firstTextBaseline) {
+                        HStack(spacing: 6) {
+                            Text("Market movement by holding · \(active.range.rawValue)")
+                                .font(.headline)
+                            PortfolioInfoButton(label: "About market movers") {
+                                Text(portfolioMoversExplanation)
+                                    .font(.body)
+                                    .frame(maxWidth: 280, alignment: .leading)
+                                    .padding()
+                            }
+                        }
+                        Spacer()
+                        Button("See all") {
+                            contributorContext = historicalContext(from: active)
+                        }
+                        .font(.subheadline.weight(.semibold))
+                    }
+
+                    PortfolioContributorPreview(
+                        contributions: contributions,
+                        total: total,
+                        holdings: portfolio.holdings,
+                        history: history,
+                        onRemoved: presentUndo(for:)
+                    )
+                }
+                .padding(16)
+                .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            }
+        } else {
             // Recomputing for a newly chosen period. Say nothing rather than
             // claim the market was flat.
             EmptyView()
-        } else if !hasEligibleMovement {
-            Label("No market movement in \(historyRange.rawValue)", systemImage: "minus.circle")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        } else {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .firstTextBaseline) {
-                    HStack(spacing: 6) {
-                        Text("Market movement by holding")
-                            .font(.headline)
-                        PortfolioInfoButton(label: "About market movers") {
-                            Text(portfolioMoversExplanation)
-                                .font(.body)
-                                .frame(maxWidth: 280, alignment: .leading)
-                                .padding()
-                        }
-                    }
-                    Spacer()
-                    Button("See all") {
-                        if let active {
-                            contributorContext = historicalContext(from: active)
-                        }
-                    }
-                    .font(.subheadline.weight(.semibold))
-                }
-
-                PortfolioContributorPreview(
-                    contributions: contributions,
-                    total: total,
-                    holdings: portfolio.holdings,
-                    history: history,
-                    onRemoved: presentUndo(for:)
-                )
-            }
-            .padding(16)
-            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 
@@ -1113,22 +1112,31 @@ private struct PortfolioDetailsView: View {
                 LabeledContent("Starting portfolio value", value: accounting.anchorValue.formatted())
                 LabeledContent("Current portfolio value", value: accounting.endValue.formatted())
                 LabeledContent("Portfolio value change", value: signed(accounting.totalChange))
-                LabeledContent("Market movement", value: signed(accounting.market))
-                if !accounting.netInventoryActivity.isZero {
-                    LabeledContent("Cards added or removed", value: signed(accounting.netInventoryActivity))
-                }
-                if !accounting.newlyAddedValue.isZero {
-                    LabeledContent("Newly priced additions", value: signed(accounting.newlyAddedValue))
-                }
-                if !accounting.corrections.isZero {
-                    LabeledContent("Corrections", value: signed(accounting.corrections))
-                }
-                if !accounting.pricingAdjustments.isZero {
-                    LabeledContent("Pricing adjustments", value: signed(accounting.pricingAdjustments))
-                }
-                if !accounting.unexplained.isZero {
-                    LabeledContent("Unexplained", value: signed(accounting.unexplained))
-                        .foregroundStyle(PortfolioPalette.attention)
+                if PortfolioHistoryDisplay.hasBreakdown(accounting) {
+                    LabeledContent(
+                        "Cards added",
+                        value: signed(accounting.added + accounting.newlyAddedValue)
+                    )
+                    .padding(.leading, 16)
+                    LabeledContent("Cards removed", value: signed(-accounting.removed))
+                        .padding(.leading, 16)
+                    LabeledContent("Market movement", value: signed(accounting.market))
+                        .padding(.leading, 16)
+                    if !accounting.corrections.isZero {
+                        LabeledContent("Corrections", value: signed(accounting.corrections))
+                            .padding(.leading, 16)
+                    }
+                    if !accounting.pricingAdjustments.isZero {
+                        LabeledContent("Pricing adjustments", value: signed(accounting.pricingAdjustments))
+                            .padding(.leading, 16)
+                    }
+                    if !accounting.unexplained.isZero {
+                        LabeledContent("Unexplained", value: signed(accounting.unexplained))
+                            .foregroundStyle(PortfolioPalette.attention)
+                            .padding(.leading, 16)
+                    }
+                } else {
+                    LabeledContent("Market movement", value: signed(accounting.market))
                 }
             }
 
@@ -1161,13 +1169,13 @@ private struct PortfolioDetailsView: View {
                   coverage.unknownDays > 0 ? "\(coverage.unknownDays) unknown day\(coverage.unknownDays == 1 ? "" : "s")" : nil]
                 .compactMap { $0 }
                 .joined(separator: " · "))
-                .foregroundStyle(PortfolioPalette.attention)
+                .foregroundStyle(.secondary)
         } else if coverage.completeDays > 0 {
             LabeledContent("Completed-day coverage", value: "\(coverage.completeDays) complete")
         }
         if let live = coverage.live, live.carriedForward > 0 {
             Text("Today: \(live.refreshed) checked · \(live.carriedForward) carried forward")
-                .foregroundStyle(PortfolioPalette.attention)
+                .foregroundStyle(.secondary)
         }
     }
 

@@ -67,6 +67,12 @@ struct PortfolioPublishedClose: Equatable, Sendable {
     var closeValue: Money
     var market: Money
     var flow: Money
+    /// Positive value entering the collection on this close. New closes keep
+    /// this separate from removals so a period can explain both sides of a
+    /// net-zero inventory change.
+    var added: Money
+    /// Positive magnitude leaving the collection on this close.
+    var removed: Money
     var corrections: Money
     var newlyAddedValue: Money = .zero
     var pricingAdjustment: Money
@@ -77,6 +83,46 @@ struct PortfolioPublishedClose: Equatable, Sendable {
     var pricedPositionCount: Int
     var excludedCount: Int
     var revisionReason: PortfolioRevisionReason?
+
+    init(
+        date: Date,
+        revision: Int,
+        timeZoneIdentifier: String,
+        closeValue: Money,
+        market: Money,
+        flow: Money,
+        corrections: Money,
+        newlyAddedValue: Money = .zero,
+        pricingAdjustment: Money,
+        carriedForwardValue: Money,
+        coverage: PortfolioCoverageState,
+        refreshedInstrumentCount: Int,
+        carriedForwardInstrumentCount: Int,
+        pricedPositionCount: Int,
+        excludedCount: Int,
+        revisionReason: PortfolioRevisionReason?,
+        added: Money? = nil,
+        removed: Money? = nil
+    ) {
+        self.date = date
+        self.revision = revision
+        self.timeZoneIdentifier = timeZoneIdentifier
+        self.closeValue = closeValue
+        self.market = market
+        self.flow = flow
+        self.added = added ?? Money(tenThousandths: max(0, flow.tenThousandths))
+        self.removed = removed ?? Money(tenThousandths: max(0, -flow.tenThousandths))
+        self.corrections = corrections
+        self.newlyAddedValue = newlyAddedValue
+        self.pricingAdjustment = pricingAdjustment
+        self.carriedForwardValue = carriedForwardValue
+        self.coverage = coverage
+        self.refreshedInstrumentCount = refreshedInstrumentCount
+        self.carriedForwardInstrumentCount = carriedForwardInstrumentCount
+        self.pricedPositionCount = pricedPositionCount
+        self.excludedCount = excludedCount
+        self.revisionReason = revisionReason
+    }
 
     /// The close is labeled by its economic day but plotted at the boundary
     /// where that day became final.
@@ -267,13 +313,63 @@ struct PortfolioHistoryAccounting: Equatable, Sendable {
     var anchorValue: Money
     var endValue: Money
     var market: Money
-    var netInventoryActivity: Money
+    var added: Money
+    var removed: Money
     var corrections: Money
     var newlyAddedValue: Money = .zero
     var pricingAdjustments: Money
     var unexplained: Money
 
     var totalChange: Money { endValue - anchorValue }
+
+    /// Compatibility projection for callers that still need the net flow.
+    /// Presentation and accounting use `added` and `removed` separately.
+    var netInventoryActivity: Money { added - removed }
+
+    init(
+        anchorValue: Money,
+        endValue: Money,
+        market: Money,
+        netInventoryActivity: Money,
+        corrections: Money,
+        newlyAddedValue: Money = .zero,
+        pricingAdjustments: Money,
+        unexplained: Money
+    ) {
+        self.init(
+            anchorValue: anchorValue,
+            endValue: endValue,
+            market: market,
+            added: Money(tenThousandths: max(0, netInventoryActivity.tenThousandths)),
+            removed: Money(tenThousandths: max(0, -netInventoryActivity.tenThousandths)),
+            corrections: corrections,
+            newlyAddedValue: newlyAddedValue,
+            pricingAdjustments: pricingAdjustments,
+            unexplained: unexplained
+        )
+    }
+
+    init(
+        anchorValue: Money,
+        endValue: Money,
+        market: Money,
+        added: Money,
+        removed: Money,
+        corrections: Money,
+        newlyAddedValue: Money = .zero,
+        pricingAdjustments: Money,
+        unexplained: Money
+    ) {
+        self.anchorValue = anchorValue
+        self.endValue = endValue
+        self.market = market
+        self.added = added
+        self.removed = removed
+        self.corrections = corrections
+        self.newlyAddedValue = newlyAddedValue
+        self.pricingAdjustments = pricingAdjustments
+        self.unexplained = unexplained
+    }
 }
 
 struct PortfolioHistoryResult: Equatable, Sendable {
@@ -359,7 +455,8 @@ enum PortfolioHistoryDisplay {
     }
 
     static func hasBreakdown(_ accounting: PortfolioHistoryAccounting) -> Bool {
-        !accounting.netInventoryActivity.isZero
+        !accounting.added.isZero
+            || !accounting.removed.isZero
             || !accounting.corrections.isZero
             || !accounting.newlyAddedValue.isZero
             || !accounting.pricingAdjustments.isZero
