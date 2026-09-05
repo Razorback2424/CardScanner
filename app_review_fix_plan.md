@@ -170,7 +170,7 @@ is unavailable because CoreSimulatorService has no discoverable runtime.
 - [x] Exclude non-USD master-set quotes from USD browse sorting.
 - [x] Add Cardmarket display-currency regression coverage.
 
-Status: implemented, generic build-for-testing passes. No exchange-rate behavior
+Status: implemented in `1c7fa64`, generic build-for-testing passes. No exchange-rate behavior
 was introduced.
 
 ## Audit pass 1 remaining remediation — L1 through L3
