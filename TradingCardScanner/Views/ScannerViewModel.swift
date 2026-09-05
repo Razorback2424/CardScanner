@@ -411,6 +411,10 @@ struct RecentScan: Identifiable, Equatable {
     /// Every variant this printing could physically have been, kept so the same
     /// question can be re-asked later without another catalog round trip.
     let options: [PhysicalVariant]
+    /// The unit quote captured from the same catalog response as the resolved
+    /// finish. Keeping it on the session projection prevents the receipt from
+    /// silently looking up (or borrowing) another finish's value.
+    let price: PriceLookup
     let mutation: CollectionMutation
 
     init(
@@ -421,7 +425,8 @@ struct RecentScan: Identifiable, Equatable {
         pokemonPrintRun: PokemonPrintRun? = nil,
         catalogRetrievedAt: Date = .now,
         options: [PhysicalVariant],
-        mutation: CollectionMutation
+        mutation: CollectionMutation,
+        price: PriceLookup = .unavailable(nil)
     ) {
         self.id = id
         self.identifier = identifier
@@ -430,6 +435,7 @@ struct RecentScan: Identifiable, Equatable {
         self.pokemonPrintRun = pokemonPrintRun
         self.catalogRetrievedAt = catalogRetrievedAt
         self.options = options
+        self.price = price
         self.mutation = mutation
     }
 
@@ -596,6 +602,25 @@ struct ScanReceipt: Identifiable, Equatable {
     let variantLabel: String
     let treatmentDiagnostics: [MagicTreatmentDiagnostic]
     let thumbnailURL: URL?
+    let price: PriceLookup
+
+    init(
+        scanID: RecentScan.ID,
+        name: String,
+        identifier: String,
+        variantLabel: String,
+        treatmentDiagnostics: [MagicTreatmentDiagnostic],
+        thumbnailURL: URL?,
+        price: PriceLookup = .unavailable(nil)
+    ) {
+        self.scanID = scanID
+        self.name = name
+        self.identifier = identifier
+        self.variantLabel = variantLabel
+        self.treatmentDiagnostics = treatmentDiagnostics
+        self.thumbnailURL = thumbnailURL
+        self.price = price
+    }
 
     static func == (lhs: ScanReceipt, rhs: ScanReceipt) -> Bool { lhs.id == rhs.id }
 }
@@ -1478,6 +1503,14 @@ final class ScannerViewModel: ObservableObject {
             return .sourceMissing
         }
 
+        let correctedLookup = CardPricing.price(
+            for: scan.card,
+            variant: variant,
+            magicTreatments: scan.card.magicTreatments(for: variant),
+            pokemonPrintRun: scan.pokemonPrintRun,
+            at: scan.catalogRetrievedAt
+        )
+
         // Reuse the id so the rail thumbnail stays the same item rather than
         // animating out and back in for what the user experienced as an edit.
         let replacement = RecentScan(
@@ -1488,7 +1521,8 @@ final class ScannerViewModel: ObservableObject {
             pokemonPrintRun: scan.pokemonPrintRun,
             catalogRetrievedAt: scan.catalogRetrievedAt,
             options: scan.options,
-            mutation: mutation
+            mutation: mutation,
+            price: correctedLookup
         )
 
         if let index = recent.firstIndex(where: { $0.id == scan.id }) {
@@ -1497,13 +1531,6 @@ final class ScannerViewModel: ObservableObject {
         if lastAdd?.id == scan.id {
             lastAdd = replacement
         }
-        let correctedLookup = CardPricing.price(
-            for: scan.card,
-            variant: variant,
-            magicTreatments: scan.card.magicTreatments(for: variant),
-            pokemonPrintRun: scan.pokemonPrintRun,
-            at: scan.catalogRetrievedAt
-        )
         recordPrice(
             for: scan.card,
             variant: variant,
@@ -1790,7 +1817,8 @@ final class ScannerViewModel: ObservableObject {
             pokemonPrintRun: candidate.pokemonPrintRun,
             catalogRetrievedAt: candidate.catalogRetrievedAt,
             options: candidate.options,
-            mutation: mutation
+            mutation: mutation,
+            price: candidate.price
         )
         let committed = CommittedSessionScan(
             id: scan.id,
@@ -1857,7 +1885,8 @@ final class ScannerViewModel: ObservableObject {
                     .compactMap { $0 }
                     .joined(separator: " · "),
                 treatmentDiagnostics: candidate.card.magicTreatmentDiagnostics,
-                thumbnailURL: scan.thumbnailURL
+                thumbnailURL: scan.thumbnailURL,
+                price: candidate.price
             )
         )
         feedback.added()

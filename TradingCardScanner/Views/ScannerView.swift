@@ -87,6 +87,18 @@ struct ScannerView: View {
         .sheet(item: $model.priceCheckResult, onDismiss: model.dismissPriceCheckResult) { result in
             PriceCheckResultView(initialResult: result)
         }
+        .toolbar(isThumbZoneContested ? .hidden : .visible, for: .tabBar)
+    }
+
+    /// The tab bar only yields its space while a transient scanner surface is
+    /// occupying the lower thumb zone. Once the scanner is idle, the tab bar is
+    /// visible again so Scan remains a tab rather than becoming a dead end.
+    private var isThumbZoneContested: Bool {
+        model.pendingChoice != nil
+            || model.pendingPrintRunChoice != nil
+            || model.pendingIdentityChoice != nil
+            || model.pendingDuplicateConfirmation != nil
+            || model.receipt != nil
     }
 }
 
@@ -105,9 +117,11 @@ private struct ScannerChrome: View {
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
 
+    @Namespace private var glassNamespace
+
     var body: some View {
         VStack(spacing: 10) {
-            topBar
+            topBarCluster
 
             if let note = model.note {
                 ScanNoteView(note: note)
@@ -157,6 +171,17 @@ private struct ScannerChrome: View {
 
     // MARK: - Top
 
+    @ViewBuilder
+    private var topBarCluster: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 8) {
+                topBar
+            }
+        } else {
+            topBar
+        }
+    }
+
     /// The mode you are in, not the modes you could be in.
     ///
     /// A segmented control spends half its width showing the option you did not
@@ -192,7 +217,7 @@ private struct ScannerChrome: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .frame(height: 34)
-            .scannerGlass(cornerRadius: 17)
+            .scannerPillGlass()
         }
         .menuStyle(.button)
         .buttonStyle(.plain)
@@ -279,24 +304,31 @@ private struct ScannerChrome: View {
         .foregroundStyle(.white)
         .padding(.horizontal, 12)
         .frame(height: 34)
-
-        if isLocked {
-            pill.background(Color.red, in: Capsule())
-        } else {
-            pill.scannerGlass(cornerRadius: 17)
-        }
+        pill.scannerPillGlass(tint: isLocked ? .red : nil)
     }
 
     private var settingsButton: some View {
-        Button(action: openSettings) {
-            Image(systemName: "gearshape")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
-                .background(.black.opacity(0.55), in: Circle())
-                .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
+        Group {
+            if #available(iOS 26.0, *) {
+                Button(action: openSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.glass)
+            } else {
+                Button(action: openSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 34, height: 34)
+                        .background(.black.opacity(0.55), in: Circle())
+                        .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+            }
         }
-        .buttonStyle(.plain)
         .accessibilityLabel("Settings")
     }
 
@@ -311,6 +343,7 @@ private struct ScannerChrome: View {
                     onAddAnother: model.addAnother
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingIdentityChoice {
                 IdentityChoiceBar(
                     choice: choice,
@@ -318,6 +351,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissIdentityChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingPrintRunChoice {
                 PrintRunChoiceBar(
                     choice: choice,
@@ -325,6 +359,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissPrintRunChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingChoice {
                 VariantChoiceBar(
                     choice: choice,
@@ -332,6 +367,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
@@ -342,6 +378,7 @@ private struct ScannerChrome: View {
                     }
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             }
 
             VStack(alignment: .trailing, spacing: 8) {
@@ -369,7 +406,7 @@ private struct ScannerChrome: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
-                .background(.orange.opacity(0.85), in: Capsule())
+                .scannerPillGlass(tint: .orange, fallbackTintOpacity: 0.85)
         }
         .buttonStyle(.plain)
         .accessibilityHint("Shows what was read and why it was not added")

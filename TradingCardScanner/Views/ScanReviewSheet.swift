@@ -50,6 +50,7 @@ struct ScanReviewSheet: View {
 
                     identity
                     variantSection
+                    scanPrice
 
                     if let correctionFailure {
                         Label(correctionFailure, systemImage: "exclamationmark.triangle.fill")
@@ -59,9 +60,6 @@ struct ScanReviewSheet: View {
                             .accessibilityLabel("Correction error: \(correctionFailure)")
                     }
 
-                    if !scan.card.marketPrices.isEmpty {
-                        prices
-                    }
                 }
                 .padding(20)
                 .contentWidthLimit(.standard)
@@ -165,22 +163,35 @@ struct ScanReviewSheet: View {
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private var prices: some View {
-        VStack(spacing: 8) {
-            ForEach(scan.card.marketPrices) { price in
-                let isResolved = price.variantID != nil && price.variantID == variant?.id
-                HStack {
-                    Text("\(price.label) market")
-                        .font(.subheadline.weight(isResolved ? .semibold : .regular))
-                    Spacer()
-                    Text(price.value, format: .currency(code: price.currencyCode))
-                        .font(.subheadline.weight(isResolved ? .semibold : .regular))
-                        .monospacedDigit()
+    private var scanPrice: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("Unit price", systemImage: "tag")
+                    .font(.headline)
+                Spacer(minLength: 12)
+                ScanPriceValue(lookup: scan.price, style: .review)
+            }
+
+            switch scan.price {
+            case let .price(price):
+                if let sourceUpdatedAt = price.sourceUpdatedAt {
+                    Text("Catalog price · current as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Catalog unit price")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .foregroundStyle(isResolved ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
+            case .unavailable:
+                Text("No price was returned for this printing and finish.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
         .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        .accessibilityElement(children: .contain)
     }
 }

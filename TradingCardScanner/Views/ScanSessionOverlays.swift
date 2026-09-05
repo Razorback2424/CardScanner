@@ -1,24 +1,110 @@
 import SwiftUI
 
-/// Shared chrome style. Everything floating over the camera is the same dark,
-/// slightly translucent material so the card underneath stays the brightest,
-/// most legible object on screen.
+/// Shared chrome style for content floating over the camera.
+///
+/// iOS 26's regular glass is intentionally used for scanner text. A clear glass
+/// surface would let a brightly lit white card wash out the white labels as the
+/// card moves through the viewfinder. The pre-iOS 26 branch keeps the existing
+/// appearance and makes the change reversible without raising the deployment
+/// target.
 private struct GlassBackground: ViewModifier {
     var cornerRadius: CGFloat = 18
+    var tint: Color?
+    var isCapsule = false
+    var fallbackTintOpacity = 0.36
 
+    @ViewBuilder
     func body(content: Content) -> some View {
-        content
-            .background(.black.opacity(0.62), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(0.14), lineWidth: 1)
-            )
+        if #available(iOS 26.0, *) {
+            if isCapsule {
+                if let tint {
+                    content.glassEffect(.regular.tint(tint), in: .capsule)
+                } else {
+                    content.glassEffect(.regular, in: .capsule)
+                }
+            } else if let tint {
+                content.glassEffect(.regular.tint(tint), in: .rect(cornerRadius: cornerRadius))
+            } else {
+                content.glassEffect(.regular, in: .rect(cornerRadius: cornerRadius))
+            }
+        } else if isCapsule {
+            content
+                .background(
+                    tint?.opacity(fallbackTintOpacity) ?? Color.black.opacity(0.62),
+                    in: Capsule()
+                )
+                .overlay(Capsule().stroke(.white.opacity(0.14), lineWidth: 1))
+        } else {
+            content
+                .background(
+                    tint?.opacity(fallbackTintOpacity) ?? Color.black.opacity(0.62),
+                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(.white.opacity(0.14), lineWidth: 1)
+                )
+        }
     }
 }
 
 extension View {
     func scannerGlass(cornerRadius: CGFloat = 18) -> some View {
-        modifier(GlassBackground(cornerRadius: cornerRadius))
+        modifier(GlassBackground(cornerRadius: cornerRadius, tint: nil))
+    }
+
+    func scannerPillGlass(
+        tint: Color? = nil,
+        fallbackTintOpacity: Double = 1
+    ) -> some View {
+        modifier(
+            GlassBackground(
+                cornerRadius: 0,
+                tint: tint,
+                isCapsule: true,
+                fallbackTintOpacity: fallbackTintOpacity
+            )
+        )
+    }
+
+    /// Option controls remain equal-weight. On iOS 26 they use the regular glass
+    /// button style; the fallback preserves the pre-glass card's hit target and
+    /// contrast without promoting one unresolved variant over another.
+    func scannerOptionButton(cornerRadius: CGFloat = 13) -> some View {
+        modifier(ScannerOptionButtonModifier(cornerRadius: cornerRadius))
+    }
+
+    /// Gives mutually exclusive scanner surfaces a shared morph identity when
+    /// Liquid Glass is available, while remaining a no-op on older systems.
+    @ViewBuilder
+    func scannerGlassEffectID(_ id: String, in namespace: Namespace.ID) -> some View {
+        if #available(iOS 26.0, *) {
+            glassEffectID(id, in: namespace)
+        } else {
+            self
+        }
+    }
+}
+
+private struct ScannerOptionButtonModifier: ViewModifier {
+    let cornerRadius: CGFloat
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.buttonStyle(.glass)
+        } else {
+            content
+                .buttonStyle(.plain)
+                .background(
+                    .white.opacity(0.16),
+                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(.white.opacity(0.22), lineWidth: 1)
+                )
+        }
     }
 }
 
@@ -220,15 +306,10 @@ struct VariantChoiceBar: View {
                 .minimumScaleFactor(0.8)
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
-                .background(.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 13, style: .continuous)
-                        .stroke(.white.opacity(0.22), lineWidth: 1)
-                )
         }
-        .buttonStyle(.plain)
+        .scannerOptionButton()
         .foregroundStyle(.white)
-                .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
+        .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
     }
 }
 
@@ -284,16 +365,8 @@ struct PrintRunChoiceBar: View {
                             .minimumScaleFactor(0.75)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
-                            .background(
-                                .white.opacity(0.16),
-                                in: RoundedRectangle(cornerRadius: 13, style: .continuous)
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 13, style: .continuous)
-                                    .stroke(.white.opacity(0.22), lineWidth: 1)
-                            )
                     }
-                    .buttonStyle(.plain)
+                    .scannerOptionButton()
                     .foregroundStyle(.white)
                     .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
                 }
@@ -348,16 +421,8 @@ struct IdentityChoiceBar: View {
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
-                        .background(
-                            .white.opacity(0.16),
-                            in: RoundedRectangle(cornerRadius: 13, style: .continuous)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 13, style: .continuous)
-                                .stroke(.white.opacity(0.22), lineWidth: 1)
-                        )
                 }
-                .buttonStyle(.plain)
+                .scannerOptionButton()
                 .foregroundStyle(.white)
                 .accessibilityLabel("Select \(candidate.setName) for \(candidate.name)")
             }
@@ -365,6 +430,48 @@ struct IdentityChoiceBar: View {
         .foregroundStyle(.white)
         .padding(14)
         .scannerGlass()
+    }
+}
+
+/// The unit price captured during identification. It is deliberately a small
+/// value view shared by the receipt and review sheet so both surfaces make the
+/// same promise: this amount belongs to the printing and finish just scanned.
+struct ScanPriceValue: View {
+    enum Style: Equatable {
+        case receipt
+        case review
+
+        var font: Font {
+            switch self {
+            case .receipt: return .headline.weight(.bold)
+            case .review: return .title2.weight(.bold)
+            }
+        }
+    }
+
+    let lookup: PriceLookup
+    var style: Style = .receipt
+
+    var body: some View {
+        switch lookup {
+        case let .price(price):
+            let formatted = price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode))
+            Text(formatted)
+                .font(style.font)
+                .monospacedDigit()
+                .foregroundStyle(style == .receipt ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
+                .accessibilityLabel("Unit price \(formatted)")
+        case .unavailable:
+            Text("Price unavailable")
+                .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
+                .multilineTextAlignment(.trailing)
+                .foregroundStyle(
+                    style == .review
+                        ? AnyShapeStyle(.secondary)
+                        : AnyShapeStyle(.white.opacity(0.78))
+                )
+                .accessibilityLabel("Price unavailable")
+        }
     }
 }
 
@@ -405,6 +512,12 @@ struct ScanReceiptCard: View {
                                 .accessibilityValue(diagnostic.detail)
                         }
                     }
+                    .layoutPriority(1)
+
+                    Spacer(minLength: 2)
+
+                    ScanPriceValue(lookup: receipt.price)
+                        .frame(maxWidth: 100, alignment: .trailing)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
