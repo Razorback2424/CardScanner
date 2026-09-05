@@ -967,10 +967,6 @@ struct PriceHistoryChartModel: Equatable {
               let amount = observation.amount,
               amount.isValid,
               observation.kind != .explicitInvalidation else { return nil }
-        if MagicTreatmentKeyCodec.containsPriceTreatmentSuffix(in: observation.instrumentKey),
-           observation.source?.isProvenForMagicTreatment != true {
-            return nil
-        }
         return amount
     }
 

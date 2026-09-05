@@ -56,19 +56,7 @@ final class ReferenceQuote {
 
     var source: PriceSource? { sourceRaw.flatMap(PriceSource.init(rawValue:)) }
 
-    /// A pre-Slice-6 quote may contain a generic live-provider amount under a
-    /// treatment-qualified key. Keep the raw value for migration/diagnostics,
-    /// but do not let Price Check present it as evidence for that treatment.
-    var isUnprovenMagicTreatmentQuote: Bool {
-        let isTreatmentQualified =
-            (game == CardGame.magic.rawValue && !magicTreatmentIDsRaw.isEmpty)
-                || MagicTreatmentKeyCodec.containsPriceTreatmentSuffix(in: key)
-        guard isTreatmentQualified else { return false }
-        return !(source?.isProvenForMagicTreatment ?? false)
-    }
-
     var effectiveAmount: Double? {
-        guard !isUnprovenMagicTreatmentQuote else { return nil }
         return amount
     }
 

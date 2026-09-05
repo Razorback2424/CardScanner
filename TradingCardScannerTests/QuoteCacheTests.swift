@@ -101,7 +101,7 @@ final class QuoteCacheTests: XCTestCase {
         )
     }
 
-    func testPreviouslyStoredGenericMagicTreatmentQuoteIsNotLocalEvidence() throws {
+    func testPreviouslyStoredMagicTreatmentQuoteRemainsLocalEvidence() throws {
         let context = try makeContext()
         let quote = QuoteCache(context: context).store(
             .price(
@@ -121,9 +121,8 @@ final class QuoteCacheTests: XCTestCase {
         )
 
         XCTAssertEqual(quote.amount, 48.12)
-        XCTAssertTrue(quote.isUnprovenMagicTreatmentQuote)
-        XCTAssertNil(quote.effectiveAmount)
-        XCTAssertNil(quote.display.amount)
+        XCTAssertEqual(quote.effectiveAmount, 48.12)
+        XCTAssertEqual(quote.display.amount, 48.12)
     }
 
     func testFailedRefreshKeepsLastKnownQuoteAndItsFreshness() throws {

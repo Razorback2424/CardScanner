@@ -699,9 +699,9 @@ struct CollectionStore {
 
     /// Repairs the row, its durable activity projections, removal snapshots,
     /// and ownership-ledger collection references as one staged identity
-    /// operation. Price keys are intentionally not rewritten here: a generic
-    /// pre-treatment price must not be moved into a treatment-specific price
-    /// identity merely because collection ownership was healed.
+    /// operation. Existing price records stay under their original identity;
+    /// treatment-bearing rows read through to the same finish's legacy price
+    /// until an exact provider refresh writes the canonical treatment key.
     private func repairCollectionIdentity(
         _ row: CollectedCard,
         canonicalKey: String,
@@ -884,9 +884,9 @@ struct CollectionStore {
         }
         for event in oldEvents where oldKey != canonicalKey {
             // This is an ownership-identity repair only. Keeping the old
-            // priceStorageKey preserves the historical generic observation;
-            // the repaired CollectedCard will use its cold treatment key for
-            // all future pricing reads and writes.
+            // priceStorageKey preserves the historical observation; the
+            // repaired card reads through it until an exact treatment refresh
+            // writes the canonical price key.
             event.collectionKey = canonicalKey
         }
     }

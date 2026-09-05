@@ -37,15 +37,6 @@ enum PriceSource: String, Codable, Hashable, Sendable {
     }
 }
 
-extension PriceSource {
-    /// Current live providers do not publish a treatment-specific Magic
-    /// listing. Imported CSV data is the only source that can carry an explicit
-    /// user-supplied treatment claim until a reviewed provider mapping exists.
-    var isProvenForMagicTreatment: Bool {
-        self == .importedCSV
-    }
-}
-
 /// One price observation for one physical variant of one printing.
 ///
 /// Deliberately not a field on the card. A card does not "cost $42 forever"; what
@@ -221,30 +212,11 @@ final class PriceRecord {
 
     var isInvalidated: Bool { invalidatedAt != nil }
 
-    /// The key marker is included for rows written by a pre-Slice-6 build that
-    /// had already adopted the treatment-qualified key but had not yet stored
-    /// the mirrored treatment column. It also keeps this check correct if a
-    /// future sync delivers the key and column in separate transactions.
-    var isMagicTreatmentQualified: Bool {
-        (game == CardGame.magic.rawValue && !magicTreatmentIDsRaw.isEmpty)
-            || MagicTreatmentKeyCodec.containsPriceTreatmentSuffix(in: key)
-    }
-
-    /// A pre-Slice-6 build could store Scryfall's generic `usd_foil` value under
-    /// a treatment-qualified key. Keep that historical row readable for
-    /// migration, but never expose it as current collection evidence. The same
-    /// quarantine covers the generic JustTCG fallback and any future live source
-    /// until it explicitly proves the treatment.
-    var isUnprovenMagicTreatmentPrice: Bool {
-        guard isMagicTreatmentQualified else { return false }
-        return !(source?.isProvenForMagicTreatment ?? false)
-    }
-
     /// The amount that a read path may safely expose. Keeping this derived
     /// property next to the mutable record makes the invalidation rule explicit
     /// for services that do not have access to the local observation log.
     var effectiveUnitMarketPriceUSD: Double? {
-        guard !isInvalidated, !isUnprovenMagicTreatmentPrice else { return nil }
+        guard !isInvalidated else { return nil }
         return unitMarketPriceUSD
     }
 

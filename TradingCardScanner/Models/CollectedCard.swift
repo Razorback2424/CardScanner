@@ -447,11 +447,20 @@ final class CollectedCard {
     /// already-working stored prices visible until a fresh observation is saved
     /// under the canonical key.
     var legacyPriceKeys: [String] {
-        // A generic finish price is not evidence for a treatment-bearing
-        // printing. Do not reuse the treatment-free key: the correct state is a
-        // cold, first-party treatment price rather than a wrong inherited one.
-        guard priceTreatmentIDs.isEmpty else { return [] }
         var keys: [String] = []
+        // Treatment identity was added after price records already existed.
+        // Read through to the same printing and finish until an exact provider
+        // refresh writes the treatment-qualified key; this preserves a real
+        // historical value without ever crossing to another finish.
+        if !priceTreatmentIDs.isEmpty {
+            keys.append(
+                PriceRecord.key(
+                    game: cardGame,
+                    printingID: priceStorageID,
+                    variantID: variantID
+                )
+            )
+        }
         if itemKind != .rawCard, justTCGVariantID != nil {
             keys.append(PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID))
         }

@@ -359,14 +359,7 @@ struct InventoryLedger {
                observation.receivedAt <= invalidatedAt {
                 return .unpriced
             }
-            // `PriceObservation` handles the normal key-marker case. The
-            // record check covers a sync window where the treatment column has
-            // arrived before the canonical key marker is visible locally.
-            let treatmentIsUnprovenOnRecord =
-                record?.isMagicTreatmentQualified == true
-                    && observation.source?.isProvenForMagicTreatment != true
-            if let amount = observation.effectiveUSDAmount,
-               !treatmentIsUnprovenOnRecord {
+            if let amount = observation.effectiveUSDAmount {
                 return InventoryValuation(
                     unitPrice: amount,
                     source: observation.source,

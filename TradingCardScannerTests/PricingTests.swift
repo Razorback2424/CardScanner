@@ -137,21 +137,22 @@ final class PricingTests: XCTestCase {
 
     }
 
-    func testMagicTreatmentWithholdsGenericFoilPriceButNonfoilRemainsPriceable() throws {
+    func testMagicTreatmentUsesTheExactPrintingFoilPrice() throws {
         let card = try magicCard(promoType: "surgefoil")
         let foilTreatments = card.magicTreatments(for: .foil)
         let nonfoilTreatments = card.magicTreatments(for: .nonfoil)
 
         XCTAssertEqual(foilTreatments, [.surgeFoil])
         XCTAssertTrue(nonfoilTreatments.isEmpty)
-        XCTAssertEqual(
-            CardPricing.price(
-                for: card,
-                variant: .foil,
-                magicTreatments: foilTreatments
-            ),
-            .unavailable(.scryfall)
-        )
+        guard case let .price(foil) = CardPricing.price(
+            for: card,
+            variant: .foil,
+            magicTreatments: foilTreatments
+        ) else {
+            return XCTFail("The exact treated printing should retain usd_foil")
+        }
+        XCTAssertEqual(foil.unitMarketPriceUSD, 6.40)
+        XCTAssertEqual(foil.sourceVariantID, "usd_foil")
         guard case let .price(nonfoil) = CardPricing.price(
             for: card,
             variant: .nonfoil,
@@ -163,18 +164,18 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(nonfoil.sourceVariantID, "usd")
     }
 
-    func testUnclassifiedMagicTreatmentWithholdsGenericPrice() throws {
-        XCTAssertEqual(
-            CardPricing.price(
-                for: try magicCard(),
-                variant: .foil,
-                magicTreatments: [.unclassified("future-treatment")]
-            ),
-            .unavailable(.scryfall)
-        )
+    func testUnclassifiedMagicTreatmentUsesTheExactPrintingPrice() throws {
+        guard case let .price(price) = CardPricing.price(
+            for: try magicCard(),
+            variant: .foil,
+            magicTreatments: [.unclassified("future-treatment")]
+        ) else {
+            return XCTFail("An exact printing price should not depend on the treatment enum")
+        }
+        XCTAssertEqual(price.unitMarketPriceUSD, 6.40)
     }
 
-    func testPreviouslyStoredGenericMagicTreatmentPriceIsNotEffectiveEvidence() {
+    func testPreviouslyStoredMagicTreatmentPriceRemainsEffectiveEvidence() {
         let record = PriceRecord(
             key: PriceRecord.key(
                 game: .magic,
@@ -198,15 +199,14 @@ final class PricingTests: XCTestCase {
             )
         )
 
-        // Keep the raw row available for migration diagnostics, but never let
-        // the generic provider amount value a named treatment.
+        // This is the regression guard: a price already stored under the
+        // treatment-qualified key remains visible after the quarantine is lifted.
         XCTAssertEqual(record.unitMarketPriceUSD, 6.40)
-        XCTAssertTrue(record.isUnprovenMagicTreatmentPrice)
-        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
-        XCTAssertNil(record.display.amount)
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 6.40)
+        XCTAssertEqual(record.display.amount, 6.40)
     }
 
-    func testPreviouslyStoredGenericMagicTreatmentObservationCannotValuePortfolio() throws {
+    func testPreviouslyStoredMagicTreatmentObservationCanValuePortfolio() throws {
         // Model the row exactly as an older build could have left it: the
         // treatment marker is in the canonical key, while the mirrored model
         // column is still empty and the observation contains Scryfall's generic
@@ -241,12 +241,13 @@ final class PricingTests: XCTestCase {
             isSourceStamped: false
         )
 
-        XCTAssertNil(PortfolioEngine.observationEntry(from: observation).amount)
-        XCTAssertNil(
+        XCTAssertEqual(PortfolioEngine.observationEntry(from: observation).amount, observedAmount)
+        XCTAssertEqual(
             InventoryLedger.resolveValuation(
                 observation: observation,
                 record: record
-            ).unitPrice
+            ).unitPrice,
+            observedAmount
         )
     }
 

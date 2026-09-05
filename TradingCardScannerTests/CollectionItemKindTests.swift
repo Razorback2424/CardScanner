@@ -154,7 +154,7 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertNotEqual(graded, sealed)
     }
 
-    func testMagicTreatmentPriceRowsDoNotReadThroughGenericFoilPrice() {
+    func testMagicTreatmentPriceRowsReadThroughLegacyFoilPriceUntilRefresh() {
         let card = CollectedCard(
             collectionKey: "magic:printing#foil#treatment=surgefoil",
             game: .magic,
@@ -183,9 +183,9 @@ final class CollectionItemKindTests: XCTestCase {
         )
 
         XCTAssertEqual(card.priceKey, treatmentKey)
-        XCTAssertTrue(card.legacyPriceKeys.isEmpty)
+        XCTAssertEqual(card.legacyPriceKeys, [genericKey])
         XCTAssertNotEqual(card.priceKey, genericKey)
-        XCTAssertEqual(card.priceLookupKeys, [treatmentKey])
+        XCTAssertEqual(card.priceLookupKeys, [treatmentKey, genericKey])
 
         let genericRecord = PriceRecord(
             key: genericKey,
@@ -194,11 +194,12 @@ final class CollectionItemKindTests: XCTestCase {
             variantID: PhysicalVariant.foil.id
         )
         genericRecord.unitMarketPriceUSD = 99
-        XCTAssertNil(
+        XCTAssertEqual(
             PriceStore.record(
                 for: card,
                 in: [genericRecord.key: genericRecord]
-            )
+            )?.effectiveUnitMarketPriceUSD,
+            99
         )
 
         let nonfoil = CollectedCard(
