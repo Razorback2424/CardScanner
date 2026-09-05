@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 /// The storage boundary for portfolio replay.
@@ -361,6 +362,8 @@ enum PortfolioReplaySnapshotBuilder {
         through end: Date,
         timeZone: TimeZone
     ) throws -> PortfolioCoverageIndex {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("coverageIndex")
+        defer { PerformanceSignpost.signposter.endInterval("coverageIndex", signpostState) }
         // The last day the replay can close is the one containing `end`, so the
         // index has to reach that day's start.
         let lastDay = PortfolioCalendar.day(containing: end, in: timeZone)
@@ -391,6 +394,12 @@ actor PortfolioComputationActor {
         through: Date,
         timeZoneIdentifier: String
     ) -> PortfolioReplaySnapshotBuilder.Computation {
+        let signpostState = PerformanceSignpost.signposter
+            .beginInterval("PortfolioComputationActor.compute")
+        defer {
+            PerformanceSignpost.signposter
+                .endInterval("PortfolioComputationActor.compute", signpostState)
+        }
         // Seed observations for any instrument that has a usable price but no
         // local observation, before the replay reads them.
         //

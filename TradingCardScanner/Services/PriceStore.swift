@@ -1,5 +1,18 @@
 import Foundation
+import OSLog
 import SwiftData
+
+/// Signposts for the measurements the remediation plan's slice 1 gates its
+/// later slices on. `OSSignposter` costs a predicate check when no profiler is
+/// attached, so these stay compiled in: the numbers that matter come from a
+/// real device with a store that has aged, and an instrument you have to add
+/// before you can measure is an instrument nobody adds.
+enum PerformanceSignpost {
+    static let signposter = OSSignposter(
+        subsystem: "TradingCardScanner",
+        category: "Performance"
+    )
+}
 
 /// A stable diagnosis for an owned item that has no exact market price.
 ///
@@ -198,6 +211,8 @@ final class PriceRefreshDataIndex {
     private let loadedSuccessfully: Bool
 
     init(context: ModelContext) {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("PriceRefreshDataIndex.init")
+        defer { PerformanceSignpost.signposter.endInterval("PriceRefreshDataIndex.init", signpostState) }
         do {
             let records = try context.fetch(FetchDescriptor<PriceRecord>())
             let observations = try context.fetch(FetchDescriptor<PriceObservation>())

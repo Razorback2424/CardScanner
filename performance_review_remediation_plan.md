@@ -11,21 +11,21 @@ numbers drift; follow symbol names.
 
 | Slice | State | Evidence |
 |---|---|---|
-| 1 — Measure | **blocked (device)** | Signposts are code; the profiles they exist to capture need Instruments on a device with a seeded 12-month store. Not attempted in a headless session — an unmeasured signpost is not slice 1. Slices 4, 5 and 8 stay gated behind it. |
+| 1 — Measure | **done (simulator); device pass still worthwhile** | `OSSignposter` intervals at `PriceRefreshDataIndex.init`, `ProductIdentityIndex.init`, `coverageIndex`, `PortfolioComputationActor.compute` and `CollectionStore.add`, plus counted events at `makeCachedProjection` and `startRecompute`. `testAgedStoreBaseline` seeds an aged store and reports the two whole-table reads; opt-in via `PERF_BASELINE`, skipped in the default run. Numbers in §3.1. They un-gate slices 4 and 8. |
 | 2 — R2 holding-detail projection | **done** | `PortfolioOwnedCardDestination` uses the closure overload; `testHoldingDetailResolvesTheSameInstrumentAsTheGrid` pins the C2 convergence on the one input where the two rules disagree. |
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
-| 4 — R1 retention | gated on 1 | |
-| 5 — R3 field trimming | gated on 1 | |
+| 4 — R1 retention | **un-gated, next** | §3.1 confirms it as the top finding: the coverage read is linear in instruments × days and already costs ~1.5 s inside every recompute for a 300-card collection one year old. Needs the `PortfolioHistoryRange.all` decision before it can start — see §3.2. |
+| 5 — R3 field trimming | still gated on 1 | Its two signposts are counts during a live refresh, which the seeded fixture cannot produce. Needs one profiled refresh. |
 | 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
 | 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
-| 8 — R4 ModelActor | gated on 1 and 7 | |
+| 8 — R4 ModelActor | **un-gated** (slice 7 done) | §3.1 crosses the plan's own 100 ms threshold. It is **not** gated on slice 4 — see the correction in §3.2. |
 | 9 — device pass | blocked (device) | |
 | 10 — R5 `#Index` | not started | deployment-target decision |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
 
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
-Suite after slices 2, 3, 6, 7 and 11: **847 tests, 0 failures** (846 before; the new one is the C2 convergence test). Nothing below slice 1's gate has been touched.
+Suite after slices 1, 2, 3, 6, 7 and 11: **848 tests, 1 skipped, 0 failures** (846 before; the C2 convergence test, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
 
 ---
 
@@ -149,7 +149,48 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 
 ---
 
-## 3. Measurement plan (Slice 1 — gates everything below)
+## 3.1 Slice 1 results
+
+Simulator (iPhone 17 Pro, in-memory store), from `testAgedStoreBaseline`.
+Device numbers will differ; the *shape* is what these establish.
+
+| instruments × days | `PriceCheckDay` rows | `coverageIndex` | `PriceRefreshDataIndex.init` |
+|---|---|---|---|
+| 300 × 90 | 27,000 | 0.37 s | 0.05 s |
+| 300 × 365 | 109,500 | 1.47 s | 0.15 s |
+| 900 × 365 | 328,500 | 4.55 s | 0.44 s |
+
+Linear in rows, ~13.8 µs per check-day row. Extrapolating the plan's own
+reference collection — 1,500 instruments, one year, 547,500 rows — puts
+`coverageIndex` near **7 s inside every recompute**, against a documented whole
+recomputation of 2.5 s today. That is R1, measured rather than inferred, and it
+is why R1 sits above everything else: nothing else on this list has a cost that
+grows when the user does nothing at all.
+
+`PriceRefreshDataIndex.init` crosses the 100 ms threshold R4's remedy names at
+300 instruments after one year, and reaches 0.44 s at 900. Note the index build
+is driven by records and observations, not check days: observations were seeded
+on 5 % of days, matching `PriceObservationRules.decide`.
+
+## 3.2 Two corrections these numbers force
+
+**R4 is not gated on R1.** R4's remedy said "measure after R1", on the
+assumption that retention would shrink the index build. It cannot:
+`PriceRefreshDataIndex.init`'s check-day fetch is *already* day-bounded to
+today, and R1 explicitly does not prune observations. The two findings are
+independent, and slice 8 can proceed on its own numbers as soon as someone
+wants it. The dependency note in §4 is corrected accordingly.
+
+**R1 still needs one product decision before it can start.** `PortfolioHistoryRange`
+includes `.all`, so the chart can ask for history older than any retention
+window. The remedy stands — coverage for pruned days is read back from the
+`PortfolioDailyClose` rows, which already store `refreshedInstrumentCount` and
+`carriedForwardInstrumentCount` and are not pruned — but it changes what a
+revised historical day reports (T2), and the window length is a judgement about
+how much history the app promises to recompute rather than replay. That is the
+open question blocking slice 4, and it is a decision, not a measurement.
+
+## 3.3 Measurement plan (remaining)
 
 Seed a store representing 12 months of use for ~1,500 instruments (check days daily, observations on ~5% of checks). Add `os_signpost` intervals, no behaviour change:
 
@@ -181,7 +222,7 @@ Without this, every magnitude in this document is inference.
 10. **R5 `#Index`**: separate decision tied to the deployment-target choice in `design_slices_plan.md`.
 11. **R10 release checklist** at any point before the bundle id changes.
 
-Dependencies: slice 4 changes what slice 1 measured for R4, so re-run the R4 signpost after 4. Slice 8 depends on slice 7. Everything else is independent.
+Dependencies (corrected by §3.2): slice 8 depends on slice 7 (done) and **not** on slice 4 — retention cannot shrink the index build. Slice 4 depends on the `.all` decision in §3.2, not on further measurement. Slice 5 is the only one still waiting on slice 1, and needs a profiled live refresh rather than a seeded store.
 
 ---
 

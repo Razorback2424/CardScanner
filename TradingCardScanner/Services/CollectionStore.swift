@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 /// A single recorded change, kept only so it can be taken back.
@@ -1709,6 +1710,10 @@ struct CollectionStore {
         /// The caller then writes every event and performs the single save.
         savesChanges: Bool = true
     ) throws -> CollectionMutation {
+        // The scan commit's persistence half, which is what a hitch on the tap
+        // that dismisses the choice bar would show up in.
+        let signpostState = PerformanceSignpost.signposter.beginInterval("CollectionStore.add")
+        defer { PerformanceSignpost.signposter.endInterval("CollectionStore.add", signpostState) }
         guard quantity > 0 else {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }

@@ -258,6 +258,153 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PriceStore.record(for: row, in: recordsByKey)?.key, detailInstrument)
     }
 
+    // MARK: - Slice 1 baseline
+
+    /// Measures the two whole-table reads the remediation plan's gated slices
+    /// depend on, against a store aged the way a real one ages.
+    ///
+    /// Opt-in. Seeding a year of check days takes longer than the entire rest
+    /// of the suite, and a slow test in the default run is a test people learn
+    /// to skip. Run it deliberately:
+    ///
+    ///     PERF_BASELINE=1 xcodebuild test \
+    ///       -only-testing:TradingCardScannerTests/PortfolioReconciliationTests/testAgedStoreBaseline
+    ///
+    /// `PERF_INSTRUMENTS` and `PERF_DAYS` override the shape. This asserts
+    /// almost nothing on purpose — a wall-clock bound that is not flaky is also
+    /// not sensitive enough to catch the regression, which is the same
+    /// conclusion `testEpochResolvesTheSamePriceKeyAsTheLedgerResolver` reached.
+    /// It exists to produce numbers, and it fails only if a read that is
+    /// supposed to be bounded turns out not to be.
+    func testAgedStoreBaseline() throws {
+        let environment = ProcessInfo.processInfo.environment
+        try XCTSkipUnless(
+            environment["PERF_BASELINE"] != nil,
+            "Opt-in baseline; set PERF_BASELINE=1 to run."
+        )
+        let instrumentCount = environment["PERF_INSTRUMENTS"].flatMap(Int.init) ?? 300
+        let dayCount = environment["PERF_DAYS"].flatMap(Int.init) ?? 365
+
+        let context = try makeContext()
+        let timeZone = TimeZone(identifier: "America/Chicago") ?? .current
+        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+        let epochDay = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-Double(dayCount) * 86_400),
+            in: timeZone
+        )
+
+        let clock = ContinuousClock()
+        let instrumentKeys = (0..<instrumentCount).map { "instrument-\($0)" }
+
+        // One price record per instrument, as a live collection has.
+        for key in instrumentKeys {
+            let record = PriceRecord(key: key, game: .pokemon, printingID: key, variantID: nil)
+            _ = record.apply(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 4.25,
+                    currencyCode: "USD",
+                    source: .tcgplayer,
+                    sourceVariantID: key,
+                    sourceUpdatedAt: nil,
+                    fetchedAt: .now
+                )
+            )
+            context.insert(record)
+        }
+
+        // One check day per instrument per day: the growth `recordSuccessfulCheck`
+        // actually produces, and the table nothing prunes.
+        //
+        // Observations are seeded on a fraction of days instead, because
+        // `PriceObservationRules.decide` returns `.unchanged` for a same-value
+        // re-check, so the log grows only when a price moves.
+        var checkDays = 0
+        var observations = 0
+        for dayIndex in 0..<dayCount {
+            let day = PortfolioCalendar.day(
+                containing: epochDay.addingTimeInterval(Double(dayIndex) * 86_400 + 43_200),
+                in: timeZone
+            )
+            for key in instrumentKeys {
+                context.insert(
+                    PriceCheckDay(
+                        instrumentKey: key,
+                        portfolioDay: day,
+                        lastSuccessfulCheckAt: day.addingTimeInterval(3_600),
+                        source: .tcgplayer
+                    )
+                )
+                checkDays += 1
+                if dayIndex % 20 == 0 {
+                    context.insert(
+                        PriceObservation(
+                            instrumentKey: key,
+                            kind: .marketUpdate,
+                            amount: money(4.25 + Double(dayIndex) / 100),
+                            source: .tcgplayer,
+                            sourceVariantID: key,
+                            marketVariantID: nil,
+                            effectiveAt: day,
+                            receivedAt: day,
+                            isSourceStamped: false
+                        )
+                    )
+                    observations += 1
+                }
+            }
+            if dayIndex % 30 == 0 { try context.save() }
+        }
+        try context.save()
+
+        let coverageDuration = clock.measure {
+            _ = PortfolioReplaySnapshotBuilder.coverageIndex(
+                context: context,
+                from: epochDay,
+                through: today,
+                timeZone: timeZone
+            )
+        }
+        let indexDuration = clock.measure {
+            _ = PriceRefreshDataIndex(context: context)
+        }
+
+        print("""
+
+        ── slice 1 baseline (simulator; device numbers will differ) ──
+        shape              \(instrumentCount) instruments × \(dayCount) days
+        PriceCheckDay      \(checkDays) rows
+        PriceObservation   \(observations) rows
+        coverageIndex      \(coverageDuration)
+        PriceRefreshDataIndex.init  \(indexDuration)
+        ─────────────────────────────────────────────────────────────
+
+        """)
+
+        // The one thing worth asserting: the coverage read really is bounded by
+        // the window it is given, so a narrower window in R1 can bound its cost.
+        let narrow = PortfolioReplaySnapshotBuilder.coverageIndex(
+            context: context,
+            from: PortfolioCalendar.day(
+                containing: today.addingTimeInterval(-7 * 86_400),
+                in: timeZone
+            ),
+            through: today,
+            timeZone: timeZone
+        )
+        let recentDay = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-2 * 86_400),
+            in: timeZone
+        )
+        XCTAssertFalse(
+            narrow.checkedInstruments(on: recentDay).isEmpty,
+            "a windowed read must still answer for days inside the window"
+        )
+        XCTAssertTrue(
+            narrow.checkedInstruments(on: epochDay).isEmpty,
+            "a windowed coverage read must not materialise the whole history"
+        )
+    }
+
     private func makeContext() throws -> ModelContext {
         let syncedSchema = Schema([
             CollectedCard.self,

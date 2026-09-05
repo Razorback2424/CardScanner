@@ -1,3 +1,4 @@
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -656,6 +657,9 @@ struct CollectionView: View {
 
     @MainActor
     private func makeCachedProjection() -> CachedProjection {
+        // Counted, not timed: R3 is decided by how many times a refresh's
+        // checkpoint saves force this rebuild, not by what one rebuild costs.
+        PerformanceSignpost.signposter.emitEvent("makeCachedProjection")
         let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
         let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
 

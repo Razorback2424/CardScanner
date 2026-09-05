@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 /// Reads and writes `ProductIdentity` records.
@@ -16,6 +17,8 @@ final class ProductIdentityIndex {
     private let loadedSuccessfully: Bool
 
     init(context: ModelContext) {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("ProductIdentityIndex.init")
+        defer { PerformanceSignpost.signposter.endInterval("ProductIdentityIndex.init", signpostState) }
         do {
             let identities = try context.fetch(FetchDescriptor<ProductIdentity>())
             self.byKey = Dictionary(

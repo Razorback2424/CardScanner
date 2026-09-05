@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 /// How much of what is held was actually repriced today.
@@ -202,6 +203,9 @@ final class PortfolioEngine: ObservableObject {
     }
 
     private func startRecompute(context: ModelContext, now: Date) {
+        // Counted for the same reason as `makeCachedProjection`: the question
+        // R3 asks is how many replays one refresh pass buys.
+        PerformanceSignpost.signposter.emitEvent("startRecompute")
         isRecomputing = true
         // A retained summary remains the display value while its replacement is
         // calculated. Only a genuine cold start has no honest value to show.
