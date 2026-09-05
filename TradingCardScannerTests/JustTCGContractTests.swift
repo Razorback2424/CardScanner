@@ -935,6 +935,10 @@ final class JustTCGContractTests: XCTestCase {
             query.first { $0.0 == "set" }?.1,
             "the-lord-of-the-rings-commander-magic-the-gathering"
         )
+        XCTAssertEqual(
+            query.first { $0.0 == "limit" }?.1,
+            String(JustTCGQuota.maximumPageSize)
+        )
         XCTAssertNotEqual(
             query.first { $0.0 == "set" }?.1,
             "commander-the-lord-of-the-rings-magic-the-gathering"

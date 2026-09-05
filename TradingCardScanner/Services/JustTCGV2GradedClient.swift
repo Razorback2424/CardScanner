@@ -118,7 +118,12 @@ struct JustTCGV2GradedClient: Sendable {
             ("game", identity.vendorGame(for: game).rawValue),
             ("q", identity.name),
             ("graded", "only"),
-            ("include_price_history", "false")
+            ("include_price_history", "false"),
+            // A missing set is a deliberate browse fallback, not permission to
+            // download an unbounded game-wide response. The vendor's free tier
+            // accepts at most this page size; identity matching still decides
+            // whether any returned card is the requested one.
+            ("limit", String(JustTCGQuota.maximumPageSize))
         ]
         if let setSlug {
             query.insert(("set", setSlug), at: 1)
