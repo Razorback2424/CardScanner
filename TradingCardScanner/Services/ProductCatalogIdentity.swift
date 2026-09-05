@@ -175,10 +175,16 @@ enum ProductCatalogIdentity {
 ///
 /// Matching the vendor's published *name* instead lifts that to 133 of 163.
 struct ProductSetDirectory: Sendable {
+    private struct NamedSet: Sendable {
+        let id: String
+        let name: String
+    }
+
     /// Every slug the vendor publishes, for the paths that match on slug shape
     /// rather than on name.
     let slugs: [String]
     private let byName: [String: String]
+    private let namedSets: [NamedSet]
 
     init(sets: [(id: String, name: String?)]) {
         var slugs: [String] = []
@@ -186,10 +192,12 @@ struct ProductSetDirectory: Sendable {
         // and a key two different sets both claim is dropped rather than guessed.
         var tiers: [[String: String]] = [[:], [:], [:], [:]]
         var ambiguous: [Set<String>] = [[], [], [], []]
+        var namedSets: [NamedSet] = []
 
         for set in sets {
             slugs.append(set.id)
             guard let name = set.name else { continue }
+            namedSets.append(NamedSet(id: set.id, name: name))
             for (tier, key) in Self.keys(for: name) {
                 if let claimed = tiers[tier][key], claimed != set.id {
                     ambiguous[tier].insert(key)
@@ -207,6 +215,7 @@ struct ProductSetDirectory: Sendable {
         }
         self.slugs = slugs
         self.byName = byName
+        self.namedSets = namedSets
     }
 
     /// The era tokens the vendor puts in front of a set's own name.
@@ -240,6 +249,23 @@ struct ProductSetDirectory: Sendable {
     func slug(forCatalogSetName name: String, game: ProductCatalogIdentity.Game) -> String? {
         if let matched = byName[CatalogIdentityNormalization.canonicalText(name)] {
             return matched
+        }
+        if game == .magic {
+            // The catalog and vendor intentionally order some Magic set names
+            // differently, for example "Commander: The Lord of the Rings" and
+            // "The Lord of the Rings Commander". The identity matcher already
+            // carries this rule; set resolution has to use the same rule or the
+            // request is filtered to a slug the vendor never published.
+            let requested = CatalogIdentityNormalization.canonicalSetName(name, game: .magic)
+            let matches = Set(
+                namedSets.compactMap { set in
+                    CatalogIdentityNormalization.canonicalSetName(set.name, game: .magic) == requested
+                        ? set.id
+                        : nil
+                }
+            )
+            if matches.count == 1 { return matches.first }
+            if matches.count > 1 { return nil }
         }
         // The derived form still wins where the vendor happens to agree, which
         // covers sets whose published name is missing.
