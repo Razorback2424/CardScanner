@@ -1868,6 +1868,17 @@ final class MagicTreatmentMigrationTests: XCTestCase {
     func testMigrationClearsOnlyStaleTreatmentVendorNegatives() async throws {
         let context = try makeContext()
         let date = Date(timeIntervalSince1970: 4_000)
+        // The cleanup is part of the gated migration phase. Keep one pending
+        // Magic row in the fixture so this test exercises that phase instead
+        // of the steady-state no-op path.
+        context.insert(
+            makeRow(
+                key: "magic:stale-negative-cleanup#foil",
+                providerID: "stale-negative-cleanup",
+                quantity: 1,
+                treatments: []
+            )
+        )
         let treated = ProductIdentity(
             key: "magic:printing:foil:treatment=surgefoil",
             vendor: .justTCG,
@@ -1892,6 +1903,36 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertEqual(treated.attemptVersion, ProductIdentity.currentAttemptVersion)
         XCTAssertEqual(generic.unmatchedAt, date)
         XCTAssertEqual(generic.attemptVersion, 1)
+    }
+
+    func testSteadyStateMigrationLeavesTreatmentVendorNegativesUntouched() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 4_100)
+        let currentRow = makeRow(
+            key: "magic:steady-state-negative#foil",
+            providerID: "steady-state-negative",
+            quantity: 1,
+            treatments: []
+        )
+        currentRow.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+        let treated = ProductIdentity(
+            key: "magic:steady-state:foil:treatment=surgefoil",
+            vendor: .justTCG,
+            unmatchedAt: date,
+            attemptVersion: 1,
+            magicTreatmentIDs: ["surgefoil"]
+        )
+        context.insert(currentRow)
+        context.insert(treated)
+        try context.save()
+
+        let report = await MagicTreatmentMigration.runLocal(in: context, now: date)
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertEqual(report.examinedRows, 0)
+        XCTAssertEqual(report.clearedVendorNegatives, 0)
+        XCTAssertEqual(treated.unmatchedAt, date)
+        XCTAssertEqual(treated.attemptVersion, 1)
     }
 
     func testSlice9MigrationConvergesAcrossTwoDevicesWithoutChangingQuantity() async throws {

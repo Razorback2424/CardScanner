@@ -353,7 +353,10 @@ final class BrowseFeatureTests: XCTestCase {
 
         model.searchScope = .cards
         model.searchText = "box"
-        try await Task.sleep(for: .milliseconds(550))
+        let cardSearchStarted = await waitUntil {
+            await catalog.searchCount() == CardGame.allCases.count
+        }
+        XCTAssertTrue(cardSearchStarted)
 
         let cardSearchCount = await catalog.searchCount()
         let sealedSearchCount = await sealedClient.sealedSearchCount()
@@ -377,7 +380,10 @@ final class BrowseFeatureTests: XCTestCase {
         model.selectedGame = .magic
         model.searchScope = .sealed
         model.searchText = "box"
-        try await Task.sleep(for: .milliseconds(550))
+        let sealedSearchStarted = await waitUntil {
+            await sealedClient.sealedSearchCount() == 1
+        }
+        XCTAssertTrue(sealedSearchStarted)
 
         let cardSearchCount = await catalog.searchCount()
         let searchedGames = await sealedClient.sealedSearchGames()
@@ -390,6 +396,16 @@ final class BrowseFeatureTests: XCTestCase {
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
+    }
+
+    private func waitUntil(
+        _ condition: @escaping () async -> Bool
+    ) async -> Bool {
+        for _ in 0..<300 {
+            if await condition() { return true }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        return await condition()
     }
 }
 

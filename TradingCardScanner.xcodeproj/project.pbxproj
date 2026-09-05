@@ -137,6 +137,8 @@
 		A00100E5 /* MagicTreatmentMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E5 /* MagicTreatmentMigration.swift */; };
 		A00100E4 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A00200E2 /* MagicTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E2 /* MagicTreatmentTests.swift */; };
+		A00200F6 /* ScannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F6 /* ScannerViewModelTests.swift */; };
+		A00200F7 /* UncoveredSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F7 /* UncoveredSurfaceTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
 		A0010074 /* AppleAccountCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010074 /* AppleAccountCredentials.swift */; };
@@ -293,6 +295,8 @@
 		B00100E5 /* MagicTreatmentMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentMigration.swift; sourceTree = "<group>"; };
 		B00100E4 /* MagicTreatmentCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicTreatmentCatalog; sourceTree = "<group>"; };
 		B00200E2 /* MagicTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentTests.swift; sourceTree = "<group>"; };
+		B00200F6 /* ScannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModelTests.swift; sourceTree = "<group>"; };
+		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
 		B0010074 /* AppleAccountCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAccountCredentials.swift; sourceTree = "<group>"; };
@@ -532,6 +536,8 @@
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
 				B00200E0 /* MagicTreatmentSnapshotTests.swift */,
 				B00200E2 /* MagicTreatmentTests.swift */,
+				B00200F6 /* ScannerViewModelTests.swift */,
+				B00200F7 /* UncoveredSurfaceTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -780,6 +786,8 @@
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,
 				A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */,
 				A00200E2 /* MagicTreatmentTests.swift in Sources */,
+				A00200F6 /* ScannerViewModelTests.swift in Sources */,
+				A00200F7 /* UncoveredSurfaceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

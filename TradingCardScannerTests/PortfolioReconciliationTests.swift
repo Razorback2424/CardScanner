@@ -341,7 +341,11 @@ final class PortfolioReconciliationTests: XCTestCase {
         // neither absorbed the other's quantity.
         XCTAssertEqual(result.failedRows.map(\.collectionKey), [canonicalKey])
         XCTAssertEqual(result.failedEntries.map(\.collectionKey), [canonicalKey])
-        XCTAssertTrue(CollectionCSV.exportFailedEntries(result.failedEntries).text.contains("csv-ambiguous"))
+        // csvEntry uses its collection key as providerID, so the normalized
+        // failed export must carry the canonical key that was refused.
+        XCTAssertTrue(
+            CollectionCSV.exportFailedEntries(result.failedEntries).text.contains(canonicalKey)
+        )
         XCTAssertEqual(result.importedQuantity, 0)
         let rows = try context.fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(Set(rows.map(\.collectionKey)), [legacyKey, canonicalKey])
@@ -1272,7 +1276,8 @@ final class PortfolioReconciliationTests: XCTestCase {
 
     func testDuplicatePriceRecordsResolveByEvidenceAndConvergeOnWrite() throws {
         let context = try makeContext()
-        let older = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        let key = PriceRecord.key(game: .pokemon, printingID: "p", variantID: nil)
+        let older = PriceRecord(key: key, game: .pokemon, printingID: "p", variantID: nil)
         older.apply(
             NormalizedPrice(
                 unitMarketPriceUSD: 10,
@@ -1283,7 +1288,7 @@ final class PortfolioReconciliationTests: XCTestCase {
                 fetchedAt: Date(timeIntervalSince1970: 100)
             )
         )
-        let newer = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        let newer = PriceRecord(key: key, game: .pokemon, printingID: "p", variantID: nil)
         newer.apply(
             NormalizedPrice(
                 unitMarketPriceUSD: 20,
@@ -1298,7 +1303,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         context.insert(newer)
         try context.save()
 
-        XCTAssertEqual(PriceStore(context: context).record(forKey: "instrument")?.unitMarketPriceUSD, 20)
+        XCTAssertEqual(PriceStore(context: context).record(forKey: key)?.unitMarketPriceUSD, 20)
         XCTAssertTrue(
             PriceStore(context: context).store(
                 .price(
@@ -1319,7 +1324,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
         XCTAssertTrue(PriceStore(context: context).save())
         let records = try context.fetch(
-            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == "instrument" })
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
         )
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?.unitMarketPriceUSD, 30)
