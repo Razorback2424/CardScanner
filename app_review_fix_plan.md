@@ -181,7 +181,7 @@ was introduced.
 - [x] Verify collection read, scalar ledger, and bulk valuation precedence
   against a priced legacy alias.
 
-Status: implemented, generic build-for-testing passes.
+Status: implemented in `10de4f4`, generic build-for-testing passes.
 
 ## Audit pass 1 remaining remediation — L1 through L3
 
