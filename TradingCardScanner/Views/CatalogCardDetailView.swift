@@ -184,7 +184,10 @@ struct CatalogCardDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
                 ForEach(card.marketPrices) { price in
-                    LabeledContent(price.label, value: price.value.formatted(.currency(code: "USD")))
+                    LabeledContent(
+                        price.label,
+                        value: price.value.formatted(.currency(code: price.currencyCode))
+                    )
                 }
             }
             .padding(14)

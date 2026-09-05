@@ -312,7 +312,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     magicTreatments: details.card.magicTreatments(for: variant),
                     pokemonPrintRun: summary.pokemonPrintRun
                 )
-                if case let .price(price) = lookup {
+                if case let .price(price) = lookup,
+                   price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
                     return (summary.id, price.unitMarketPriceUSD, true)
                 }
                 return (summary.id, nil, true)

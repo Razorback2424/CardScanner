@@ -163,6 +163,16 @@ slice-local commit.
 Status: implemented in `822135a`, generic build-for-testing passes. Simulator test execution
 is unavailable because CoreSimulatorService has no discoverable runtime.
 
+### Slice 3 — currency propagation
+
+- [x] Carry the provider currency into `CardMarketPrice`.
+- [x] Format catalog detail and scan review values using the quote currency.
+- [x] Exclude non-USD master-set quotes from USD browse sorting.
+- [x] Add Cardmarket display-currency regression coverage.
+
+Status: implemented, generic build-for-testing passes. No exchange-rate behavior
+was introduced.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on
