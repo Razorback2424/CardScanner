@@ -53,7 +53,10 @@ struct ScannerView: View {
             }
             guard scannerScreenshotRoute == nil else { return }
 #endif
-            model.start(context: modelContext)
+            model.start(
+                context: modelContext,
+                isSceneActive: scenePhase == .active
+            )
         }
         .onDisappear { model.viewDisappeared() }
         .onChange(of: scenePhase) { _, phase in

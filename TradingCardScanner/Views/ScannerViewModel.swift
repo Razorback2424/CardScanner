@@ -30,6 +30,24 @@ enum ScanPurpose: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
+/// Recognition may run only while the scanner is actually visible and the
+/// app can present its result. Keeping these conditions together prevents a
+/// lifecycle callback from restarting OCR behind a sheet or while another tab
+/// owns the foreground.
+struct ScannerRecognitionEligibility: Equatable {
+    var isSceneActive = true
+    var isScannerVisible = false
+    var isBlockedByPresentation = false
+    var isCameraInterrupted = false
+
+    var allowsRecognition: Bool {
+        isSceneActive &&
+        isScannerVisible &&
+        !isBlockedByPresentation &&
+        !isCameraInterrupted
+    }
+}
+
 /// A scanner-domain encounter. Its id is created by `CardScanner` at the exact
 /// frame that produced a confirmed OCR observation; generation is only for
 /// invalidating asynchronous identification work.
@@ -658,6 +676,7 @@ final class ScannerViewModel: ObservableObject {
     /// callback to arm the delayed re-check latch, including swipe dismissal.
     private var presentedPriceCheckIdentifier: ScanIdentifier?
     private var scanGeneration = 0
+    private var recognitionEligibility = ScannerRecognitionEligibility()
     /// Proofs arrive independently of catalog resolution. A provisional proof
     /// is held by encounter id until its successful commit can associate it with
     /// a committed presentation.
@@ -770,6 +789,7 @@ final class ScannerViewModel: ObservableObject {
         }
         scanner.onCameraInterruptionEnded = { [weak self] in
             Task { @MainActor in
+                self?.recognitionEligibility.isCameraInterrupted = false
                 self?.resumeRecognitionIfPossible()
             }
         }
@@ -802,7 +822,13 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Session lifecycle
 
-    func start(context: ModelContext) {
+    func start(context: ModelContext, isSceneActive: Bool = true) {
+        recognitionEligibility.isScannerVisible = true
+        recognitionEligibility.isSceneActive = isSceneActive
+        // A fresh visible scanner owns a new camera-session opportunity. If a
+        // platform interruption ended while the tab was away, its stale
+        // callback must not keep the new session paused forever.
+        recognitionEligibility.isCameraInterrupted = false
         store = CollectionStore(context: context)
         prices = PriceStore(context: context)
         // Price Check is an independent, network-paced persistence flow. Keep
@@ -815,7 +841,9 @@ final class ScannerViewModel: ObservableObject {
         // Decode the merged Pokémon checklist and resolved-card cache before
         // the first confirmed frame needs either one.
         Task { await catalog.prewarm() }
-        scanner.start()
+        if isSceneActive {
+            scanner.start()
+        }
 
         // Magic's OCR vocabulary is its set directory, so the compiled-in
         // snapshot goes in before the first frame rather than after a network
@@ -831,12 +859,21 @@ final class ScannerViewModel: ObservableObject {
     /// the band from being counted twice on return. Both are kept; only the
     /// camera stops. `endSession()` remains the one deliberate reset.
     func viewDisappeared() {
+        recognitionEligibility.isScannerVisible = false
         invalidatePendingScan()
         scanner.stop()
     }
 
     func scenePhaseChanged(isActive: Bool) {
+        recognitionEligibility.isSceneActive = isActive
         if isActive {
+            // Returning to the foreground is itself a valid recovery boundary;
+            // recognition must not depend on AVCaptureSession delivering its
+            // separate interruption-ended notification.
+            recognitionEligibility.isCameraInterrupted = false
+            if recognitionEligibility.isScannerVisible {
+                scanner.start()
+            }
             if let result = priceCheckResult,
                result.quoteState == .checking,
                !result.isRefreshing {
@@ -848,6 +885,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func cameraInterruptionStarted() {
+        recognitionEligibility.isCameraInterrupted = true
         invalidatePendingScan()
         show(ScanNote(text: "Camera interrupted — scan again when it returns", tone: .info))
     }
@@ -856,11 +894,13 @@ final class ScannerViewModel: ObservableObject {
     /// deliberately elsewhere, and a card added behind a sheet would be a card
     /// nobody saw being added.
     func pauseForPresentation() {
+        recognitionEligibility.isBlockedByPresentation = true
         dismissReceipt()
         scanner.pauseRecognition()
     }
 
     func resumeAfterPresentation() {
+        recognitionEligibility.isBlockedByPresentation = false
         settingsDismissed()
     }
 
@@ -869,6 +909,7 @@ final class ScannerViewModel: ObservableObject {
     /// when either path closes; `shouldAutoRefresh` is intentionally one-shot
     /// and cannot represent this later user action.
     func settingsDismissed() {
+        recognitionEligibility.isBlockedByPresentation = false
         feedback.prepare()
         resumeRecognitionIfPossible()
         guard let result = priceCheckResult,
@@ -880,6 +921,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func dismissPriceCheckResult() {
+        recognitionEligibility.isBlockedByPresentation = false
         let dismissedIdentifier = priceCheckResult?.resolvedScan.request.identifier
             ?? presentedPriceCheckIdentifier
         cancelPriceCheckRefresh()
@@ -2025,6 +2067,7 @@ final class ScannerViewModel: ObservableObject {
         pendingChoice = nil
         pendingPrintRunChoice = nil
         pendingIdentityChoice = nil
+        recognitionEligibility.isBlockedByPresentation = true
         scanner.pauseRecognition()
         let result = priceCheckCoordinator.present(resolvedScan)
         presentedPriceCheckIdentifier = resolvedScan.request.identifier
@@ -2136,7 +2179,8 @@ final class ScannerViewModel: ObservableObject {
     /// Settings and review sheets may be opened while a finish question is
     /// pending. Dismissing either sheet must not restart OCR behind that question.
     private func resumeRecognitionIfPossible() {
-        guard priceCheckResult == nil else { return }
+        guard recognitionEligibility.allowsRecognition,
+              priceCheckResult == nil else { return }
         guard pendingChoice == nil,
               pendingPrintRunChoice == nil,
               pendingIdentityChoice == nil,

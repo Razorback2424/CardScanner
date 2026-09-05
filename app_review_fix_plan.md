@@ -117,6 +117,38 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Review against `ef689ce` — planned remediation
+
+The following slices track the supplied static review in its stated roadmap
+order. Runtime claims remain limited to the verification recorded for each
+slice; physical-camera, two-device CloudKit, and provider behavior require
+their corresponding environments.
+
+### Baseline
+
+- Branch retained as `codex/review-fixes` to preserve the reviewed commit and
+  existing user-owned history; this differs from the generic
+  `fix/app-review-preflight` branch name in the safe-fixer template.
+- `xcodebuild build-for-testing -quiet -project TradingCardScanner.xcodeproj
+  -scheme TradingCardScanner -destination 'generic/platform=iOS Simulator'
+  -derivedDataPath /private/tmp/trading-card-scanner-baseline
+  SWIFT_ENABLE_EXPLICIT_MODULES=NO` — passed.
+- Simulator test execution is currently unavailable: CoreSimulatorService
+  reports no discoverable runtime.
+
+### Slice 1 — scanner lifecycle eligibility
+
+- [x] Add explicit scene-active, scanner-visible, presentation-blocked, and
+  camera-interruption eligibility; use it for all recognition resumes.
+- [x] Restart the capture session when the visible scanner returns to an active
+  scene, without requiring `interruptionEndedNotification`.
+- [x] Add pure eligibility regression coverage.
+
+Status: implemented in `557e935`, awaiting simulator execution. Generic
+build-for-testing passes; source changes are limited to `ScannerViewModel`,
+`ScannerView`, and the existing `CardLatchTests` file. Rollback is the
+slice-local commit.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on

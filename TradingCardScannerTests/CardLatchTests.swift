@@ -5,6 +5,25 @@ import XCTest
 /// The latch is the reason automatic collection entry is defensible, so these
 /// cases are written as the physical situations they stand for.
 final class CardLatchTests: XCTestCase {
+    func testRecognitionEligibilityRequiresActiveVisibleUnblockedScanner() {
+        var eligibility = ScannerRecognitionEligibility()
+        XCTAssertFalse(eligibility.allowsRecognition)
+
+        eligibility.isScannerVisible = true
+        XCTAssertTrue(eligibility.allowsRecognition)
+
+        eligibility.isSceneActive = false
+        XCTAssertFalse(eligibility.allowsRecognition)
+        eligibility.isSceneActive = true
+
+        eligibility.isBlockedByPresentation = true
+        XCTAssertFalse(eligibility.allowsRecognition)
+        eligibility.isBlockedByPresentation = false
+
+        eligibility.isCameraInterrupted = true
+        XCTAssertFalse(eligibility.allowsRecognition)
+    }
+
     func testTrackerFeedsLatestObservationIntoTheNextRequest() {
         let seed = VNDetectedObjectObservation(
             boundingBox: CGRect(x: 0.2, y: 0.2, width: 0.4, height: 0.4)
