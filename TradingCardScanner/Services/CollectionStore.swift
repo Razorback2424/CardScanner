@@ -69,6 +69,89 @@ extension CollectionStoreError: LocalizedError {
     }
 }
 
+/// Process-local identity state shared by `CollectionStore` values that use the
+/// same model container. A store is intentionally a value wrapper around a
+/// context, so putting this cache on the wrapper would recreate it for every
+/// button tap in the interactive UI.
+private final class CollectionStoreSession: @unchecked Sendable {
+    enum LegacyIdentityLookup: Equatable {
+        case resolved(String)
+        case noMatch
+    }
+
+    private static let capacity = 1_024
+    private let lock = NSLock()
+    private var lookups: [String: LegacyIdentityLookup] = [:]
+    private var usage: [String] = []
+
+    func lookup(for legacyKey: String) -> LegacyIdentityLookup? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let result = lookups[legacyKey] else { return nil }
+        touch(legacyKey)
+        return result
+    }
+
+    func store(_ result: LegacyIdentityLookup, for legacyKey: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        lookups[legacyKey] = result
+        touch(legacyKey)
+        while lookups.count > Self.capacity, let oldest = usage.first {
+            usage.removeFirst()
+            lookups[oldest] = nil
+        }
+    }
+
+    func invalidate() {
+        lock.lock()
+        lookups.removeAll(keepingCapacity: true)
+        usage.removeAll(keepingCapacity: true)
+        lock.unlock()
+    }
+
+    private func touch(_ legacyKey: String) {
+        usage.removeAll { $0 == legacyKey }
+        usage.append(legacyKey)
+    }
+}
+
+/// Keeps the alias cache session-scoped without making callers thread a
+/// reference through every view and service that creates a `CollectionStore`.
+/// Weak container entries keep test containers and discarded app sessions from
+/// being retained by the registry.
+private final class CollectionStoreSessionRegistry: @unchecked Sendable {
+    static let shared = CollectionStoreSessionRegistry()
+
+    private final class Entry {
+        weak var container: ModelContainer?
+        let session: CollectionStoreSession
+
+        init(container: ModelContainer, session: CollectionStoreSession) {
+            self.container = container
+            self.session = session
+        }
+    }
+
+    private let lock = NSLock()
+    private var entries: [ObjectIdentifier: Entry] = [:]
+
+    func session(for container: ModelContainer) -> CollectionStoreSession {
+        lock.lock()
+        defer { lock.unlock() }
+
+        entries = entries.filter { $0.value.container != nil }
+        let identifier = ObjectIdentifier(container)
+        if let entry = entries[identifier], entry.container != nil {
+            return entry.session
+        }
+
+        let session = CollectionStoreSession()
+        entries[identifier] = Entry(container: container, session: session)
+        return session
+    }
+}
+
 /// Every write to the collection goes through here.
 ///
 /// Auto-add means mutations now happen without a confirmation step, so the
@@ -86,6 +169,12 @@ extension CollectionStoreError: LocalizedError {
 /// wrong half of it.
 struct CollectionStore {
     let context: ModelContext
+    private let session: CollectionStoreSession
+
+    init(context: ModelContext) {
+        self.context = context
+        self.session = CollectionStoreSessionRegistry.shared.session(for: context.container)
+    }
 
     private static let existingCollectionBackfillVersionKey =
         "collectionActivity.existingCollectionBackfillVersion"
@@ -260,6 +349,12 @@ struct CollectionStore {
         guard MagicTreatmentKeyCodec.legacyCollectionKeys(for: legacyKey).isEmpty else {
             return nil
         }
+        if let cached = session.lookup(for: legacyKey) {
+            switch cached {
+            case let .resolved(canonicalKey): return canonicalKey
+            case .noMatch: return nil
+            }
+        }
         // A canonical key is this key with one or more `#treatment=` components
         // spliced in ahead of any legacy Pokémon print-run suffix, so every
         // candidate begins with this prefix. Narrowing on it keeps an ordinary
@@ -288,8 +383,12 @@ struct CollectionStore {
                     .contains(legacyKey)
             }
         )
-        guard candidates.count == 1 else { return nil }
-        return candidates.first
+        guard candidates.count == 1, let canonicalKey = candidates.first else {
+            session.store(.noMatch, for: legacyKey)
+            return nil
+        }
+        session.store(.resolved(canonicalKey), for: legacyKey)
+        return canonicalKey
     }
 
     /// Consolidates the physical rows that represent one logical position.
@@ -1185,6 +1284,7 @@ struct CollectionStore {
         }
 
         do {
+            let collectionStore = CollectionStore(context: context)
             let ledger = InventoryLedger(context: context)
             let cards = try context.fetch(FetchDescriptor<CollectedCard>())
             let projection = LogicalCollection.project(cards: cards, ledger: ledger)
@@ -1260,7 +1360,7 @@ struct CollectionStore {
                 )
                 switch outcome {
                 case .appended:
-                    _ = try CollectionStore(context: context).appendActivity(
+                    _ = try collectionStore.appendActivity(
                         card,
                         source: .correction,
                         kind: .quantityAdjusted,
@@ -1278,6 +1378,7 @@ struct CollectionStore {
                 }
             }
             try context.save()
+            collectionStore.invalidateIdentityAliasCache()
         } catch {
             context.rollback()
             throw error
@@ -2202,10 +2303,17 @@ struct CollectionStore {
     private func commit() throws {
         do {
             try context.save()
+            session.invalidate()
         } catch {
             context.rollback()
             throw error
         }
+    }
+
+    /// Clears the interactive alias memo after a successful save performed by
+    /// a bulk or repair path that owns the context directly.
+    func invalidateIdentityAliasCache() {
+        session.invalidate()
     }
 
     /// Moves one copy from the variant it was recorded as to the one it really

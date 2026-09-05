@@ -815,6 +815,7 @@ enum CollectionCSV {
                         // its valid siblings. `batchSize` remains the progress and
                         // scheduling granularity, not the durability boundary.
                         try context.save()
+                        collectionStore.invalidateIdentityAliasCache()
                         inserted += rowInserted
                         merged += rowMerged
                         importedQuantity += rowImportedQuantity

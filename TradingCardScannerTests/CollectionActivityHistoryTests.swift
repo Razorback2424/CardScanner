@@ -42,6 +42,31 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
 
+    func testLegacyAliasCacheIsSharedAndInvalidatedAfterCollectionMutation() throws {
+        let context = try makeContext()
+        let legacyStore = CollectionStore(context: context)
+        let mutationStore = CollectionStore(context: context)
+        let card = try magicIdentifiedCard()
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let legacyKey = try XCTUnwrap(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey).first
+        )
+
+        XCTAssertNil(try legacyStore.card(forAnyKey: legacyKey))
+
+        _ = try mutationStore.add(
+            card,
+            resolved: ResolvedVariant(variant: .foil, resolution: .userConfirmed),
+            source: .scan
+        )
+
+        let resolved = try XCTUnwrap(try legacyStore.card(forAnyKey: legacyKey))
+        XCTAssertEqual(resolved.collectionKey, canonicalKey)
+        XCTAssertEqual(resolved.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+    }
+
     func testUndoLeavesOriginalActivityAndAppendsAnUndoneEntry() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)

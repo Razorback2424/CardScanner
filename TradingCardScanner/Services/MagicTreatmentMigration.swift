@@ -176,6 +176,7 @@ enum MagicTreatmentMigration {
         fetchBatch: (@Sendable ([String]) async throws -> [ScryfallCard])?
     ) async -> Report {
         var report = Report()
+        let collectionStore = CollectionStore(context: context)
 
         // The row watermark is the migration's source of truth. A bounded count
         // keeps steady-state launches from materialising the entire collection
@@ -506,6 +507,7 @@ enum MagicTreatmentMigration {
         do {
             if context.hasChanges {
                 try context.save()
+                collectionStore.invalidateIdentityAliasCache()
             }
         } catch {
             context.rollback()
