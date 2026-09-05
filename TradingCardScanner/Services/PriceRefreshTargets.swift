@@ -8,7 +8,7 @@ import SwiftData
 /// background refresh never needs a SwiftUI view or a ledger instance.
 @MainActor
 enum PriceRefreshTargets {
-    static func make(
+    private static func make(
         cards: [CollectedCard],
         priceRecords: [PriceRecord],
         usesPriceFallback: Bool,

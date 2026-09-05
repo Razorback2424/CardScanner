@@ -87,7 +87,24 @@ extension CollectionStoreError: LocalizedError {
 struct CollectionStore {
     let context: ModelContext
 
+    private static let existingCollectionBackfillVersionKey =
+        "collectionActivity.existingCollectionBackfillVersion"
+    private static let existingCollectionBackfillVersion = 1
+
     private var ledger: InventoryLedger { InventoryLedger(context: context) }
+
+    /// Read-only lineage materialized by a history screen. The write path keeps
+    /// its strict per-operation fetches, while presentation can validate every
+    /// row against one snapshot of the events already observed by SwiftUI.
+    struct LineageIndex {
+        let eventsByOperationID: [UUID: [InventoryEvent]]
+        let reversedEventIDs: Set<UUID>
+
+        init(events: [InventoryEvent]) {
+            self.eventsByOperationID = Dictionary(grouping: events, by: \.operationID)
+            self.reversedEventIDs = Set(events.compactMap(\.reversesEventID))
+        }
+    }
 
     /// Which flow a source represents.
     ///
@@ -137,6 +154,18 @@ struct CollectionStore {
     /// once, so opening the history screen cannot create one transaction per row.
     func backfillExistingCollectionIfNeeded() throws {
         do {
+            let hasLegacyActivities = try context.fetchCount(
+                FetchDescriptor<CollectionActivity>(
+                    predicate: #Predicate { $0.kindRaw == "" }
+                )
+            ) > 0
+            let hasCompletedWatermark = UserDefaults.standard.integer(
+                forKey: Self.existingCollectionBackfillVersionKey
+            ) >= Self.existingCollectionBackfillVersion
+            if !hasLegacyActivities, hasCompletedWatermark {
+                return
+            }
+
             let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
             var didChange = false
 
@@ -178,6 +207,10 @@ struct CollectionStore {
             }
 
             if didChange { try commit() }
+            UserDefaults.standard.set(
+                Self.existingCollectionBackfillVersion,
+                forKey: Self.existingCollectionBackfillVersionKey
+            )
         } catch {
             context.rollback()
             throw error
@@ -406,8 +439,9 @@ struct CollectionStore {
             representative.variantLabel = finishID.capitalized
         }
 
-        let allActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
-            .filter { sourceKeys.contains($0.collectionKey) }
+        let allActivities = try sourceKeys.sorted().flatMap { key in
+            try activities(forKey: key)
+        }
         var rewrittenSnapshots: [(CollectionActivity, Data?)] = []
         rewrittenSnapshots.reserveCapacity(allActivities.count)
         for activity in allActivities {
@@ -461,8 +495,13 @@ struct CollectionStore {
             rewrittenSnapshots.append((activity, snapshotData))
         }
 
-        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
-            .filter { sourceKeys.contains($0.collectionKey) }
+        let events = try sourceKeys.sorted().flatMap { key in
+            try context.fetch(
+                FetchDescriptor<InventoryEvent>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+            )
+        }
         for activity in allActivities {
             activity.collectionKey = canonicalKey
             activity.name = representative.name
@@ -871,13 +910,41 @@ struct CollectionStore {
         expectedCollectionKey: String? = nil,
         expectedQuantity: Int? = nil
     ) throws -> [(UUID, [InventoryEvent])] {
+        var eventsByOperationID: [UUID: [InventoryEvent]] = [:]
+        var reversedEventIDs: Set<UUID> = []
+        for operationID in operationIDs {
+            let events = try ledger.events(forOperationID: operationID)
+            for event in events {
+                let reversals = try ledger.reversalEvents(forEventID: event.eventID)
+                if !reversals.isEmpty {
+                    reversedEventIDs.insert(event.eventID)
+                }
+            }
+            eventsByOperationID[operationID] = events
+        }
+
+        return try Self.validateLineage(
+            operationIDs,
+            eventsByOperationID: eventsByOperationID,
+            reversedEventIDs: reversedEventIDs,
+            expectedCollectionKey: expectedCollectionKey,
+            expectedQuantity: expectedQuantity
+        )
+    }
+
+    private static func validateLineage(
+        _ operationIDs: [UUID],
+        eventsByOperationID: [UUID: [InventoryEvent]],
+        reversedEventIDs: Set<UUID>,
+        expectedCollectionKey: String? = nil,
+        expectedQuantity: Int? = nil
+    ) throws -> [(UUID, [InventoryEvent])] {
         guard !operationIDs.isEmpty, Set(operationIDs).count == operationIDs.count else {
             throw CollectionStoreError.invalidLedgerOperation(UUID())
         }
 
         let lineage = try operationIDs.map { operationID in
-            let events = try ledger.events(forOperationID: operationID)
-            guard !events.isEmpty else {
+            guard let events = eventsByOperationID[operationID], !events.isEmpty else {
                 throw CollectionStoreError.missingLedgerOperation(operationID)
             }
             guard events.allSatisfy({ $0.kind != .initialBalance }) else {
@@ -898,7 +965,7 @@ struct CollectionStore {
             }
 
             for event in events {
-                guard try ledger.reversalEvents(forEventID: event.eventID).isEmpty else {
+                guard !reversedEventIDs.contains(event.eventID) else {
                     throw CollectionStoreError.ledgerConflict(
                         "\(operationID.uuidString) was already reversed"
                     )
@@ -942,6 +1009,24 @@ struct CollectionStore {
         )) != nil
     }
 
+    /// Bulk, read-only equivalent used by history rows. It intentionally shares
+    /// the same pure validator as the write preflight so disabled actions cannot
+    /// drift from the checks a mutation will enforce.
+    static func hasValidLineage(
+        _ operationIDs: [UUID],
+        for collectionKey: String,
+        quantity: Int,
+        using index: LineageIndex
+    ) -> Bool {
+        (try? validateLineage(
+            operationIDs,
+            eventsByOperationID: index.eventsByOperationID,
+            reversedEventIDs: index.reversedEventIDs,
+            expectedCollectionKey: collectionKey,
+            expectedQuantity: quantity
+        )) != nil
+    }
+
     /// Removal activities point at their disposal operation, whose sign is the
     /// inverse of an acquisition lineage. Keep this check beside the store's
     /// restore preflight so the disabled reason in the history UI is truthful.
@@ -959,6 +1044,35 @@ struct CollectionStore {
         guard let lineage = try? preflightLineage([operationID]),
               lineage.count == 1,
               lineage[0].1.count == 1 else {
+            return false
+        }
+        let event = lineage[0].1[0]
+        return event.kind == .dispose
+            && event.collectionKey == activity.collectionKey
+            && event.deltaQuantity == -snapshot.quantity
+    }
+
+    static func hasValidRemovalLineage(
+        _ activity: CollectionActivity,
+        using index: LineageIndex
+    ) -> Bool {
+        guard activity.kind == .removed,
+              let data = activity.removalSnapshotData,
+              let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
+              snapshot.collectionKey == activity.collectionKey,
+              snapshot.quantity > 0,
+              let operationID = snapshot.operationID,
+              activity.ledgerOperationIDs == [operationID] else {
+            return false
+        }
+
+        guard let lineage = try? validateLineage(
+            [operationID],
+            eventsByOperationID: index.eventsByOperationID,
+            reversedEventIDs: index.reversedEventIDs
+        ),
+        lineage.count == 1,
+        lineage[0].1.count == 1 else {
             return false
         }
         let event = lineage[0].1[0]

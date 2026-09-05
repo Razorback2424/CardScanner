@@ -8,6 +8,39 @@ import SwiftData
 /// replaced on every refresh — and keeping the writers apart is what stops one
 /// subsystem's bookkeeping from becoming another's retry gate.
 @MainActor
+final class ProductIdentityIndex {
+    private(set) var byKey: [String: ProductIdentity]
+    private let loadedSuccessfully: Bool
+
+    init(context: ModelContext) {
+        do {
+            let identities = try context.fetch(FetchDescriptor<ProductIdentity>())
+            self.byKey = Dictionary(
+                identities.map { ($0.key, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            self.loadedSuccessfully = true
+        } catch {
+            // Preserve the old best-effort behavior if the index fetch itself
+            // is unreadable. Callers fall back to the keyed fetch methods and
+            // therefore never turn a read failure into a duplicate insert.
+            self.byKey = [:]
+            self.loadedSuccessfully = false
+        }
+    }
+
+    func identity(forKey key: String) -> ProductIdentity? {
+        byKey[key]
+    }
+
+    func insert(_ identity: ProductIdentity) {
+        byKey[identity.key] = identity
+    }
+
+    var isUsable: Bool { loadedSuccessfully }
+}
+
+@MainActor
 struct ProductIdentityStore {
     let context: ModelContext
 
@@ -17,21 +50,37 @@ struct ProductIdentityStore {
         return try? context.fetch(descriptor).first
     }
 
+    private func identity(
+        forKey key: String,
+        using index: ProductIdentityIndex?
+    ) -> ProductIdentity? {
+        guard let index, index.isUsable else { return identity(forKey: key) }
+        return index.identity(forKey: key)
+    }
+
     /// Whether the resolver should look this card up at all.
     ///
     /// A card with a current record — resolved *or* recently unmatched — is
     /// skipped, which is what keeps a collection full of vendor-less cards from
     /// re-running the same fruitless searches on every refresh.
-    func needsResolution(forKey key: String) -> Bool {
-        guard let identity = identity(forKey: key) else { return true }
+    func needsResolution(
+        forKey key: String,
+        using index: ProductIdentityIndex? = nil
+    ) -> Bool {
+        guard let identity = identity(forKey: key, using: index) else { return true }
         return !identity.isCurrent()
     }
 
     /// The vendor's variant handle, which is what a batch request is built
     /// from. Present means this card can be repriced twenty-to-a-request
     /// instead of one search at a time.
-    func cachedVariantID(forKey key: String) -> String? {
-        guard let identity = identity(forKey: key), identity.isCurrent() else { return nil }
+    func cachedVariantID(
+        forKey key: String,
+        using index: ProductIdentityIndex? = nil
+    ) -> String? {
+        guard let identity = identity(forKey: key, using: index), identity.isCurrent() else {
+            return nil
+        }
         return identity.vendorVariantID
     }
 
@@ -42,16 +91,18 @@ struct ProductIdentityStore {
         cardID: String?,
         variantID: String?,
         treatmentIDs: [String] = [],
-        at date: Date = .now
+        at date: Date = .now,
+        using index: ProductIdentityIndex? = nil
     ) {
         guard cardID != nil || variantID != nil else { return }
-        let identity = self.identity(forKey: key) ?? {
+        let identity = self.identity(forKey: key, using: index) ?? {
             let created = ProductIdentity(
                 key: key,
                 vendor: .justTCG,
                 magicTreatmentIDs: treatmentIDs
             )
             context.insert(created)
+            index?.insert(created)
             return created
         }()
         if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
@@ -64,8 +115,13 @@ struct ProductIdentityStore {
         identity.unmatchedAt = nil
     }
 
-    func cachedCardID(forKey key: String) -> String? {
-        guard let identity = identity(forKey: key), identity.isCurrent() else { return nil }
+    func cachedCardID(
+        forKey key: String,
+        using index: ProductIdentityIndex? = nil
+    ) -> String? {
+        guard let identity = identity(forKey: key, using: index), identity.isCurrent() else {
+            return nil
+        }
         return identity.vendorCardID
     }
 
@@ -78,7 +134,8 @@ struct ProductIdentityStore {
         _ outcome: ProductPriceOutcome,
         forKey key: String,
         treatmentIDs: [String] = [],
-        at date: Date = .now
+        at date: Date = .now,
+        using index: ProductIdentityIndex? = nil
     ) {
         switch outcome {
         case .requestFailed, .unsupportedFinish, .unsupportedTreatment, .budgetReached, .rateLimited:
@@ -87,13 +144,14 @@ struct ProductIdentityStore {
             break
         }
 
-        let identity = self.identity(forKey: key) ?? {
+        let identity = self.identity(forKey: key, using: index) ?? {
             let created = ProductIdentity(
                 key: key,
                 vendor: .justTCG,
                 magicTreatmentIDs: treatmentIDs
             )
             context.insert(created)
+            index?.insert(created)
             return created
         }()
         if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {

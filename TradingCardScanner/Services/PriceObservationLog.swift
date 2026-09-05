@@ -116,6 +116,12 @@ enum PriceObservationRules {
 /// the app legitimately holds. Only an `explicitInvalidation` can do that.
 struct PriceObservationLog {
     let context: ModelContext
+    let index: PriceRefreshDataIndex?
+
+    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+        self.context = context
+        self.index = index
+    }
 
     /// Observation rows are local-only, so two SwiftData contexts in the same
     /// process can otherwise both observe the same absence and seed it. The
@@ -133,9 +139,15 @@ struct PriceObservationLog {
     // MARK: - Reading
 
     func newestObservation(instrumentKey: String) -> PriceObservation? {
+        if let index, index.isUsable {
+            return index.newestObservation(forInstrumentKey: instrumentKey)
+        }
         var descriptor = FetchDescriptor<PriceObservation>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey },
-            sortBy: [SortDescriptor(\.receivedAt, order: .reverse)]
+            sortBy: [
+                SortDescriptor(\.receivedAt, order: .reverse),
+                SortDescriptor(\.id, order: .reverse)
+            ]
         )
         descriptor.fetchLimit = 1
         return try? context.fetch(descriptor).first
@@ -144,12 +156,18 @@ struct PriceObservationLog {
     func observations(instrumentKey: String) -> [PriceObservation] {
         let descriptor = FetchDescriptor<PriceObservation>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey },
-            sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+            sortBy: [
+                SortDescriptor(\.receivedAt, order: .forward),
+                SortDescriptor(\.id, order: .forward)
+            ]
         )
         return (try? context.fetch(descriptor)) ?? []
     }
 
     func checkDay(instrumentKey: String, day: Date) -> PriceCheckDay? {
+        if let index, index.isUsable, index.canReadCheckDay(day) {
+            return index.checkDay(instrumentKey: instrumentKey, day: day)
+        }
         var descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey && $0.portfolioDay == day }
         )
@@ -226,7 +244,7 @@ struct PriceObservationLog {
         source: PriceSource,
         at date: Date = .now
     ) -> PriceObservation? {
-        let record = PriceStore(context: context).record(forKey: instrumentKey)
+        let record = PriceStore(context: context, index: index).record(forKey: instrumentKey)
         let previous = newestObservation(instrumentKey: instrumentKey)
 
         // Invalidation is idempotent. This also repairs a record created by an
@@ -260,6 +278,7 @@ struct PriceObservationLog {
         )
         if let record, !record.invalidate(at: date) { return nil }
         context.insert(observation)
+        index?.insert(observation)
         return observation
     }
 
@@ -277,16 +296,17 @@ struct PriceObservationLog {
                 existing.lastSuccessfulCheckAt = date
                 existing.sourceRaw = source?.rawValue ?? existing.sourceRaw
             }
+            index?.insert(existing)
             return
         }
-        context.insert(
-            PriceCheckDay(
-                instrumentKey: instrumentKey,
-                portfolioDay: day,
-                lastSuccessfulCheckAt: date,
-                source: source
-            )
+        let checkDay = PriceCheckDay(
+            instrumentKey: instrumentKey,
+            portfolioDay: day,
+            lastSuccessfulCheckAt: date,
+            source: source
         )
+        context.insert(checkDay)
+        index?.insert(checkDay)
     }
 
     // MARK: - Synced-record reconciliation
@@ -374,7 +394,7 @@ struct PriceObservationLog {
         Self.backfillLock.lock()
         defer { Self.backfillLock.unlock() }
 
-        let allRecords = PriceStore(context: context).allRecords()
+        let allRecords = PriceStore(context: context, index: index).allRecords()
         var recordsByKey: [String: PriceRecord] = [:]
         for record in allRecords {
             if let existing = recordsByKey[record.key],
@@ -401,9 +421,12 @@ struct PriceObservationLog {
         }
         var newestByInstrument: [String: PriceObservation] = [:]
         for observation in observations {
-            if let existing = newestByInstrument[observation.instrumentKey],
-               existing.receivedAt >= observation.receivedAt {
-                continue
+            if let existing = newestByInstrument[observation.instrumentKey] {
+                let existingIsNewer =
+                    existing.receivedAt > observation.receivedAt
+                    || (existing.receivedAt == observation.receivedAt
+                        && existing.id.uuidString >= observation.id.uuidString)
+                if existingIsNewer { continue }
             }
             newestByInstrument[observation.instrumentKey] = observation
         }
@@ -545,19 +568,19 @@ struct PriceObservationLog {
         kind: PriceObservationKind,
         instrumentKey: String
     ) {
-        context.insert(
-            PriceObservation(
-                instrumentKey: instrumentKey,
-                kind: kind,
-                amount: candidate.value.amount,
-                currencyCode: candidate.value.currencyCode,
-                source: candidate.source,
-                sourceVariantID: candidate.value.sourceVariantID,
-                marketVariantID: candidate.value.marketVariantID,
-                effectiveAt: candidate.effectiveAt,
-                receivedAt: candidate.receivedAt,
-                isSourceStamped: candidate.isSourceStamped
-            )
+        let observation = PriceObservation(
+            instrumentKey: instrumentKey,
+            kind: kind,
+            amount: candidate.value.amount,
+            currencyCode: candidate.value.currencyCode,
+            source: candidate.source,
+            sourceVariantID: candidate.value.sourceVariantID,
+            marketVariantID: candidate.value.marketVariantID,
+            effectiveAt: candidate.effectiveAt,
+            receivedAt: candidate.receivedAt,
+            isSourceStamped: candidate.isSourceStamped
         )
+        context.insert(observation)
+        index?.insert(observation)
     }
 }

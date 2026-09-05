@@ -128,7 +128,7 @@ enum PortfolioReplaySnapshotBuilder {
         projection: LogicalCollectionProjection,
         valuations: InstrumentValuationIndex
     ) -> [PortfolioHoldingSnapshot] {
-        projection.positions.compactMap { position in
+        let holdings: [PortfolioHoldingSnapshot] = projection.positions.compactMap { position in
             guard position.quantity > 0 else { return nil }
             let card = position.representative
             let price = valuations.valuation(for: position.priceStorageKey).unitPrice
@@ -146,6 +146,24 @@ enum PortfolioReplaySnapshotBuilder {
                 quantity: position.quantity,
                 currentValue: price?.multiplied(by: position.quantity)
             )
+        }
+
+        // The dashboard's largest-holdings section only needs the first five.
+        // Publish the expensive ordering with the snapshot so SwiftUI does not
+        // sort the entire portfolio every time an unrelated state change redraws
+        // the screen. Priced holdings remain ahead of unpriced holdings.
+        return holdings.sorted { lhs, rhs in
+            switch (lhs.currentValue, rhs.currentValue) {
+            case let (lhsValue?, rhsValue?):
+                if lhsValue != rhsValue { return lhsValue > rhsValue }
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            case (nil, nil):
+                break
+            }
+            return lhs.collectionKey < rhs.collectionKey
         }
     }
 

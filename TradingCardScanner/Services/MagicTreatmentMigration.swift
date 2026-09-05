@@ -177,6 +177,34 @@ enum MagicTreatmentMigration {
     ) async -> Report {
         var report = Report()
 
+        // The row watermark is the migration's source of truth. A bounded count
+        // keeps steady-state launches from materialising the entire collection
+        // merely to discover that there is no work left; a newly inserted or
+        // synced row starts at the default zero and remains eligible.
+        let migrationVersion = currentVersion
+        let magicGameRawValue = CardGame.magic.rawValue
+        let pendingCount: Int
+        do {
+            pendingCount = try context.fetchCount(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate {
+                        $0.game == magicGameRawValue
+                            && $0.magicTreatmentMigrationVersion < migrationVersion
+                    }
+                )
+            )
+        } catch {
+            report.fail("Could not count Magic collection rows: \(error)")
+            return report
+        }
+        // Once every row has passed this migration version, this phase must no
+        // longer mutate the identity store. In particular, do not clear a
+        // treatment-qualified vendor negative on every launch: that negative
+        // is the fallback's retry gate, and erasing it would spend quota again
+        // for a capability the current provider cannot answer. A future policy
+        // change should bump `currentVersion` or add its own migration gate.
+        guard pendingCount > 0 else { return report }
+
         let cards: [CollectedCard]
         do {
             cards = try context.fetch(FetchDescriptor<CollectedCard>())

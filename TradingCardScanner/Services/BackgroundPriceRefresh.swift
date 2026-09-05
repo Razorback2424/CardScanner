@@ -209,7 +209,7 @@ enum BackgroundPriceRefresh {
             if !targets.isEmpty {
                 await PriceRefreshController.shared.refresh(
                     targets,
-                    store: PriceStore(context: context)
+                    container: context.container
                 )
             }
         }

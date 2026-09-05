@@ -175,6 +175,131 @@ enum ArtworkDiagnostics {
     }
 }
 
+/// The refresh pipeline owns one of these for its isolated context. It replaces
+/// the three per-instrument predicate scans with one materialization per pass,
+/// while keeping the scalar store APIs best-effort when no pass index is used.
+/// This type is context-owned rather than `@MainActor`: callers must create and
+/// use it on the executor that owns its `ModelContext`, just like `PriceStore`
+/// and `CollectionStore`. The foreground refresh currently owns both on the
+/// main actor, but the type does not impose that policy on other context owners.
+final class PriceRefreshDataIndex {
+    struct CheckDayKey: Hashable {
+        let instrumentKey: String
+        let portfolioDay: Date
+    }
+
+    private(set) var recordsByKey: [String: [PriceRecord]]
+    /// Refresh decisions only need the newest observation for each instrument.
+    /// Keeping the full append-only history here made a multi-minute refresh
+    /// retain every observation ever recorded on the device.
+    private(set) var newestObservationsByInstrumentKey: [String: PriceObservation]
+    private(set) var checkDaysByKey: [CheckDayKey: PriceCheckDay]
+    private(set) var indexedPortfolioDays: Set<Date>
+    private let loadedSuccessfully: Bool
+
+    init(context: ModelContext) {
+        do {
+            let records = try context.fetch(FetchDescriptor<PriceRecord>())
+            let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+            let indexedDay = PortfolioCalendar.day(
+                containing: .now,
+                in: PortfolioCalendar.pinnedTimeZone() ?? .current
+            )
+            let checkDays = try context.fetch(
+                FetchDescriptor<PriceCheckDay>(
+                    predicate: #Predicate { $0.portfolioDay == indexedDay }
+                )
+            )
+            self.recordsByKey = Dictionary(grouping: records, by: \.key)
+            var newestByInstrumentKey: [String: PriceObservation] = [:]
+            for observation in observations {
+                guard let incumbent = newestByInstrumentKey[observation.instrumentKey] else {
+                    newestByInstrumentKey[observation.instrumentKey] = observation
+                    continue
+                }
+                if Self.isNewer(observation, than: incumbent) {
+                    newestByInstrumentKey[observation.instrumentKey] = observation
+                }
+            }
+            self.newestObservationsByInstrumentKey = newestByInstrumentKey
+            self.checkDaysByKey = Dictionary(
+                checkDays.map {
+                    (CheckDayKey(instrumentKey: $0.instrumentKey, portfolioDay: $0.portfolioDay), $0)
+                },
+                uniquingKeysWith: { first, _ in first }
+            )
+            self.indexedPortfolioDays = [indexedDay]
+            self.loadedSuccessfully = true
+        } catch {
+            // Fall back to the original keyed fetches if one table cannot be
+            // read. A partial index must never be mistaken for an empty store.
+            self.recordsByKey = [:]
+            self.newestObservationsByInstrumentKey = [:]
+            self.checkDaysByKey = [:]
+            self.indexedPortfolioDays = []
+            self.loadedSuccessfully = false
+        }
+    }
+
+    var isUsable: Bool { loadedSuccessfully }
+
+    func records(forKey key: String) -> [PriceRecord] {
+        recordsByKey[key] ?? []
+    }
+
+    func allRecords() -> [PriceRecord] {
+        recordsByKey.values.flatMap { $0 }
+    }
+
+    func setRecords(_ records: [PriceRecord], forKey key: String) {
+        if records.isEmpty { recordsByKey.removeValue(forKey: key) }
+        else { recordsByKey[key] = records }
+    }
+
+    func insert(_ record: PriceRecord) {
+        recordsByKey[record.key, default: []].append(record)
+    }
+
+    func newestObservation(forInstrumentKey key: String) -> PriceObservation? {
+        newestObservationsByInstrumentKey[key]
+    }
+
+    func insert(_ observation: PriceObservation) {
+        guard let incumbent = newestObservationsByInstrumentKey[observation.instrumentKey] else {
+            newestObservationsByInstrumentKey[observation.instrumentKey] = observation
+            return
+        }
+        if Self.isNewer(observation, than: incumbent) {
+            newestObservationsByInstrumentKey[observation.instrumentKey] = observation
+        }
+    }
+
+    func checkDay(instrumentKey: String, day: Date) -> PriceCheckDay? {
+        checkDaysByKey[CheckDayKey(instrumentKey: instrumentKey, portfolioDay: day)]
+    }
+
+    func canReadCheckDay(_ day: Date) -> Bool {
+        indexedPortfolioDays.contains(day)
+    }
+
+    func insert(_ checkDay: PriceCheckDay) {
+        checkDaysByKey[
+            CheckDayKey(instrumentKey: checkDay.instrumentKey, portfolioDay: checkDay.portfolioDay)
+        ] = checkDay
+        indexedPortfolioDays.insert(checkDay.portfolioDay)
+    }
+
+    private static func isNewer(
+        _ candidate: PriceObservation,
+        than incumbent: PriceObservation
+    ) -> Bool {
+        if candidate.receivedAt != incumbent.receivedAt {
+            return candidate.receivedAt > incumbent.receivedAt
+        }
+        return candidate.id.uuidString > incumbent.id.uuidString
+    }
+}
+
 /// Reads and writes `PriceRecord`s.
 ///
 /// Prices are keyed by printing plus variant, never by collection row, so eight
@@ -182,8 +307,33 @@ enum ArtworkDiagnostics {
 /// to keep fresh.
 struct PriceStore {
     let context: ModelContext
+    let index: PriceRefreshDataIndex?
+
+    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+        self.context = context
+        self.index = index
+    }
 
     func record(forKey key: String) -> PriceRecord? {
+        if let index, index.isUsable {
+            let indexedMatches = index.records(forKey: key)
+            if !indexedMatches.isEmpty {
+                return Self.authoritativeRecord(in: indexedMatches)
+            }
+
+            // The refresh index predates writes made through a sibling
+            // context. Recheck an indexed miss before treating the instrument
+            // as unknown; the same stale window that can duplicate a write can
+            // otherwise make an unchanged price look like a new one.
+            let fetchedMatches = (try? context.fetch(
+                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+            )) ?? []
+            if !fetchedMatches.isEmpty {
+                index.setRecords(fetchedMatches, forKey: key)
+            }
+            return Self.authoritativeRecord(in: fetchedMatches)
+        }
+
         let matches = (try? context.fetch(
             FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
         )) ?? []
@@ -227,6 +377,7 @@ struct PriceStore {
                 context.delete(duplicate)
                 removed += 1
             }
+            index?.setRecords([authoritative], forKey: authoritative.key)
         }
         return removed
     }
@@ -268,14 +419,29 @@ struct PriceStore {
         treatmentIDs: [String] = []
     ) -> PriceRecord? {
         do {
-            let matches = try context.fetch(
-                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
-            )
+            let matches: [PriceRecord]
+            if let index, index.isUsable {
+                let indexedMatches = index.records(forKey: key)
+                // The refresh index predates writes made through a sibling
+                // context. Recheck the store before creating a row so a scan
+                // that saved this instrument after the index was built cannot
+                // cause a duplicate PriceRecord.
+                matches = indexedMatches.isEmpty
+                    ? try context.fetch(
+                        FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+                    )
+                    : indexedMatches
+            } else {
+                matches = try context.fetch(
+                    FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+                )
+            }
             if matches.count > 1,
                let authoritative = Self.authoritativeRecord(in: matches) {
                 for duplicate in matches where duplicate !== authoritative {
                     context.delete(duplicate)
                 }
+                index?.setRecords([authoritative], forKey: key)
                 return authoritative
             }
             if let existing = matches.first {
@@ -295,6 +461,7 @@ struct PriceStore {
                 magicTreatmentIDs: treatmentIDs
             )
             context.insert(created)
+            index?.insert(created)
             return created
         } catch {
             return nil
@@ -302,7 +469,8 @@ struct PriceStore {
     }
 
     func allRecords() -> [PriceRecord] {
-        (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
+        if let index, index.isUsable { return index.allRecords() }
+        return (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
     }
 
     nonisolated static func record(
@@ -400,7 +568,7 @@ struct PriceStore {
             treatmentIDs: treatmentIDs
         ) else { return false }
 
-        let observationDecision = PriceObservationLog(context: context).ingest(
+        let observationDecision = PriceObservationLog(context: context, index: index).ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,
@@ -469,7 +637,7 @@ struct PriceStore {
         // engine and its whole value would surface as unexplained. But an
         // import is not a provider check, so it writes no `PriceCheckDay`:
         // coverage means "a provider answered today", and a CSV did not.
-        PriceObservationLog(context: context).ingest(
+        PriceObservationLog(context: context, index: index).ingest(
             .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: amount,

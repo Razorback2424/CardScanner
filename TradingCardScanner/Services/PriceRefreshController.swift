@@ -243,6 +243,7 @@ final class PriceRefreshController: ObservableObject {
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
     private var activeRefresh: Task<Void, Never>?
+    private var lastProgressPublicationAt: Date?
     /// A caller that arrives during a pass must not lose its newer targets.
     /// Keep them as a trailing queue; the owner drains it before exposing the
     /// refresh as finished.
@@ -255,6 +256,32 @@ final class PriceRefreshController: ObservableObject {
     private var isRefreshing: Bool {
         if case .refreshing = status { return true }
         return false
+    }
+
+    /// Publishes progress at a human-visible cadence while keeping terminal
+    /// states immediate. Fallback progress is carried in the same publication
+    /// so the two observers do not each update once per candidate.
+    private func publishRefreshingProgress(
+        completed: Int,
+        total: Int,
+        fallbackRemainingToday: Int? = nil,
+        force: Bool = false
+    ) {
+        let now = Date.now
+        let intervalElapsed = lastProgressPublicationAt.map {
+            now.timeIntervalSince($0) >= Self.progressPublishInterval
+        } ?? true
+        guard force || intervalElapsed else { return }
+
+        status = .refreshing(completed: completed, total: total)
+        if let fallbackRemainingToday {
+            fallbackStatus = .running(
+                completed: completed,
+                total: total,
+                remainingToday: fallbackRemainingToday
+            )
+        }
+        lastProgressPublicationAt = now
     }
 
     /// Targets that a refresh should bother with.
@@ -336,7 +363,7 @@ final class PriceRefreshController: ObservableObject {
     /// pass and queues any targets it added. Returning the second caller's
     /// targets was a silent no-op: pulling to refresh during the automatic
     /// startup check looked like a button that did nothing.
-    func refresh(_ targets: [PriceTarget], store: PriceStore) async {
+    func refresh(_ targets: [PriceTarget], container: ModelContainer) async {
         if let activeRefresh {
             enqueuePending(targets)
             await activeRefresh.value
@@ -349,7 +376,7 @@ final class PriceRefreshController: ObservableObject {
         // suspended until its trailing targets have been processed too.
         let task = Task { @MainActor [weak self] in
             guard let self else { return }
-            await self.runRefreshQueue(startingWith: targets, store: store)
+            await self.runRefreshQueue(startingWith: targets, container: container)
         }
         activeRefresh = task
         await task.value
@@ -368,7 +395,7 @@ final class PriceRefreshController: ObservableObject {
 
     private func runRefreshQueue(
         startingWith initialTargets: [PriceTarget],
-        store initialStore: PriceStore
+        container: ModelContainer
     ) async {
         // The active marker is cleared in the same actor turn as the final
         // empty-queue check. A late caller can therefore either join a live
@@ -380,8 +407,11 @@ final class PriceRefreshController: ObservableObject {
         // independent from the UI/main context so a collection mutation or
         // import rollback cannot discard its staged price evidence, and its
         // checkpoints cannot commit unrelated UI work.
-        let refreshContext = ModelContext(initialStore.context.container)
-        let store = PriceStore(context: refreshContext)
+        let refreshContext = ModelContext(container)
+        let store = PriceStore(
+            context: refreshContext,
+            index: PriceRefreshDataIndex(context: refreshContext)
+        )
         while !targets.isEmpty {
             await performRefresh(targets, store: store)
 
@@ -503,7 +533,11 @@ final class PriceRefreshController: ObservableObject {
         /// Consecutive responses where the provider could not be reached at all.
         var consecutiveUnreachable = 0
         var providerUnreachable = false
-        status = .refreshing(completed: 0, total: order.count)
+        publishRefreshingProgress(
+            completed: 0,
+            total: order.count,
+            force: true
+        )
 
         var cursor = 0
         await withTaskGroup(of: PriceFetchOutcome.self) { group in
@@ -683,7 +717,10 @@ final class PriceRefreshController: ObservableObject {
                     break
                 }
                 completed += 1
-                status = .refreshing(completed: completed, total: order.count)
+                publishRefreshingProgress(
+                    completed: completed,
+                    total: order.count
+                )
 
                 // Checkpoint periodically, matching the fallback stage's own
                 // interval. A pass over a few hundred cards is minutes long,
@@ -913,24 +950,24 @@ final class PriceRefreshController: ObservableObject {
         }
 
         let identities = ProductIdentityStore(context: store.context)
+        let identityIndex = ProductIdentityIndex(context: store.context)
         var priced = 0
         var stagedPriced = 0
         var persistenceFailed = false
         var completed = 0
         var stoppedByAllowance = false
         var budget = await fallbackService.budgetSnapshot()
-        status = .refreshing(completed: 0, total: eligibleCandidates.count)
-        fallbackStatus = .running(
+        publishRefreshingProgress(
             completed: 0,
             total: eligibleCandidates.count,
-            remainingToday: budget.remainingToday
+            fallbackRemainingToday: budget.remainingToday,
+            force: true
         )
         func publishFallbackProgress() {
-            status = .refreshing(completed: completed, total: eligibleCandidates.count)
-            fallbackStatus = .running(
+            publishRefreshingProgress(
                 completed: completed,
                 total: eligibleCandidates.count,
-                remainingToday: budget.remainingToday
+                fallbackRemainingToday: budget.remainingToday
             )
         }
 
@@ -981,12 +1018,12 @@ final class PriceRefreshController: ObservableObject {
             // or a graded slab it is the only identity that exists — there is no
             // search that could rediscover it and nothing to resolve.
             let cachedVariant = candidate.target.marketVariantID
-                ?? identities.cachedVariantID(forKey: key)
-            let cachedCard = identities.cachedCardID(forKey: key)
+                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
+            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
             // A card already known to be absent from the vendor costs nothing
             // on every subsequent refresh.
             if cachedVariant == nil, cachedCard == nil,
-               !identities.needsResolution(forKey: key) {
+               !identities.needsResolution(forKey: key, using: identityIndex) {
                 completed += 1
                 publishFallbackProgress()
                 continue
@@ -1071,7 +1108,8 @@ final class PriceRefreshController: ObservableObject {
                         identities: identities,
                         artworkRowIDsByPriceKey: artworkPending,
                         identityRowIDsByPriceKey: identityRows,
-                        context: store.context
+                        context: store.context,
+                        identityIndex: identityIndex
                     )
                 },
                 unmatched: { owners in
@@ -1117,7 +1155,9 @@ final class PriceRefreshController: ObservableObject {
             if Task.isCancelled { break }
             defer {
                 completed += 1
-                publishFallbackProgress()
+                if !stoppedByAllowance {
+                    publishFallbackProgress()
+                }
             }
             let key = ProductIdentity.key(
                 game: candidate.target.game,
@@ -1128,8 +1168,10 @@ final class PriceRefreshController: ObservableObject {
             // A card already known to be absent from the vendor is skipped
             // outright — that is what makes a collection of unmatchable cards
             // cost nothing on every subsequent refresh.
-            let cached = identities.cachedCardID(forKey: key)
-            if cached == nil, !identities.needsResolution(forKey: key) { continue }
+            let cached = identities.cachedCardID(forKey: key, using: identityIndex)
+            if cached == nil, !identities.needsResolution(forKey: key, using: identityIndex) {
+                continue
+            }
 
             guard let subject = candidate.subject(vendorCardID: cached) else { continue }
             let variant = candidate.target.variantID.map(PhysicalVariant.resolving)
@@ -1141,7 +1183,8 @@ final class PriceRefreshController: ObservableObject {
             identities.record(
                 outcome,
                 forKey: key,
-                treatmentIDs: candidate.target.magicTreatmentIDsRaw
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw,
+                using: identityIndex
             )
 
             switch outcome {
@@ -1176,11 +1219,6 @@ final class PriceRefreshController: ObservableObject {
             if stoppedByAllowance { break }
 
             budget = await fallbackService.budgetSnapshot()
-            fallbackStatus = .running(
-                completed: completed + 1,
-                total: eligibleCandidates.count,
-                remainingToday: budget.remainingToday
-            )
 
             // Checkpoint. A first run over a few hundred cards is paced to the
             // vendor's rate limit and can take many minutes, so the work is
@@ -1429,6 +1467,7 @@ final class PriceRefreshController: ObservableObject {
         identities: ProductIdentityStore,
         artworkRowsByPriceKey: [String: [CollectedCard]],
         identityRowsByPriceKey: [String: [CollectedCard]],
+        identityIndex: ProductIdentityIndex? = nil,
         fetchedAt: Date = .now
     ) -> Bool {
         // This callback is a second line of defence after the coordinator's
@@ -1448,7 +1487,8 @@ final class PriceRefreshController: ObservableObject {
                 cardID: card.uuid ?? card.id,
                 variantID: variant.variantId,
                 treatmentIDs: owner.magicTreatmentIDsRaw,
-                at: fetchedAt
+                at: fetchedAt,
+                using: identityIndex
             )
             // Marketplace identity is catalog metadata: once the vendor has
             // told us which TCGplayer product this printing is, that stays
@@ -1507,6 +1547,7 @@ final class PriceRefreshController: ObservableObject {
         artworkRowIDsByPriceKey: [String: [PersistentIdentifier]],
         identityRowIDsByPriceKey: [String: [PersistentIdentifier]],
         context: ModelContext,
+        identityIndex: ProductIdentityIndex? = nil,
         fetchedAt: Date = .now
     ) -> Bool {
         // The IDs were captured before the network await. Re-fetching here
@@ -1525,6 +1566,7 @@ final class PriceRefreshController: ObservableObject {
                 from: identityRowIDsByPriceKey,
                 in: context
             ),
+            identityIndex: identityIndex,
             fetchedAt: fetchedAt
         )
     }
@@ -1559,6 +1601,10 @@ final class PriceRefreshController: ObservableObject {
     private static let fallbackCheckpointInterval = 10
     /// The catalog pass's equivalent, in answered printings.
     private static let catalogCheckpointInterval = 10
+    /// Progress is presentation-only. Publishing it more often than a few
+    /// times per second makes every observer rebuild while provider work is
+    /// still in flight.
+    private static let progressPublishInterval: TimeInterval = 0.25
 
     /// A check that returns the same market timestamp is not an update, and
     /// saying "prices updated" when nothing moved is the kind of small lie that
