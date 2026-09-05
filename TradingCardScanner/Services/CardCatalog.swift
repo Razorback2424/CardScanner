@@ -735,7 +735,13 @@ actor CardCatalog {
     /// evicts anything the user is actually working through, small enough that
     /// unstable OCR cannot grow it without limit.
     private var resolved = BoundedCache<ScanIdentifier, IdentifiedCard>(capacity: 256)
-    private var inFlight: [ScanIdentifier: Task<CatalogResolution, Error>] = [:]
+    /// The token travels with the task so a stale completion can never clear a
+    /// newer lookup registered for the same identifier.
+    private struct InFlightLookup {
+        let token: UUID
+        let task: Task<CatalogResolution, Error>
+    }
+    private var inFlight: [ScanIdentifier: InFlightLookup] = [:]
 
     init(
         source: any PokemonCardSource = LivePokemonCardSource(),
@@ -762,14 +768,14 @@ actor CardCatalog {
     /// affect anything on its own.
     func prefetch(_ identifier: ScanIdentifier) {
         guard resolved[identifier] == nil, inFlight[identifier] == nil else { return }
-        let task = start(identifier)
-        Task { _ = await self.complete(identifier, task: task) }
+        let lookup = start(identifier)
+        Task { _ = await self.complete(identifier, lookup: lookup) }
     }
 
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
         if let card = resolved[identifier] { return card }
-        let task = inFlight[identifier] ?? start(identifier)
-        return try await complete(identifier, task: task).get()
+        let lookup = inFlight[identifier] ?? start(identifier)
+        return try await complete(identifier, lookup: lookup).get()
     }
 
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
@@ -796,7 +802,7 @@ actor CardCatalog {
         }
     }
 
-    private func start(_ identifier: ScanIdentifier) -> Task<CatalogResolution, Error> {
+    private func start(_ identifier: ScanIdentifier) -> InFlightLookup {
         let pokemonSource = pokemonSource
         let offline = offline
         let resolvedDiskCache = resolvedDiskCache
@@ -898,8 +904,9 @@ actor CardCatalog {
                 return CatalogResolution(.magic(card))
             }
         }
-        inFlight[identifier] = task
-        return task
+        let lookup = InFlightLookup(token: UUID(), task: task)
+        inFlight[identifier] = lookup
+        return lookup
     }
 
     private static func persistentKey(for identifier: ScanIdentifier) -> String? {
@@ -1080,10 +1087,11 @@ actor CardCatalog {
 
     private func complete(
         _ identifier: ScanIdentifier,
-        task: Task<CatalogResolution, Error>
+        lookup: InFlightLookup
     ) async -> Result<IdentifiedCard, Error> {
-        let result = await task.result
-        if case let .success(resolution) = result {
+        let result = await lookup.task.result
+        let ownsRegistration = inFlight[identifier]?.token == lookup.token
+        if ownsRegistration, case let .success(resolution) = result {
             let card = resolution.card
             resolved[identifier] = card
             // Only a live primary-provider response is written through. A
@@ -1113,7 +1121,9 @@ actor CardCatalog {
         }
         // Only successes are remembered. A failed lookup leaves no trace, so the
         // next attempt is a real attempt rather than a replayed failure.
-        inFlight[identifier] = nil
+        if inFlight[identifier]?.token == lookup.token {
+            inFlight[identifier] = nil
+        }
         return result.map(\.card)
     }
 }

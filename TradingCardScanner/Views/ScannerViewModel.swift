@@ -163,10 +163,19 @@ enum CollectionCandidateRoutingPolicy {
     static func decision(
         for identity: ConsecutiveScanIdentity,
         previous: CommittedSessionScan?,
+        history: [CommittedSessionScan] = [],
         proofs: [SpatialResetProof]
     ) -> CollectionCandidateRoutingDecision {
-        guard let previous else { return .automatic }
-        guard identity == previous.identity else { return .automatic }
+        // `previous` remains as a compatibility/default input for callers that
+        // only have one committed item. The scanner supplies the bounded full
+        // history so an older still-present printing cannot lose duplicate
+        // protection merely because an unrelated card committed afterwards.
+        let candidates = history.isEmpty
+            ? previous.map { [$0] } ?? []
+            : history
+        guard let previous = candidates.reversed().first(where: { $0.identity == identity }) else {
+            return .automatic
+        }
 
         guard let proof = proofs.first(where: { proof in
             if let presentationToken = proof.presentationToken {
@@ -608,6 +617,12 @@ final class ScannerViewModel: ObservableObject {
 
     let scanner = CardScanner()
 
+    /// The latch needs only its bounded recent window for duplicate routing.
+    /// The UI rail keeps a few more cards for a useful visual history, but no
+    /// scanner session should retain every decoded catalog payload forever.
+    private static let committedHistoryLimit = CardLatch.recentlyConsumedLimit
+    private static let recentScanLimit = 12
+
     private let catalog = CardCatalog()
     private let feedback = ScanFeedback()
     private let scryfall = ScryfallService()
@@ -615,7 +630,6 @@ final class ScannerViewModel: ObservableObject {
     private var store: CollectionStore?
     private var prices: PriceStore?
     private var priceCheckCoordinator: PriceCheckCoordinator?
-    private var fallbackQuoteResolver: PriceFallbackQuoteResolver?
     private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     private var noteTask: Task<Void, Never>?
     private var receiptTask: Task<Void, Never>?
@@ -791,8 +805,12 @@ final class ScannerViewModel: ObservableObject {
     func start(context: ModelContext) {
         store = CollectionStore(context: context)
         prices = PriceStore(context: context)
-        priceCheckCoordinator = PriceCheckCoordinator(context: context)
-        fallbackQuoteResolver = PriceFallbackQuoteResolver(context: context)
+        // Price Check is an independent, network-paced persistence flow. Keep
+        // its quote/price context separate so QuoteCache.save cannot commit or
+        // roll back an in-flight collection mutation.
+        priceCheckCoordinator = PriceCheckCoordinator(
+            context: ModelContext(context.container)
+        )
         feedback.prepare()
         // Decode the merged Pokémon checklist and resolved-card cache before
         // the first confirmed frame needs either one.
@@ -807,13 +825,25 @@ final class ScannerViewModel: ObservableObject {
         refreshMagicDirectory()
     }
 
+    /// Leaving the tab is not a session boundary. The rail, the unresolved
+    /// list, and the undo lineage are what the person came back for, and the
+    /// latch's consumed-printing memory is what stops the card still lying in
+    /// the band from being counted twice on return. Both are kept; only the
+    /// camera stops. `endSession()` remains the one deliberate reset.
     func viewDisappeared() {
         invalidatePendingScan()
         scanner.stop()
     }
 
     func scenePhaseChanged(isActive: Bool) {
-        guard !isActive else { return }
+        if isActive {
+            if let result = priceCheckResult,
+               result.quoteState == .checking,
+               !result.isRefreshing {
+                refreshPriceCheckQuote()
+            }
+            return
+        }
         invalidatePendingScan()
     }
 
@@ -947,8 +977,9 @@ final class ScannerViewModel: ObservableObject {
               pendingDuplicateConfirmation == nil,
               let encounterID else { return }
 
+        let recentByID = Dictionary(uniqueKeysWithValues: recent.map { ($0.id, $0) })
         let history = committedSessionHistory.compactMap { committed -> HeldDuplicatePublicationHistoryEntry? in
-            guard let scan = recent.first(where: { $0.id == committed.id }) else { return nil }
+            guard let scan = recentByID[committed.id] else { return nil }
             return HeldDuplicatePublicationHistoryEntry(
                 committed: committed,
                 suppressionKey: scan.identifier.suppressionKey
@@ -1027,7 +1058,7 @@ final class ScannerViewModel: ObservableObject {
         pendingDuplicateConfirmation = nil
         spatialResetProofs.removeAll { $0.encounterID == pending.encounterID }
 
-        guard let previous = committedSessionHistory.last,
+        guard let previous = committedSessionHistory.first(where: { $0.id == pending.previousScanID }),
               previous.id == pending.previousScanID,
               previous.presentationToken == pending.previousPresentationToken else {
             scanner.keepPresentationSuppressed(encounterID: pending.encounterID)
@@ -1120,7 +1151,7 @@ final class ScannerViewModel: ObservableObject {
         recent.removeAll()
         unresolvedScans.removeAll()
         lastAdd = nil
-        scanner.stop()
+        scanner.endSession()
     }
 
     func setFinishLock(_ variant: PhysicalVariant?, for game: CardGame) {
@@ -1653,7 +1684,15 @@ final class ScannerViewModel: ObservableObject {
 
         // Both are projections of the same successful store mutation.
         recent.insert(scan, at: 0)
+        if recent.count > Self.recentScanLimit {
+            recent.removeLast(recent.count - Self.recentScanLimit)
+        }
         committedSessionHistory.append(committed)
+        if committedSessionHistory.count > Self.committedHistoryLimit {
+            committedSessionHistory.removeFirst(
+                committedSessionHistory.count - Self.committedHistoryLimit
+            )
+        }
 
         // A provisional tracker may have exited while the catalog request was
         // still pending. Keep that positive evidence, but rebind it to the
@@ -1750,6 +1789,7 @@ final class ScannerViewModel: ObservableObject {
         let decision = CollectionCandidateRoutingPolicy.decision(
             for: candidate.identity,
             previous: committedSessionHistory.last,
+            history: committedSessionHistory,
             proofs: spatialResetProofs
         )
 
@@ -1768,7 +1808,12 @@ final class ScannerViewModel: ObservableObject {
             spatialResetProofs.removeAll()
         case .duplicate(let proof):
             diagnostic("routingSpatialDuplicatePrompt")
-            guard let previous = committedSessionHistory.last,
+            guard let previous = committedSessionHistory.reversed().first(where: { committed in
+                      committed.identity == candidate.identity
+                          && (proof.presentationToken == committed.presentationToken
+                              || (proof.presentationToken == nil
+                                  && proof.encounterID == committed.encounterID))
+                  }),
                   let proofIndex = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
                 scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
                 return
@@ -1908,7 +1953,6 @@ final class ScannerViewModel: ObservableObject {
     ) {
         guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
               let prices,
-              let resolver = fallbackQuoteResolver,
               PriceVendorCredentials.hasKey else { return }
 
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
@@ -1924,6 +1968,12 @@ final class ScannerViewModel: ObservableObject {
         )
         guard fallbackQuoteTasks[key] == nil else { return }
 
+        // Price Check/fallback writes are independent of the scanner's main
+        // context. The identity is a value snapshot, so no SwiftData model is
+        // retained while the paced vendor request is in flight.
+        let fallbackContext = ModelContext(prices.context.container)
+        let fallbackPrices = PriceStore(context: fallbackContext)
+        let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         let task = Task { @MainActor [weak self] in
             defer { self?.fallbackQuoteTasks[key] = nil }
             guard !Task.isCancelled else { return }
@@ -1941,9 +1991,9 @@ final class ScannerViewModel: ObservableObject {
                     variantID: variant?.id,
                     treatmentIDs: treatmentIDs
                 )
-                let marketVariantID = ProductIdentityStore(context: prices.context)
+                let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                prices.store(
+                fallbackPrices.store(
                     quote,
                     game: card.game,
                     printingID: printingID,
@@ -1951,7 +2001,7 @@ final class ScannerViewModel: ObservableObject {
                     marketVariantID: marketVariantID,
                     treatmentIDs: treatmentIDs
                 )
-                prices.save()
+                _ = fallbackPrices.save()
             case .failed:
                 break
             }

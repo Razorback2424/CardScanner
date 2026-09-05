@@ -252,6 +252,19 @@ struct CardLatch: Equatable {
         consecutiveAbsences = 0
     }
 
+    /// Recognition may be paused while wall time continues to advance. Shift
+    /// every time-based watermark by that gap so the latch measures only time
+    /// for which it actually received observations.
+    mutating func advanceObservedClock(by duration: TimeInterval) {
+        guard duration > 0 else { return }
+        for index in consumed.indices {
+            consumed[index].lastSeenAt += duration
+            if let eligibleAt = consumed[index].recheckEligibleAt {
+                consumed[index].recheckEligibleAt = eligibleAt + duration
+            }
+        }
+    }
+
     mutating func consumeHeldRepeatAuthorization(for key: ScanSuppressionKey) -> Bool {
         guard heldRepeatAuthorizationKey == key else { return false }
         heldRepeatAuthorizationKey = nil

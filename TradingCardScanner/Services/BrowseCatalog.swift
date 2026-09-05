@@ -55,6 +55,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var pokemonSnapshotLoadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
     private var refreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
+    /// `prepareCatalog` suspends before it can install `refreshTask`. This flag
+    /// closes that actor-reentrancy window; the desired-state bit lets an
+    /// active → inactive → active transition keep one pending preparation alive
+    /// without starting a second crawl.
+    private var isPreparingCatalog = false
+    private var wantsCatalogRefresh = false
     private var sortPriceCache: [String: Double] = [:]
     private var resolvedSortPrices: Set<String> = []
     private var refreshingSetDirectories: Set<CardGame> = []
@@ -104,6 +110,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// can use local data, while the network work remains low priority.
     func prepareCatalog() async {
         installMemoryWarningObserverIfNeeded()
+        wantsCatalogRefresh = true
+        guard !isPreparingCatalog else { return }
+        isPreparingCatalog = true
+        defer { isPreparingCatalog = false }
+
         await loadPokemonSnapshotIfNeeded()
         if let existingTask = refreshTask {
             // Suspension cancels cooperatively. Keep the task reference until
@@ -113,7 +124,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await existingTask.value
             refreshTask = nil
         }
+        guard wantsCatalogRefresh else { return }
         guard await checklistStore.shouldRefresh() else { return }
+        guard wantsCatalogRefresh else { return }
         let token = UUID()
         refreshToken = token
         refreshTask = Task(priority: .utility) { [weak self] in
@@ -132,6 +145,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func suspendCatalogRefresh() {
+        wantsCatalogRefresh = false
         refreshToken = UUID()
         refreshTask?.cancel()
     }
