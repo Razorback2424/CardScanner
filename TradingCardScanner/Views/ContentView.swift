@@ -239,30 +239,15 @@ struct ContentView: View {
         let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext
         ) {
-            // Build the target snapshot inside the gate. The migration may have
-            // changed both the row key and its treatment ids while the caller
-            // was waiting, so a pre-gate snapshot is not safe to write with.
-            let currentTargets: [PriceTarget]
-            do {
-                currentTargets = try PriceRefreshTargets.make(
-                    context: modelContext,
-                    usesPriceFallback: usesPriceFallback,
-                    includeImported: true
-                )
-            } catch {
-                return false
-            }
-            let targets = PriceRefreshController.staleTargets(
-                from: currentTargets,
+            let request = PriceRefreshRequest(
                 usesPriceFallback: usesPriceFallback,
-                forceUnsupportedRetry: true
+                includeImported: true,
+                forceUnsupportedRetry: true,
+                sortOldestFirst: false,
+                maximumTargetCount: nil,
+                markRecentlyCheckedIfEmpty: true
             )
-            guard !targets.isEmpty else {
-                refresh.markRecentlyChecked()
-                return false
-            }
-            await refresh.refresh(targets, container: modelContext.container)
-            return true
+            return (await refresh.refresh(request, container: modelContext.container)).didRun
         }
         if didRefresh {
             portfolio.recompute(context: modelContext)
@@ -493,24 +478,19 @@ private struct PortfolioInputObserver: View {
         let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext
         ) {
-            let currentTargets: [PriceTarget]
-            do {
-                currentTargets = try PriceRefreshTargets.make(
-                    context: modelContext,
-                    usesPriceFallback: usesPriceFallback,
-                    includeImported: true
-                )
-            } catch {
-                hasCheckedForStalePrices = false
-                return false
-            }
-            let targets = PriceRefreshController.staleTargets(
-                from: currentTargets,
-                usesPriceFallback: usesPriceFallback
+            let request = PriceRefreshRequest(
+                usesPriceFallback: usesPriceFallback,
+                includeImported: true,
+                forceUnsupportedRetry: false,
+                sortOldestFirst: false,
+                maximumTargetCount: nil,
+                markRecentlyCheckedIfEmpty: false
             )
-            guard !targets.isEmpty else { return false }
-            await refresh.refresh(targets, container: modelContext.container)
-            return true
+            let result = await refresh.refresh(request, container: modelContext.container)
+            if result.targetBuildFailed {
+                hasCheckedForStalePrices = false
+            }
+            return result.didRun
         }
         guard didRefresh else { return }
         // The automatic stale check is silent when it works. When it does not,

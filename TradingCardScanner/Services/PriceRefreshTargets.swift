@@ -6,7 +6,6 @@ import SwiftData
 /// The foreground path receives the already-observed SwiftData rows. The
 /// headless path fetches the exact same inputs in display order, so a
 /// background refresh never needs a SwiftUI view or a ledger instance.
-@MainActor
 enum PriceRefreshTargets {
     private static func make(
         cards: [CollectedCard],

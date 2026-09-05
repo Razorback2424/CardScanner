@@ -185,42 +185,19 @@ enum BackgroundPriceRefresh {
             in: context,
             runsNetworkMigration: false
         ) {
-            // Make the target snapshot inside the gate. A target built before
-            // the gate was acquired could have been rekeyed underneath it and
-            // would write its result under a superseded price key.
-            let allTargets: [PriceTarget]
-            do {
-                allTargets = try PriceRefreshTargets.make(
-                    context: context,
-                    usesPriceFallback: UserDefaults.standard.bool(forKey: "usesPriceFallback"),
-                    includeImported: true
-                )
-            } catch {
-                return
-            }
-
             let usesPriceFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
-            let staleTargets = PriceRefreshController.staleTargets(
-                from: allTargets,
-                usesPriceFallback: usesPriceFallback
+            let request = PriceRefreshRequest(
+                usesPriceFallback: usesPriceFallback,
+                includeImported: true,
+                forceUnsupportedRetry: false,
+                sortOldestFirst: true,
+                maximumTargetCount: kind == .appRefresh ? appRefreshTargetLimit : nil,
+                markRecentlyCheckedIfEmpty: false
             )
-                .sorted {
-                    ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
-                }
-            let targets: [PriceTarget]
-            switch kind {
-            case .processing:
-                targets = staleTargets
-            case .appRefresh:
-                targets = Array(staleTargets.prefix(appRefreshTargetLimit))
-            }
-
-            if !targets.isEmpty {
-                await PriceRefreshController.shared.refresh(
-                    targets,
-                    container: context.container
-                )
-            }
+            _ = await PriceRefreshController.shared.refresh(
+                request,
+                container: context.container
+            )
         }
         guard !Task.isCancelled else { return false }
 

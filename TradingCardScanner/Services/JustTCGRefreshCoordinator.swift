@@ -122,11 +122,9 @@ struct MarketRefreshReport: Equatable, Sendable {
 /// on the free tier instead of 500. Duplicated copies cost nothing — eight
 /// owned copies of one printing are one variant, one lookup, one returned price
 /// applied to every copy.
-/// Main-actor isolated because its callbacks mutate SwiftData, which is
-/// main-actor bound. The network work still happens off it: `JustTCGTransport`
-/// is its own actor, and each `await` here releases the main actor while a
-/// request is in flight.
-@MainActor
+/// Context-agnostic coordinator. Persistence callbacks are async/sendable so
+/// the caller's context owner decides where model mutation runs; the refresh
+/// worker uses them to hop back to its `@ModelActor` after each network await.
 struct JustTCGRefreshCoordinator {
     private let client: JustTCGV1Client
     private let syncLedger: JustTCGSyncLedger
@@ -171,10 +169,10 @@ struct JustTCGRefreshCoordinator {
         game: CardGame,
         lane: JustTCGRequestLane = .background,
         useDelta: Bool = false,
-        onProgress: (MarketRefreshReport) -> Void = { _ in },
-        apply: (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Bool,
-        unmatched: ([MarketPriceTarget]) -> Void = { _ in },
-        checkpoint: () -> Bool
+        onProgress: @Sendable (MarketRefreshReport) async -> Void = { _ in },
+        apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> Bool,
+        unmatched: @Sendable ([MarketPriceTarget]) async -> Void = { _ in },
+        checkpoint: @Sendable () async -> Bool
     ) async -> MarketRefreshReport {
         let (batched, unresolved) = Self.deduplicate(targets)
         var report = MarketRefreshReport()
@@ -188,7 +186,7 @@ struct JustTCGRefreshCoordinator {
         let lookups = Array(batched.keys)
         let chunks = lookups.chunked(into: JustTCGQuota.batchSize)
         report.batchesPlanned = chunks.count
-        onProgress(report)
+        await onProgress(report)
 
         // `updated_after` is only safe once a complete pass has succeeded.
         // Before that a variant absent from the response is indistinguishable
@@ -265,10 +263,10 @@ struct JustTCGRefreshCoordinator {
                             // for the life of the collection.
                             //
                             // The value is still left exactly as it was either way.
-                            if cutoff == nil { unmatched(finishOwners) }
+                            if cutoff == nil { await unmatched(finishOwners) }
                             continue
                         }
-                        if apply(card, variant, finishOwners) {
+                        if await apply(card, variant, finishOwners) {
                             applied = true
                         } else {
                             batchPersistenceFailed = true
@@ -283,7 +281,7 @@ struct JustTCGRefreshCoordinator {
                 // Commit per batch so an interruption keeps what it bought. A
                 // failed save rolls the context back, so none of this batch is
                 // counted as durable and the delta clock must not advance.
-                guard checkpoint() else {
+                guard await checkpoint() else {
                     report.persistenceFailed = true
                     return report
                 }
@@ -291,10 +289,10 @@ struct JustTCGRefreshCoordinator {
                 report.variantsUpdated += batchAppliedCount
                 if batchPersistenceFailed {
                     report.persistenceFailed = true
-                    onProgress(report)
+                    await onProgress(report)
                     return report
                 }
-                onProgress(report)
+                await onProgress(report)
             } catch let error as JustTCGTransport.TransportError {
                 report.stoppedReason = Self.stopReason(for: error)
                 return report

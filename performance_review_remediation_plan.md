@@ -1,6 +1,7 @@
 # Performance Review — Remediation Plan (revised)
 
-Status: **planning only.** No code changed. Every claim below was re-read
+Status: **remediation in progress.** Slices 1–8 and 11 are implemented on the
+working branch; device-gated work remains open. Every claim below was re-read
 against the source after a second-pass audit of the first review; the audit's
 corrections are recorded in §1 with a verdict each. A third pass then checked
 the second pass's own new claims — three needed correcting, and those
@@ -14,11 +15,11 @@ numbers drift; follow symbol names.
 | 1 — Measure | **done (simulator); device pass still worthwhile** | `OSSignposter` intervals at `PriceRefreshDataIndex.init`, `ProductIdentityIndex.init`, `coverageIndex`, `PortfolioComputationActor.compute` and `CollectionStore.add`, plus counted events at `makeCachedProjection` and `startRecompute`. `testAgedStoreBaseline` seeds an aged store and reports the two whole-table reads; opt-in via `PERF_BASELINE`, skipped in the default run. Numbers in §3.1. They un-gate slices 4 and 8. |
 | 2 — R2 holding-detail projection | **done** | `PortfolioOwnedCardDestination` uses the closure overload; `testHoldingDetailResolvesTheSameInstrumentAsTheGrid` pins the C2 convergence on the one input where the two rules disagree. |
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
-| 4 — R1 retention | **done** | 400-day window, `.all` kept (decision taken 2026-09-05). `coverageIndexThrowing` clamps to the window and reports it; `PriceObservationLog.pruneCheckDays` discards rows behind it from the computation actor; `PortfolioEngine.publish` reads pruned days' coverage from the close it already wrote. Measured flat past the window — see §3.4. |
+| 4 — R1 retention | **done; correction fixed 2026-09-05** | 400-day window, `.all` kept (decision taken 2026-09-05). `coverageIndexThrowing` clamps to the window and reports it; `PriceObservationLog.pruneCheckDays` discards rows behind it from the computation actor; `PortfolioEngine.publish` carries both stored coverage counts and `carriedForwardValue` from the close it already wrote. The non-zero retention fixture now proves a pruned day is not revised for lost evidence. Measured flat past the window — see §3.4. |
 | 5 — R3 field trimming | still gated | Its two signposts are counts during a live refresh, which a seeded store cannot produce. Needs one profiled refresh against a real provider. |
 | 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
-| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
-| 8 — R4 ModelActor | **un-gated** (slice 7 done) | §3.1 crosses the plan's own 100 ms threshold. It is **not** gated on slice 4 — see the correction in §3.2. |
+| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. The current full suite is 850 tests, 1 skipped, 0 failures. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
+| 8 — R4 ModelActor | **done (simulator; runtime signpost capture still recommended)** | Refresh target construction, `PriceRefreshDataIndex`, `PriceStore`, identity indexes, writes and saves now run in `PriceRefreshModelActor`; the main actor retains queue/status/progress/budget UI. `build-for-testing` and the full suite pass: 850 tests, 1 skipped, 0 failures. No live-provider Instruments capture was taken in this pass, so the off-main signpost check remains an explicit runtime verification item. |
 | 9 — device pass | **partly done** | P3 and U4 are code changes whose *magnitude* needed a device but whose correctness did not; both are landed. P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain — each needs a device to verify it did not make things worse, and changing the capture format without checking OCR hit rate would be a worse trade than leaving it. |
 | 10 — R5 `#Index` | not started | Needs the iOS 18 deployment-target decision, which `design_slices_plan.md` also depends on. Slice 4 shrank the largest table this would index, so its value is lower than when the plan was written. |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
@@ -151,7 +152,7 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 ### R10 — Release checklist items (M2, C8)
 - Bundle id rename must update `PRODUCT_BUNDLE_IDENTIFIER`, both constants in `BackgroundPriceRefresh.swift`, and both `Info.plist` entries together. Derive the two identifiers from `Bundle.main.bundleIdentifier` so there is one source.
 - Update `progress.md:31`: `recordInvalidation` **is** called, from `CollectionCatalogNormalizer` on a marketplace-variant change.
-- `PriceRefreshController.refresh` returns `Void`; a joined caller whose pending batch is cleared by `cancelRefresh` returns as if it ran. Return a `didRun: Bool` if this path is ever touched; not a release blocker.
+- Before slice 8, `PriceRefreshController.refresh` returned `Void`; a joined caller whose pending batch was cleared by `cancelRefresh` returned as if it ran. Slice 8 now returns `PriceRefreshResult.didRun` and surfaces target-build failure to the automatic stale-check caller.
 - Correct `price_refresh_scale_plan.md:316-318` (T1): `applyVendorBatchHit` is **not** `nonisolated static`, so "all 34 test files touch only those, so this slice should not require test changes" is wrong. Its hazard list should also gain the `ProductIdentityStore` / `ProductIdentityIndex` isolation prerequisite. Two planning documents currently disagree with the source in the same place; fix it there as well as here.
 
 ---
@@ -197,6 +198,37 @@ revised historical day reports (T2), and the window length is a judgement about
 how much history the app promises to recompute rather than replay. That is the
 open question blocking slice 4, and it is a decision, not a measurement.
 
+### Slice 8 boundary reconciliation (2026-09-05)
+
+The refresh ownership boundary now agrees with `price_refresh_scale_plan.md`
+Slice 6. `PriceRefreshController` remains the `@MainActor`
+`ObservableObject` facade: it owns the migration gate, request queue,
+cancellation, status/progress publication and fallback-budget UI. It passes a
+small `Sendable` request (fallback preference, imported-row policy, retry mode,
+and any background limit/order) to a `@ModelActor`; target arrays are not built
+on main and are not passed across the boundary.
+
+The model actor owns its `ModelContext`, builds `PriceRefreshDataIndex`,
+`PriceStore` and the fallback `ProductIdentityIndex`/`ProductIdentityStore`
+there, constructs `PriceTarget` values from the live context after the
+migration gate is held, performs catalog/fallback/graded writes and checkpoint
+saves, and returns value results/progress events. `PriceRefreshTargets` and
+`JustTCGRefreshCoordinator` therefore have to be context-owned on this path.
+No SwiftData model object crosses the actor boundary or a network suspension:
+imported-card and artwork/identity row references remain
+`PersistentIdentifier`s and are re-materialised in the actor's context.
+
+The concurrent-writer decision is fail-closed: keep the dedicated refresh
+context, never merge or retry stale in-memory `CollectedCard` objects, and use
+the existing save/rollback behavior to report `persistenceFailed` when a
+checkpoint cannot be saved. A successful save retains SwiftData/CloudKit's
+existing conflict behavior; this slice does not introduce an application merge
+policy. The actor keeps the current shared-context checkpoint ordering, so the
+synced `PriceRecord`/`CollectedCard`/`ProductIdentity` writes and local-only
+`PriceObservation` writes remain under the existing `PriceStore.save()` window;
+the cross-store non-atomic window is not widened. As §2.1 records, this move
+does not fix R3's `@Query` republish amplification.
+
 ## 3.4 Slice 4 result
 
 Same fixture, after the window:
@@ -217,7 +249,9 @@ which are product decisions rather than optimisations.
 `testPrunedDaysKeepPublishedCoverage` pins the trade the window makes: a pruned
 day is not revised merely because its evidence is gone, and a pruned day that a
 late event genuinely does revise keeps its original coverage counts while its
-value changes.
+value changes. The fixture uses a published `carriedForwardValue` of `$2` and
+a pruned replay value of `$9`, so the value carry is tested rather than
+accidentally equal on both sides.
 
 ## 3.3 Measurement plan (remaining)
 
@@ -235,6 +269,27 @@ Seed a store representing 12 months of use for ~1,500 instruments (check days da
 
 Without this, every magnitude in this document is inference.
 
+## 3.5 Slice 8 result
+
+The actor migration was compiled with the existing project and test target:
+
+| Check | Result |
+|---|---|
+| `xcodebuild build-for-testing` | succeeded |
+| Full simulator `xcodebuild test` | 850 tests, 1 skipped, 0 failures |
+| Test-suite duration | 24.561 s |
+| Main-actor model crossing audit | no model objects cross the request/progress/result boundary; persistent identifiers are re-materialised in the actor context |
+| Runtime Instruments refresh capture | not taken in this pass; live-provider signpost verification remains recommended |
+
+The controller now passes value-only `PriceRefreshRequest` values. Background
+refresh also passes a request instead of building targets from
+`container.mainContext`. A target-build failure is surfaced so the automatic
+stale check can retry, and queued target limits merge with `nil` as unlimited
+and otherwise by `max`, preserving foreground work when it joins a bounded
+background request. The old main-actor catalog/fallback/graded implementation
+and its provider properties were removed rather than retained as a second
+refresh path.
+
 ---
 
 ## 4. Slices, in dependency order
@@ -246,7 +301,7 @@ Without this, every magnitude in this document is inference.
 5. **R3 field trimming**, with the `sourceUpdatedAt` conditional and the token unit test.
 6. **R6 + R7** (R7 as two child views; P4 folded in).
 7. **De-isolate the refresh write path** (from T1): make `ProductIdentityStore`, `ProductIdentityIndex`, `recordSealedArtwork*` and `applyVendorBatchHit` context-owned rather than `@MainActor`, following `PriceStore`'s existing pattern. No behaviour change; proved by compiling, with `CollectionItemKindTests` still green. Do this whether or not slice 8 proceeds — it is cheap, independently valuable, and it is what tells you what slice 8 actually costs.
-8. **R4 ModelActor**, only if slice 1 (re-measured after slice 4) says the init is still expensive, only after slice 7, and only after reconciling with `price_refresh_scale_plan.md` Slice 6 so the two plans agree on refresh ownership.
+8. **R4 ModelActor**, after slice 7 and the ownership reconciliation in §3.2; implemented and simulator-verified in this working branch. Runtime Instruments confirmation remains recommended.
 9. **Device pass**: P1 explicit format, P3, U2, U3, U4.
 10. **R5 `#Index`**: separate decision tied to the deployment-target choice in `design_slices_plan.md`.
 11. **R10 release checklist** at any point before the bundle id changes.

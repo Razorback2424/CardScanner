@@ -7,7 +7,7 @@ import SwiftData
 /// leaving the collection cannot turn an abandoned request into a recorded check.
 /// File scope rather than nested, so it cannot inherit the controller's
 /// main-actor isolation.
-private struct PriceFetchOutcome: Sendable {
+fileprivate struct PriceFetchOutcome: Sendable {
     let printing: PriceTarget.Printing
     let result: Result
 
@@ -30,6 +30,743 @@ private struct PriceFetchOutcome: Sendable {
         default:
             return false
         }
+    }
+}
+
+/// Performs one refresh queue on a context owned by this actor. The facade
+/// below deliberately receives only value progress and result messages: a
+/// SwiftData model object never has to cross back to the main actor while a
+/// provider request is suspended.
+@ModelActor
+actor PriceRefreshModelActor {
+    private let tcgdex = TCGdexService()
+    private let scryfall = ScryfallService()
+    private let importedResolver = ImportedCardResolver()
+    private let fallbackService = ProductPriceService.shared
+    private let sharedTransport = JustTCGTransport.shared
+
+    private var refreshStore: PriceStore?
+    private var identityStore: ProductIdentityStore?
+    private var identityIndex: ProductIdentityIndex?
+    private var artworkRowIDsByPriceKey: [String: [PersistentIdentifier]] = [:]
+    private var identityRowIDsByPriceKey: [String: [PersistentIdentifier]] = [:]
+
+    fileprivate func run(
+        _ request: PriceRefreshRequest,
+        progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
+    ) async -> PriceRefreshWorkOutcome {
+        let store = makeStore()
+        let targets: [PriceTarget]
+        do {
+            let allTargets = try PriceRefreshTargets.make(
+                context: modelContext,
+                usesPriceFallback: request.usesPriceFallback,
+                includeImported: request.includeImported
+            )
+            var staleTargets = PriceRefreshController.staleTargets(
+                from: allTargets,
+                usesPriceFallback: request.usesPriceFallback,
+                forceUnsupportedRetry: request.forceUnsupportedRetry
+            )
+            if request.sortOldestFirst {
+                staleTargets.sort {
+                    ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
+                }
+            }
+            if let maximumTargetCount = request.maximumTargetCount {
+                targets = Array(staleTargets.prefix(maximumTargetCount))
+            } else {
+                targets = staleTargets
+            }
+        } catch {
+            return .targetBuildFailed
+        }
+
+        guard !targets.isEmpty else { return .noTargets }
+        return await performRefresh(
+            targets,
+            request: request,
+            store: store,
+            progress: progress
+        )
+    }
+
+    private func makeStore() -> PriceStore {
+        if let refreshStore { return refreshStore }
+        // Both whole-table indexes are deliberately born on this executor. The
+        // signposts exist to prove that the old main-actor materialisation has
+        // actually moved, not merely that the network awaits moved.
+        let store = PriceStore(
+            context: modelContext,
+            index: PriceRefreshDataIndex(context: modelContext)
+        )
+        refreshStore = store
+        return store
+    }
+
+    private func performRefresh(
+        _ targets: [PriceTarget],
+        request: PriceRefreshRequest,
+        store: PriceStore,
+        progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
+    ) async -> PriceRefreshWorkOutcome {
+        var priced = 0
+        var failed = 0
+        var latestSourceUpdate: Date?
+        var checkedUnstampedProvider = false
+        var changedPrices = false
+        var persistenceFailed = false
+        var reconciledDuplicateRecords = 0
+        var stagedPriced = 0
+        var stagedChangedPrices = false
+        var stagedDuplicateRepairs = store.reconcileDuplicateRecords()
+
+        func stage(_ accepted: Bool, priced: Bool = false, changed: Bool = false) {
+            guard accepted else {
+                persistenceFailed = true
+                return
+            }
+            if priced { stagedPriced += 1 }
+            stagedChangedPrices = stagedChangedPrices || changed
+        }
+
+        @discardableResult
+        func commitStaged() -> Bool {
+            let saved = store.save()
+            if saved {
+                priced += stagedPriced
+                changedPrices = changedPrices || stagedChangedPrices
+                reconciledDuplicateRecords += stagedDuplicateRepairs
+            } else {
+                persistenceFailed = true
+            }
+            stagedPriced = 0
+            stagedChangedPrices = false
+            stagedDuplicateRepairs = 0
+            return saved
+        }
+
+        // Unsupported graded rows still receive their capability stamp, but
+        // they do not spend a catalog request that cannot answer them.
+        let unsupported = targets.filter {
+            $0.itemKind == .gradedCard && $0.marketVariantID == nil
+        }
+        for target in unsupported {
+            stage(store.recordUnsupportedProvider(
+                game: target.game,
+                printingID: target.printingID,
+                variantID: target.variantID,
+                treatmentIDs: target.magicTreatmentIDsRaw
+            ))
+        }
+        let unsupportedIDs = Set(unsupported.map(\.id))
+        let supportedTargets = targets.filter { !unsupportedIDs.contains($0.id) }
+        let vendorNative = supportedTargets.filter(\.isVendorNative)
+
+        var order: [PriceTarget.Printing] = []
+        var byPrinting: [PriceTarget.Printing: [PriceTarget]] = [:]
+        for target in supportedTargets where !target.isVendorNative {
+            if byPrinting[target.printing] == nil { order.append(target.printing) }
+            byPrinting[target.printing, default: []].append(target)
+        }
+
+        let previousLatest = latestKnownSourceUpdate(in: store)
+        let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
+        var completed = 0
+        var wasCancelled = false
+        var fallbackSubjects: [PriceRefreshController.FallbackCandidate] = vendorNative.map {
+            PriceRefreshController.FallbackCandidate(target: $0, card: nil)
+        }
+        var consecutiveUnreachable = 0
+        var providerUnreachable = false
+        await progress(.catalog(completed: 0, total: order.count))
+
+        var cursor = 0
+        await withTaskGroup(of: PriceFetchOutcome.self) { group in
+            let initial = min(PriceRefreshController.maxConcurrentRequests, order.count)
+            for _ in 0..<initial {
+                let printing = order[cursor]
+                cursor += 1
+                group.addTask { [tcgdex, scryfall, importedResolver] in
+                    await PriceRefreshController.fetch(
+                        printing,
+                        tcgdex: tcgdex,
+                        scryfall: scryfall,
+                        importedResolver: importedResolver
+                    )
+                }
+            }
+
+            while let outcome = await group.next() {
+                let printing = outcome.printing
+                let now = Date.now
+                switch outcome.result {
+                case let .card(card):
+                    if printing.importedIdentity != nil {
+                        for importedCardID in importedCardIDsByProviderID[printing.printingID] ?? [] {
+                            guard let importedCard = modelContext.model(for: importedCardID) as? CollectedCard
+                            else { continue }
+                            importedCard.applyCatalogMetadata(from: card)
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                on: importedCard,
+                                at: now
+                            )
+                        }
+                    }
+                    if card.game == .magic {
+                        checkedUnstampedProvider = true
+                    }
+                    for target in byPrinting[printing] ?? [] {
+                        let lookup = CardPricing.price(
+                            for: card,
+                            variant: target.variantID.map(PhysicalVariant.resolving),
+                            magicTreatments: card.magicTreatments(
+                                for: target.variantID.map(PhysicalVariant.resolving)
+                            ),
+                            pokemonPrintRun: target.pokemonPrintRun,
+                            at: now
+                        )
+                        if PriceRefreshController.needsFallback(lookup) {
+                            fallbackSubjects.append(
+                                PriceRefreshController.FallbackCandidate(target: target, card: card)
+                            )
+                        }
+                        if case let .price(price) = lookup {
+                            if let updated = price.sourceUpdatedAt,
+                               updated > (latestSourceUpdate ?? .distantPast) {
+                                latestSourceUpdate = updated
+                            } else if price.sourceUpdatedAt == nil {
+                                checkedUnstampedProvider = true
+                            }
+                        }
+
+                        let key = PriceRecord.key(
+                            game: target.game,
+                            printingID: target.printingID,
+                            variantID: target.variantID,
+                            treatmentIDs: target.magicTreatmentIDsRaw
+                        )
+                        let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
+                        let newAmount: Double?
+                        switch lookup {
+                        case let .price(price): newAmount = price.unitMarketPriceUSD
+                        case .unavailable: newAmount = previousAmount
+                        }
+                        let accepted = store.store(
+                            lookup,
+                            game: target.game,
+                            printingID: target.printingID,
+                            variantID: target.variantID,
+                            at: now,
+                            treatmentIDs: target.magicTreatmentIDsRaw
+                        )
+                        stage(
+                            accepted,
+                            priced: {
+                                if case .price = lookup { return true }
+                                return false
+                            }(),
+                            changed: previousAmount != newAmount
+                        )
+                    }
+
+                case .failed:
+                    failed += 1
+                    for target in byPrinting[printing] ?? [] {
+                        stage(store.recordFailure(
+                            game: target.game,
+                            printingID: target.printingID,
+                            variantID: target.variantID,
+                            at: now,
+                            treatmentIDs: target.magicTreatmentIDsRaw
+                        ))
+                        fallbackSubjects.append(
+                            PriceRefreshController.FallbackCandidate(target: target, card: nil)
+                        )
+                    }
+
+                case .unreachable:
+                    fallbackSubjects.append(contentsOf: (byPrinting[printing] ?? []).map {
+                        PriceRefreshController.FallbackCandidate(target: $0, card: nil)
+                    })
+                    consecutiveUnreachable += 1
+                    if !providerUnreachable,
+                       consecutiveUnreachable >= PriceRefreshController.unreachableThreshold {
+                        providerUnreachable = true
+                        for pending in order.dropFirst(cursor) {
+                            fallbackSubjects.append(contentsOf: (byPrinting[pending] ?? []).map {
+                                PriceRefreshController.FallbackCandidate(target: $0, card: nil)
+                            })
+                        }
+                    }
+
+                case .cancelled:
+                    wasCancelled = true
+                }
+
+                switch outcome.result {
+                case .card, .failed:
+                    consecutiveUnreachable = 0
+                case .unreachable, .cancelled:
+                    break
+                }
+                completed += 1
+                await progress(.catalog(completed: completed, total: order.count))
+
+                if completed.isMultiple(of: PriceRefreshController.catalogCheckpointInterval) {
+                    _ = commitStaged()
+                }
+
+                if cursor < order.count,
+                   !providerUnreachable,
+                   !wasCancelled,
+                   !Task.isCancelled {
+                    let next = order[cursor]
+                    cursor += 1
+                    group.addTask { [tcgdex, scryfall, importedResolver] in
+                        await PriceRefreshController.fetch(
+                            next,
+                            tcgdex: tcgdex,
+                            scryfall: scryfall,
+                            importedResolver: importedResolver
+                        )
+                    }
+                }
+            }
+        }
+
+        _ = commitStaged()
+        if wasCancelled || Task.isCancelled {
+            return .cancelled
+        }
+
+        let fallbackResult = await runFallback(
+            fallbackSubjects,
+            usesPriceFallback: request.usesPriceFallback,
+            progress: progress,
+            store: store
+        )
+        if fallbackResult.priced > 0 {
+            priced += fallbackResult.priced
+            changedPrices = true
+        }
+        persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
+
+        let gradedResult = await refreshGraded(
+            targets,
+            usesPriceFallback: request.usesPriceFallback,
+            store: store
+        )
+        if gradedResult.priced > 0 {
+            priced += gradedResult.priced
+            changedPrices = true
+        }
+        persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
+
+        if Task.isCancelled { return .cancelled }
+        let latest = latestSourceUpdate ?? previousLatest
+        return .completed(
+            PriceRefreshWorkResult(
+                checkedAt: .now,
+                priced: priced,
+                failed: failed,
+                latestSourceUpdate: latest,
+                checkedUnstampedProvider: checkedUnstampedProvider,
+                changedPrices: changedPrices,
+                foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
+                providerUnreachable: providerUnreachable,
+                persistenceFailed: persistenceFailed,
+                reconciledDuplicateRecords: reconciledDuplicateRecords
+            )
+        )
+    }
+
+    private func latestKnownSourceUpdate(in store: PriceStore) -> Date? {
+        store.allRecords().compactMap(\.sourceUpdatedAt).max()
+    }
+
+    private func isNewer(_ candidate: Date?, than previous: Date?) -> Bool {
+        guard let candidate else { return false }
+        guard let previous else { return true }
+        return candidate > previous
+    }
+
+    private func makeIdentityState() -> (ProductIdentityStore, ProductIdentityIndex) {
+        if let identityIndex {
+            return (
+                identityStore ?? ProductIdentityStore(context: modelContext),
+                identityIndex
+            )
+        }
+        let identities = ProductIdentityStore(context: modelContext)
+        let index = ProductIdentityIndex(context: modelContext)
+        identityStore = identities
+        identityIndex = index
+        return (identities, index)
+    }
+
+    private func applyActiveBatch(
+        card: JustTCGCard,
+        variant: JustTCGVariant,
+        owners: [MarketPriceTarget]
+    ) -> Bool {
+        guard let store = refreshStore,
+              let identities = identityStore,
+              let identityIndex else { return false }
+        return PriceRefreshController.applyVendorBatchHit(
+            card: card,
+            variant: variant,
+            owners: owners,
+            store: store,
+            identities: identities,
+            artworkRowsByPriceKey: PriceRefreshController.materializedRows(
+                from: artworkRowIDsByPriceKey,
+                in: modelContext
+            ),
+            identityRowsByPriceKey: PriceRefreshController.materializedRows(
+                from: identityRowIDsByPriceKey,
+                in: modelContext
+            ),
+            identityIndex: identityIndex
+        )
+    }
+
+    private func recordActiveArtworkMiss(for owners: [MarketPriceTarget]) {
+        PriceRefreshController.recordSealedArtworkMiss(
+            for: owners,
+            rowIDsByPriceKey: artworkRowIDsByPriceKey,
+            context: modelContext
+        )
+    }
+
+    @discardableResult
+    private func saveActiveContext() -> Bool {
+        guard let identities = identityStore, let store = refreshStore else { return false }
+        // Both wrappers point at this actor's one context. Keep the existing
+        // identity-then-price checkpoint order; changing it would widen the
+        // already-known non-atomic window between synced and local stores.
+        return identities.save() && store.save()
+    }
+
+    private func runFallback(
+        _ candidates: [PriceRefreshController.FallbackCandidate],
+        usesPriceFallback: Bool,
+        progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
+        store: PriceStore
+    ) async -> (priced: Int, persistenceFailed: Bool) {
+        guard !candidates.isEmpty else {
+            await progress(.fallbackIdle)
+            return (0, false)
+        }
+
+        let deduplicatedCandidates = PriceRefreshController.collapsingDuplicates(candidates)
+        let eligibleCandidates = deduplicatedCandidates.filter {
+            PriceRefreshController.permitsVendorWork(
+                for: $0.target,
+                usesFallback: usesPriceFallback
+            )
+        }
+        guard !eligibleCandidates.isEmpty else {
+            await progress(.fallbackDisabled(pending: deduplicatedCandidates.count))
+            return (0, false)
+        }
+        guard PriceVendorCredentials.hasKey else {
+            await progress(.fallbackUnconfigured(pending: eligibleCandidates.count))
+            return (0, false)
+        }
+
+        let (identities, identityIndex) = makeIdentityState()
+        let artworkPending = PriceRefreshController.rowsMissingArtworkIDs(in: modelContext)
+        let identityRows = PriceRefreshController.rowsByPriceKeyIDs(in: modelContext)
+        artworkRowIDsByPriceKey = artworkPending
+        identityRowIDsByPriceKey = identityRows
+        defer {
+            artworkRowIDsByPriceKey = [:]
+            identityRowIDsByPriceKey = [:]
+        }
+
+        var priced = 0
+        var stagedPriced = 0
+        var persistenceFailed = false
+        var completed = 0
+        var stoppedByAllowance = false
+        var budget = await fallbackService.budgetSnapshot()
+
+        func publishFallbackProgress() async {
+            // The controller performs the human-visible 0.25 s throttle; the
+            // actor still emits the initial event so the fallback phase is not
+            // visually delayed after a long catalog pass.
+            await progress(.fallback(
+                completed: completed,
+                total: eligibleCandidates.count,
+                remainingToday: budget.remainingToday
+            ))
+        }
+
+        @discardableResult
+        func checkpoint() async -> Bool {
+            let saved = saveActiveContext()
+            if saved {
+                priced += stagedPriced
+            } else {
+                persistenceFailed = true
+            }
+            stagedPriced = 0
+            return saved
+        }
+
+        var batchable: [CardGame: [MarketPriceTarget]] = [:]
+        var needsIdentity: [PriceRefreshController.FallbackCandidate] = []
+        for candidate in eligibleCandidates {
+            let key = ProductIdentity.key(
+                game: candidate.target.game,
+                printingID: candidate.target.printingID,
+                variantID: candidate.target.variantID,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
+            )
+            let cachedVariant = candidate.target.marketVariantID
+                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
+            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
+            if cachedVariant == nil, cachedCard == nil,
+               !identities.needsResolution(forKey: key, using: identityIndex) {
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
+
+            let external = candidate.externalLookups
+            guard cachedVariant != nil || !external.isEmpty else {
+                needsIdentity.append(candidate)
+                continue
+            }
+            guard candidate.target.itemKind != .gradedCard else {
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
+
+            batchable[candidate.target.game, default: []].append(
+                MarketPriceTarget(
+                    priceKey: key,
+                    game: candidate.target.game,
+                    printingID: candidate.target.printingID,
+                    variantID: candidate.target.variantID,
+                    itemKind: candidate.target.itemKind,
+                    marketVariantID: cachedVariant,
+                    lookupCandidates: external,
+                    currentAmount: nil,
+                    lastCheckedAt: candidate.target.lastCheckedAt,
+                    magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
+                    requiresFullResponse: !candidate.target.hasPrice
+                        || candidate.target.needsArtwork
+                )
+            )
+        }
+
+        let coordinator = JustTCGRefreshCoordinator(
+            client: JustTCGV1Client(transport: sharedTransport)
+        )
+        for (game, targets) in batchable {
+            if Task.isCancelled { break }
+            let useDelta = JustTCGSyncLedger()
+                .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)
+                .supportsDeltaSync
+            let report = await coordinator.refresh(
+                targets,
+                game: game,
+                lane: .background,
+                useDelta: useDelta,
+                apply: { [self] card, variant, owners in
+                    await self.applyActiveBatch(card: card, variant: variant, owners: owners)
+                },
+                unmatched: { [self] owners in
+                    await self.recordActiveArtworkMiss(for: owners)
+                },
+                checkpoint: { [self] in
+                    await self.saveActiveContext()
+                }
+            )
+            priced += report.variantsUpdated
+            persistenceFailed = persistenceFailed || report.persistenceFailed
+            completed += report.variantsRequested
+            await publishFallbackProgress()
+
+            switch report.stoppedReason {
+            case let .dailyBudget(resetAt), let .monthlyBudget(resetAt):
+                stoppedByAllowance = true
+                await progress(.fallbackBudgetReached(
+                    pending: max(eligibleCandidates.count - completed, 0),
+                    resetAt: resetAt
+                ))
+            case let .rateLimited(retryAt):
+                stoppedByAllowance = true
+                await progress(.fallbackRateLimited(
+                    pending: max(eligibleCandidates.count - completed, 0),
+                    retryAt: retryAt
+                ))
+            case .cancelled, .transportFailure, .none:
+                break
+            }
+            if stoppedByAllowance { break }
+        }
+
+        for candidate in (stoppedByAllowance ? [] : needsIdentity) {
+            if Task.isCancelled { break }
+            let key = ProductIdentity.key(
+                game: candidate.target.game,
+                printingID: candidate.target.printingID,
+                variantID: candidate.target.variantID,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw
+            )
+            let cached = identities.cachedCardID(forKey: key, using: identityIndex)
+            if cached == nil, !identities.needsResolution(forKey: key, using: identityIndex) {
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
+            guard let subject = candidate.subject(vendorCardID: cached) else {
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
+            let outcome = await fallbackService.quote(
+                for: subject,
+                variant: candidate.target.variantID.map(PhysicalVariant.resolving),
+                lane: .background
+            )
+            identities.record(
+                outcome,
+                forKey: key,
+                treatmentIDs: candidate.target.magicTreatmentIDsRaw,
+                using: identityIndex
+            )
+
+            switch outcome {
+            case let .price(price, _, _):
+                if store.store(
+                    .price(price),
+                    game: candidate.target.game,
+                    printingID: candidate.target.printingID,
+                    variantID: candidate.target.variantID,
+                    treatmentIDs: candidate.target.magicTreatmentIDsRaw
+                ) {
+                    stagedPriced += 1
+                } else {
+                    persistenceFailed = true
+                }
+            case let .budgetReached(resetAt):
+                stoppedByAllowance = true
+                await progress(.fallbackBudgetReached(
+                    pending: max(eligibleCandidates.count - completed, 0),
+                    resetAt: resetAt
+                ))
+            case let .rateLimited(retryAt):
+                stoppedByAllowance = true
+                await progress(.fallbackRateLimited(
+                    pending: max(eligibleCandidates.count - completed, 0),
+                    retryAt: retryAt
+                ))
+            case .noListingForVariant, .noProductMatch, .unsupportedFinish,
+                 .unsupportedTreatment, .requestFailed:
+                break
+            }
+            completed += 1
+            if stoppedByAllowance { break }
+
+            budget = await fallbackService.budgetSnapshot()
+            if completed.isMultiple(of: PriceRefreshController.fallbackCheckpointInterval) {
+                _ = await checkpoint()
+            }
+            await publishFallbackProgress()
+        }
+
+        _ = await checkpoint()
+        if !stoppedByAllowance, !Task.isCancelled {
+            budget = await fallbackService.budgetSnapshot()
+            await progress(.fallbackFinished(
+                checked: completed,
+                priced: priced,
+                remainingToday: budget.remainingToday
+            ))
+        }
+        return (priced, persistenceFailed)
+    }
+
+    private func refreshGraded(
+        _ targets: [PriceTarget],
+        usesPriceFallback: Bool,
+        store: PriceStore
+    ) async -> (priced: Int, persistenceFailed: Bool) {
+        let slabs = targets.filter {
+            $0.itemKind == .gradedCard && $0.marketVariantID != nil
+        }
+        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
+            return (0, false)
+        }
+
+        var byCard: [String: [PriceTarget]] = [:]
+        for slab in slabs {
+            guard let identity = slab.gradedIdentity else { continue }
+            byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
+        }
+
+        let client = JustTCGV2GradedClient(transport: sharedTransport)
+        var priced = 0
+        var persistenceFailed = false
+        for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
+            if Task.isCancelled { break }
+            guard let identity = group.first?.gradedIdentity,
+                  let game = group.first?.game else { continue }
+            let variants: [GradedVariant]
+            do {
+                variants = try await client.gradedVariants(
+                    identity: identity,
+                    game: game,
+                    companies: Set(group.compactMap(\.gradingCompany)),
+                    grades: Set(group.compactMap(\.grade)),
+                    lane: .background
+                )
+            } catch {
+                break
+            }
+
+            let byVariantID = Dictionary(
+                variants.map { ($0.id, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            var stagedPriced = 0
+            for target in group {
+                guard let handle = target.marketVariantID,
+                      let variant = byVariantID[handle],
+                      let amount = variant.marketPriceUSD else { continue }
+                let accepted = store.store(
+                    .price(
+                        NormalizedPrice(
+                            unitMarketPriceUSD: amount,
+                            currencyCode: "USD",
+                            source: .justTCG,
+                            sourceVariantID: variant.id,
+                            sourceUpdatedAt: variant.updatedAt,
+                            fetchedAt: .now
+                        )
+                    ),
+                    game: target.game,
+                    printingID: target.printingID,
+                    variantID: target.variantID,
+                    marketVariantID: variant.id,
+                    treatmentIDs: target.magicTreatmentIDsRaw
+                )
+                if let record = store.record(forKey: target.id) {
+                    record.marketVariantID = variant.id
+                    record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                }
+                if accepted { stagedPriced += 1 }
+                else { persistenceFailed = true }
+            }
+            if store.save() { priced += stagedPriced }
+            else { persistenceFailed = true }
+        }
+        return (priced, persistenceFailed)
     }
 }
 
@@ -139,6 +876,54 @@ struct ImportedPriceIdentity: Hashable, Sendable {
     let cardNumber: String
 }
 
+/// The value-only request handed from the UI facade to the refresh model actor.
+/// The actor builds its target snapshot after the migration gate is held, so a
+/// row rekeyed while a caller waited cannot be written under an obsolete key.
+struct PriceRefreshRequest: Sendable {
+    let usesPriceFallback: Bool
+    let includeImported: Bool
+    let forceUnsupportedRetry: Bool
+    let sortOldestFirst: Bool
+    let maximumTargetCount: Int?
+    let markRecentlyCheckedIfEmpty: Bool
+}
+
+struct PriceRefreshResult: Sendable, Equatable {
+    let didRun: Bool
+    let targetBuildFailed: Bool
+}
+
+fileprivate enum PriceRefreshProgress: Sendable {
+    case catalog(completed: Int, total: Int)
+    case fallback(completed: Int, total: Int, remainingToday: Int)
+    case fallbackIdle
+    case fallbackDisabled(pending: Int)
+    case fallbackUnconfigured(pending: Int)
+    case fallbackBudgetReached(pending: Int, resetAt: Date)
+    case fallbackRateLimited(pending: Int, retryAt: Date)
+    case fallbackFinished(checked: Int, priced: Int, remainingToday: Int)
+}
+
+fileprivate struct PriceRefreshWorkResult: Sendable {
+    let checkedAt: Date
+    let priced: Int
+    let failed: Int
+    let latestSourceUpdate: Date?
+    let checkedUnstampedProvider: Bool
+    let changedPrices: Bool
+    let foundNothingNewer: Bool
+    let providerUnreachable: Bool
+    let persistenceFailed: Bool
+    let reconciledDuplicateRecords: Int
+}
+
+fileprivate enum PriceRefreshWorkOutcome: Sendable {
+    case noTargets
+    case targetBuildFailed
+    case cancelled
+    case completed(PriceRefreshWorkResult)
+}
+
 /// Keeps prices current without ever claiming more than it knows.
 ///
 /// Three separate promises, all of which the UI depends on:
@@ -200,13 +985,10 @@ final class PriceRefreshController: ObservableObject {
     @Published private(set) var status: Status = .idle
     @Published private(set) var fallbackStatus: FallbackStatus = .idle
 
-    private let tcgdex = TCGdexService()
-    private let scryfall = ScryfallService()
-    private let importedResolver = ImportedCardResolver()
+    // The budget service is also used to restore fallback availability while no
+    // refresh is running. The actor owns its own provider and persistence
+    // services for the refresh itself.
     private let fallbackService = ProductPriceService.shared
-    /// One transport for every JustTCG client, so pacing and the request ledger
-    /// are shared rather than each client keeping its own idea of the allowance.
-    private let sharedTransport = JustTCGTransport.shared
 
     /// Opt-in, and off until a key is present. The catalog prices most of the
     /// collection for free; this is only for what it cannot reach.
@@ -225,12 +1007,12 @@ final class PriceRefreshController: ObservableObject {
 
     /// Enough parallelism to make a few hundred cards quick, few enough to stay a
     /// polite client.
-    private static let maxConcurrentRequests = 4
+    nonisolated fileprivate static let maxConcurrentRequests = 4
 
     /// A short run of in-flight requests failing to reach the provider is taken
     /// as the provider being down. Small on purpose: the cost of being wrong is
     /// one retry, and the cost of being slow is minutes of timeouts.
-    private static let unreachableThreshold = maxConcurrentRequests
+    nonisolated fileprivate static let unreachableThreshold = maxConcurrentRequests
 
     /// The pass currently running, if any.
     ///
@@ -242,15 +1024,15 @@ final class PriceRefreshController: ObservableObject {
     /// produced it, silently, partway through. Cancellation is still available
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
-    private var activeRefresh: Task<Void, Never>?
+    private var activeRefresh: Task<PriceRefreshResult, Never>?
     private var lastProgressPublicationAt: Date?
     /// A caller that arrives during a pass must not lose its newer targets.
-    /// Keep them as a trailing queue; the owner drains it before exposing the
-    /// refresh as finished.
-    private var pendingRefreshBatches: [PendingRefreshBatch] = []
+    /// Keep a trailing request; the actor rebuilds its targets from the live
+    /// context when it reaches that request rather than retaining model rows.
+    private var pendingRefreshRequests: [PendingRefreshRequest] = []
 
-    private struct PendingRefreshBatch {
-        var targets: [PriceTarget]
+    private struct PendingRefreshRequest {
+        var request: PriceRefreshRequest
     }
 
     private var isRefreshing: Bool {
@@ -282,6 +1064,57 @@ final class PriceRefreshController: ObservableObject {
             )
         }
         lastProgressPublicationAt = now
+    }
+
+    private func consume(_ progress: PriceRefreshProgress) {
+        switch progress {
+        case let .catalog(completed, total):
+            publishRefreshingProgress(
+                completed: completed,
+                total: total,
+                force: completed == 0
+            )
+        case let .fallback(completed, total, remainingToday):
+            publishRefreshingProgress(
+                completed: completed,
+                total: total,
+                fallbackRemainingToday: remainingToday,
+                force: completed == 0
+            )
+        case .fallbackIdle:
+            fallbackStatus = .idle
+        case let .fallbackDisabled(pending):
+            fallbackStatus = .disabled(pending: pending)
+        case let .fallbackUnconfigured(pending):
+            fallbackStatus = .unconfigured(pending: pending)
+        case let .fallbackBudgetReached(pending, resetAt):
+            fallbackStatus = .budgetReached(pending: pending, resetAt: resetAt)
+        case let .fallbackRateLimited(pending, retryAt):
+            fallbackStatus = .rateLimited(pending: pending, retryAt: retryAt)
+        case let .fallbackFinished(checked, priced, remainingToday):
+            fallbackStatus = .finished(
+                checked: checked,
+                priced: priced,
+                remainingToday: remainingToday
+            )
+        }
+    }
+
+    private func apply(_ result: PriceRefreshWorkResult) {
+        status = .finished(
+            Summary(
+                checkedAt: result.checkedAt,
+                priced: result.priced,
+                failed: result.failed,
+                latestSourceUpdate: result.latestSourceUpdate,
+                checkedUnstampedProvider: result.checkedUnstampedProvider,
+                changedPrices: result.changedPrices,
+                foundNothingNewer: result.foundNothingNewer,
+                providerUnreachable: result.providerUnreachable,
+                persistenceFailed: result.persistenceFailed,
+                reconciledDuplicateRecords: result.reconciledDuplicateRecords
+            )
+        )
     }
 
     /// Targets that a refresh should bother with.
@@ -356,33 +1189,38 @@ final class PriceRefreshController: ObservableObject {
         usesFallback || (target.itemKind == .sealedProduct && target.needsArtwork)
     }
 
-    /// - Parameter targets: already in display order, so whatever the user is
-    ///   looking at becomes fresh first.
+    /// The actor rebuilds its target snapshot from the context after the
+    /// migration gate is held, so the request never carries model objects or a
+    /// stale display-order snapshot across the boundary.
     ///
     /// A second caller arriving while a pass is already running waits for that
     /// pass and queues any targets it added. Returning the second caller's
     /// targets was a silent no-op: pulling to refresh during the automatic
     /// startup check looked like a button that did nothing.
-    func refresh(_ targets: [PriceTarget], container: ModelContainer) async {
+    func refresh(
+        _ request: PriceRefreshRequest,
+        container: ModelContainer
+    ) async -> PriceRefreshResult {
         if let activeRefresh {
-            enqueuePending(targets)
-            await activeRefresh.value
-            return
+            enqueuePending(request)
+            return await activeRefresh.value
         }
-        guard !targets.isEmpty else { return }
 
         // The active task represents the whole queue, not just the first pass.
         // A caller that joins after the first pass has completed must remain
         // suspended until its trailing targets have been processed too.
         let task = Task { @MainActor [weak self] in
-            guard let self else { return }
-            await self.runRefreshQueue(startingWith: targets, container: container)
+            guard let self else {
+                return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            }
+            return await self.runRefreshQueue(startingWith: request, container: container)
         }
         activeRefresh = task
-        await task.value
+        let result = await task.value
         if let pending = pendingFallbackWork {
             await updateFallbackAvailability(pending: pending)
         }
+        return result
     }
 
     /// Stops the pass in progress. The only legitimate reason is that the work
@@ -390,415 +1228,93 @@ final class PriceRefreshController: ObservableObject {
     /// data some view is keyed on.
     func cancelRefresh() {
         activeRefresh?.cancel()
-        pendingRefreshBatches.removeAll()
+        pendingRefreshRequests.removeAll()
     }
 
     private func runRefreshQueue(
-        startingWith initialTargets: [PriceTarget],
+        startingWith initialRequest: PriceRefreshRequest,
         container: ModelContainer
-    ) async {
+    ) async -> PriceRefreshResult {
         // The active marker is cleared in the same actor turn as the final
         // empty-queue check. A late caller can therefore either join a live
         // queue or start a new one; it cannot enqueue work after this queue has
         // already decided there is nothing left to process.
         defer { activeRefresh = nil }
-        var targets = initialTargets
-        // A refresh is a long-lived workflow. Its context is deliberately
-        // independent from the UI/main context so a collection mutation or
-        // import rollback cannot discard its staged price evidence, and its
-        // checkpoints cannot commit unrelated UI work.
-        let refreshContext = ModelContext(container)
-        let store = PriceStore(
-            context: refreshContext,
-            index: PriceRefreshDataIndex(context: refreshContext)
-        )
-        while !targets.isEmpty {
-            await performRefresh(targets, store: store)
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        let progress: @Sendable (PriceRefreshProgress) async -> Void = { [weak self] value in
+            await self?.consume(value)
+        }
+        var request = initialRequest
+        var didRun = false
+        var targetBuildFailed = false
+        while true {
+            let outcome = await worker.run(request, progress: progress)
+            switch outcome {
+            case .noTargets:
+                if request.markRecentlyCheckedIfEmpty {
+                    markRecentlyChecked()
+                }
+            case .targetBuildFailed:
+                targetBuildFailed = true
+            case .cancelled:
+                status = .idle
+                return PriceRefreshResult(
+                    didRun: didRun,
+                    targetBuildFailed: targetBuildFailed
+                )
+            case let .completed(result):
+                didRun = true
+                apply(result)
+            }
 
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled else {
+                status = .idle
+                return PriceRefreshResult(
+                    didRun: didRun,
+                    targetBuildFailed: targetBuildFailed
+                )
+            }
             guard let pending = takePendingRefresh() else { break }
-            targets = pending.targets
+            request = pending.request
         }
+        return PriceRefreshResult(
+            didRun: didRun,
+            targetBuildFailed: targetBuildFailed
+        )
     }
 
-    private func enqueuePending(_ targets: [PriceTarget]) {
-        guard !targets.isEmpty else { return }
-        if let index = pendingRefreshBatches.indices.last {
-            var byID: [String: PriceTarget] = [:]
-            var order: [String] = []
-            for target in pendingRefreshBatches[index].targets {
-                if byID[target.id] == nil { order.append(target.id) }
-                byID[target.id] = target
-            }
-            for target in targets {
-                if byID[target.id] == nil { order.append(target.id) }
-                byID[target.id] = target
-            }
-            pendingRefreshBatches[index].targets = order.compactMap { byID[$0] }
+    private func enqueuePending(_ request: PriceRefreshRequest) {
+        if let index = pendingRefreshRequests.indices.last {
+            let existing = pendingRefreshRequests[index].request
+            pendingRefreshRequests[index].request = PriceRefreshRequest(
+                usesPriceFallback: request.usesPriceFallback,
+                includeImported: existing.includeImported || request.includeImported,
+                forceUnsupportedRetry: existing.forceUnsupportedRetry || request.forceUnsupportedRetry,
+                sortOldestFirst: existing.sortOldestFirst || request.sortOldestFirst,
+                maximumTargetCount: mergedLimit(
+                    existing.maximumTargetCount,
+                    request.maximumTargetCount
+                ),
+                markRecentlyCheckedIfEmpty: existing.markRecentlyCheckedIfEmpty
+                    || request.markRecentlyCheckedIfEmpty
+            )
         } else {
-            pendingRefreshBatches.append(
-                PendingRefreshBatch(
-                    targets: targets
-                )
-            )
+            pendingRefreshRequests.append(PendingRefreshRequest(request: request))
         }
     }
 
-    private func takePendingRefresh() -> PendingRefreshBatch? {
-        guard !pendingRefreshBatches.isEmpty else { return nil }
-        return pendingRefreshBatches.removeFirst()
+    private func mergedLimit(_ left: Int?, _ right: Int?) -> Int? {
+        switch (left, right) {
+        case (nil, nil): return nil
+        case (nil, _), (_, nil): return nil
+        case let (left?, right?): return max(left, right)
+        }
     }
 
-    private func performRefresh(_ targets: [PriceTarget], store: PriceStore) async {
-        guard !isRefreshing, !targets.isEmpty else { return }
-
-        var priced = 0
-        var failed = 0
-        var latestSourceUpdate: Date?
-        var checkedUnstampedProvider = false
-        var changedPrices = false
-        var persistenceFailed = false
-        var reconciledDuplicateRecords = 0
-        var stagedPriced = 0
-        var stagedChangedPrices = false
-        var stagedDuplicateRepairs = store.reconcileDuplicateRecords()
-
-        func stage(_ accepted: Bool, priced: Bool = false, changed: Bool = false) {
-            guard accepted else {
-                persistenceFailed = true
-                return
-            }
-            if priced { stagedPriced += 1 }
-            stagedChangedPrices = stagedChangedPrices || changed
-        }
-
-        @discardableResult
-        func commitStaged() -> Bool {
-            let saved = store.save()
-            if saved {
-                priced += stagedPriced
-                changedPrices = changedPrices || stagedChangedPrices
-                reconciledDuplicateRecords += stagedDuplicateRepairs
-            } else {
-                persistenceFailed = true
-            }
-            stagedPriced = 0
-            stagedChangedPrices = false
-            stagedDuplicateRepairs = 0
-            return saved
-        }
-
-        // A sealed box or a graded slab has no catalog identity to look up, so
-        // it never enters the catalog pass. It carries the vendor's own variant
-        // handle instead and goes straight to the batched stage below.
-        let unsupported = targets.filter {
-            $0.itemKind == .gradedCard && $0.marketVariantID == nil
-        }
-        for target in unsupported {
-            stage(store.recordUnsupportedProvider(
-                game: target.game,
-                printingID: target.printingID,
-                variantID: target.variantID,
-                treatmentIDs: target.magicTreatmentIDsRaw
-            ))
-        }
-        // Partitioned by instrument id rather than by `Array.contains`. A
-        // synthesized `PriceTarget ==` compares two dozen fields including
-        // arrays, so the linear membership test was quadratic over the whole
-        // collection before a single request went out.
-        let unsupportedIDs = Set(unsupported.map(\.id))
-        let supportedTargets = targets.filter { !unsupportedIDs.contains($0.id) }
-        let vendorNative = supportedTargets.filter(\.isVendorNative)
-
-        // Group by printing: every variant of one card shares a single response.
-        var order: [PriceTarget.Printing] = []
-        var byPrinting: [PriceTarget.Printing: [PriceTarget]] = [:]
-        for target in supportedTargets where !target.isVendorNative {
-            if byPrinting[target.printing] == nil { order.append(target.printing) }
-            byPrinting[target.printing, default: []].append(target)
-        }
-
-        let previousLatest = latestKnownSourceUpdate(in: store)
-        let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
-        var completed = 0
-        var wasCancelled = false
-        /// Collected during the catalog pass, resolved after it. Running the
-        /// fallback inline would interleave a paced, rate-limited vendor with
-        /// the unmetered catalog and slow the whole refresh to the vendor's
-        /// speed.
-        var fallbackSubjects: [FallbackCandidate] = vendorNative.map {
-            FallbackCandidate(target: $0, card: nil)
-        }
-        /// Consecutive responses where the provider could not be reached at all.
-        var consecutiveUnreachable = 0
-        var providerUnreachable = false
-        publishRefreshingProgress(
-            completed: 0,
-            total: order.count,
-            force: true
-        )
-
-        var cursor = 0
-        await withTaskGroup(of: PriceFetchOutcome.self) { group in
-            let initial = min(Self.maxConcurrentRequests, order.count)
-            for _ in 0..<initial {
-                let printing = order[cursor]
-                cursor += 1
-                group.addTask { [tcgdex, scryfall, importedResolver] in
-                    await Self.fetch(
-                        printing,
-                        tcgdex: tcgdex,
-                        scryfall: scryfall,
-                        importedResolver: importedResolver
-                    )
-                }
-            }
-
-            while let outcome = await group.next() {
-                let printing = outcome.printing
-                let now = Date.now
-                switch outcome.result {
-                case let .card(card):
-                    if printing.importedIdentity != nil {
-                        for importedCardID in importedCardIDsByProviderID[printing.printingID] ?? [] {
-                        guard let importedCard = store.context.model(for: importedCardID) as? CollectedCard
-                        else { continue }
-                        importedCard.applyCatalogMetadata(from: card)
-                        CollectionCatalogNormalizer.recordCatalogMetadataCheck(
-                            on: importedCard,
-                            at: now
-                        )
-                        }
-                    }
-                    if card.game == .magic {
-                        // Scryfall never supplies a provider-side price timestamp,
-                        // including when its price object contains no usable value.
-                        checkedUnstampedProvider = true
-                    }
-                    for target in byPrinting[printing] ?? [] {
-                        let lookup = CardPricing.price(
-                            for: card,
-                            variant: target.variantID.map(PhysicalVariant.resolving),
-                            magicTreatments: card.magicTreatments(
-                                for: target.variantID.map(PhysicalVariant.resolving)
-                            ),
-                            pokemonPrintRun: target.pokemonPrintRun,
-                            at: now
-                        )
-                        // The catalog answered, but not in a way that finishes
-                        // the job: either it has no price for this finish, or it
-                        // has one in a currency the collection cannot total.
-                        // Both are handed to the fallback, which quotes USD.
-                        // Whatever is stored below stays put if the fallback
-                        // finds nothing, so Cardmarket remains the last resort
-                        // rather than being dropped.
-                        if Self.needsFallback(lookup) {
-                            fallbackSubjects.append(
-                                FallbackCandidate(target: target, card: card)
-                            )
-                        }
-                        if case let .price(price) = lookup {
-                            if let updated = price.sourceUpdatedAt,
-                               updated > (latestSourceUpdate ?? .distantPast) {
-                                latestSourceUpdate = updated
-                            } else if price.sourceUpdatedAt == nil {
-                                checkedUnstampedProvider = true
-                            }
-                        }
-
-                        let key = PriceRecord.key(
-                            game: target.game,
-                            printingID: target.printingID,
-                            variantID: target.variantID,
-                            treatmentIDs: target.magicTreatmentIDsRaw
-                        )
-                        let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
-                        let newAmount: Double?
-                        switch lookup {
-                        case let .price(price): newAmount = price.unitMarketPriceUSD
-                        case .unavailable: newAmount = previousAmount
-                        }
-                        let changed = previousAmount != newAmount
-                        let isPriced: Bool
-                        if case .price = lookup {
-                            isPriced = true
-                        } else {
-                            isPriced = false
-                        }
-                        let accepted = store.store(
-                            lookup,
-                            game: target.game,
-                            printingID: target.printingID,
-                            variantID: target.variantID,
-                            at: now,
-                            treatmentIDs: target.magicTreatmentIDsRaw
-                        )
-                        stage(
-                            accepted,
-                            priced: isPriced,
-                            changed: changed
-                        )
-                    }
-
-                case .failed:
-                    // Nothing is overwritten. The old price keeps its old age.
-                    //
-                    // `catalogMetadataCheckedAt` is deliberately *not* stamped
-                    // here. It records when the catalog normalizer last tried to
-                    // resolve this card's identity, and the normalizer uses it to
-                    // decide when to try again. Writing it on a price failure
-                    // starved exactly the cards that needed normalizing most: a
-                    // card with no identity cannot be priced, the failed price
-                    // check refreshed the timestamp, the normalizer then skipped
-                    // the card as recently-checked, and the loop repeated forever.
-                    // A price failure is already recorded on the price record.
-                    failed += 1
-                    for target in byPrinting[printing] ?? [] {
-                        stage(store.recordFailure(
-                            game: target.game,
-                            printingID: target.printingID,
-                            variantID: target.variantID,
-                            at: now,
-                            treatmentIDs: target.magicTreatmentIDsRaw
-                        ))
-                        // A card the catalog could not even identify is the
-                        // strongest fallback candidate there is — it has no
-                        // price and no artwork today. The row's persisted
-                        // fallback identity is all the vendor needs.
-                        fallbackSubjects.append(
-                            FallbackCandidate(target: target, card: nil)
-                        )
-                    }
-
-                case .unreachable:
-                    // Every card in the queue is about to fail the same way, one
-                    // short timeout at a time. Four hundred of those at a
-                    // concurrency of four is thirteen minutes of watching a
-                    // progress bar crawl before the fallback even starts.
-                    //
-                    // So a short run of unreachable responses ends the catalog
-                    // pass. Nothing is recorded as a price failure: these cards
-                    // were never actually asked about, and stamping them would
-                    // misreport an outage as four hundred missing cards.
-                    fallbackSubjects.append(contentsOf: (byPrinting[printing] ?? []).map {
-                        FallbackCandidate(target: $0, card: nil)
-                    })
-                    consecutiveUnreachable += 1
-                    // Latched on `providerUnreachable`, not just on the
-                    // threshold. `cursor` stops advancing the moment the outage
-                    // is declared, so every one of the still in-flight replies
-                    // would otherwise sweep in the *same* untouched tail again
-                    // — up to `maxConcurrentRequests` copies of the remaining
-                    // queue, each costing a paid identity request below.
-                    if !providerUnreachable, consecutiveUnreachable >= Self.unreachableThreshold {
-                        providerUnreachable = true
-                        // The remaining queue has not been asked yet. Include it
-                        // in this fallback pass instead of waiting for another
-                        // refresh to discover each stale card.
-                        for pending in order.dropFirst(cursor) {
-                            fallbackSubjects.append(contentsOf: (byPrinting[pending] ?? []).map {
-                                FallbackCandidate(target: $0, card: nil)
-                            })
-                        }
-                    }
-
-                case .cancelled:
-                    wasCancelled = true
-                }
-
-                switch outcome.result {
-                case .card, .failed:
-                    // The provider answered, even if that answer was not usable
-                    // for this row. Do not turn a few missing cards into an
-                    // outage declaration.
-                    consecutiveUnreachable = 0
-                case .unreachable, .cancelled:
-                    break
-                }
-                completed += 1
-                publishRefreshingProgress(
-                    completed: completed,
-                    total: order.count
-                )
-
-                // Checkpoint periodically, matching the fallback stage's own
-                // interval. A pass over a few hundred cards is minutes long,
-                // and holding all of it unsaved meant any unrelated
-                // `ModelContext.rollback` in that window — a scan or an import
-                // that failed and took the context back — discarded the whole
-                // refresh along with itself.
-                //
-                // Deliberately not once per printing. Every save republishes
-                // the collection's `@Query`s, and each republish costs a full
-                // pass over the observed tables; ten printings keeps the
-                // exposure window to seconds while leaving that churn an order
-                // of magnitude smaller.
-                if completed.isMultiple(of: Self.catalogCheckpointInterval) {
-                    _ = commitStaged()
-                }
-
-                if cursor < order.count, !providerUnreachable, !wasCancelled, !Task.isCancelled {
-                    let next = order[cursor]
-                    cursor += 1
-                    group.addTask { [tcgdex, scryfall, importedResolver] in
-                        await Self.fetch(
-                            next,
-                            tcgdex: tcgdex,
-                            scryfall: scryfall,
-                            importedResolver: importedResolver
-                        )
-                    }
-                }
-            }
-        }
-
-        _ = commitStaged()
-
-        if wasCancelled || Task.isCancelled {
-            status = .idle
-            return
-        }
-
-        // Second stage. Only what the catalog could not finish, and only when
-        // the user has opted in and supplied a key.
-        let fallbackResult = await runFallback(fallbackSubjects, store: store)
-        if fallbackResult.priced > 0 {
-            priced += fallbackResult.priced
-            changedPrices = true
-        }
-        persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
-
-        // Graded slabs, which neither the catalog nor the v1 batch can price.
-        let gradedResult = await refreshGraded(targets, store: store)
-        if gradedResult.priced > 0 {
-            priced += gradedResult.priced
-            changedPrices = true
-        }
-        persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
-
-        if Task.isCancelled {
-            status = .idle
-            return
-        }
-
-        let checkedAt = Date.now
-        status = .finished(
-            Summary(
-                checkedAt: checkedAt,
-                priced: priced,
-                failed: failed,
-                latestSourceUpdate: latestSourceUpdate ?? previousLatest,
-                checkedUnstampedProvider: checkedUnstampedProvider,
-                changedPrices: changedPrices,
-                foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
-                providerUnreachable: providerUnreachable,
-                persistenceFailed: persistenceFailed,
-                reconciledDuplicateRecords: reconciledDuplicateRecords
-            )
-        )
+    private func takePendingRefresh() -> PendingRefreshRequest? {
+        guard !pendingRefreshRequests.isEmpty else { return nil }
+        return pendingRefreshRequests.removeFirst()
     }
-
-    // MARK: - Fallback stage
 
     /// Whether the catalog's answer leaves work for the fallback.
     ///
@@ -811,7 +1327,7 @@ final class PriceRefreshController: ObservableObject {
 
     /// One card the catalog could not finish, captured with whatever identity
     /// was available at the moment it fell through.
-    private struct FallbackCandidate {
+    fileprivate struct FallbackCandidate {
         let target: PriceTarget
         /// Present when the catalog identified the card but could not price it.
         /// Absent when the catalog could not identify it at all.
@@ -884,7 +1400,7 @@ final class PriceRefreshController: ObservableObject {
     /// Collapses candidates that name the same priced thing, preserving the
     /// order the refresh queued them in so the user still sees what they are
     /// looking at priced first.
-    private static func collapsingDuplicates(
+    nonisolated fileprivate static func collapsingDuplicates(
         _ candidates: [FallbackCandidate]
     ) -> [FallbackCandidate] {
         var byKey: [String: FallbackCandidate] = [:]
@@ -913,439 +1429,9 @@ final class PriceRefreshController: ObservableObject {
     /// Returns how many cards it durably priced. Anything it cannot answer is
     /// left exactly as the catalog left it — including a Cardmarket euro price,
     /// which stays as the last resort rather than being cleared.
-    private func runFallback(
-        _ candidates: [FallbackCandidate],
-        store: PriceStore
-    ) async -> (priced: Int, persistenceFailed: Bool) {
-        // WotC editions used to be excluded outright, because the vendor names
-        // them in its own vocabulary and an unverified mapping would have
-        // attached an Unlimited price to a 1st Edition card. That vocabulary is
-        // now mapped from live responses — see `ProductEdition` — so these are
-        // priced like anything else, and an edition the vendor does not
-        // distinguish simply finds no matching printing and stays unpriced.
-        guard !candidates.isEmpty else {
-            fallbackStatus = .idle
-            return (0, false)
-        }
-        // One row can reach this pass by more than one route — its catalog
-        // request failed *and* it was swept in when the provider was declared
-        // unreachable. The batched stage collapses duplicates on its own, but
-        // the identity stage below is one paid request per candidate and does
-        // not, so they are collapsed here where it is still free. A candidate
-        // that carries catalog identity wins over one that does not: it can
-        // batch, while the bare one would have to pay for a search.
-        let deduplicatedCandidates = Self.collapsingDuplicates(candidates)
-        let eligibleCandidates = deduplicatedCandidates.filter {
-            Self.permitsVendorWork(for: $0.target, usesFallback: usesPriceFallback)
-        }
-        guard !eligibleCandidates.isEmpty else {
-            fallbackStatus = .disabled(pending: deduplicatedCandidates.count)
-            return (0, false)
-        }
-        guard PriceVendorCredentials.hasKey else {
-            fallbackStatus = .unconfigured(pending: eligibleCandidates.count)
-            return (0, false)
-        }
-
-        let identities = ProductIdentityStore(context: store.context)
-        let identityIndex = ProductIdentityIndex(context: store.context)
-        var priced = 0
-        var stagedPriced = 0
-        var persistenceFailed = false
-        var completed = 0
-        var stoppedByAllowance = false
-        var budget = await fallbackService.budgetSnapshot()
-        publishRefreshingProgress(
-            completed: 0,
-            total: eligibleCandidates.count,
-            fallbackRemainingToday: budget.remainingToday,
-            force: true
-        )
-        func publishFallbackProgress() {
-            publishRefreshingProgress(
-                completed: completed,
-                total: eligibleCandidates.count,
-                fallbackRemainingToday: budget.remainingToday
-            )
-        }
-
-        @discardableResult
-        func checkpoint() -> Bool {
-            let identitiesSaved = identities.save()
-            let pricesSaved = store.save()
-            let saved = identitiesSaved && pricesSaved
-            if saved {
-                priced += stagedPriced
-            } else {
-                persistenceFailed = true
-            }
-            stagedPriced = 0
-            return saved
-        }
-
-        // Two workloads, and only the second of them batches.
-        //
-        // A card the vendor can already be *asked about* — because a previous
-        // pass resolved its variant handle, or because its Scryfall id is
-        // itself a supported lookup key — goes into a batch, twenty per
-        // request. A card with neither still needs one search to establish
-        // identity, and that search is paid for exactly once: the handle it
-        // returns is persisted, and every later refresh finds it in the first
-        // group.
-        var batchable: [CardGame: [MarketPriceTarget]] = [:]
-        var needsIdentity: [FallbackCandidate] = []
-
-        for candidate in eligibleCandidates {
-            let key = ProductIdentity.key(
-                game: candidate.target.game,
-                printingID: candidate.target.printingID,
-                variantID: candidate.target.variantID,
-                treatmentIDs: candidate.target.magicTreatmentIDsRaw
-            )
-            // The handle stored on the row wins. It was written when the item
-            // was added out of the vendor's own catalogue, and for a sealed box
-            // or a graded slab it is the only identity that exists — there is no
-            // search that could rediscover it and nothing to resolve.
-            let cachedVariant = candidate.target.marketVariantID
-                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
-            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
-            // A card already known to be absent from the vendor costs nothing
-            // on every subsequent refresh.
-            if cachedVariant == nil, cachedCard == nil,
-               !identities.needsResolution(forKey: key, using: identityIndex) {
-                completed += 1
-                publishFallbackProgress()
-                continue
-            }
-
-            let external = candidate.externalLookups
-            guard cachedVariant != nil || !external.isEmpty else {
-                needsIdentity.append(candidate)
-                continue
-            }
-
-            // A graded slab's handle comes from the v2 beta, and v2 ids are a
-            // different namespace: posting one to `POST /v1/cards` as
-            // `variantId` returns `data: []`. Batching them here would spend
-            // batch slots to resolve nothing, silently, forever. Graded pricing
-            // needs the v2 path — see `JustTCGV2GradedClient` — and until it
-            // has one these are left alone rather than pretended over.
-            guard candidate.target.itemKind != .gradedCard else {
-                completed += 1
-                publishFallbackProgress()
-                continue
-            }
-
-            batchable[candidate.target.game, default: []].append(
-                MarketPriceTarget(
-                    priceKey: key,
-                    game: candidate.target.game,
-                    printingID: candidate.target.printingID,
-                    variantID: candidate.target.variantID,
-                    itemKind: candidate.target.itemKind,
-                    marketVariantID: cachedVariant,
-                    lookupCandidates: external,
-                    currentAmount: nil,
-                    lastCheckedAt: candidate.target.lastCheckedAt,
-                    magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
-                    // Nothing to compare a delta against: either the row has
-                    // never been priced, or it is a sealed product still
-                    // missing the artwork only a returned listing can supply.
-                    // "Unchanged" would be an answer to a question it has not
-                    // yet been able to ask.
-                    requiresFullResponse: !candidate.target.hasPrice
-                        || candidate.target.needsArtwork
-                )
-            )
-        }
-
-        // Rows that still have no artwork, indexed by the price key the batch
-        // writes back to. A sealed product's picture and its price come from the
-        // same response, so the refresh that pays for one may as well store the
-        // other rather than leaving a placeholder box on screen forever.
-        let artworkPending = Self.rowsMissingArtworkIDs(in: store.context)
-        // Artwork is an optional backfill, but marketplace identity is useful
-        // for every owned row. Keep separate indexes so an already illustrated
-        // card still receives the product/SKU handles returned by this pass.
-        let identityRows = Self.rowsByPriceKeyIDs(in: store.context)
-
-        // MARK: Batched pass
-        let coordinator = JustTCGRefreshCoordinator(
-            client: JustTCGV1Client(transport: sharedTransport)
-        )
-        for (game, targets) in batchable {
-            if Task.isCancelled { break }
-            // A delta is only safe once a complete pass has succeeded for this
-            // game. Before that, a variant missing from an `updated_after`
-            // response is indistinguishable from one never fetched at all.
-            let syncLedger = JustTCGSyncLedger()
-            let useDelta = syncLedger
-                .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)
-                .supportsDeltaSync
-
-            let report = await coordinator.refresh(
-                targets,
-                game: game,
-                lane: .background,
-                useDelta: useDelta,
-                apply: { card, variant, owners in
-                    Self.applyVendorBatchHit(
-                        card: card,
-                        variant: variant,
-                        owners: owners,
-                        store: store,
-                        identities: identities,
-                        artworkRowIDsByPriceKey: artworkPending,
-                        identityRowIDsByPriceKey: identityRows,
-                        context: store.context,
-                        identityIndex: identityIndex
-                    )
-                },
-                unmatched: { owners in
-                    Self.recordSealedArtworkMiss(
-                        for: owners,
-                        rowIDsByPriceKey: artworkPending,
-                        context: store.context
-                    )
-                },
-                checkpoint: {
-                    checkpoint()
-                }
-            )
-            priced += report.variantsUpdated
-            persistenceFailed = persistenceFailed || report.persistenceFailed
-            completed += report.variantsRequested
-            publishFallbackProgress()
-
-            switch report.stoppedReason {
-            case let .dailyBudget(resetAt), let .monthlyBudget(resetAt):
-                stoppedByAllowance = true
-                fallbackStatus = .budgetReached(
-                    pending: max(eligibleCandidates.count - completed, 0),
-                    resetAt: resetAt
-                )
-            case let .rateLimited(retryAt):
-                stoppedByAllowance = true
-                fallbackStatus = .rateLimited(
-                    pending: max(eligibleCandidates.count - completed, 0),
-                    retryAt: retryAt
-                )
-            case .cancelled, .transportFailure, .none:
-                break
-            }
-            if stoppedByAllowance { break }
-        }
-
-        // MARK: Identity pass
-        //
-        // Only what could not be batched, and only if the allowance survived
-        // the batched pass.
-        for candidate in (stoppedByAllowance ? [] : needsIdentity) {
-            if Task.isCancelled { break }
-            defer {
-                completed += 1
-                if !stoppedByAllowance {
-                    publishFallbackProgress()
-                }
-            }
-            let key = ProductIdentity.key(
-                game: candidate.target.game,
-                printingID: candidate.target.printingID,
-                variantID: candidate.target.variantID,
-                treatmentIDs: candidate.target.magicTreatmentIDsRaw
-            )
-            // A card already known to be absent from the vendor is skipped
-            // outright — that is what makes a collection of unmatchable cards
-            // cost nothing on every subsequent refresh.
-            let cached = identities.cachedCardID(forKey: key, using: identityIndex)
-            if cached == nil, !identities.needsResolution(forKey: key, using: identityIndex) {
-                continue
-            }
-
-            guard let subject = candidate.subject(vendorCardID: cached) else { continue }
-            let variant = candidate.target.variantID.map(PhysicalVariant.resolving)
-            let outcome = await fallbackService.quote(
-                for: subject,
-                variant: variant,
-                lane: .background
-            )
-            identities.record(
-                outcome,
-                forKey: key,
-                treatmentIDs: candidate.target.magicTreatmentIDsRaw,
-                using: identityIndex
-            )
-
-            switch outcome {
-            case let .price(price, _, _):
-                if store.store(
-                    .price(price),
-                    game: candidate.target.game,
-                    printingID: candidate.target.printingID,
-                    variantID: candidate.target.variantID,
-                    treatmentIDs: candidate.target.magicTreatmentIDsRaw
-                ) {
-                    stagedPriced += 1
-                } else {
-                    persistenceFailed = true
-                }
-            case let .budgetReached(resetAt):
-                stoppedByAllowance = true
-                fallbackStatus = .budgetReached(
-                    pending: eligibleCandidates.count - completed,
-                    resetAt: resetAt
-                )
-            case let .rateLimited(retryAt):
-                stoppedByAllowance = true
-                fallbackStatus = .rateLimited(
-                    pending: eligibleCandidates.count - completed,
-                    retryAt: retryAt
-                )
-            case .noListingForVariant, .noProductMatch, .unsupportedFinish, .unsupportedTreatment, .requestFailed:
-                break
-            }
-
-            if stoppedByAllowance { break }
-
-            budget = await fallbackService.budgetSnapshot()
-
-            // Checkpoint. A first run over a few hundred cards is paced to the
-            // vendor's rate limit and can take many minutes, so the work is
-            // committed as it goes rather than staked on reaching the end.
-            // Resolved handles are the expensive part and must survive being
-            // interrupted.
-            if completed.isMultiple(of: Self.fallbackCheckpointInterval) {
-                _ = checkpoint()
-            }
-        }
-
-        _ = checkpoint()
-        if !stoppedByAllowance, !Task.isCancelled {
-            budget = await fallbackService.budgetSnapshot()
-            fallbackStatus = .finished(
-                checked: completed,
-                priced: priced,
-                remainingToday: budget.remainingToday
-            )
-        }
-        return (priced, persistenceFailed)
-    }
-
-    /// Graded slabs, repriced through the v2 beta.
-    ///
-    /// Graded variants exist only in v2 and cannot be batched: posting a v2
-    /// variant id to `POST /v1/cards` returns an empty result, because raw and
-    /// graded variants are separate objects. So this is one request per
-    /// *underlying card* — every owned grade of one card comes back together —
-    /// narrowed to the graders and grades actually owned, which keeps a card
-    /// with a hundred grader/grade permutations to a single small response.
-    private func refreshGraded(
-        _ targets: [PriceTarget],
-        store: PriceStore
-    ) async -> (priced: Int, persistenceFailed: Bool) {
-        let slabs = targets.filter {
-            $0.itemKind == .gradedCard
-                && $0.marketVariantID != nil
-        }
-        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
-            return (0, false)
-        }
-
-        // One request serves every grade of one card, so group before asking.
-        var byCard: [String: [PriceTarget]] = [:]
-        for slab in slabs {
-            guard let identity = slab.gradedIdentity else { continue }
-            byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
-        }
-
-        let client = JustTCGV2GradedClient(transport: sharedTransport)
-        var priced = 0
-        var persistenceFailed = false
-
-        for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
-            if Task.isCancelled { break }
-            guard let identity = group.first?.gradedIdentity, let game = group.first?.game else {
-                continue
-            }
-            let variants: [GradedVariant]
-            do {
-                variants = try await client.gradedVariants(
-                    identity: identity,
-                    game: game,
-                    companies: Set(group.compactMap(\.gradingCompany)),
-                    grades: Set(group.compactMap(\.grade)),
-                    lane: .background
-                )
-            } catch {
-                // Budget, rate limit or transport. Nothing is recorded: none of
-                // those is evidence about the slab.
-                break
-            }
-
-            let byVariantID = Dictionary(
-                variants.map { ($0.id, $0) },
-                uniquingKeysWith: { first, _ in first }
-            )
-            var stagedPriced = 0
-            for target in group {
-                guard let handle = target.marketVariantID,
-                      let variant = byVariantID[handle],
-                      let amount = variant.marketPriceUSD else { continue }
-                let accepted = store.store(
-                    .price(
-                        NormalizedPrice(
-                            unitMarketPriceUSD: amount,
-                            currencyCode: "USD",
-                            source: .justTCG,
-                            sourceVariantID: variant.id,
-                            sourceUpdatedAt: variant.updatedAt,
-                            fetchedAt: .now
-                        )
-                    ),
-                    game: target.game,
-                    printingID: target.printingID,
-                    variantID: target.variantID,
-                    marketVariantID: variant.id,
-                    treatmentIDs: target.magicTreatmentIDsRaw
-                )
-                if let record = store.record(forKey: target.id) {
-                    record.marketVariantID = variant.id
-                    record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
-                }
-                if accepted {
-                    stagedPriced += 1
-                } else {
-                    persistenceFailed = true
-                }
-            }
-            if store.save() {
-                priced += stagedPriced
-            } else {
-                persistenceFailed = true
-            }
-        }
-        return (priced, persistenceFailed)
-    }
-
     /// Collection rows with no picture yet, keyed by the price key a batched
     /// response writes back to.
-    private static func rowsMissingArtwork(
-        in context: ModelContext
-    ) -> [String: [CollectedCard]] {
-        let rows = (try? context.fetch(
-            FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.imageURL == nil })
-        )) ?? []
-        return Dictionary(grouping: rows, by: \.priceKey)
-    }
-
-    private static func rowsByPriceKey(
-        in context: ModelContext
-    ) -> [String: [CollectedCard]] {
-        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        return Dictionary(grouping: rows, by: \.priceKey)
-    }
-
-    private static func rowsMissingArtworkIDs(
+    nonisolated fileprivate static func rowsMissingArtworkIDs(
         in context: ModelContext
     ) -> [String: [PersistentIdentifier]] {
         let rows = (try? context.fetch(
@@ -1356,7 +1442,7 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    private static func rowsByPriceKeyIDs(
+    nonisolated fileprivate static func rowsByPriceKeyIDs(
         in context: ModelContext
     ) -> [String: [PersistentIdentifier]] {
         let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
@@ -1365,14 +1451,14 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    nonisolated private static func rows(
+    nonisolated fileprivate static func rows(
         for ids: [PersistentIdentifier],
         in context: ModelContext
     ) -> [CollectedCard] {
         ids.compactMap { context.model(for: $0) as? CollectedCard }
     }
 
-    nonisolated private static func materializedRows(
+    nonisolated fileprivate static func materializedRows(
         from index: [String: [PersistentIdentifier]],
         in context: ModelContext
     ) -> [String: [CollectedCard]] {
@@ -1430,7 +1516,7 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    nonisolated private static func recordSealedArtworkMiss(
+    nonisolated fileprivate static func recordSealedArtworkMiss(
         for owners: [MarketPriceTarget],
         rowIDsByPriceKey: [String: [PersistentIdentifier]],
         context: ModelContext,
@@ -1528,7 +1614,7 @@ final class PriceRefreshController: ObservableObject {
     }
 
     @discardableResult
-    nonisolated private static func applyVendorBatchHit(
+    nonisolated fileprivate static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
         owners: [MarketPriceTarget],
@@ -1588,22 +1674,13 @@ final class PriceRefreshController: ObservableObject {
     }
 
     /// How often the fallback commits progress mid-run.
-    private static let fallbackCheckpointInterval = 10
+    nonisolated fileprivate static let fallbackCheckpointInterval = 10
     /// The catalog pass's equivalent, in answered printings.
-    private static let catalogCheckpointInterval = 10
+    nonisolated fileprivate static let catalogCheckpointInterval = 10
     /// Progress is presentation-only. Publishing it more often than a few
     /// times per second makes every observer rebuild while provider work is
     /// still in flight.
     private static let progressPublishInterval: TimeInterval = 0.25
-
-    /// A check that returns the same market timestamp is not an update, and
-    /// saying "prices updated" when nothing moved is the kind of small lie that
-    /// makes a whole collection feel untrustworthy.
-    private func isNewer(_ candidate: Date?, than previous: Date?) -> Bool {
-        guard let candidate else { return false }
-        guard let previous else { return true }
-        return candidate > previous
-    }
 
     func dismissSummary() {
         switch status {
@@ -1690,11 +1767,7 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    private func latestKnownSourceUpdate(in store: PriceStore) -> Date? {
-        store.allRecords().compactMap(\.sourceUpdatedAt).max()
-    }
-
-    private nonisolated static func fetch(
+    fileprivate nonisolated static func fetch(
         _ printing: PriceTarget.Printing,
         tcgdex: TCGdexService,
         scryfall: ScryfallService,
