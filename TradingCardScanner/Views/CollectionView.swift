@@ -82,6 +82,10 @@ struct CollectionView: View {
     @Query private var artworkOverrides: [LocalArtworkOverride]
     let catalog: any BrowseCatalogProviding
     let history: PortfolioHistoryStore
+    /// Deliberately unobserved, like Portfolio's. Only `PriceRefreshActivityRow`
+    /// reads it, and rebuilding the grid on every progress publication is
+    /// exactly the cost this screen's projection cache exists to avoid.
+    let refresh: PriceRefreshController
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
@@ -133,6 +137,7 @@ struct CollectionView: View {
     init(
         catalog: any BrowseCatalogProviding = BrowseCatalog(),
         history: PortfolioHistoryStore,
+        refresh: PriceRefreshController,
         opensBrowseOnLaunch: Bool,
         opensMovementDetailsOnLaunch: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
@@ -141,6 +146,7 @@ struct CollectionView: View {
     ) {
         self.catalog = catalog
         self.history = history
+        self.refresh = refresh
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
         self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
         self.onOpenScanner = onOpenScanner
@@ -401,7 +407,16 @@ struct CollectionView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .searchable(text: $searchText, prompt: "Search collection")
-        .refreshable { await onRefresh() }
+        .refreshable {
+            // `refreshable` holds the grid pushed down under its spinner for
+            // as long as this closure is suspended, and a pass over a few
+            // hundred cards with paced fallback requests runs for minutes.
+            // Hand the work to a task that outlives the gesture and let the
+            // status row above the grid report it — the same progress
+            // Portfolio shows, from the same publisher.
+            Task { await onRefresh() }
+            try? await Task.sleep(for: .milliseconds(500))
+        }
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
@@ -417,7 +432,8 @@ struct CollectionView: View {
             return total + money * entry.row.quantity
         }
 
-        return HStack(alignment: .firstTextBaseline) {
+        return VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Shown value")
                     .font(.subheadline)
@@ -432,6 +448,12 @@ struct CollectionView: View {
             Text("\(snapshot.entries.count) \(snapshot.entries.count == 1 ? "item" : "items")")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            }
+
+            // Pull-to-refresh returns immediately, so this is where a running
+            // pass is actually reported. Entry point and progress live
+            // together rather than in different screens.
+            PriceRefreshActivityRow(refresh: refresh)
         }
         .padding(.horizontal, 4)
         .padding(.vertical, 4)

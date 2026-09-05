@@ -73,6 +73,7 @@ struct ContentView: View {
             CollectionView(
                 catalog: browseCatalog,
                 history: history,
+                refresh: refresh,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 opensMovementDetailsOnLaunch: isMovementDebugRoute,
                 onOpenScanner: { selectedTab = .scan },

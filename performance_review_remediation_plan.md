@@ -16,14 +16,16 @@ numbers drift; follow symbol names.
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
 | 4 — R1 retention | gated on 1 | |
 | 5 — R3 field trimming | gated on 1 | |
-| 6 — R6 + R7 | not started | |
+| 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
 | 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
 | 8 — R4 ModelActor | gated on 1 and 7 | |
 | 9 — device pass | blocked (device) | |
 | 10 — R5 `#Index` | not started | deployment-target decision |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
 
-Suite after slices 2, 3, 7 and 11: **847 tests, 0 failures** (846 before; the new one is the C2 convergence test). Nothing below slice 1's gate has been touched.
+**P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
+
+Suite after slices 2, 3, 6, 7 and 11: **847 tests, 0 failures** (846 before; the new one is the C2 convergence test). Nothing below slice 1's gate has been touched.
 
 ---
 

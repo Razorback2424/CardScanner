@@ -73,7 +73,12 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
     @ObservedObject var portfolio: PortfolioEngine
-    @ObservedObject var refresh: PriceRefreshController
+    /// Deliberately unobserved. A running refresh publishes progress four times
+    /// a second, and observing it here re-evaluated the hero, the chart, the
+    /// movers and every holding row on each publication. The two places that
+    /// actually read it are child views below — the same isolation
+    /// `PortfolioInputObserver` already applies in `ContentView`.
+    let refresh: PriceRefreshController
     @ObservedObject var history: PortfolioHistoryStore
     let onRefresh: @MainActor () async -> Void
     let onOpenCollectionSortedByPrice: @MainActor () -> Void
@@ -184,19 +189,12 @@ struct PortfolioView: View {
                             )
                         }
                         .labelStyle(.iconOnly)
-                        .accessibilityLabel(
-                            needsPortfolioAttention
-                                ? "Pricing and data details, needs attention"
-                                : "Pricing and data details"
+                        .modifier(
+                            PortfolioAttentionBadge(
+                                refresh: refresh,
+                                needsAttentionFromPortfolio: needsAttentionFromPortfolio
+                            )
                         )
-                        .overlay(alignment: .topTrailing) {
-                            if needsPortfolioAttention {
-                                Circle()
-                                    .fill(PortfolioPalette.attention)
-                                    .frame(width: 7, height: 7)
-                                    .accessibilityHidden(true)
-                            }
-                        }
                     }
 
                     Button("Settings", systemImage: "gearshape") {
@@ -254,11 +252,6 @@ struct PortfolioView: View {
         }
     }
 
-    private var isRefreshing: Bool {
-        if case .refreshing = refresh.status { return true }
-        return false
-    }
-
     private var portfolioValueAccessibilityLabel: String {
         guard let summary = portfolio.summary else {
             return portfolio.isRecomputing
@@ -269,50 +262,15 @@ struct PortfolioView: View {
         return portfolio.isRecomputing ? "\(value). Updating to latest prices." : value
     }
 
-    @ViewBuilder
-    private var portfolioRefreshActivity: some View {
-        switch refresh.status {
-        case let .refreshing(completed, total):
-            HStack(spacing: 6) {
-                ProgressView()
-                    .controlSize(.small)
-                Text("Checking \(completed) of \(total)")
-            }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            .accessibilityLabel("Checking prices \(completed) of \(total)")
-        case .idle, .recentlyChecked, .finished:
-            if portfolio.isRecomputing {
-                Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .accessibilityLabel("Updating portfolio value")
-            } else {
-                EmptyView()
-            }
-        }
-    }
-
-    private var needsPortfolioAttention: Bool {
-        switch refresh.fallbackStatus {
-        case .budgetReached, .rateLimited:
-            return true
-        case .idle, .disabled, .unconfigured, .available, .running, .finished:
-            break
-        }
-
+    /// The half of "needs attention" that does not read the refresh
+    /// controller. `PortfolioAttentionBadge` adds the other half, so this view
+    /// never has to observe a four-times-a-second publisher to draw a dot.
+    private var needsAttentionFromPortfolio: Bool {
         guard let summary = portfolio.summary else {
             return !portfolio.integrityDefects.isEmpty
         }
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
-        if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
-        if case let .finished(result) = refresh.status {
-            return result.providerUnreachable
-                || result.failed > 0
-                || result.persistenceFailed
-                || result.reconciledDuplicateRecords > 0
-        }
-        return false
+        return !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero
     }
 
     private var canRepairQuantityDefects: Bool {
@@ -356,18 +314,13 @@ struct PortfolioView: View {
                     .animation(.snappy, value: portfolio.summary?.currentValue)
                     .accessibilityLabel(portfolioValueAccessibilityLabel)
 
-                Button("Refresh Prices", systemImage: "arrow.clockwise") {
-                    Task { await onRefresh() }
-                }
-                .labelStyle(.iconOnly)
-                .font(.headline.weight(.semibold))
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-                .disabled(isRefreshing)
-                .accessibilityLabel("Refresh prices")
+                PortfolioRefreshButton(refresh: refresh, onRefresh: onRefresh)
             }
 
-            portfolioRefreshActivity
+            PriceRefreshActivityRow(
+                refresh: refresh,
+                isRecomputing: portfolio.isRecomputing
+            )
 
             if portfolio.summary?.isMigrationDay == true {
                 Text("Tracking started today")
@@ -1248,5 +1201,108 @@ private struct PortfolioDetailsView: View {
         Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: .now)
             ? date.formatted(date: .omitted, time: .shortened)
             : date.formatted(date: .abbreviated, time: .shortened)
+    }
+}
+
+
+/// The refresh button, isolated so the four-times-a-second progress publisher
+/// invalidates a 44-point control rather than the whole Portfolio tree.
+private struct PortfolioRefreshButton: View {
+    @ObservedObject var refresh: PriceRefreshController
+    let onRefresh: @MainActor () async -> Void
+
+    private var isRefreshing: Bool {
+        if case .refreshing = refresh.status { return true }
+        return false
+    }
+
+    var body: some View {
+        Button("Refresh Prices", systemImage: "arrow.clockwise") {
+            Task { await onRefresh() }
+        }
+        .labelStyle(.iconOnly)
+        .font(.headline.weight(.semibold))
+        .frame(width: 44, height: 44)
+        .contentShape(Rectangle())
+        .disabled(isRefreshing)
+        .accessibilityLabel("Refresh prices")
+    }
+}
+
+/// The attention dot, isolated for the same reason as the button. The half of
+/// the predicate that reads the portfolio arrives already decided, so this view
+/// observes the refresh controller and nothing else.
+private struct PortfolioAttentionBadge: ViewModifier {
+    @ObservedObject var refresh: PriceRefreshController
+    let needsAttentionFromPortfolio: Bool
+
+    private var needsAttention: Bool {
+        switch refresh.fallbackStatus {
+        case .budgetReached, .rateLimited:
+            return true
+        case .idle, .disabled, .unconfigured, .available, .running, .finished:
+            break
+        }
+        if needsAttentionFromPortfolio { return true }
+        if case let .finished(result) = refresh.status {
+            return result.providerUnreachable
+                || result.failed > 0
+                || result.persistenceFailed
+                || result.reconciledDuplicateRecords > 0
+        }
+        return false
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityLabel(
+                needsAttention
+                    ? "Pricing and data details, needs attention"
+                    : "Pricing and data details"
+            )
+            .overlay(alignment: .topTrailing) {
+                if needsAttention {
+                    Circle()
+                        .fill(PortfolioPalette.attention)
+                        .frame(width: 7, height: 7)
+                        .accessibilityHidden(true)
+                }
+            }
+    }
+}
+
+/// One statement of what a running refresh looks like, shared by Portfolio and
+/// Collection so the screen a refresh is started from and the screen reporting
+/// it cannot describe the same pass differently.
+///
+/// Internal rather than private: this is the only view outside Portfolio that
+/// is allowed to observe the refresh controller.
+struct PriceRefreshActivityRow: View {
+    @ObservedObject var refresh: PriceRefreshController
+    /// Portfolio has a second, longer-running phase to report. Collection has
+    /// nothing to say there, so it says nothing.
+    var isRecomputing: Bool = false
+
+    var body: some View {
+        switch refresh.status {
+        case let .refreshing(completed, total):
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Checking \(completed) of \(total)")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .accessibilityLabel("Checking prices \(completed) of \(total)")
+        case .idle, .recentlyChecked, .finished:
+            if isRecomputing {
+                Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel("Updating portfolio value")
+            } else {
+                EmptyView()
+            }
+        }
     }
 }
