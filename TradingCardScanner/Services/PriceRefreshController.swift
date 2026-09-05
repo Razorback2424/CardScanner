@@ -182,6 +182,10 @@ final class PriceRefreshController: ObservableObject {
         /// Reported separately from `failed` because it is one fact about the
         /// network, not a count of cards with something wrong with them.
         var providerUnreachable = false
+        /// At least one provider response or identity update could not be
+        /// durably persisted. Network success is not presented as a complete
+        /// refresh in this state.
+        var persistenceFailed = false
     }
 
     enum Status: Equatable {
@@ -416,6 +420,38 @@ final class PriceRefreshController: ObservableObject {
     private func performRefresh(_ targets: [PriceTarget], store: PriceStore) async {
         guard !isRefreshing, !targets.isEmpty else { return }
 
+        var priced = 0
+        var failed = 0
+        var latestSourceUpdate: Date?
+        var checkedUnstampedProvider = false
+        var changedPrices = false
+        var persistenceFailed = false
+        var stagedPriced = 0
+        var stagedChangedPrices = false
+
+        func stage(_ accepted: Bool, priced: Bool = false, changed: Bool = false) {
+            guard accepted else {
+                persistenceFailed = true
+                return
+            }
+            if priced { stagedPriced += 1 }
+            stagedChangedPrices = stagedChangedPrices || changed
+        }
+
+        @discardableResult
+        func commitStaged() -> Bool {
+            let saved = store.save()
+            if saved {
+                priced += stagedPriced
+                changedPrices = changedPrices || stagedChangedPrices
+            } else {
+                persistenceFailed = true
+            }
+            stagedPriced = 0
+            stagedChangedPrices = false
+            return saved
+        }
+
         // A sealed box or a graded slab has no catalog identity to look up, so
         // it never enters the catalog pass. It carries the vendor's own variant
         // handle instead and goes straight to the batched stage below.
@@ -424,12 +460,12 @@ final class PriceRefreshController: ObservableObject {
                 || ($0.itemKind == .gradedCard && $0.marketVariantID == nil)
         }
         for target in unsupported {
-            store.recordUnsupportedProvider(
+            stage(store.recordUnsupportedProvider(
                 game: target.game,
                 printingID: target.printingID,
                 variantID: target.variantID,
                 treatmentIDs: target.magicTreatmentIDsRaw
-            )
+            ))
         }
         // Partitioned by instrument id rather than by `Array.contains`. A
         // synthesized `PriceTarget ==` compares two dozen fields including
@@ -450,11 +486,6 @@ final class PriceRefreshController: ObservableObject {
         let previousLatest = latestKnownSourceUpdate(in: store)
         let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
         var completed = 0
-        var priced = 0
-        var failed = 0
-        var latestSourceUpdate: Date?
-        var checkedUnstampedProvider = false
-        var changedPrices = false
         var wasCancelled = false
         /// Collected during the catalog pass, resolved after it. Running the
         /// fallback inline would interleave a paced, rate-limited vendor with
@@ -549,15 +580,25 @@ final class PriceRefreshController: ObservableObject {
                         case let .price(price): newAmount = price.unitMarketPriceUSD
                         case .unavailable: newAmount = previousAmount
                         }
-                        if previousAmount != newAmount { changedPrices = true }
-
-                        store.store(
+                        let changed = previousAmount != newAmount
+                        let isPriced: Bool
+                        if case .price = lookup {
+                            isPriced = true
+                        } else {
+                            isPriced = false
+                        }
+                        let accepted = store.store(
                             lookup,
                             game: target.game,
                             printingID: target.printingID,
                             variantID: target.variantID,
                             at: now,
                             treatmentIDs: target.magicTreatmentIDsRaw
+                        )
+                        stage(
+                            accepted,
+                            priced: isPriced,
+                            changed: changed
                         )
                     }
 
@@ -575,13 +616,13 @@ final class PriceRefreshController: ObservableObject {
                     // A price failure is already recorded on the price record.
                     failed += 1
                     for target in byPrinting[printing] ?? [] {
-                        store.recordFailure(
+                        stage(store.recordFailure(
                             game: target.game,
                             printingID: target.printingID,
                             variantID: target.variantID,
                             at: now,
                             treatmentIDs: target.magicTreatmentIDsRaw
-                        )
+                        ))
                         // A card the catalog could not even identify is the
                         // strongest fallback candidate there is — it has no
                         // price and no artwork today. The row's persisted
@@ -652,7 +693,7 @@ final class PriceRefreshController: ObservableObject {
                 // exposure window to seconds while leaving that churn an order
                 // of magnitude smaller.
                 if completed.isMultiple(of: Self.catalogCheckpointInterval) {
-                    store.save()
+                    _ = commitStaged()
                 }
 
                 if cursor < order.count, !providerUnreachable, !wasCancelled, !Task.isCancelled {
@@ -670,7 +711,7 @@ final class PriceRefreshController: ObservableObject {
             }
         }
 
-        store.save()
+        _ = commitStaged()
 
         if wasCancelled || Task.isCancelled {
             status = .idle
@@ -679,20 +720,20 @@ final class PriceRefreshController: ObservableObject {
 
         // Second stage. Only what the catalog could not finish, and only when
         // the user has opted in and supplied a key.
-        let fallbackPriced = await runFallback(fallbackSubjects, store: store)
-        if fallbackPriced > 0 {
-            priced += fallbackPriced
+        let fallbackResult = await runFallback(fallbackSubjects, store: store)
+        if fallbackResult.priced > 0 {
+            priced += fallbackResult.priced
             changedPrices = true
-            store.save()
         }
+        persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
 
         // Graded slabs, which neither the catalog nor the v1 batch can price.
-        let gradedPriced = await refreshGraded(targets, store: store)
-        if gradedPriced > 0 {
-            priced += gradedPriced
+        let gradedResult = await refreshGraded(targets, store: store)
+        if gradedResult.priced > 0 {
+            priced += gradedResult.priced
             changedPrices = true
-            store.save()
         }
+        persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
 
         if Task.isCancelled {
             status = .idle
@@ -709,7 +750,8 @@ final class PriceRefreshController: ObservableObject {
                 checkedUnstampedProvider: checkedUnstampedProvider,
                 changedPrices: changedPrices,
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
-                providerUnreachable: providerUnreachable
+                providerUnreachable: providerUnreachable,
+                persistenceFailed: persistenceFailed
             )
         )
     }
@@ -827,10 +869,13 @@ final class PriceRefreshController: ObservableObject {
 
     /// Ask the vendor about everything the catalog left unfinished.
     ///
-    /// Returns how many cards it managed to price. Anything it cannot answer is
+    /// Returns how many cards it durably priced. Anything it cannot answer is
     /// left exactly as the catalog left it — including a Cardmarket euro price,
     /// which stays as the last resort rather than being cleared.
-    private func runFallback(_ candidates: [FallbackCandidate], store: PriceStore) async -> Int {
+    private func runFallback(
+        _ candidates: [FallbackCandidate],
+        store: PriceStore
+    ) async -> (priced: Int, persistenceFailed: Bool) {
         // WotC editions used to be excluded outright, because the vendor names
         // them in its own vocabulary and an unverified mapping would have
         // attached an Unlimited price to a 1st Edition card. That vocabulary is
@@ -839,7 +884,7 @@ final class PriceRefreshController: ObservableObject {
         // distinguish simply finds no matching printing and stays unpriced.
         guard !candidates.isEmpty else {
             fallbackStatus = .idle
-            return 0
+            return (0, false)
         }
         // One row can reach this pass by more than one route — its catalog
         // request failed *and* it was swept in when the provider was declared
@@ -854,15 +899,17 @@ final class PriceRefreshController: ObservableObject {
         }
         guard !eligibleCandidates.isEmpty else {
             fallbackStatus = .disabled(pending: deduplicatedCandidates.count)
-            return 0
+            return (0, false)
         }
         guard PriceVendorCredentials.hasKey else {
             fallbackStatus = .unconfigured(pending: eligibleCandidates.count)
-            return 0
+            return (0, false)
         }
 
         let identities = ProductIdentityStore(context: store.context)
         var priced = 0
+        var stagedPriced = 0
+        var persistenceFailed = false
         var completed = 0
         var stoppedByAllowance = false
         var budget = await fallbackService.budgetSnapshot()
@@ -879,6 +926,20 @@ final class PriceRefreshController: ObservableObject {
                 total: eligibleCandidates.count,
                 remainingToday: budget.remainingToday
             )
+        }
+
+        @discardableResult
+        func checkpoint() -> Bool {
+            let identitiesSaved = identities.save()
+            let pricesSaved = store.save()
+            let saved = identitiesSaved && pricesSaved
+            if saved {
+                priced += stagedPriced
+            } else {
+                persistenceFailed = true
+            }
+            stagedPriced = 0
+            return saved
         }
 
         // Two workloads, and only the second of them batches.
@@ -1015,11 +1076,11 @@ final class PriceRefreshController: ObservableObject {
                     )
                 },
                 checkpoint: {
-                    identities.save()
-                    store.save()
+                    checkpoint()
                 }
             )
             priced += report.variantsUpdated
+            persistenceFailed = persistenceFailed || report.persistenceFailed
             completed += report.variantsRequested
             publishFallbackProgress()
 
@@ -1079,14 +1140,17 @@ final class PriceRefreshController: ObservableObject {
 
             switch outcome {
             case let .price(price, _, _):
-                store.store(
+                if store.store(
                     .price(price),
                     game: candidate.target.game,
                     printingID: candidate.target.printingID,
                     variantID: candidate.target.variantID,
                     treatmentIDs: candidate.target.magicTreatmentIDsRaw
-                )
-                priced += 1
+                ) {
+                    stagedPriced += 1
+                } else {
+                    persistenceFailed = true
+                }
             case let .budgetReached(resetAt):
                 stoppedByAllowance = true
                 fallbackStatus = .budgetReached(
@@ -1118,12 +1182,11 @@ final class PriceRefreshController: ObservableObject {
             // Resolved handles are the expensive part and must survive being
             // interrupted.
             if completed.isMultiple(of: Self.fallbackCheckpointInterval) {
-                identities.save()
-                store.save()
+                _ = checkpoint()
             }
         }
 
-        identities.save()
+        _ = checkpoint()
         if !stoppedByAllowance, !Task.isCancelled {
             budget = await fallbackService.budgetSnapshot()
             fallbackStatus = .finished(
@@ -1132,7 +1195,7 @@ final class PriceRefreshController: ObservableObject {
                 remainingToday: budget.remainingToday
             )
         }
-        return priced
+        return (priced, persistenceFailed)
     }
 
     /// Graded slabs, repriced through the v2 beta.
@@ -1143,13 +1206,18 @@ final class PriceRefreshController: ObservableObject {
     /// *underlying card* — every owned grade of one card comes back together —
     /// narrowed to the graders and grades actually owned, which keeps a card
     /// with a hundred grader/grade permutations to a single small response.
-    private func refreshGraded(_ targets: [PriceTarget], store: PriceStore) async -> Int {
+    private func refreshGraded(
+        _ targets: [PriceTarget],
+        store: PriceStore
+    ) async -> (priced: Int, persistenceFailed: Bool) {
         let slabs = targets.filter {
             $0.itemKind == .gradedCard
                 && $0.marketVariantID != nil
                 && !$0.isTreatmentQualified
         }
-        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else { return 0 }
+        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
+            return (0, false)
+        }
 
         // One request serves every grade of one card, so group before asking.
         var byCard: [String: [PriceTarget]] = [:]
@@ -1160,6 +1228,7 @@ final class PriceRefreshController: ObservableObject {
 
         let client = JustTCGV2GradedClient(transport: sharedTransport)
         var priced = 0
+        var persistenceFailed = false
 
         for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
             if Task.isCancelled { break }
@@ -1185,11 +1254,12 @@ final class PriceRefreshController: ObservableObject {
                 variants.map { ($0.id, $0) },
                 uniquingKeysWith: { first, _ in first }
             )
+            var stagedPriced = 0
             for target in group {
                 guard let handle = target.marketVariantID,
                       let variant = byVariantID[handle],
                       let amount = variant.marketPriceUSD else { continue }
-                store.store(
+                let accepted = store.store(
                     .price(
                         NormalizedPrice(
                             unitMarketPriceUSD: amount,
@@ -1210,11 +1280,19 @@ final class PriceRefreshController: ObservableObject {
                     record.marketVariantID = variant.id
                     record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
                 }
-                priced += 1
+                if accepted {
+                    stagedPriced += 1
+                } else {
+                    persistenceFailed = true
+                }
             }
-            store.save()
+            if store.save() {
+                priced += stagedPriced
+            } else {
+                persistenceFailed = true
+            }
         }
-        return priced
+        return (priced, persistenceFailed)
     }
 
     /// Collection rows with no picture yet, keyed by the price key a batched
@@ -1336,6 +1414,7 @@ final class PriceRefreshController: ObservableObject {
     /// One matched vendor response, applied in dependency order. Identity and
     /// artwork deliberately happen before the optional price so a null market
     /// amount cannot discard valid product metadata.
+    @discardableResult
     static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
@@ -1345,12 +1424,12 @@ final class PriceRefreshController: ObservableObject {
         artworkRowsByPriceKey: [String: [CollectedCard]],
         identityRowsByPriceKey: [String: [CollectedCard]],
         fetchedAt: Date = .now
-    ) {
+    ) -> Bool {
         // This callback is a second line of defence after the coordinator's
         // treatment-aware owner grouping. A generic vendor response must never
         // be written to a treatment-qualified Magic key, even if a future
         // caller accidentally supplies a mixed owner array.
-        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return }
+        guard owners.allSatisfy({ !$0.isTreatmentQualified }) else { return false }
         recordSealedArtwork(
             from: card,
             for: owners,
@@ -1378,7 +1457,7 @@ final class PriceRefreshController: ObservableObject {
             }
         }
 
-        guard let amount = variant.marketPriceUSD else { return }
+        guard let amount = variant.marketPriceUSD else { return true }
         let normalized = NormalizedPrice(
             unitMarketPriceUSD: amount,
             currencyCode: "USD",
@@ -1387,8 +1466,9 @@ final class PriceRefreshController: ObservableObject {
             sourceUpdatedAt: variant.updatedAt,
             fetchedAt: fetchedAt
         )
+        var allStored = true
         for owner in owners {
-            store.store(
+            let stored = store.store(
                 .price(normalized),
                 game: owner.game,
                 printingID: owner.printingID,
@@ -1396,6 +1476,7 @@ final class PriceRefreshController: ObservableObject {
                 marketVariantID: variant.variantId,
                 treatmentIDs: owner.magicTreatmentIDsRaw
             )
+            allStored = allStored && stored
             if let record = store.record(forKey: owner.priceKey) {
                 record.marketVariantID = variant.variantId
                 record.canonicalMarketID = card.uuid ?? card.id
@@ -1407,8 +1488,10 @@ final class PriceRefreshController: ObservableObject {
                 record.periodChangeCount = variant.priceChangesCount7d
             }
         }
+        return allStored
     }
 
+    @discardableResult
     private static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
@@ -1419,10 +1502,10 @@ final class PriceRefreshController: ObservableObject {
         identityRowIDsByPriceKey: [String: [PersistentIdentifier]],
         context: ModelContext,
         fetchedAt: Date = .now
-    ) {
+    ) -> Bool {
         // The IDs were captured before the network await. Re-fetching here
         // makes deletion, rollback, or a sync merge during that await harmless.
-        applyVendorBatchHit(
+        return applyVendorBatchHit(
             card: card,
             variant: variant,
             owners: owners,
@@ -1444,6 +1527,7 @@ final class PriceRefreshController: ObservableObject {
     /// Identity persistence is now intentionally broader than artwork
     /// backfill, but existing support/test callers should keep compiling while
     /// they migrate to the two-index form.
+    @discardableResult
     static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
@@ -1452,8 +1536,8 @@ final class PriceRefreshController: ObservableObject {
         identities: ProductIdentityStore,
         rowsByPriceKey: [String: [CollectedCard]],
         fetchedAt: Date = .now
-    ) {
-        applyVendorBatchHit(
+    ) -> Bool {
+        return applyVendorBatchHit(
             card: card,
             variant: variant,
             owners: owners,
@@ -1509,7 +1593,7 @@ final class PriceRefreshController: ObservableObject {
     nonisolated static func isTransientSuccessStatus(_ status: Status) -> Bool {
         switch status {
         case let .finished(summary):
-            return !summary.providerUnreachable && summary.failed == 0
+            return !summary.providerUnreachable && summary.failed == 0 && !summary.persistenceFailed
         case .recentlyChecked:
             return true
         case .idle, .refreshing:

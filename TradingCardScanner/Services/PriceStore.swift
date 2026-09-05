@@ -299,6 +299,7 @@ struct PriceStore {
     /// because provenance is part of what is being observed: a vendor remapping
     /// a card from one variant object to another worth the same $42 has changed
     /// what is priced, and the record still holds the *old* id at this point.
+    @discardableResult
     func store(
         _ lookup: PriceLookup,
         game: CardGame,
@@ -307,7 +308,7 @@ struct PriceStore {
         marketVariantID: String? = nil,
         at date: Date = .now,
         treatmentIDs: [String] = []
-    ) {
+    ) -> Bool {
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,
@@ -320,7 +321,7 @@ struct PriceStore {
             printingID: printingID,
             variantID: variantID,
             treatmentIDs: treatmentIDs
-        ) else { return }
+        ) else { return false }
 
         let observationDecision = PriceObservationLog(context: context).ingest(
             lookup,
@@ -332,15 +333,15 @@ struct PriceStore {
         if observationDecision == .rejectedInvalidQuote {
             record.recordFailure(at: date)
             record.lastFailureReasonRaw = PricingDiagnosticReason.invalidProviderQuote.rawValue
-            return
+            return false
         }
         if observationDecision == .ignoredAfterInvalidation {
-            return
+            return false
         }
 
         switch lookup {
         case let .price(price):
-            guard record.apply(price) else { return }
+            guard record.apply(price) else { return false }
             record.lastFailureReasonRaw = nil
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
@@ -358,6 +359,7 @@ struct PriceStore {
         if let marketVariantID {
             record.marketVariantID = marketVariantID
         }
+        return true
     }
 
     func storeImported(
@@ -413,13 +415,14 @@ struct PriceStore {
     /// A refresh attempt that never reached an answer. The previous price stays
     /// exactly where it was — an offline phone should show yesterday's price
     /// labelled as yesterday's, not nothing at all.
+    @discardableResult
     func recordFailure(
         game: CardGame,
         printingID: String,
         variantID: String?,
         at date: Date = .now,
         treatmentIDs: [String] = []
-    ) {
+    ) -> Bool {
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,
@@ -432,7 +435,7 @@ struct PriceStore {
             printingID: printingID,
             variantID: variantID,
             treatmentIDs: treatmentIDs
-        ) else { return }
+        ) else { return false }
         record.recordFailure(at: date)
         // A target can become supported after a catalog/schema/provider update.
         // Once that target is actually attempted, the old capability stamp must
@@ -440,6 +443,7 @@ struct PriceStore {
         if record.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
             record.lastFailureReasonRaw = nil
         }
+        return true
     }
 
     /// Stamps a capability gap rather than a provider failure. This is used for
@@ -447,13 +451,14 @@ struct PriceStore {
     /// treatment-qualified Magic card or a graded row without a vendor handle).
     /// It intentionally writes no observation and no coverage row: no provider
     /// answered the question.
+    @discardableResult
     func recordUnsupportedProvider(
         game: CardGame,
         printingID: String,
         variantID: String?,
         at date: Date = .now,
         treatmentIDs: [String] = []
-    ) {
+    ) -> Bool {
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,
@@ -466,10 +471,11 @@ struct PriceStore {
             printingID: printingID,
             variantID: variantID,
             treatmentIDs: treatmentIDs
-        ) else { return }
+        ) else { return false }
         record.lastCheckedAt = date
         record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
         record.lastFailureAt = nil
+        return true
     }
 
     /// Saves only this store's context. A failed save is rolled back immediately

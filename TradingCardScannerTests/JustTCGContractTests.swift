@@ -1158,8 +1158,8 @@ final class JustTCGContractTests: XCTestCase {
             ],
             game: .pokemon,
             useDelta: true,
-            apply: { _, _, _ in },
-            checkpoint: {}
+            apply: { _, _, _ in true },
+            checkpoint: { true }
         )
 
         let urls = RecordingURLProtocol.recorded()
@@ -1186,8 +1186,8 @@ final class JustTCGContractTests: XCTestCase {
             [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
             game: .pokemon,
             useDelta: true,
-            apply: { _, _, _ in },
-            checkpoint: {}
+            apply: { _, _, _ in true },
+            checkpoint: { true }
         )
 
         let urls = RecordingURLProtocol.recorded()
@@ -1223,9 +1223,9 @@ final class JustTCGContractTests: XCTestCase {
             ],
             game: .pokemon,
             useDelta: false,
-            apply: { _, _, _ in },
+            apply: { _, _, _ in true },
             unmatched: { missed.append(contentsOf: $0) },
-            checkpoint: {}
+            checkpoint: { true }
         )
 
         XCTAssertEqual(missed.map(\.priceKey), ["sealed"])
@@ -1255,11 +1255,34 @@ final class JustTCGContractTests: XCTestCase {
             ],
             game: .pokemon,
             useDelta: true,
-            apply: { _, _, _ in },
+            apply: { _, _, _ in true },
             unmatched: { missed.append(contentsOf: $0) },
-            checkpoint: {}
+            checkpoint: { true }
         )
 
         XCTAssertTrue(missed.isEmpty, "unchanged is not an answer about artwork")
+    }
+
+    @MainActor
+    func testFailedCheckpointIsReportedAndDoesNotAdvanceDelta() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        let report = await coordinator.refresh(
+            [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
+            game: .pokemon,
+            apply: { _, _, _ in true },
+            checkpoint: { false }
+        )
+
+        XCTAssertTrue(report.persistenceFailed)
+        XCTAssertFalse(report.completedFully)
+        XCTAssertNil(
+            syncLedger.deltaCutoff(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion),
+            "a failed save must leave the delta checkpoint eligible for retry"
+        )
     }
 }

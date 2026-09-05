@@ -307,7 +307,7 @@ struct PortfolioView: View {
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
         if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
         if case let .finished(result) = refresh.status {
-            return result.providerUnreachable || result.failed > 0
+            return result.providerUnreachable || result.failed > 0 || result.persistenceFailed
         }
         return false
     }
@@ -1183,11 +1183,19 @@ private struct PortfolioDetailsView: View {
             case let .refreshing(completed, total):
                 LabeledContent("Checking prices", value: "\(completed) of \(total)")
             case let .finished(result):
-                Text(result.providerUnreachable
-                     ? "The card catalog is unreachable. Check your connection and try again."
-                     : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened)).")
+                Text(
+                    result.providerUnreachable
+                        ? "The card catalog is unreachable. Check your connection and try again."
+                        : result.persistenceFailed
+                            ? "Some price updates could not be saved. Try again."
+                            : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
+                )
                     .font(.subheadline)
-                    .foregroundStyle(result.providerUnreachable || result.failed > 0 ? PortfolioPalette.attention : .secondary)
+                    .foregroundStyle(
+                        result.providerUnreachable || result.failed > 0 || result.persistenceFailed
+                            ? PortfolioPalette.attention
+                            : .secondary
+                    )
             case .recentlyChecked:
                 Text("Prices were checked recently.")
                     .font(.subheadline)
