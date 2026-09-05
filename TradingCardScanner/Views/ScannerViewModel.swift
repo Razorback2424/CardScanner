@@ -900,6 +900,12 @@ final class ScannerViewModel: ObservableObject {
             recognitionEligibility.isCameraInterrupted = false
             if recognitionEligibility.isScannerVisible {
                 scanner.start()
+                // `start()` restores the capture session, but it deliberately
+                // does not change the recognition pause state. The inactive
+                // transition pauses recognition before returning to the
+                // background, so foreground recovery must pass through the
+                // same eligibility gate as every other resume path.
+                resumeRecognitionIfPossible()
             }
             if let result = priceCheckResult,
                result.quoteState == .checking,
