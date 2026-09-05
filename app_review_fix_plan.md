@@ -160,7 +160,7 @@ slice-local commit.
 - [x] Add regressions for session timestamp preservation and a cached `$10`
   catalog quote versus a newer local `$20` quote.
 
-Status: implemented, generic build-for-testing passes. Simulator test execution
+Status: implemented in `822135a`, generic build-for-testing passes. Simulator test execution
 is unavailable because CoreSimulatorService has no discoverable runtime.
 
 ## Audit pass 1 remaining remediation — L1 through L3
